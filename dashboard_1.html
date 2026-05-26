@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Dashboard — XI Conference</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #EAEFF2;
+      --surface:     #FFFFFF;
+      --surface2:    #F3F7F9;
+      --border:      #B2C4D1;
+      --border2:     #D0DDE6;
+      --navy:        #1A365D;
+      --navy-soft:   #E6EDF5;
+      --navy-mid:    #2C4F7C;
+      --text:        #0A1B29;
+      --text-mid:    #33475B;
+      --text-soft:   #607386;
+      --text-muted:  #94A9BF;
+      --green:       #16A34A;
+      --green-soft:  #F0FDF4;
+      --green-bdr:   #86EFAC;
+      --amber:       #B45309;
+      --amber-soft:  #FFFBEB;
+      --amber-bdr:   #FDE68A;
+      --red:         #C0503A;
+      --red-soft:    #FEF2F2;
+      --red-bdr:     #FCA5A5;
+      --cyan:        #0E7490;
+      --cyan-soft:   #ECFEFF;
+      --purple:      #7C3AED;
+      --purple-soft: #F5F3FF;
+      --radius:      8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 28px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .brand-icon { width: 32px; height: 32px; border-radius: 7px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .brand-name { font-family: 'DM Serif Display', serif; font-size: 16px; color: #fff; letter-spacing: 0.01em; }
+    .brand-sub { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 1px; }
+
+    .search-wrap { flex: 1; max-width: 380px; position: relative; }
+    .search-inp { width: 100%; padding: 8px 14px 8px 36px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); color: #fff; font-size: 13px; outline: none; font-family: 'DM Sans', sans-serif; transition: border-color .15s, background .15s; }
+    .search-inp:focus { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+    .search-inp::placeholder { color: rgba(255,255,255,0.35); }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; color: rgba(255,255,255,0.4); pointer-events: none; }
+
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .live-pill { display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: rgba(22,163,74,0.15); border: 1px solid rgba(22,163,74,0.3); border-radius: 99px; font-size: 11px; font-weight: 600; color: #86efac; }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+    .btn-refresh { padding: 7px 14px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius); color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 5px; transition: all .15s; }
+    .btn-refresh:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .btn-refresh:disabled { opacity: .4; cursor: not-allowed; }
+    .spin-icon { display: inline-block; }
+    .btn-refresh.spinning .spin-icon { animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* error banner */
+    .error-banner { display:none; margin: 16px 28px 0; padding: 12px 16px; background: var(--red-soft); border: 1px solid var(--red-bdr); border-radius: 10px; font-size: 12px; color: var(--red); }
+    .error-banner.visible { display: flex; align-items: center; gap: 8px; }
+
+    .srp-panel { display: none; margin: 20px 28px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .srp-panel.visible { display: block; animation: fadeUp .2s ease; }
+    .srp-header { padding: 12px 18px; border-bottom: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; }
+    .srp-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .srp-count { font-size: 11px; color: var(--text-soft); }
+
+    .nav-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 28px; overflow-x: auto; }
+    .nav-tabs { display: flex; gap: 0; }
+    .nav-tab { display: flex; align-items: center; gap: 6px; padding: 13px 16px; font-size: 13px; font-weight: 500; color: var(--text-soft); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; margin-bottom: -1px; transition: all .15s; }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+    .tab-count { padding: 2px 7px; border-radius: 99px; font-size: 10px; font-weight: 600; background: var(--surface2); color: var(--text-soft); }
+    .nav-tab.active .tab-count { background: var(--navy-soft); color: var(--navy); }
+
+    .page { padding: 24px 28px 60px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeUp .2s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; border-left: 3px solid var(--kpi-color, var(--navy)); }
+    .kpi-num { font-size: 34px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; color: var(--kpi-color, var(--navy)); }
+    .kpi-lbl { font-size: 11px; color: var(--text-soft); margin-top: 5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi.g { --kpi-color: var(--green); }
+    .kpi.c { --kpi-color: var(--cyan); }
+    .kpi.r { --kpi-color: var(--red); }
+
+    .groups-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+    .gcard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; border-top: 3px solid var(--gc, var(--navy)); transition: transform .12s, box-shadow .12s; }
+    .gcard:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(26,54,93,0.08); }
+    .gc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gc, var(--navy)); margin-bottom: 10px; }
+    .gc-total { font-size: 30px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; color: var(--text); }
+    .gc-sub { font-size: 11px; color: var(--text-soft); margin-top: 3px; }
+    .gc-row { display: flex; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border2); }
+    .gc-mini-num { font-size: 17px; font-weight: 700; color: var(--green); }
+    .gc-mini-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .gcard.navy { --gc: var(--navy); }
+    .gcard.g    { --gc: var(--green); }
+    .gcard.a    { --gc: var(--amber); }
+    .gcard.p    { --gc: var(--purple); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .panel-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+
+    .prog-rows { display: flex; flex-direction: column; gap: 14px; }
+    .prog-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .prog-name { font-size: 12px; font-weight: 500; color: var(--text-mid); }
+    .prog-val { font-size: 11px; color: var(--text-soft); }
+    .prog-track { height: 5px; background: var(--surface2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border2); }
+    .prog-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1); width: 0; }
+    .fb { background: var(--navy); }
+    .fg { background: var(--green); }
+    .fa { background: var(--amber); }
+    .fp { background: var(--purple); }
+
+    .activity-list { display: flex; flex-direction: column; gap: 6px; }
+    .act { display: flex; align-items: center; gap: 9px; padding: 9px 11px; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); }
+    .act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .act-dot.in  { background: var(--green); }
+    .act-dot.out { background: var(--amber); }
+    .act-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .act-sub { font-size: 10px; color: var(--text-soft); margin-top: 1px; }
+    .act-time { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+    .strip { display: flex; align-items: center; gap: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; flex-wrap: wrap; }
+    .strip-big { font-size: 40px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+    .strip-lbl { font-size: 10px; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .strip-div { width: 1px; height: 36px; background: var(--border2); }
+    .strip-stat-num { font-size: 18px; font-weight: 700; }
+    .strip-stat-lbl { font-size: 10px; color: var(--text-soft); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    .table-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .tbl-header { padding: 14px 18px; border-bottom: 1px solid var(--border2); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .tbl-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .tbl-badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; background: var(--navy-soft); color: var(--navy); }
+    .tbl-search { padding: 7px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 12px; outline: none; font-family: 'DM Sans', sans-serif; min-width: 200px; transition: border-color .15s; }
+    .tbl-search:focus { border-color: var(--navy); }
+    .tbl-search::placeholder { color: var(--text-muted); }
+    .tbl-scroll { overflow-x: auto; max-height: 460px; overflow-y: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th { padding: 9px 14px; background: var(--surface2); border-bottom: 1px solid var(--border2); text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-soft); position: sticky; top: 0; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--border2); transition: background .1s; }
+    tbody tr:last-child { border: none; }
+    tbody tr:hover { background: var(--navy-soft); }
+    tbody td { padding: 9px 14px; vertical-align: middle; }
+    .td-idx { color: var(--text-muted); font-size: 11px; }
+    .td-name { font-weight: 600; color: var(--text); }
+    .td-email { color: var(--text-soft); font-size: 11px; }
+
+    .pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 10px; font-weight: 600; }
+    .pill-on  { background: var(--green-soft); color: var(--green); border: 1px solid var(--green-bdr); }
+    .pill-off { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-bdr); }
+    .pill-no  { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border2); }
+    .pill-pending    { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber-bdr); }
+    .pill-processing { background: var(--cyan-soft); color: var(--cyan); border: 1px solid rgba(14,116,144,0.25); }
+    .pill-done       { background: var(--green-soft); color: var(--green); border: 1px solid var(--green-bdr); }
+    .pill-failed     { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-bdr); }
+
+    .cert-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 20px; }
+    .cert-stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .cs-num { font-size: 28px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+    .cs-lbl { font-size: 10px; color: var(--text-soft); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .cs-pending    { color: var(--amber); }
+    .cs-processing { color: var(--cyan); }
+    .cs-done       { color: var(--green); }
+    .cs-failed     { color: var(--red); }
+
+    .empty { text-align: center; padding: 36px; color: var(--text-muted); font-size: 12px; }
+    .footer { text-align: center; padding: 16px; font-size: 11px; color: var(--text-muted); }
+
+    /* skeleton loader */
+    .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border2) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 20px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    @media(max-width:900px) {
+      .kpi-row, .groups-row { grid-template-columns: repeat(2,1fr); }
+      .cert-stats { grid-template-columns: repeat(2,1fr); }
+    }
+    @media(max-width:660px) {
+      .topbar, .nav-wrap, .page { padding-left: 14px; padding-right: 14px; }
+      .two-col { grid-template-columns: 1fr; }
+      .kpi-row, .groups-row { grid-template-columns: repeat(2,1fr); }
+      .search-wrap { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">🏥</div>
+    <div>
+      <div class="brand-name">Attendance Dashboard</div>
+      <div class="brand-sub">XI International Conference</div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-inp" id="globalSearch" placeholder="Search any attendee…" oninput="globalSearchHandler(this.value)">
+  </div>
+  <div class="topbar-right">
+    <div class="live-pill"><div class="live-dot"></div>Live</div>
+    <button class="btn-refresh" id="refreshBtn" onclick="loadAll()">
+      <span class="spin-icon" id="spinIcon">↻</span> Refresh
+    </button>
+  </div>
+</div>
+
+<!-- ERROR BANNER -->
+<div class="error-banner" id="errorBanner">
+  ⚠️ <span id="errorMsg">მონაცემების ჩატვირთვა ვერ მოხდა. შეამოწმე Apps Script URL.</span>
+</div>
+
+<!-- SEARCH RESULTS -->
+<div class="srp-panel" id="searchResultsPanel">
+  <div class="srp-header">
+    <span class="srp-title">Search Results</span>
+    <span class="srp-count" id="srp-count">0 found</span>
+  </div>
+  <div class="tbl-scroll">
+    <table>
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="srp-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrap">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('overview')"     id="tab-btn-overview">Overview</button>
+    <button class="nav-tab"        onclick="switchTab('participants')" id="tab-btn-participants">Participants <span class="tab-count" id="cnt-participants">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('speakers')"     id="tab-btn-speakers">Speakers <span class="tab-count" id="cnt-speakers">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('coauthors')"    id="tab-btn-coauthors">Co-Authors <span class="tab-count" id="cnt-coauthors">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('posters')"      id="tab-btn-posters">Posters <span class="tab-count" id="cnt-posters">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('certs')"        id="tab-btn-certs">Certificates <span class="tab-count" id="cnt-certs">—</span></button>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- OVERVIEW -->
+  <div class="tab-panel active" id="panel-overview">
+    <div class="kpi-row">
+      <div class="kpi">        <div class="kpi-num" id="ov-total">—</div>  <div class="kpi-lbl">Total Registered</div></div>
+      <div class="kpi g">     <div class="kpi-num" id="ov-d1in">—</div>   <div class="kpi-lbl">Day 1 Check-in</div></div>
+      <div class="kpi c">     <div class="kpi-num" id="ov-d2in">—</div>   <div class="kpi-lbl">Day 2 Check-in</div></div>
+      <div class="kpi r">     <div class="kpi-num" id="ov-absent">—</div> <div class="kpi-lbl">Not Checked In</div></div>
+    </div>
+
+    <div class="groups-row">
+      <div class="gcard navy">
+        <div class="gc-label">Participants</div>
+        <div class="gc-total" id="grp-part-total">—</div>
+        <div class="gc-sub"   id="grp-part-absent">—</div>
+        <div class="gc-row">
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-part-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-part-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+        </div>
+      </div>
+      <div class="gcard g">
+        <div class="gc-label">Speakers</div>
+        <div class="gc-total" id="grp-spk-total">—</div>
+        <div class="gc-sub"   id="grp-spk-absent">—</div>
+        <div class="gc-row">
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-spk-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-spk-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+        </div>
+      </div>
+      <div class="gcard a">
+        <div class="gc-label">Co-Authors</div>
+        <div class="gc-total" id="grp-coa-total">—</div>
+        <div class="gc-sub"   id="grp-coa-absent">—</div>
+        <div class="gc-row">
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-coa-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-coa-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+        </div>
+      </div>
+      <div class="gcard p">
+        <div class="gc-label">Posters</div>
+        <div class="gc-total" id="grp-post-total">—</div>
+        <div class="gc-sub"   id="grp-post-absent">—</div>
+        <div class="gc-row">
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-post-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-post-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title">Attendance Rate</div>
+        <div class="prog-rows">
+          <div><div class="prog-meta"><span class="prog-name">Day 1 — Check-in</span><span class="prog-val" id="pr-d1in-v">0/0</span></div><div class="prog-track"><div class="prog-fill fb" id="pr-d1in"></div></div></div>
+          <div><div class="prog-meta"><span class="prog-name">Day 1 — Check-out</span><span class="prog-val" id="pr-d1out-v">0/0</span></div><div class="prog-track"><div class="prog-fill fa" id="pr-d1out"></div></div></div>
+          <div><div class="prog-meta"><span class="prog-name">Day 2 — Check-in</span><span class="prog-val" id="pr-d2in-v">0/0</span></div><div class="prog-track"><div class="prog-fill fg" id="pr-d2in"></div></div></div>
+          <div><div class="prog-meta"><span class="prog-name">Day 2 — Check-out</span><span class="prog-val" id="pr-d2out-v">0/0</span></div><div class="prog-track"><div class="prog-fill fp" id="pr-d2out"></div></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Recent Activity</div>
+        <div class="activity-list" id="ov-activity"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <div class="footer" id="last-updated"></div>
+  </div>
+
+  <!-- GROUP PANELS -->
+  <div class="tab-panel" id="panel-participants">
+    <div class="strip" id="strip-participants"></div>
+    <div class="two-col" id="stats-participants" style="margin-bottom:16px;"></div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Participants</span><span class="tbl-badge" id="badge-participants">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('participants',this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="tbody-participants"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-speakers">
+    <div class="strip" id="strip-speakers"></div>
+    <div class="two-col" id="stats-speakers" style="margin-bottom:16px;"></div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Speakers</span><span class="tbl-badge" id="badge-speakers">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('speakers',this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="tbody-speakers"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-coauthors">
+    <div class="strip" id="strip-coauthors"></div>
+    <div class="two-col" id="stats-coauthors" style="margin-bottom:16px;"></div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Co-Authors</span><span class="tbl-badge" id="badge-coauthors">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('coauthors',this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="tbody-coauthors"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-posters">
+    <div class="strip" id="strip-posters"></div>
+    <div class="two-col" id="stats-posters" style="margin-bottom:16px;"></div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Poster Presenters</span><span class="tbl-badge" id="badge-posters">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('posters',this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="tbody-posters"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATES -->
+  <div class="tab-panel" id="panel-certs">
+    <div class="cert-stats">
+      <div class="cert-stat"><div class="cs-num cs-pending" id="cert-pending">—</div><div class="cs-lbl">Pending</div></div>
+      <div class="cert-stat"><div class="cs-num cs-processing" id="cert-processing">—</div><div class="cs-lbl">Processing</div></div>
+      <div class="cert-stat"><div class="cs-num cs-done" id="cert-done">—</div><div class="cs-lbl">Sent</div></div>
+      <div class="cert-stat"><div class="cs-num cs-failed" id="cert-failed">—</div><div class="cs-lbl">Failed</div></div>
+    </div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Certificate Queue</span><span class="tbl-badge" id="badge-certs">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterCertTable(this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Status</th><th>Attempts</th><th>Queued At</th><th>Last Error</th></tr></thead>
+      <tbody id="tbody-certs"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════
+//  ⚠️  აქ ჩასვი შენი Apps Script Web App URL
+//  გამოიყურება ასე:
+//  https://script.google.com/macros/s/AKfycb.../exec
+// ════════════════════════════════════════════
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec";
+
+var groupData = { participants:[], speakers:[], coauthors:[], posters:[] };
+var certsData = [];
+
+window.onload = function(){ loadAll(); };
+
+// ── Auto-refresh ყოველ 60 წამში ──
+setInterval(loadAll, 60000);
+
+// ════ loadAll ════
+function loadAll() {
+  var btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.classList.add('spinning');
+  hideError();
+
+  var done = 0;
+  function check() { if (++done >= 3) { btn.disabled = false; btn.classList.remove('spinning'); } }
+
+  // Dashboard overview
+  apiFetch("dashboard")
+    .then(function(d) { renderOverview(d); check(); })
+    .catch(function(err) { showError(err.message); check(); });
+
+  // Attendee lists
+  apiFetch("attendees")
+    .then(function(lists) {
+      groupData = lists;
+      ['participants','speakers','coauthors','posters'].forEach(function(g) {
+        var arr = lists[g] || [];
+        renderGroupTable(g, arr);
+        renderGroupStats(g, arr);
+        _set('cnt-'+g, arr.length);
+        _set('badge-'+g, arr.length);
+      });
+      check();
+    })
+    .catch(function(err) { showError(err.message); check(); });
+
+  // Certs
+  apiFetch("certs")
+    .then(function(rows) {
+      certsData = rows || [];
+      renderCertTable(certsData);
+      renderCertStats(certsData);
+      _set('cnt-certs', certsData.length);
+      _set('badge-certs', certsData.length);
+      check();
+    })
+    .catch(function(err) { showError(err.message); check(); });
+}
+
+// ════ API fetch helper — JSONP (bypasses CORS for Apps Script) ════
+function apiFetch(action) {
+  return new Promise(function(resolve, reject) {
+    var cbName  = "_cb_" + action + "_" + Date.now();
+    var script  = document.createElement("script");
+    var timeout = setTimeout(function() {
+      cleanup();
+      reject(new Error("Timeout — Apps Script-მა არ უპასუხა (" + action + ")"));
+    }, 30000);
+
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = function(data) {
+      cleanup();
+      resolve(data);
+    };
+
+    script.src = APPS_SCRIPT_URL + "?page=api&action=" + action + "&callback=" + cbName;
+    script.onerror = function() {
+      cleanup();
+      reject(new Error("Apps Script-ი ვერ ჩაიტვირთა (" + action + "). შეამოွმე Deploy პარამეტრები."));
+    };
+    document.head.appendChild(script);
+  });
+}
+
+// ════ Error helpers ════
+function showError(msg) {
+  var b = document.getElementById('errorBanner');
+  document.getElementById('errorMsg').textContent = msg;
+  b.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('errorBanner').classList.remove('visible');
+}
+
+// ════ Global Search ════
+function globalSearchHandler(q) {
+  q = q.toLowerCase().trim();
+  var panel = document.getElementById('searchResultsPanel');
+  var body  = document.getElementById('srp-body');
+  if (!q) { panel.classList.remove('visible'); return; }
+
+  var results = [];
+  ['participants','speakers','coauthors','posters'].forEach(function(g) {
+    (groupData[g]||[]).forEach(function(a) {
+      if (a.name.toLowerCase().indexOf(q) !== -1 || a.email.toLowerCase().indexOf(q) !== -1) {
+        results.push(Object.assign({}, a, {group: g}));
+      }
+    });
+  });
+
+  document.getElementById('srp-count').textContent = results.length + ' found';
+  body.innerHTML = results.length
+    ? results.map(function(a,i){
+        return '<tr><td class="td-idx">'+(i+1)+'</td>'+
+          '<td class="td-name">'+_esc(a.name)+'</td>'+
+          '<td class="td-email">'+_esc(a.email)+'</td>'+
+          '<td style="font-size:11px;color:var(--text-soft);text-transform:capitalize">'+_esc(a.group)+'</td>'+
+          '<td>'+_pill(a.d1in_status)+'</td><td>'+_pill(a.d1out_status)+'</td>'+
+          '<td>'+_pill(a.d2in_status)+'</td><td>'+_pill(a.d2out_status)+'</td></tr>';
+      }).join('')
+    : '<tr><td colspan="8" class="empty">No results for "'+_esc(q)+'"</td></tr>';
+  panel.classList.add('visible');
+}
+
+// ════ Overview ════
+function renderOverview(d) {
+  if (!d) return;
+  var total  = d.total||0, d1in = d.day1in||0, d1out = d.day1out||0;
+  var d2in   = d.day2in||0, d2out = d.day2out||0;
+  var absent = d.neverCheckedIn || (total - d1in);
+
+  _set('ov-total', total); _set('ov-d1in', d1in);
+  _set('ov-d2in', d2in);   _set('ov-absent', absent);
+  _setProgress('pr-d1in',  'pr-d1in-v',  d1in,  total);
+  _setProgress('pr-d1out', 'pr-d1out-v', d1out, total);
+  _setProgress('pr-d2in',  'pr-d2in-v',  d2in,  total);
+  _setProgress('pr-d2out', 'pr-d2out-v', d2out, total);
+
+  var gs = d.groups || {};
+  _renderGCard('part', gs.participants);
+  _renderGCard('spk',  gs.speakers);
+  _renderGCard('coa',  gs.coauthors);
+  _renderGCard('post', gs.posters);
+
+  var feed = d.recentActivity || [];
+  var el = document.getElementById('ov-activity');
+  el.innerHTML = feed.length ? feed.map(function(a) {
+    var isIn = a.action && a.action.indexOf('Check-in') !== -1;
+    return '<div class="act">'+
+      '<div class="act-dot '+(isIn?'in':'out')+'"></div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div class="act-name">'+_esc(a.name)+'</div>'+
+        '<div class="act-sub">'+_esc(a.action)+(a.role?' · '+_esc(a.role):'')+'</div>'+
+      '</div>'+
+      '<div class="act-time">'+_fmtTime(a.time)+'</div></div>';
+  }).join('') : '<div class="empty">No activity yet</div>';
+
+  var now = new Date().toLocaleString('en-US',{timeZone:'Asia/Tbilisi',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  _set('last-updated','Last updated · '+now);
+}
+
+function _renderGCard(key, g) {
+  if (!g) return;
+  var absent = (g.total||0) - (g.day1in||0);
+  _set('grp-'+key+'-total',  g.total||0);
+  _set('grp-'+key+'-absent', absent+' not checked in');
+  _set('grp-'+key+'-d1in',   g.day1in||0);
+  _set('grp-'+key+'-d2in',   g.day2in||0);
+}
+
+// ════ Group Stats ════
+function renderGroupStats(group, arr) {
+  var total = arr.length;
+  var d1in  = arr.filter(function(a){ return !!a.d1in_status; }).length;
+  var d1out = arr.filter(function(a){ return !!a.d1out_status; }).length;
+  var d2in  = arr.filter(function(a){ return !!a.d2in_status; }).length;
+  var d2out = arr.filter(function(a){ return !!a.d2out_status; }).length;
+  var absent = total - d1in;
+
+  var labels = {participants:'Participants',speakers:'Speakers',coauthors:'Co-Authors',posters:'Poster Presenters'};
+  var colors = {participants:'var(--navy)',speakers:'var(--green)',coauthors:'var(--amber)',posters:'var(--purple)'};
+
+  var strip = document.getElementById('strip-'+group);
+  if (strip) strip.innerHTML =
+    '<div><div class="strip-big" style="color:'+colors[group]+'">'+total+'</div><div class="strip-lbl">'+labels[group]+'</div></div>'+
+    '<div class="strip-div"></div>'+_ss(d1in,'Day 1 In','var(--green)')+
+    '<div class="strip-div"></div>'+_ss(d1out,'Day 1 Out','var(--amber)')+
+    '<div class="strip-div"></div>'+_ss(d2in,'Day 2 In','var(--cyan)')+
+    '<div class="strip-div"></div>'+_ss(d2out,'Day 2 Out','var(--purple)')+
+    '<div class="strip-div"></div>'+_ss(absent,'Absent','var(--red)');
+
+  var el = document.getElementById('stats-'+group);
+  if (el) el.innerHTML =
+    '<div class="panel"><div class="panel-title">Attendance Rate</div><div class="prog-rows">'+
+    _pr('Day 1 — Check-in',d1in,total,'fb')+_pr('Day 1 — Check-out',d1out,total,'fa')+
+    _pr('Day 2 — Check-in',d2in,total,'fg')+_pr('Day 2 — Check-out',d2out,total,'fp')+'</div></div>'+
+    '<div class="panel"><div class="panel-title">Quick Stats</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px;">'+
+    _qs('Total',total,colors[group])+_qs('Absent',absent,'var(--red)')+
+    _qs('Day 1 In',d1in,'var(--green)')+_qs('Day 2 In',d2in,'var(--cyan)')+'</div></div>';
+}
+
+// ════ Group Table ════
+function renderGroupTable(group, arr) {
+  var tbody = document.getElementById('tbody-'+group);
+  if (!tbody) return;
+  if (!arr||!arr.length) { tbody.innerHTML='<tr><td colspan="7" class="empty">No data found</td></tr>'; return; }
+  tbody.innerHTML = arr.map(function(a,i) {
+    return '<tr><td class="td-idx">'+(i+1)+'</td>'+
+      '<td class="td-name">'+_esc(a.name)+'</td>'+
+      '<td class="td-email">'+_esc(a.email)+'</td>'+
+      '<td>'+_pill(a.d1in_status)+'</td><td>'+_pill(a.d1out_status)+'</td>'+
+      '<td>'+_pill(a.d2in_status)+'</td><td>'+_pill(a.d2out_status)+'</td></tr>';
+  }).join('');
+}
+
+function filterGroupTable(group, q) {
+  q = q.toLowerCase().trim();
+  var arr = groupData[group] || [];
+  renderGroupTable(group, q ? arr.filter(function(a){
+    return a.name.toLowerCase().indexOf(q) !== -1 || a.email.toLowerCase().indexOf(q) !== -1;
+  }) : arr);
+}
+
+// ════ Cert Table ════
+function renderCertTable(arr) {
+  var tbody = document.getElementById('tbody-certs');
+  if (!tbody) return;
+  if (!arr||!arr.length) { tbody.innerHTML='<tr><td colspan="8" class="empty">No certificates queued yet</td></tr>'; return; }
+  tbody.innerHTML = arr.map(function(r,i) {
+    var s   = (r.status||'').toLowerCase();
+    var cls = s==='done'?'pill-done' : s==='failed'?'pill-failed' : s==='processing'?'pill-processing' : 'pill-pending';
+    return '<tr>'+
+      '<td class="td-idx">'+(i+1)+'</td>'+
+      '<td class="td-name">'+_esc(r.name)+'</td>'+
+      '<td class="td-email">'+_esc(r.email)+'</td>'+
+      '<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.group)+'</td>'+
+      '<td><span class="pill '+cls+'">'+_esc(r.status)+'</span></td>'+
+      '<td style="text-align:center;font-size:11px;color:var(--text-mid)">'+_esc(r.attempts)+'</td>'+
+      '<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.timestamp)+'</td>'+
+      '<td style="font-size:11px;color:var(--red);max-width:180px;overflow:hidden;text-overflow:ellipsis">'+_esc(r.lastError)+'</td></tr>';
+  }).join('');
+}
+
+function renderCertStats(arr) {
+  var p=0,pr=0,d=0,f=0;
+  arr.forEach(function(r){
+    var s = (r.status||'').toLowerCase();
+    if(s==='pending'||s==='retry') p++;
+    else if(s==='processing') pr++;
+    else if(s==='done') d++;
+    else if(s==='failed') f++;
+  });
+  _set('cert-pending',p); _set('cert-processing',pr);
+  _set('cert-done',d);    _set('cert-failed',f);
+}
+
+function filterCertTable(q) {
+  q = q.toLowerCase().trim();
+  renderCertTable(q ? certsData.filter(function(r){
+    return r.name.toLowerCase().indexOf(q)!==-1 || r.email.toLowerCase().indexOf(q)!==-1;
+  }) : certsData);
+}
+
+// ════ Tabs ════
+function switchTab(name) {
+  ['overview','participants','speakers','coauthors','posters','certs'].forEach(function(t) {
+    document.getElementById('panel-'+t).classList.toggle('active', t===name);
+    document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
+  });
+}
+
+// ════ Utils ════
+function _set(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+function _setProgress(bId,vId,val,total){
+  var pct = total>0 ? Math.round(val/total*100) : 0;
+  setTimeout(function(){ var e=document.getElementById(bId); if(e) e.style.width=pct+'%'; }, 350);
+  var ve=document.getElementById(vId); if(ve) ve.textContent=val+'/'+total+' ('+pct+'%)';
+}
+function _pill(s){
+  if(s==='onsite')  return '<span class="pill pill-on">✓ On-site</span>';
+  if(s==='offsite') return '<span class="pill pill-off">⚠ Off-site</span>';
+  if(s==='other')   return '<span class="pill pill-on">✓ Done</span>';
+  return '<span class="pill pill-no">—</span>';
+}
+function _ss(num,lbl,color){ return '<div><div class="strip-stat-num" style="color:'+color+'">'+num+'</div><div class="strip-stat-lbl">'+lbl+'</div></div>'; }
+function _pr(name,val,total,cls){ var pct=total>0?Math.round(val/total*100):0; return '<div><div class="prog-meta"><span class="prog-name">'+name+'</span><span class="prog-val">'+val+'/'+total+' ('+pct+'%)</span></div><div class="prog-track"><div class="prog-fill '+cls+'" style="width:'+pct+'%;transition:none;"></div></div></div>'; }
+function _qs(lbl,num,color){ return '<div style="background:var(--surface2);border:1px solid var(--border2);border-radius:9px;padding:12px;"><div style="font-size:22px;font-weight:700;letter-spacing:-0.5px;color:'+color+'">'+num+'</div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.5px">'+lbl+'</div></div>'; }
+function _fmtTime(str){ if(!str)return''; try{ var s=str.toString(),p=s.split(','); return p.length>=2?p[1].trim().substring(0,5):s.substring(0,5); }catch(e){return'';} }
+function _esc(s){ return(s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
