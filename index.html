@@ -9,28 +9,24 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
 
 :root {
-  --bg: #EAEFF2;         
-  --bg2: #D5E1EA;        
+  --bg: #EAEFF2;
+  --bg2: #D5E1EA;
   --bg3: #BCCEDC;
-  --surface: #FFFFFF;    
-  --border: #B2C4D1;     
-  --text: #0A1B29;       
-  --text-dim: #33475B;   
-  --text-faint: #607386; 
-
-  /* შეცვლილია ძველი ოქროსფერი Navy ტონალობებით */
-  --gold: #1A365D;       
-  --gold-soft: #E6EDF5;  
+  --surface: #FFFFFF;
+  --border: #B2C4D1;
+  --text: #0A1B29;
+  --text-dim: #33475B;
+  --text-faint: #607386;
+  --gold: #1A365D;
+  --gold-soft: #E6EDF5;
   --gold-border: #94A9C2;
-
-  --navy: #1A365D;       
-  --navy-soft: #E6EDF5;  
+  --navy: #1A365D;
+  --navy-soft: #E6EDF5;
   --navy-border: #94A9C2;
-
-  --live: #22C55E;       /* მწვანე ფერი */
-  --live-soft: #E8F5E9;  /* რბილი მწვანე ფონი */
-  --live-border: #A7F3D0;/* მწვანე ჩარჩო */
-  --warn: #DC2626;       
+  --live: #22C55E;
+  --live-soft: #E8F5E9;
+  --live-border: #A7F3D0;
+  --warn: #DC2626;
   --text-soft: #33475B;
 }
 
@@ -81,16 +77,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-session-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;padding:14px 0 6px;border-top:1px solid var(--border);margin-top:10px;}
 .a-session-title:first-child{border-top:none;padding-top:0;}
 .a-row{display:flex;gap:0;padding:10px 0;border-bottom:1px solid var(--border);}
-
-/* LIVE ROW */
-.a-row.a-live {
-  background: #F0FDF4;
-  border: 1px solid #86EFAC;
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin: 4px -14px;
-  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
-}
+.a-row.a-live{background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 14px;margin:4px -14px;box-shadow:0 4px 12px rgba(22,163,74,0.08);}
 .a-row.a-break{opacity:.4;}
 .a-time{min-width:76px;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.02em;}
 .a-divl{width:1px;background:var(--border);flex-shrink:0;margin:2px 0;}
@@ -98,7 +85,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
 .a-row.a-live .a-name{color:#16A34A;}
 .a-sub{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;font-weight:400;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;}
-.a-sub-supervisor, .a-sub-sup{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
+.a-sub-supervisor,.a-sub-sup{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
 .a-row.a-live .a-sub{color:var(--text-dim);}
 .a-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
 .a-badge-live{background:#16A34A;color:#fff;}
@@ -114,8 +101,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .notif-banner-btn{background:var(--navy);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.04em;}
 .notif-banner-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
 
-/* FIXED BOTTOM */
-.fixed-panels{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:flex-end;pointer-events:none;z-index:9999;padding:0 16px 16px;visibility:visible!important;}
+/* FIXED BOTTOM — always visible */
+.fixed-panels{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:flex-end;pointer-events:none;z-index:9999;padding:0 16px 16px;}
 .chat-widget{pointer-events:all;}
 .feedback-widget{pointer-events:all;margin-left:auto;}
 .fab{width:52px;height:52px;border-radius:50%;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 8px 24px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s;position:relative;backdrop-filter:blur(8px);}
@@ -124,32 +111,30 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fab-fb{background:var(--surface);border-color:var(--gold-border);}
 .fab-badge{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:var(--warn);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
 
-/* PANELS WITH SMOOTH TRANSITIONS */
-.float-panel {
+/* PANELS — uniform size for both chat and feedback */
+.float-panel{
   position:fixed;
   bottom:80px;
   width:calc(100vw - 32px);
   max-width:340px;
-  background:rgba(255, 255, 255, 0.98);
+  background:rgba(255,255,255,0.98);
   border:1px solid var(--border);
   border-radius:14px;
   box-shadow:0 16px 48px rgba(0,0,0,.12);
   display:flex;
   flex-direction:column;
   overflow:hidden;
+  /* Fixed height so both panels are identical size */
+  height:420px;
   max-height:62vh;
   backdrop-filter:blur(12px);
   z-index:9998;
   opacity:0;
   transform:translateY(20px);
   pointer-events:none;
-  transition:opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:opacity 0.3s cubic-bezier(0.4,0,0.2,1),transform 0.3s cubic-bezier(0.4,0,0.2,1);
 }
-.float-panel.open {
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:all;
-}
+.float-panel.open{opacity:1;transform:translateY(0);pointer-events:all;}
 .chat-panel{left:16px;}
 .fb-panel{right:16px;}
 .panel-header{padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
@@ -178,68 +163,42 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-inp::placeholder{color:var(--text-faint);}
 .chat-send-btn{background:var(--navy);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 
-/* FEEDBACK */
-.fb-body{padding:0;display:flex;flex-direction:column;}
-.fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;}
+/* FEEDBACK — fills remaining height so panel matches chat */
+.fb-body{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
 .fb-info-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px;}
 .fb-info-label::before{content:'';display:inline-block;width:16px;height:1px;background:var(--gold-border);}
 .fb-info{font-size:12px;color:var(--text-dim);line-height:1.6;font-weight:400;}
-.fb-ta-wrap{padding:12px 16px;}
-.fb-ta{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:96px;transition:border-color .25s,background .25s;-webkit-user-select:text;user-select:text;touch-action:auto;line-height:1.6;}
+.fb-ta-wrap{padding:12px 16px;flex:1;display:flex;flex-direction:column;}
+.fb-ta{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;flex:1;transition:border-color .25s,background .25s;-webkit-user-select:text;user-select:text;touch-action:auto;line-height:1.6;}
 .fb-ta:focus{border-color:var(--gold-border);background:var(--gold-soft);}
 .fb-ta::placeholder{color:var(--text-faint);font-style:italic;}
-.fb-submit-wrap{padding:0 16px 16px;}
+.fb-submit-wrap{padding:0 16px 16px;flex-shrink:0;}
 .fb-submit{padding:12px;background:var(--gold);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 12px rgba(26,54,93,0.15);}
 .fb-submit:active{transform:scale(.98);}
 
 /* AI ICON STATUS */
-.panel-icon.ai-on{
-  background:var(--navy-soft);
-  border:1px solid var(--navy-border);
-  color:var(--navy);
-}
-.panel-icon.ai-off{
-  background:#FEE2E2;
-  border:1px solid #FCA5A5;
-  color:var(--warn);
-}
+.panel-icon.ai-on{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);}
+.panel-icon.ai-off{background:#FEE2E2;border:1px solid #FCA5A5;color:var(--warn);}
 
 /* COUNTDOWN */
 .countdown-wrap{padding:24px 20px 8px;}
 .countdown-card{
-  background:linear-gradient(160deg, var(--navy-soft) 0%, var(--surface) 60%, #F0F4F8 100%);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:28px 20px 24px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
+  background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);
+  border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;
+  text-align:center;position:relative;overflow:hidden;
   box-shadow:0 10px 30px rgba(0,0,0,0.02);
 }
-.cd-event-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--navy-soft);border:1px solid var(--navy-border);
-  border-radius:20px;padding:4px 12px;margin-bottom:18px;
-}
+.cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 12px;margin-bottom:18px;}
 .cd-event-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
 .cd-event-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
 .cd-heading{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text-dim);letter-spacing:.02em;margin-bottom:22px;line-height:1.4;}
 .cd-heading span{color:var(--gold);font-weight:700;}
 .cd-blocks{display:flex;align-items:stretch;justify-content:center;gap:8px;}
-.cd-unit{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:14px 10px 10px;min-width:62px;flex:1;max-width:72px;
-}
-.cd-num{
-  font-family:'DM Serif Display',serif;font-size:40px;
-  color:var(--text);line-height:1;
-}
+.cd-unit{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px 10px;min-width:62px;flex:1;max-width:72px;}
+.cd-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--text);line-height:1;}
 .cd-word{font-size:8px;font-weight:700;color:var(--text-faint);letter-spacing:.14em;text-transform:uppercase;margin-top:6px;}
-.cd-sep{
-  font-family:'DM Serif Display',serif;font-size:30px;color:var(--border);
-  align-self:center;margin-bottom:18px;line-height:1;
-}
+.cd-sep{font-family:'DM Serif Display',serif;font-size:30px;color:var(--border);align-self:center;margin-bottom:18px;line-height:1;}
 .cd-footer{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;}
 .cd-footer-line{flex:1;height:1px;background:var(--border);max-width:40px;}
 .cd-date{font-size:11px;color:var(--text-dim);letter-spacing:.04em;white-space:nowrap;}
@@ -310,6 +269,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="footer"><div class="footer-status"><div class="f-dot" id="f-dot"></div><span id="f-label">Live</span></div></div>
 </div>
 
+<!-- Fixed panels: always visible regardless of countdown mode -->
 <div class="fixed-panels">
   <div class="chat-widget">
     <button class="fab fab-chat" onclick="toggleChat()" title="AI Assistant"><span style="font-size:16px;color:var(--navy)">✦</span><span class="fab-badge" id="fab-badge">0</span></button>
@@ -347,7 +307,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     </div>
     <button class="panel-close" onclick="toggleFb()">✕</button>
   </div>
-  <div id="fb-inner">
+  <div id="fb-inner" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
     <div class="fb-body">
       <div class="fb-info-block">
         <div class="fb-info-label">Your Voice Matters</div>
@@ -367,7 +327,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 const SB_URL='https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
-const AGENDA=[  {id:1,time:"09:30–10:00",speaker:"Registration, Coffee Break",title:"",session:"pre",isBreak:true},  {id:2,time:"10:00–10:30",speaker:"Opening Ceremony",title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze · Nino Tabagari, MD, PhD",session:"opening",isBreak:true},  {id:3,time:"10:30–10:45",speaker:"Giorgi Aladashvili, MD",title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",session:"opening"},  {id:4,time:"10:45–11:00",speaker:"Nino Giorgadze",title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",session:"opening"},  {id:5,time:"11:00–11:15",speaker:"Anano Verdzadze",title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",session:"students"},  {id:6,time:"11:15–11:30",speaker:"Nana Megrelidze, M.D.",title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",session:"students"},  {id:7,time:"11:30–11:45",speaker:"Vasil Petriashvili",title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",session:"students"},  {id:8,time:"11:45–12:00",speaker:"Ketevan Tchitchinadze, MS.",title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},  {id:9,time:"12:00–12:15",speaker:"Anna Bechvaya, MS.",title:"Produodopa Easier Way to Live with Parkinson's\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",session:"students"},  {id:10,time:"12:15–12:30",speaker:"Vera Savidi, MS.",title:"Transthyretin Amyloid Cardiomyopathy — A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},  {id:11,time:"12:45–13:00",speaker:"Taha Kassim, MS.",title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",session:"students"},  {id:12,time:"12:45–13:00",speaker:"Syeda Fatima Zehra",title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",session:"students"},  {id:13,time:"13:00–14:00",speaker:"Lunch Break",title:"",session:"break",isBreak:true},  {id:14,time:"14:00–",speaker:"Tamar Kacharava",title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",session:"phd"},  {id:15,time:"",speaker:"Nino Khutsishvili",title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze",session:"phd"},  {id:16,time:"",speaker:"Tamar Gaprindashvili",title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze · Zurab Pagava",session:"phd"},  {id:17,time:"",speaker:"Vakhtang Gurabanidze",title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor",session:"phd"},  {id:18,time:"",speaker:"Aleksandre Ramishvili",title:"Geomagnetic Storms on Heart Rate Variability and EEG α Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia · Prof. Levan Tvildiani",session:"phd"},  {id:19,time:"",speaker:"Elene Sherozia",title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari · Prof. Maia Gotua",session:"phd"},  {id:20,time:"",speaker:"Mariam Kacheishvili",title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari · Prof. Alexi Baidoshvili",session:"phd"},  {id:21,time:"",speaker:"David Makaridze",title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili",session:"phd"},  {id:22,time:"",speaker:"Tamta Darsalia",title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.",session:"phd"},  {id:23,time:"",speaker:"Tinatin Giuashvili",title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD",session:"phd"},  {id:24,time:"",speaker:"Ana Bedoshvili",title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili · N. Tatishvili · A. Guzzetta · R.N. Boyd",session:"phd"},  {id:25,time:"",speaker:"Ana Khoperia",title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.",session:"phd"},  {id:26,time:"",speaker:"Mariam Gugushvili",title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD",session:"phd"},  {id:27,time:"",speaker:"Nino Zavrashvili",title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari",session:"phd"},  {id:28,time:"Ana Kvernadze, MD, Ph.D.",title:"Rare and Complex Epilepsies – Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD",session:"phd"},  {id:29,time:"17:00",speaker:"Closing Ceremony",title:"",session:"closing",isBreak:true},];
+const AGENDA=[{id:1,time:"09:30–10:00",speaker:"Registration, Coffee Break",title:"",session:"pre",isBreak:true},{id:2,time:"10:00–10:30",speaker:"Opening Ceremony",title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze · Nino Tabagari, MD, PhD",session:"opening",isBreak:true},{id:3,time:"10:30–10:45",speaker:"Giorgi Aladashvili, MD",title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",session:"opening"},{id:4,time:"10:45–11:00",speaker:"Nino Giorgadze",title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",session:"opening"},{id:5,time:"11:00–11:15",speaker:"Anano Verdzadze",title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",session:"students"},{id:6,time:"11:15–11:30",speaker:"Nana Megrelidze, M.D.",title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",session:"students"},{id:7,time:"11:30–11:45",speaker:"Vasil Petriashvili",title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",session:"students"},{id:8,time:"11:45–12:00",speaker:"Ketevan Tchitchinadze, MS.",title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},{id:9,time:"12:00–12:15",speaker:"Anna Bechvaya, MS.",title:"Produodopa Easier Way to Live with Parkinson's\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",session:"students"},{id:10,time:"12:15–12:30",speaker:"Vera Savidi, MS.",title:"Transthyretin Amyloid Cardiomyopathy — A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},{id:11,time:"12:45–13:00",speaker:"Taha Kassim, MS.",title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",session:"students"},{id:12,time:"12:45–13:00",speaker:"Syeda Fatima Zehra",title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",session:"students"},{id:13,time:"13:00–14:00",speaker:"Lunch Break",title:"",session:"break",isBreak:true},{id:14,time:"14:00–",speaker:"Tamar Kacharava",title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",session:"phd"},{id:15,time:"",speaker:"Nino Khutsishvili",title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze",session:"phd"},{id:16,time:"",speaker:"Tamar Gaprindashvili",title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze · Zurab Pagava",session:"phd"},{id:17,time:"",speaker:"Vakhtang Gurabanidze",title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor",session:"phd"},{id:18,time:"",speaker:"Aleksandre Ramishvili",title:"Geomagnetic Storms on Heart Rate Variability and EEG α Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia · Prof. Levan Tvildiani",session:"phd"},{id:19,time:"",speaker:"Elene Sherozia",title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari · Prof. Maia Gotua",session:"phd"},{id:20,time:"",speaker:"Mariam Kacheishvili",title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari · Prof. Alexi Baidoshvili",session:"phd"},{id:21,time:"",speaker:"David Makaridze",title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili",session:"phd"},{id:22,time:"",speaker:"Tamta Darsalia",title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.",session:"phd"},{id:23,time:"",speaker:"Tinatin Giuashvili",title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD",session:"phd"},{id:24,time:"",speaker:"Ana Bedoshvili",title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili · N. Tatishvili · A. Guzzetta · R.N. Boyd",session:"phd"},{id:25,time:"",speaker:"Ana Khoperia",title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.",session:"phd"},{id:26,time:"",speaker:"Mariam Gugushvili",title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD",session:"phd"},{id:27,time:"",speaker:"Nino Zavrashvili",title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari",session:"phd"},{id:28,time:"Ana Kvernadze, MD, Ph.D.",title:"Rare and Complex Epilepsies – Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD",session:"phd"},{id:29,time:"17:00",speaker:"Closing Ceremony",title:"",session:"closing",isBreak:true}];
 
 let sb=null,currentId=3,speakerStartedAt=Date.now(),audTimerInterval=null;
 let chatOpen=false,fbOpen=false,unread=0;
@@ -383,7 +343,6 @@ function getNext(id){
   return null;
 }
 
-// Countdown
 function tickCountdown(){
   const diff=CONF_START.getTime()-Date.now();
   if(diff<=0){showCountdown=false;applyCountdownMode();return;}
@@ -400,7 +359,7 @@ function applyCountdownMode(){
   document.getElementById('now-section').style.display=shouldShow?'none':'block';
   document.getElementById('next-section').style.display=shouldShow?'none':'block';
   document.getElementById('agenda-section').style.display='block';
-  document.querySelector('.fixed-panels').style.display=shouldShow?'none':'flex';
+  // FAB buttons always visible — removed visibility toggle
   if(shouldShow){if(!cdInterval){tickCountdown();cdInterval=setInterval(tickCountdown,1000);}}
   else{if(cdInterval){clearInterval(cdInterval);cdInterval=null;}}
 }
@@ -412,7 +371,6 @@ function updateAIIcon(){
   if(sub){sub.textContent=aiEnabled?'Powered by AI · Ask anything':'Currently offline';}
 }
 
-// Notifications
 function requestNotifPermission(){
   if(!('Notification' in window))return;
   Notification.requestPermission().then(p=>{
@@ -500,12 +458,9 @@ function render(){
   document.getElementById('next-name').textContent=nxt?nxt.speaker:'Program Concluded';
   document.getElementById('next-title').textContent=nxt?(nxt.title.split('\n')[0]||''):'';
   const SECS=[
-    {key:'pre',label:''},
-    {key:'opening',label:'Opening Session (10:00–11:00)'},
-    {key:'students',label:"Students' Session (11:00–13:00)"},
-    {key:'break',label:''},
-    {key:'phd',label:'PhD Session (14:00–17:00)'},
-    {key:'closing',label:''}
+    {key:'pre',label:''},{key:'opening',label:'Opening Session (10:00–11:00)'},
+    {key:'students',label:"Students' Session (11:00–13:00)"},{key:'break',label:''},
+    {key:'phd',label:'PhD Session (14:00–17:00)'},{key:'closing',label:''}
   ];
   let html='';
   SECS.forEach(sec=>{
@@ -530,7 +485,6 @@ function render(){
   setTimeout(()=>{const l=document.querySelector('.a-row.a-live');if(l)l.scrollIntoView({behavior:'smooth',block:'nearest'});},200);
 }
 
-// Chat & Feedback
 function toggleChat(){
   chatOpen=!chatOpen;
   document.getElementById('chat-panel').classList.toggle('open',chatOpen);
@@ -678,7 +632,7 @@ async function sendFeedback(){
   const text=document.getElementById('fb-ta').value.trim();if(!text)return;
   const cur=AGENDA.find(a=>a.id===currentId);
   await sb.from('feedback').insert({text,speaker:cur?cur.speaker:'—',session_id:sessionId});
-  document.getElementById('fb-inner').innerHTML='<div style="padding:32px 16px;text-align:center;"><div style="font-size:20px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
+  document.getElementById('fb-inner').innerHTML='<div style="padding:32px 16px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:20px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
   setTimeout(()=>{document.getElementById('fb-inner').innerHTML=`<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div><div class="fb-info">Please share your honest feedback on any topic — the good, the bad, and everything in between!</div></div><div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div><div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>`;},3000);
 }
 </script>
