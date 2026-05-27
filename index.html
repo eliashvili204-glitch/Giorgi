@@ -111,7 +111,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fab-fb{background:var(--surface);border-color:var(--gold-border);}
 .fab-badge{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:var(--warn);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
 
-/* PANELS — uniform size for both chat and feedback */
+/* PANELS — both sized like original feedback (content-driven, no fixed height) */
 .float-panel{
   position:fixed;
   bottom:80px;
@@ -124,8 +124,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   display:flex;
   flex-direction:column;
   overflow:hidden;
-  /* Fixed height so both panels are identical size */
-  height:420px;
   max-height:62vh;
   backdrop-filter:blur(12px);
   z-index:9998;
@@ -145,12 +143,12 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .panel-sub{font-size:10px;color:var(--text-faint);margin-top:1px;}
 .panel-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;line-height:1;padding:2px 4px;border-radius:4px;}
 
-/* CHAT */
-.chat-msgs{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;}
+/* CHAT — capped messages area so it doesn't grow too tall */
+.chat-msgs{overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;max-height:200px;}
 .chat-msgs::-webkit-scrollbar{width:3px;}
 .chat-msgs::-webkit-scrollbar-track{background:transparent;}
 .chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.chat-empty-msg{font-size:12px;color:var(--text-faint);text-align:center;padding:28px 12px;line-height:1.7;}
+.chat-empty-msg{font-size:12px;color:var(--text-faint);text-align:center;padding:20px 12px;line-height:1.7;}
 .bubble{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.01);}
 .bubble-author{font-size:9px;font-weight:700;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;}
 .bubble.them{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:3px;align-self:flex-start;}
@@ -163,17 +161,17 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-inp::placeholder{color:var(--text-faint);}
 .chat-send-btn{background:var(--navy);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 
-/* FEEDBACK — fills remaining height so panel matches chat */
-.fb-body{display:flex;flex-direction:column;flex:1;overflow:hidden;}
-.fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+/* FEEDBACK */
+.fb-body{padding:0;display:flex;flex-direction:column;}
+.fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;}
 .fb-info-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px;}
 .fb-info-label::before{content:'';display:inline-block;width:16px;height:1px;background:var(--gold-border);}
 .fb-info{font-size:12px;color:var(--text-dim);line-height:1.6;font-weight:400;}
-.fb-ta-wrap{padding:12px 16px;flex:1;display:flex;flex-direction:column;}
-.fb-ta{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;flex:1;transition:border-color .25s,background .25s;-webkit-user-select:text;user-select:text;touch-action:auto;line-height:1.6;}
+.fb-ta-wrap{padding:12px 16px;}
+.fb-ta{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:96px;transition:border-color .25s,background .25s;-webkit-user-select:text;user-select:text;touch-action:auto;line-height:1.6;}
 .fb-ta:focus{border-color:var(--gold-border);background:var(--gold-soft);}
 .fb-ta::placeholder{color:var(--text-faint);font-style:italic;}
-.fb-submit-wrap{padding:0 16px 16px;flex-shrink:0;}
+.fb-submit-wrap{padding:0 16px 16px;}
 .fb-submit{padding:12px;background:var(--gold);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 12px rgba(26,54,93,0.15);}
 .fb-submit:active{transform:scale(.98);}
 
@@ -269,7 +267,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="footer"><div class="footer-status"><div class="f-dot" id="f-dot"></div><span id="f-label">Live</span></div></div>
 </div>
 
-<!-- Fixed panels: always visible regardless of countdown mode -->
 <div class="fixed-panels">
   <div class="chat-widget">
     <button class="fab fab-chat" onclick="toggleChat()" title="AI Assistant"><span style="font-size:16px;color:var(--navy)">✦</span><span class="fab-badge" id="fab-badge">0</span></button>
@@ -307,7 +304,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     </div>
     <button class="panel-close" onclick="toggleFb()">✕</button>
   </div>
-  <div id="fb-inner" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+  <div id="fb-inner">
     <div class="fb-body">
       <div class="fb-info-block">
         <div class="fb-info-label">Your Voice Matters</div>
@@ -359,7 +356,6 @@ function applyCountdownMode(){
   document.getElementById('now-section').style.display=shouldShow?'none':'block';
   document.getElementById('next-section').style.display=shouldShow?'none':'block';
   document.getElementById('agenda-section').style.display='block';
-  // FAB buttons always visible — removed visibility toggle
   if(shouldShow){if(!cdInterval){tickCountdown();cdInterval=setInterval(tickCountdown,1000);}}
   else{if(cdInterval){clearInterval(cdInterval);cdInterval=null;}}
 }
@@ -632,7 +628,7 @@ async function sendFeedback(){
   const text=document.getElementById('fb-ta').value.trim();if(!text)return;
   const cur=AGENDA.find(a=>a.id===currentId);
   await sb.from('feedback').insert({text,speaker:cur?cur.speaker:'—',session_id:sessionId});
-  document.getElementById('fb-inner').innerHTML='<div style="padding:32px 16px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;"><div style="font-size:20px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
+  document.getElementById('fb-inner').innerHTML='<div style="padding:32px 16px;text-align:center;"><div style="font-size:20px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
   setTimeout(()=>{document.getElementById('fb-inner').innerHTML=`<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div><div class="fb-info">Please share your honest feedback on any topic — the good, the bad, and everything in between!</div></div><div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div><div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>`;},3000);
 }
 </script>
