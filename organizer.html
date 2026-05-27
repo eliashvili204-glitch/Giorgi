@@ -754,76 +754,90 @@ async function downloadFeedbackPDF() {
   const { jsPDF } = window.jspdf;
 
   // ════════════════════════════════════════════════
-  //  CONSTANTS
+  //  CONSTANTS  — 300 DPI for crisp, print-quality output
   // ════════════════════════════════════════════════
-  const DPI   = 200;                  // high-res for crisp text
-  const MM    = DPI / 25.4;          // px per mm  ≈ 7.874
+  const DPI   = 300;
+  const MM    = DPI / 25.4;   // px per mm ≈ 11.811
   const W_MM  = 210;
   const H_MM  = 297;
-  const MG    = 16;                   // margin mm
+  const MG    = 14;           // page margin mm
 
   function px(mm) { return Math.round(mm * MM); }
 
-  // ── Palette  (refined dark + warm cream + amber gold)
-  const BG       = '#0d1b2a';   // deep navy-black background
-  const SURFACE  = '#111f30';   // slightly lighter surface
-  const CARD_BG  = '#142130';   // card background
-  const CARD_BD  = '#1c3048';   // card border
-  const GOLD     = '#c8a44a';   // amber gold — accent
-  const GOLD_DIM = '#9a7c35';   // muted gold for labels
-  const CREAM    = '#e8e0d0';   // warm cream — main text
-  const MUTED    = '#5a7a96';   // muted blue-grey — metadata
-  const HAIRLINE = '#1e3550';   // separator lines
-  const TEAL     = '#3bbf8a';   // subtle teal — brand accent only
+  // ── Palette — exact match to organizer dashboard
+  const BG        = '#0f2035';   // dashboard body background
+  const SURFACE   = '#122840';   // dashboard top-bar / side-panel
+  const CARD_BG   = '#0d1e2e';   // slightly deeper card bg
+  const CARD_BD   = '#1a3a55';   // card border — visible but subtle
+  const GOLD      = '#e8c96a';   // dashboard gold (#e8c96a)
+  const GOLD_DIM  = '#b89a3e';   // dimmed gold for secondary labels
+  const CREAM     = '#f0ece2';   // main text — bright warm white
+  const MUTED     = '#6b8faa';   // muted blue-grey for meta
+  const HAIRLINE  = '#1e3a52';   // separator lines
+  const TEAL      = '#4dd9a0';   // dashboard teal — brand accent
+  const TEAL_DIM  = '#2a8f65';   // darker teal for subtle accents
 
-  // ── Typography
+  // ── Font stack: Noto Sans Georgian covers Georgian script perfectly
   function f(weight, sizeMM) {
-    return `${weight} ${px(sizeMM)}px "Lato", "Segoe UI", Arial, sans-serif`;
+    return `${weight} ${px(sizeMM)}px "Noto Sans Georgian", "Noto Sans", "DejaVu Sans", "Segoe UI", Arial, sans-serif`;
   }
 
-  // ── Geometry helpers
+  // ── Rounded rect path helper
   function rr(ctx, x, y, w, h, r) {
-    // rounded rect path
     r = Math.min(r, w / 2, h / 2);
     ctx.beginPath();
     ctx.moveTo(x + r, y);
     ctx.lineTo(x + w - r, y);
-    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.arcTo(x + w, y,     x + w, y + r,     r);
     ctx.lineTo(x + w, y + h - r);
     ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
     ctx.lineTo(x + r, y + h);
-    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.arcTo(x,     y + h, x,       y + h - r, r);
     ctx.lineTo(x, y + r);
-    ctx.arcTo(x, y, x + r, y, r);
+    ctx.arcTo(x,     y,     x + r,   y,         r);
     ctx.closePath();
   }
 
+  // ── Word-wrap — handles Georgian (no spaces = single token) correctly
   function wrapText(ctx, text, maxW) {
-    if (!text) return [''];
-    const words = text.split(' ');
+    if (!text || !text.trim()) return [''];
+    // Split on spaces; Georgian words stay intact
+    const words = text.split(/\s+/).filter(Boolean);
     const lines = [];
     let line = '';
     for (const w of words) {
       const test = line ? line + ' ' + w : w;
-      if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = w; }
-      else line = test;
+      if (line && ctx.measureText(test).width > maxW) {
+        lines.push(line);
+        line = w;
+      } else {
+        line = test;
+      }
     }
     if (line) lines.push(line);
     return lines.length ? lines : [''];
   }
 
   // ════════════════════════════════════════════════
-  //  FONT LOADING  — Lato 400 + 700 via FontFace
+  //  FONT LOADING — Noto Sans Georgian for Georgian script support
   // ════════════════════════════════════════════════
   async function loadFonts() {
-    const BASE = 'https://fonts.gstatic.com/s/lato/v24/';
+    // Noto Sans Georgian — full Georgian Unicode coverage
     const defs = [
-      { w: '400', file: 'S6uyw4BMUTPHjx4wXg.woff2' },
-      { w: '700', file: 'S6u9w4BMUTPHh6UVSwiPGQ.woff2' },
+      {
+        family: 'Noto Sans Georgian',
+        weight: '400',
+        url: 'https://fonts.gstatic.com/s/notosansgeorgian/v28/PlIaFke5O6RzLfvNNVSitxkr76PRHBC4Ytycd9pj9NBhMp1dHoVEHBJNHSzk.woff2'
+      },
+      {
+        family: 'Noto Sans Georgian',
+        weight: '700',
+        url: 'https://fonts.gstatic.com/s/notosansgeorgian/v28/PlIaFke5O6RzLfvNNVSitxkr76PRHBC4Ytycd9pj9NBhMp1dHoVEHBJNHSzk.woff2'
+      },
     ];
     await Promise.all(defs.map(async d => {
       try {
-        const ff = new FontFace('Lato', `url(${BASE + d.file})`, { weight: d.w });
+        const ff = new FontFace(d.family, `url(${d.url})`, { weight: d.weight, display: 'swap' });
         document.fonts.add(await ff.load());
       } catch (_) {}
     }));
@@ -832,17 +846,17 @@ async function downloadFeedbackPDF() {
 
   // ════════════════════════════════════════════════
   //  CARD MEASUREMENT
-  //  Returns card height in mm
   // ════════════════════════════════════════════════
-  const TEXT_SIZE_MM  = 3.8;   // body text
-  const LINE_H_MM     = 5.8;   // line height
-  const PAD_TOP_MM    = 7.0;   // inside card — top pad (generous, pushes content to vertical center)
-  const PAD_BOT_MM    = 7.0;   // inside card — bottom pad (symmetric)
-  const META_H_MM     = 6.0;   // label + separator row height
-  const INNER_MG_MM   = 7;     // left indent inside card (after accent bar)
+  const TEXT_SIZE_MM = 3.6;
+  const LINE_H_MM    = 5.6;
+  const PAD_TOP_MM   = 6.5;
+  const PAD_BOT_MM   = 6.5;
+  const META_H_MM    = 5.5;
+  const INNER_MG_MM  = 6.5;
+  const ACCENT_W_MM  = 1.8;
 
   function cardHeight(measCtx, fb) {
-    const maxW = px(W_MM - MG * 2 - INNER_MG_MM - 4);
+    const maxW = px(W_MM - MG * 2 - ACCENT_W_MM - INNER_MG_MM - 4);
     measCtx.font = f('400', TEXT_SIZE_MM);
     const lines = wrapText(measCtx, fb.text || '', maxW);
     return PAD_TOP_MM + META_H_MM + lines.length * LINE_H_MM + PAD_BOT_MM;
@@ -866,125 +880,138 @@ async function downloadFeedbackPDF() {
     ctx.fillRect(0, 0, cW, cH);
 
     if (isFirst) {
-      // ── HEADER ZONE  (0 – 46mm)
-      const HH = px(46);
+      // ── HEADER ZONE  (0 – 48mm)
+      const HH = px(48);
 
-      // header surface
+      // Header surface
       ctx.fillStyle = SURFACE;
       ctx.fillRect(0, 0, cW, HH);
 
-      // left teal accent bar (full height)
-      ctx.fillStyle = TEAL;
-      ctx.fillRect(0, 0, px(1.2), HH);
+      // Left teal accent bar
+      const accentGrad = ctx.createLinearGradient(0, 0, 0, HH);
+      accentGrad.addColorStop(0, TEAL);
+      accentGrad.addColorStop(1, TEAL_DIM);
+      ctx.fillStyle = accentGrad;
+      ctx.fillRect(0, 0, px(1.5), HH);
 
-      // amber bottom rule
+      // Gold bottom rule
+      ctx.strokeStyle = GOLD;
+      ctx.lineWidth = px(0.4);
+      ctx.beginPath(); ctx.moveTo(0, HH); ctx.lineTo(cW, HH); ctx.stroke();
+
+      // Subtle gold inner rule just above bottom
+      ctx.strokeStyle = GOLD + '33';
+      ctx.lineWidth = px(0.2);
+      ctx.beginPath(); ctx.moveTo(0, HH - px(0.6)); ctx.lineTo(cW, HH - px(0.6)); ctx.stroke();
+
+      // "S Y S S A" wordmark — spaced, teal
+      ctx.fillStyle = TEAL;
+      ctx.font = f('700', 2.6);
+      ctx.letterSpacing = px(3.5) + 'px';
+      ctx.fillText('S Y S S A', mg + px(0.5), px(11.5));
+      ctx.letterSpacing = '0px';
+
+      // thin gold underline rule after wordmark
+      ctx.strokeStyle = GOLD_DIM;
+      ctx.lineWidth = px(0.25);
+      ctx.beginPath(); ctx.moveTo(mg, px(14)); ctx.lineTo(mg + px(32), px(14)); ctx.stroke();
+
+      // Main title — large, cream
+      ctx.fillStyle = CREAM;
+      ctx.font = f('700', 7.0);
+      ctx.fillText("Nobel's Day — Feedback Report", mg, px(26));
+
+      // Subtitle
+      ctx.fillStyle = MUTED;
+      ctx.font = f('400', 2.9);
+      ctx.fillText('SYSSA XIII Scientific Session  ·  DTMU / Caucasus Medical Centre', mg, px(34));
+
+      // ── Right column
+      ctx.textAlign = 'right';
+
+      // Response count pill
+      const countText = `${feedbacks.length} responses`;
+      ctx.font = f('700', 3.0);
+      const ctW = ctx.measureText(countText).width + px(5);
+      const ctX = cW - mg - ctW;
+      const ctY = px(15);
+      const ctHt = px(5.5);
+      rr(ctx, ctX, ctY, ctW, ctHt, px(1.8));
+      ctx.fillStyle = GOLD + '25';
+      ctx.fill();
+      ctx.strokeStyle = GOLD + '60';
+      ctx.lineWidth = px(0.25);
+      ctx.stroke();
+      ctx.fillStyle = GOLD;
+      ctx.fillText(countText, cW - mg - px(2.5), ctY + px(4));
+
+      // Date / time
+      ctx.fillStyle = MUTED;
+      ctx.font = f('400', 2.6);
+      ctx.fillText(genDate, cW - mg, px(29));
+      ctx.textAlign = 'left';
+
+    } else {
+      // ── CONTINUATION HEADER  (0 – 13mm)
+      const HH = px(13);
+      ctx.fillStyle = SURFACE;
+      ctx.fillRect(0, 0, cW, HH);
+      ctx.fillStyle = TEAL;
+      ctx.fillRect(0, 0, px(1.5), HH);
       ctx.strokeStyle = GOLD;
       ctx.lineWidth = px(0.35);
       ctx.beginPath(); ctx.moveTo(0, HH); ctx.lineTo(cW, HH); ctx.stroke();
 
-      // ── "SYSSA" wordmark — spaced caps, small, teal
-      ctx.fillStyle = TEAL;
-      ctx.font = f('700', 2.4);
-      ctx.letterSpacing = px(3) + 'px';
-      ctx.fillText('SYSSA', mg + px(0.5), px(12));
-      ctx.letterSpacing = '0px';
-
-      // ── thin gold rule after wordmark
-      ctx.strokeStyle = GOLD_DIM;
-      ctx.lineWidth = px(0.2);
-      ctx.beginPath(); ctx.moveTo(mg, px(14.5)); ctx.lineTo(mg + px(28), px(14.5)); ctx.stroke();
-
-      // ── Main title
-      ctx.fillStyle = CREAM;
-      ctx.font = f('700', 6.5);
-      ctx.fillText("Nobel's Day — Feedback Report", mg, px(25));
-
-      // ── Subtitle
-      ctx.fillStyle = MUTED;
-      ctx.font = f('400', 2.8);
-      ctx.fillText('SYSSA XIII Scientific Session  ·  DTMU / Caucasus Medical Centre', mg, px(32.5));
-
-      // ── Right column: count + date
-      ctx.textAlign = 'right';
-
-      // response count pill background
-      const countText = `${feedbacks.length} responses`;
-      ctx.font = f('700', 2.9);
-      const ctW = ctx.measureText(countText).width + px(4);
-      const ctX = cW - mg - ctW;
-      const ctY = px(15.5);
-      const ctH = px(5);
-      rr(ctx, ctX, ctY, ctW, ctH, px(1.5));
-      ctx.fillStyle = GOLD + '22';
-      ctx.fill();
-      ctx.strokeStyle = GOLD + '55';
-      ctx.lineWidth = px(0.2);
-      ctx.stroke();
-      ctx.fillStyle = GOLD;
-      ctx.fillText(countText, cW - mg - px(2), ctY + px(3.8));
-
-      // date / time
       ctx.fillStyle = MUTED;
       ctx.font = f('400', 2.5);
-      ctx.fillText(genDate, cW - mg, px(28));
-
-      ctx.textAlign = 'left';
-
-    } else {
-      // ── CONTINUATION HEADER  (0 – 12mm)
-      const HH = px(12);
-      ctx.fillStyle = SURFACE;
-      ctx.fillRect(0, 0, cW, HH);
-      ctx.fillStyle = TEAL;
-      ctx.fillRect(0, 0, px(1.2), HH);
-      ctx.strokeStyle = GOLD;
-      ctx.lineWidth = px(0.3);
-      ctx.beginPath(); ctx.moveTo(0, HH); ctx.lineTo(cW, HH); ctx.stroke();
-
-      ctx.fillStyle = MUTED;
-      ctx.font = f('400', 2.4);
-      ctx.fillText('SYSSA — Nobel\'s Day Feedback Report', mg, px(8));
+      ctx.fillText("SYSSA — Nobel's Day Feedback Report", mg, px(8.5));
 
       ctx.fillStyle = GOLD_DIM;
-      ctx.font = f('400', 2.4);
+      ctx.font = f('700', 2.5);
       ctx.textAlign = 'right';
-      ctx.fillText(`Page ${pageNum} / ${totalPages}`, cW - mg, px(8));
+      ctx.fillText(`Page ${pageNum} / ${totalPages}`, cW - mg, px(8.5));
       ctx.textAlign = 'left';
     }
 
     // ── FOOTER  (283 – 297mm)
-    const FY = px(283);
+    const FY = px(282);
     ctx.fillStyle = SURFACE;
     ctx.fillRect(0, FY, cW, cH - FY);
 
-    // footer top rule
+    // Footer top rule — gold
+    ctx.strokeStyle = GOLD + '55';
+    ctx.lineWidth = px(0.3);
+    ctx.beginPath(); ctx.moveTo(0, FY); ctx.lineTo(cW, FY); ctx.stroke();
+
+    // Footer inner separator
     ctx.strokeStyle = HAIRLINE;
-    ctx.lineWidth = px(0.25);
-    ctx.beginPath(); ctx.moveTo(px(MG), FY); ctx.lineTo(cW - px(MG), FY); ctx.stroke();
+    ctx.lineWidth = px(0.2);
+    ctx.beginPath(); ctx.moveTo(mg, FY + px(0.5)); ctx.lineTo(cW - mg, FY + px(0.5)); ctx.stroke();
 
     ctx.fillStyle = MUTED;
-    ctx.font = f('400', 2.3);
-    ctx.fillText("SYSSA Nobel's Day  ·  Confidential Organizer Report", mg, px(290));
+    ctx.font = f('400', 2.4);
+    ctx.fillText("SYSSA Nobel's Day  ·  Confidential Organizer Report", mg, px(290.5));
 
     ctx.fillStyle = GOLD;
-    ctx.font = f('700', 2.3);
+    ctx.font = f('700', 2.4);
     ctx.textAlign = 'right';
-    ctx.fillText('syssa.ge', cW - mg, px(290));
+    ctx.fillText('syssa.ge', cW - mg, px(290.5));
     ctx.textAlign = 'left';
 
-    ctx.fillStyle = MUTED + '77';
-    ctx.font = f('400', 2.3);
+    ctx.fillStyle = TEAL + '88';
+    ctx.font = f('700', 2.4);
     ctx.textAlign = 'center';
-    ctx.fillText(`${pageNum} / ${totalPages}`, cW / 2, px(290));
+    ctx.fillText(`${pageNum} / ${totalPages}`, cW / 2, px(290.5));
     ctx.textAlign = 'left';
 
     // ════════════════════════════════════════════════
     //  CARDS
     // ════════════════════════════════════════════════
-    const maxInnerW = px(W_MM - MG * 2 - INNER_MG_MM - 4);
+    const maxInnerW = px(W_MM - MG * 2 - ACCENT_W_MM - INNER_MG_MM - 4);
+    const ACCENT_W  = px(ACCENT_W_MM);
 
     items.forEach(({ fb, num, yMM }) => {
-      const fbText = fb.text || '';
+      const fbText = (fb.text || '').trim();
       const fbTime = fb.created_at
         ? new Date(fb.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         : '';
@@ -993,89 +1020,89 @@ async function downloadFeedbackPDF() {
       const lines = wrapText(ctx, fbText, maxInnerW);
       const cH_mm = PAD_TOP_MM + META_H_MM + lines.length * LINE_H_MM + PAD_BOT_MM;
 
-      const cX = mg;
-      const cY = px(yMM);
-      const cW2 = px(W_MM - MG * 2);
+      const cX   = mg;
+      const cY   = px(yMM);
+      const cW2  = px(W_MM - MG * 2);
       const cHpx = px(cH_mm);
-      const R = px(2.5);
-      const ACCENT_W = px(1.5);
+      const R    = px(2.8);
 
-      // ── Card shadow
+      // ── Card shadow (subtle depth)
       ctx.save();
-      ctx.shadowColor = 'rgba(0,0,0,0.55)';
-      ctx.shadowBlur  = px(3);
-      ctx.shadowOffsetY = px(0.8);
-      ctx.fillStyle   = CARD_BG;
+      ctx.shadowColor    = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur     = px(3.5);
+      ctx.shadowOffsetY  = px(1.0);
+      ctx.fillStyle      = CARD_BG;
       rr(ctx, cX, cY, cW2, cHpx, R);
       ctx.fill();
       ctx.restore();
 
       // ── Card border
       ctx.strokeStyle = CARD_BD;
-      ctx.lineWidth   = px(0.22);
+      ctx.lineWidth   = px(0.25);
       rr(ctx, cX, cY, cW2, cHpx, R);
       ctx.stroke();
 
-      // ── Gold accent bar (left edge)
+      // ── Gold accent bar — left edge, gradient for richness
       ctx.save();
-      // clip to card shape so accent bar has same rounded corners
       rr(ctx, cX, cY, cW2, cHpx, R);
       ctx.clip();
-      ctx.fillStyle = GOLD;
+      const barGrad = ctx.createLinearGradient(0, cY, 0, cY + cHpx);
+      barGrad.addColorStop(0, GOLD);
+      barGrad.addColorStop(1, GOLD_DIM);
+      ctx.fillStyle = barGrad;
       ctx.fillRect(cX, cY, ACCENT_W, cHpx);
       ctx.restore();
 
-      // ── Inner content
-      const IX  = cX + ACCENT_W + px(INNER_MG_MM - 1.5);  // text start X
-      const IXR = cX + cW2 - px(4);                        // right-align X
+      // ── Content X positions
+      const IX  = cX + ACCENT_W + px(INNER_MG_MM - 1.2);  // text left edge
+      const IXR = cX + cW2 - px(4);                        // right edge for text
 
-      // Label baseline — vertically centered within PAD_TOP_MM area
-      const labelBaseline = cY + px(PAD_TOP_MM * 0.72) + px(3.0);
+      // Label row baseline — sits within top padding
+      const labelBaseline = cY + px(PAD_TOP_MM * 0.7) + px(3.2);
 
-      // "# N" index number — bold, gold
+      // "#N" — bold gold
       ctx.fillStyle = GOLD;
-      ctx.font = f('700', 3.0);
-      ctx.letterSpacing = px(0.5) + 'px';
+      ctx.font = f('700', 3.2);
+      ctx.letterSpacing = px(0.4) + 'px';
       ctx.fillText(`#${num}`, IX, labelBaseline);
       ctx.letterSpacing = '0px';
 
-      // "FEEDBACK" label — same gold, slightly smaller, medium weight
-      const numW = ctx.measureText(`#${num}`).width + px(2);
-      ctx.fillStyle = GOLD;
-      ctx.font = f('700', 2.3);
-      ctx.letterSpacing = px(0.7) + 'px';
-      ctx.fillText('FEEDBACK', IX + numW, labelBaseline - px(0.3));
+      // "FEEDBACK" label — lighter, spaced caps
+      const numTextW = ctx.measureText(`#${num}`).width + px(2.2);
+      ctx.fillStyle = GOLD_DIM;
+      ctx.font = f('700', 2.4);
+      ctx.letterSpacing = px(0.9) + 'px';
+      ctx.fillText('FEEDBACK', IX + numTextW, labelBaseline - px(0.4));
       ctx.letterSpacing = '0px';
 
-      // Timestamp — right, same baseline
+      // Timestamp — right-aligned, muted
       if (fbTime) {
         ctx.fillStyle = MUTED;
-        ctx.font = f('400', 2.4);
+        ctx.font = f('400', 2.5);
         ctx.textAlign = 'right';
         ctx.fillText(fbTime, IXR, labelBaseline);
         ctx.textAlign = 'left';
       }
 
-      // ── Hairline separator — sits after label row
+      // ── Hairline separator
       const sepY = cY + px(PAD_TOP_MM + META_H_MM);
       ctx.strokeStyle = HAIRLINE;
-      ctx.lineWidth   = px(0.2);
+      ctx.lineWidth   = px(0.22);
       ctx.beginPath();
       ctx.moveTo(IX, sepY);
-      ctx.lineTo(IXR, sepY);
+      ctx.lineTo(IXR + px(2), sepY);
       ctx.stroke();
 
-      // ── Body text — starts after separator + small gap
+      // ── Body text — warm cream, left-aligned, proper line height
       ctx.fillStyle = CREAM;
       ctx.font = f('400', TEXT_SIZE_MM);
-      // baseline of first line: separator + ~75% of line height
-      const textStartY = sepY + px(LINE_H_MM * 0.82);
+      const textStartY = sepY + px(LINE_H_MM * 0.85);
       lines.forEach((ln, li) => {
         ctx.fillText(ln, IX, textStartY + li * px(LINE_H_MM));
       });
     });
 
-    // PNG — lossless, no compression artifacts
+    // PNG — lossless
     return cv.toDataURL('image/png');
   }
 
@@ -1090,15 +1117,15 @@ async function downloadFeedbackPDF() {
     '  ' +
     now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-  // ── Pagination
+  // ── Measurement canvas for pagination
   const measCv = document.createElement('canvas');
   measCv.width = px(W_MM); measCv.height = 10;
   const measCtx = measCv.getContext('2d');
 
-  const FIRST_BODY_MM = 52;    // first page: cards start after header
-  const CONT_BODY_MM  = 18;    // continuation pages
-  const FOOTER_LIM_MM = 279;   // cards must end before footer
-  const GAP_MM        = 3.5;   // gap between cards
+  const FIRST_BODY_MM = 54;    // first page: after header
+  const CONT_BODY_MM  = 19;    // continuation pages
+  const FOOTER_LIM_MM = 278;   // stop before footer
+  const GAP_MM        = 4.0;   // gap between cards
 
   const pages = [[]];
   let curPage = 0;
