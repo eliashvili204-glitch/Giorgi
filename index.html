@@ -534,7 +534,7 @@ function render(){
 function toggleChat(){
   chatOpen=!chatOpen;
   document.getElementById('chat-panel').classList.toggle('open',chatOpen);
-  if(chatOpen){updateAIIcon();unread=0;document.getElementById('fab-badge').style.display='none';document.getElementById('chat-inp').focus();setTimeout(()=>{const w=document.getElementById('chat-msgs');w.scrollTop=w.scrollHeight;},50);}
+  if(chatOpen){updateAIIcon();unread=0;document.getElementById('fab-badge').style.display='none';setTimeout(()=>{const w=document.getElementById('chat-msgs');w.scrollTop=w.scrollHeight;},50);}
   if(fbOpen){fbOpen=false;document.getElementById('fb-panel').classList.remove('open');}
 }
 
