@@ -1,12 +1,9 @@
-bash
-
-cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Attendance Check</title>
+<title>XI International Conference</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -79,25 +76,17 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
   .card-body   { padding: 24px 28px 28px; background: var(--surface); }
   .card-header { margin-bottom: 24px; }
 
-  /* Title block */
-  .card-title-sub {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-soft);
-    margin-bottom: 5px;
-  }
-  .card-title {
+    .card-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 400;
-    color: var(--navy);
     letter-spacing: 0.01em;
-    line-height: 1.25;
+    color: var(--text);
     margin-bottom: 6px;
+    line-height: 1.2;
   }
-  .card-desc   { font-size: 12px; font-weight: 400; color: var(--text-soft); letter-spacing: 0.01em; line-height: 1.6; }
+
+  .card-desc { font-size: 12px; font-weight: 400; color: var(--text-soft); letter-spacing: 0.01em; line-height: 1.6; margin-top: 2px; }
 
   .field       { margin-bottom: 18px; }
   .field-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 8px; }
@@ -126,6 +115,7 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
   .input-field:focus { border-color: var(--border-focus); background: var(--navy-soft); }
   .input-field:disabled { opacity: 0.45; cursor: not-allowed; background: var(--bg); }
 
+  /* ── Location status ── */
   #locStatus {
     margin-top: 10px;
     display: flex; align-items: center; gap: 6px;
@@ -148,6 +138,7 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
     text-underline-offset: 2px; white-space: nowrap;
   }
 
+  /* ── Location blocked panel ── */
   #locationBlock {
     display: none;
     background: #FFF8F6;
@@ -176,6 +167,7 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
   }
   #retryLocBtn:active { opacity: 0.8; }
 
+  /* ── Submit ── */
   .submit {
     width: 100%; padding: 12px; margin-top: 22px; background: var(--navy);
     border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
@@ -211,14 +203,13 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
 
 <div class="card">
   <div class="card-img">
-    <img src="data:image/jpeg;base64,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" alt="Conference banner">
+    <img src="data:image/jpeg;base64,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" alt="Conference banner">
   </div>
 
   <div class="card-body">
     <div class="card-header">
-      <div class="card-title-sub">SYSSA · Nobel's Day</div>
-      <div class="card-title">XIII International<br>Conference</div>
-      <div class="card-desc" style="margin-top:6px;">Select day, action and enter your registered email.</div>
+      <div class="card-title">XI International Conference</div>
+      <div class="card-desc">Select day, action and enter your registered email.</div>
     </div>
 
     <div class="field">
@@ -246,11 +237,13 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
                placeholder="yourname@example.com" disabled>
       </div>
 
+      <!-- Location status badge -->
       <div id="locStatus">
         <div class="loc-dot"></div>
         <div class="loc-text" id="locText">Detecting location…</div>
       </div>
 
+      <!-- Location blocked panel -->
       <div id="locationBlock">
         <div class="loc-block-title" id="locBlockTitle">Location access required</div>
         <div class="loc-block-desc" id="locBlockDesc">
@@ -262,6 +255,7 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
           <div style="font-size:11px; font-weight:400; color:#8B4035; line-height:1.9;">
             <b>iPhone (Safari):</b> Settings → Safari → Location → Allow<br>
             <b>Android (Chrome):</b> Settings → Site Settings → Location → Allow<br>
+
           </div>
         </div>
         <button id="retryLocBtn" onclick="requestLocation()">Retry Location</button>
@@ -275,34 +269,48 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
 
 <script>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
+
   var CONF_LAT = 41.6893212;
   var CONF_LNG = 44.8192619;
   var RADIUS_M = 150;
+
   var userLat = null, userLng = null;
   var locationReady = false;
+  var _lastDay = null, _lastAction = null;
 
+  // ── Location ──
   function requestLocation() {
     document.getElementById('locationBlock').style.display = 'none';
     _setLoc('', 'Detecting location…', false);
     document.getElementById('email-inp').disabled = true;
     document.getElementById('submit-btn').disabled = true;
     locationReady = false;
+
     if (!navigator.geolocation) {
       _setLoc('denied', 'Location not supported by this browser', false);
       showLocationBlock();
       return;
     }
+
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-        if (result.state === 'denied') { onLocError({ code: 1 }); }
-        else { _doGetPosition(); }
+        if (result.state === 'denied') {
+          onLocError({ code: 1 });
+        } else {
+          _doGetPosition();
+        }
       }).catch(function() { _doGetPosition(); });
-    } else { _doGetPosition(); }
+    } else {
+      _doGetPosition();
+    }
   }
 
   function _doGetPosition() {
-    navigator.geolocation.getCurrentPosition(onLocSuccess, onLocError,
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 });
+    navigator.geolocation.getCurrentPosition(
+      onLocSuccess,
+      onLocError,
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
   }
 
   function onLocSuccess(pos) {
@@ -310,11 +318,17 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
     userLng = pos.coords.longitude;
     locationReady = true;
     document.getElementById('locationBlock').style.display = 'none';
+
     var dLat = (userLat - CONF_LAT) * 111000;
     var dLng = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
     var dist = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
-    if (dist <= RADIUS_M) { _setLoc('found', 'Location verified ✔', false); }
-    else { _setLoc('offsite', 'Location (' + dist.toLocaleString() + ' m away)', false); }
+
+    if (dist <= RADIUS_M) {
+      _setLoc('found', 'Location verified ✔', false);
+    } else {
+      _setLoc('offsite', 'Location (' + dist.toLocaleString() + ' m away)', false);
+    }
+
     document.getElementById('email-inp').disabled = false;
     document.getElementById('submit-btn').disabled = false;
   }
@@ -322,8 +336,13 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
   function onLocError(err) {
     userLat = null; userLng = null; locationReady = false;
     var isDenied = err && err.code === 1;
-    if (isDenied) { _setLoc('denied', 'Location access blocked', false); showLocationBlock('denied'); }
-    else { _setLoc('denied', 'Could not detect location', true); showLocationBlock('error'); }
+    if (isDenied) {
+      _setLoc('denied', 'Location access blocked', false);
+      showLocationBlock('denied');
+    } else {
+      _setLoc('denied', 'Could not detect location', true);
+      showLocationBlock('error');
+    }
     document.getElementById('email-inp').disabled = true;
     document.getElementById('submit-btn').disabled = true;
   }
@@ -332,11 +351,15 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
     var badge = document.getElementById('locStatus');
     badge.className = state;
     document.getElementById('locText').textContent = text;
+
     var existing = badge.querySelector('.loc-retry');
     if (existing) existing.remove();
+
     if (showRetry) {
       var a = document.createElement('span');
-      a.className = 'loc-retry'; a.textContent = 'Retry'; a.onclick = requestLocation;
+      a.className = 'loc-retry';
+      a.textContent = 'Retry';
+      a.onclick = requestLocation;
       badge.appendChild(a);
     }
   }
@@ -349,57 +372,132 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
     block.style.display = 'block';
     if (reason === 'denied') {
       desc.textContent = 'Location access is blocked in your browser settings. Follow the steps below to enable it, then reload the page.';
-      steps.style.display = 'block'; btn.style.display = 'none';
+      steps.style.display = 'block';
+      btn.style.display = 'none';
     } else {
       desc.textContent = 'This form requires your location to verify attendance at the conference venue. Please enable location access and try again.';
-      steps.style.display = 'none'; btn.style.display = 'block';
+      steps.style.display = 'none';
+      btn.style.display = 'block';
     }
   }
 
+  // ── Segment picker ──
   function pick(el) {
-    el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
+    el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
     el.classList.add('active');
   }
 
+  // ── Message ──
   function showMsg(text, type) {
     var el = document.getElementById('msg');
-    el.textContent = text; el.className = 'msg ' + type;
+    el.textContent = text;
+    el.className = 'msg ' + type;
   }
 
+  // ── Response handler ──
   function handleResult(result) {
     var btn = document.getElementById('submit-btn');
-    btn.disabled = false; btn.innerHTML = 'Confirm Attendance';
+    btn.disabled = false;
+    btn.innerHTML = 'Confirm Attendance';
+
     var map = {
       'SUCCESS':         { text: '✅ Attendance recorded successfully!',              type: 'success' },
       'SUCCESS_OFFSITE': { text: '✅ Attendance recorded (off-site location noted).',  type: 'success' },
-      'ALREADY_DONE':    { text: '⚠️ Attendance already recorded for this slot.',     type: 'info'    },
-      'NO_CHECKIN':      { text: '⚠️ You must check in before checking out.',         type: 'info'    },
+      'ALREADY_DONE':    { text: '⚠️ Attendance already recorded for this slot.', type: 'info'    },
+      'NO_CHECKIN':      { text: '⚠️ You must check in before checking out.',     type: 'info'    },
       'NOT_FOUND':       { text: '❌ Email not found. Please use your registered email.', type: 'error' },
-      'INVALID_EMAIL':   { text: '❌ Invalid email address.',                           type: 'error'  },
+      'INVALID_EMAIL':   { text: '❌ Invalid email address.',                            type: 'error'  },
     };
-    if (map[result]) { showMsg(map[result].text, map[result].type); }
-    else if (result.indexOf('ERROR:') === 0) { showMsg('❌ Server error: ' + result.replace('ERROR:', ''), 'error'); }
-    else { showMsg('❌ Unexpected response. Please try again.', 'error'); }
+
+    if (map[result]) {
+      showMsg(map[result].text, map[result].type);
+      // Record timestamp on successful submissions only
+      if (result === 'SUCCESS' || result === 'SUCCESS_OFFSITE') {
+        setRateLimit(_lastDay, _lastAction);
+      }
+    } else if (result.indexOf('ERROR:') === 0) {
+      showMsg('❌ Server error: ' + result.replace('ERROR:', ''), 'error');
+    } else {
+      showMsg('❌ Unexpected response. Please try again.', 'error');
+    }
   }
 
+  // ── Rate limiting: 7 hours per device per action slot ──
+  var RATE_LIMIT_MS = 7 * 60 * 60 * 1000; // 7 hours in ms
+
+  function getRateLimitKey(day, action) {
+    return 'xi_conf_last_' + day + '_' + action;
+  }
+
+  function checkRateLimit(day, action) {
+    try {
+      var key = getRateLimitKey(day, action);
+      var last = localStorage.getItem(key);
+      if (!last) return null; // no previous submission
+      var elapsed = Date.now() - parseInt(last, 10);
+      if (elapsed < RATE_LIMIT_MS) {
+        var remaining = RATE_LIMIT_MS - elapsed;
+        var h = Math.floor(remaining / 3600000);
+        var m = Math.floor((remaining % 3600000) / 60000);
+        return h + 'h ' + m + 'm';
+      }
+      return null; // cooldown expired
+    } catch(e) { return null; }
+  }
+
+  function setRateLimit(day, action) {
+    try {
+      localStorage.setItem(getRateLimitKey(day, action), Date.now().toString());
+    } catch(e) {}
+  }
+
+  // ── Submit ──
   function submitForm() {
-    if (!locationReady) { showMsg('Please allow location access before submitting.', 'error'); return; }
+    if (!locationReady) {
+      showMsg('Please allow location access before submitting.', 'error');
+      return;
+    }
+
     var email = document.getElementById('email-inp').value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMsg('Please enter a valid email address.', 'error'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showMsg('Please enter a valid email address.', 'error');
+      return;
+    }
+
     var dayBtn = document.querySelector('#seg-day .seg-btn.active');
     var actBtn = document.querySelector('#seg-action .seg-btn.active');
     var day    = dayBtn.textContent.trim() === 'Day 1' ? 1 : 2;
     var action = actBtn.textContent.trim() === 'Check-in' ? 'in' : 'out';
+
+    // Check 7-hour rate limit
+    var wait = checkRateLimit(day, action);
+    if (wait) {
+      showMsg('⏳ Already submitted. You can submit again in ' + wait + '.', 'warning');
+      return;
+    }
+
     var btn = document.getElementById('submit-btn');
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Processing…';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Processing…';
     showMsg('Submitting attendance…', 'info');
-    var url = APPS_SCRIPT_URL + '?email=' + encodeURIComponent(email) + '&day=' + day + '&action=' + action + '&lat=' + userLat + '&lng=' + userLng;
+
+    _lastDay = day;
+    _lastAction = action;
+    var url = APPS_SCRIPT_URL
+      + '?email='  + encodeURIComponent(email)
+      + '&day='    + day
+      + '&action=' + action
+      + '&lat=' + userLat + '&lng=' + userLng;
+
     fetch(url)
       .then(function(r) { return r.text(); })
       .then(function(result) { handleResult(result.trim()); })
       .catch(function() {
         var btn = document.getElementById('submit-btn');
-        btn.disabled = false; btn.innerHTML = 'Confirm Attendance';
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm Attendance';
         showMsg('❌ Connection error. Please try again.', 'error');
       });
   }
@@ -408,5 +506,3 @@ cat > /mnt/user-data/outputs/attendance.html << 'HTMLEOF'
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done"
