@@ -67,7 +67,7 @@
   }
 
   .card-img {
-    width: 100%; height: 200px;
+    width: 100%; height: 148px;
     display: flex; align-items: center; justify-content: center;
     border-bottom: 1px solid var(--border); overflow: hidden;
   }
@@ -81,7 +81,7 @@
     font-size: 24px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    color: #1E4070;
+    color: #1A365D;
     margin-bottom: 6px;
     line-height: 1.2;
   }
@@ -415,7 +415,7 @@
       showMsg(map[result].text, map[result].type);
       // Record timestamp on successful submissions only
       if (result === 'SUCCESS' || result === 'SUCCESS_OFFSITE') {
-        setRateLimit(_lastDay, _lastAction);
+        setRateLimit();
       }
     } else if (result.indexOf('ERROR:') === 0) {
       showMsg('❌ Server error: ' + result.replace('ERROR:', ''), 'error');
@@ -427,15 +427,12 @@
   // ── Rate limiting: 7 hours per device per action slot ──
   var RATE_LIMIT_MS = 7 * 60 * 60 * 1000; // 7 hours in ms
 
-  function getRateLimitKey(day, action) {
-    return 'xi_conf_last_' + day + '_' + action;
-  }
+  var RATE_LIMIT_KEY = 'xi_conf_last_submit';
 
-  function checkRateLimit(day, action) {
+  function checkRateLimit() {
     try {
-      var key = getRateLimitKey(day, action);
-      var last = localStorage.getItem(key);
-      if (!last) return null; // no previous submission
+      var last = localStorage.getItem(RATE_LIMIT_KEY);
+      if (!last) return null;
       var elapsed = Date.now() - parseInt(last, 10);
       if (elapsed < RATE_LIMIT_MS) {
         var remaining = RATE_LIMIT_MS - elapsed;
@@ -443,13 +440,13 @@
         var m = Math.floor((remaining % 3600000) / 60000);
         return h + 'h ' + m + 'm';
       }
-      return null; // cooldown expired
+      return null;
     } catch(e) { return null; }
   }
 
-  function setRateLimit(day, action) {
+  function setRateLimit() {
     try {
-      localStorage.setItem(getRateLimitKey(day, action), Date.now().toString());
+      localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
     } catch(e) {}
   }
 
@@ -472,7 +469,7 @@
     var action = actBtn.textContent.trim() === 'Check-in' ? 'in' : 'out';
 
     // Check 7-hour rate limit
-    var wait = checkRateLimit(day, action);
+    var wait = checkRateLimit();
     if (wait) {
       showMsg('⏳ Already submitted. You can submit again in ' + wait + '.', 'warning');
       return;
