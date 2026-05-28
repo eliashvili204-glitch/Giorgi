@@ -1,6 +1,3 @@
-bash
-
-cat > /mnt/user-data/outputs/syssa-agenda.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -104,7 +101,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .notif-banner-btn{background:var(--navy);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.04em;}
 .notif-banner-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
 
-/* FIXED BOTTOM */
+/* FIXED BOTTOM — always visible */
 .fixed-panels{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:flex-end;pointer-events:none;z-index:9999;padding:0 16px 16px;}
 .chat-widget{pointer-events:all;}
 .feedback-widget{pointer-events:all;margin-left:auto;}
@@ -114,14 +111,25 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fab-fb{background:var(--surface);border-color:var(--gold-border);}
 .fab-badge{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:var(--warn);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
 
-/* PANELS */
+/* PANELS — both sized like original feedback (content-driven, no fixed height) */
 .float-panel{
-  position:fixed;bottom:80px;
-  width:calc(100vw - 32px);max-width:340px;
-  background:rgba(255,255,255,0.98);border:1px solid var(--border);border-radius:14px;
-  box-shadow:0 16px 48px rgba(0,0,0,.12);display:flex;flex-direction:column;
-  overflow:hidden;max-height:62vh;backdrop-filter:blur(12px);z-index:9998;
-  opacity:0;transform:translateY(20px);pointer-events:none;
+  position:fixed;
+  bottom:80px;
+  width:calc(100vw - 32px);
+  max-width:340px;
+  background:rgba(255,255,255,0.98);
+  border:1px solid var(--border);
+  border-radius:14px;
+  box-shadow:0 16px 48px rgba(0,0,0,.12);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  max-height:62vh;
+  backdrop-filter:blur(12px);
+  z-index:9998;
+  opacity:0;
+  transform:translateY(20px);
+  pointer-events:none;
   transition:opacity 0.3s cubic-bezier(0.4,0,0.2,1),transform 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 .float-panel.open{opacity:1;transform:translateY(0);pointer-events:all;}
@@ -134,6 +142,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .panel-title{font-size:13px;font-weight:700;color:var(--text);letter-spacing:.02em;}
 .panel-sub{font-size:10px;color:var(--text-faint);margin-top:1px;}
 .panel-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;line-height:1;padding:2px 4px;border-radius:4px;}
+
+/* CHAT — capped messages area so it doesn't grow too tall */
 .chat-msgs{overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;max-height:200px;}
 .chat-msgs::-webkit-scrollbar{width:3px;}
 .chat-msgs::-webkit-scrollbar-track{background:transparent;}
@@ -141,7 +151,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-empty-msg{font-size:12px;color:var(--text-faint);text-align:center;padding:20px 12px;line-height:1.7;}
 .bubble{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.01);}
 .bubble-author{font-size:9px;font-weight:700;margin-bottom:4px;letter-spacing:.05em;text-transform:uppercase;}
-.bubble-text{word-break:break-word;}
 .bubble.them{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:3px;align-self:flex-start;}
 .bubble.them .bubble-author{color:var(--text-dim);}
 .bubble.org{background:var(--navy-soft);color:var(--text);border:1px solid var(--navy-border);border-bottom-right-radius:3px;align-self:flex-end;}
@@ -151,6 +160,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-inp:focus{border-color:var(--navy-border);}
 .chat-inp::placeholder{color:var(--text-faint);}
 .chat-send-btn{background:var(--navy);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+/* FEEDBACK */
 .fb-body{padding:0;display:flex;flex-direction:column;}
 .fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;}
 .fb-info-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px;}
@@ -163,12 +174,19 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fb-submit-wrap{padding:0 16px 16px;}
 .fb-submit{padding:12px;background:var(--gold);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 4px 12px rgba(26,54,93,0.15);}
 .fb-submit:active{transform:scale(.98);}
+
+/* AI ICON STATUS */
 .panel-icon.ai-on{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);}
 .panel-icon.ai-off{background:#FEE2E2;border:1px solid #FCA5A5;color:var(--warn);}
 
 /* COUNTDOWN */
 .countdown-wrap{padding:24px 20px 8px;}
-.countdown-card{background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.02);}
+.countdown-card{
+  background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);
+  border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;
+  text-align:center;position:relative;overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.02);
+}
 .cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 12px;margin-bottom:18px;}
 .cd-event-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
 .cd-event-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
@@ -187,7 +205,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 </head>
 <body>
 <div id="loading"><div class="spinner"></div><p>Connecting...</p></div>
-<div id="error-screen"><p>Connection failed.<br>Please check your internet.</p></div>
+<div id="error-screen"><p>❌ Connection failed.<br>Please check your internet.</p></div>
 
 <div id="app">
   <div class="logos">
@@ -200,14 +218,14 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="page-title"><h1>STUDENTS' AND YOUNG SCIENTISTS'<br>XIII SCIENTIFIC SESSION: A NOBEL'S DAY</h1></div>
 
   <div id="notif-banner" class="notif-banner" style="display:none">
-    <div class="notif-banner-text">Enable notifications to be alerted when the organizer replies to you</div>
+    <div class="notif-banner-text">🔔 Enable notifications to be alerted when the organizer replies to you</div>
     <button class="notif-banner-btn" onclick="requestNotifPermission()">Enable</button>
-    <button class="notif-banner-close" onclick="document.getElementById('notif-banner').style.display='none'">&#x2715;</button>
+    <button class="notif-banner-close" onclick="document.getElementById('notif-banner').style.display='none'">✕</button>
   </div>
 
   <div id="countdown-section" class="countdown-wrap" style="display:none;">
     <div class="countdown-card">
-      <div class="cd-event-badge"><div class="cd-event-dot"></div><span class="cd-event-text">SYSSA &mdash; A Nobel's Day</span></div>
+      <div class="cd-event-badge"><div class="cd-event-dot"></div><span class="cd-event-text">SYSSA · Nobel's Day</span></div>
       <div class="cd-heading">Conference Registration<br><span>Opens In</span></div>
       <div class="cd-blocks">
         <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-word">Days</div></div>
@@ -220,7 +238,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       </div>
       <div class="cd-footer">
         <div class="cd-footer-line"></div>
-        <div class="cd-date"><strong>June 13, 2026</strong> &middot; 9:00 AM &middot; DTMU, Tbilisi</div>
+        <div class="cd-date"><strong>June 13, 2026</strong> · 9:00 AM · DTMU, Tbilisi</div>
         <div class="cd-footer-line"></div>
       </div>
     </div>
@@ -229,16 +247,16 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div id="now-section" class="now-section">
     <div class="now-card" id="now-card">
       <div class="now-top"><div class="live-dot"></div><div class="live-tag">Now Speaking</div></div>
-      <div class="now-speaker" id="now-speaker">&mdash;</div>
+      <div class="now-speaker" id="now-speaker">—</div>
       <div class="now-title" id="now-title"></div>
       <div class="now-sub" id="now-sub"></div>
-      <div class="speaker-timer"><span class="speaker-timer-icon">&#9201;</span><span class="speaker-timer-val" id="aud-timer">00:00</span></div>
+      <div class="speaker-timer"><span class="speaker-timer-icon">⏱</span><span class="speaker-timer-val" id="aud-timer">00:00</span></div>
     </div>
   </div>
   <div id="next-section" class="next-section">
     <div class="next-card">
       <div class="next-label">Up next</div>
-      <div class="next-name" id="next-name">&mdash;</div>
+      <div class="next-name" id="next-name">—</div>
       <div class="next-title" id="next-title"></div>
     </div>
   </div>
@@ -251,46 +269,46 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 
 <div class="fixed-panels">
   <div class="chat-widget">
-    <button class="fab fab-chat" onclick="toggleChat()" title="AI Assistant"><span style="font-size:16px;color:var(--navy)">&#10022;</span><span class="fab-badge" id="fab-badge">0</span></button>
+    <button class="fab fab-chat" onclick="toggleChat()" title="AI Assistant"><span style="font-size:16px;color:var(--navy)">✦</span><span class="fab-badge" id="fab-badge">0</span></button>
   </div>
   <div class="feedback-widget">
-    <button class="fab fab-fb" onclick="toggleFb()" title="Feedback"><span style="font-size:15px;color:var(--gold)">&#9672;</span></button>
+    <button class="fab fab-fb" onclick="toggleFb()" title="Feedback"><span style="font-size:15px;color:var(--gold)">◈</span></button>
   </div>
 </div>
 
 <div class="float-panel chat-panel" id="chat-panel">
   <div class="panel-header">
     <div class="panel-header-left">
-      <div class="panel-icon" id="ai-icon">&#10022;</div>
+      <div class="panel-icon" id="ai-icon">✦</div>
       <div>
         <div class="panel-title">AI Assistant</div>
-        <div class="panel-sub" id="ai-status-sub">Powered by AI &middot; Ask anything</div>
+        <div class="panel-sub" id="ai-status-sub">Powered by AI · Ask anything</div>
       </div>
     </div>
-    <button class="panel-close" onclick="toggleChat()">&#x2715;</button>
+    <button class="panel-close" onclick="toggleChat()">✕</button>
   </div>
   <div class="chat-msgs" id="chat-msgs">
-    <div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>
+    <div class="chat-empty-msg">👋 Hey! Ask me about the agenda,<br>certificates, speakers, or anything else 😊</div>
   </div>
   <div class="chat-inp-row">
     <input class="chat-inp" id="chat-inp" placeholder="Ask a question..." maxlength="300" onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="chat-send-btn" onclick="sendChat()">&#10148;</button>
+    <button class="chat-send-btn" onclick="sendChat()">➤</button>
   </div>
 </div>
 
 <div class="float-panel fb-panel" id="fb-panel">
   <div class="panel-header">
     <div class="panel-header-left">
-      <div class="panel-icon panel-icon-fb">&#9672;</div>
-      <div><div class="panel-title">Help Us Improve</div><div class="panel-sub">Anonymous &middot; No data collected</div></div>
+      <div class="panel-icon panel-icon-fb">◈</div>
+      <div><div class="panel-title">Help Us Improve</div><div class="panel-sub">Anonymous · No data collected</div></div>
     </div>
-    <button class="panel-close" onclick="toggleFb()">&#x2715;</button>
+    <button class="panel-close" onclick="toggleFb()">✕</button>
   </div>
   <div id="fb-inner">
     <div class="fb-body">
       <div class="fb-info-block">
         <div class="fb-info-label">Your Voice Matters</div>
-        <div class="fb-info">Please share your honest feedback on any topic &mdash; the good, the bad, and everything in between!</div>
+        <div class="fb-info">Please share your honest feedback on any topic — the good, the bad, and everything in between!</div>
       </div>
       <div class="fb-ta-wrap">
         <textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea>
@@ -303,596 +321,325 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-//  Config
-// ═══════════════════════════════════════════
-const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+const SB_URL='https://wxhaukichoycniioakbo.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
-// ═══════════════════════════════════════════
-//  ✅ გამოსწორება #1: AGENDA — item 28 speaker/time გასწორებულია
-// ═══════════════════════════════════════════
-const AGENDA = [
-  {id:1, time:"09:30–10:00", speaker:"Registration, Coffee Break",         title:"",                                                                                                                               session:"pre",     isBreak:true},
-  {id:2, time:"10:00–10:30", speaker:"Opening Ceremony",                    title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze · Nino Tabagari, MD, PhD",                            session:"opening", isBreak:true},
-  {id:3, time:"10:30–10:45", speaker:"Giorgi Aladashvili, MD",              title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",                                                              session:"opening"},
-  {id:4, time:"10:45–11:00", speaker:"Nino Giorgadze",                     title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",                                               session:"opening"},
-  {id:5, time:"11:00–11:15", speaker:"Anano Verdzadze",                    title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",     session:"students"},
-  {id:6, time:"11:15–11:30", speaker:"Nana Megrelidze, M.D.",              title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",                         session:"students"},
-  {id:7, time:"11:30–11:45", speaker:"Vasil Petriashvili",                 title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",                        session:"students"},
-  {id:8, time:"11:45–12:00", speaker:"Ketevan Tchitchinadze, MS.",         title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",                         session:"students"},
-  {id:9, time:"12:00–12:15", speaker:"Anna Bechvaya, MS.",                 title:"Produodopa Easier Way to Live with Parkinson's\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",                                  session:"students"},
-  {id:10,time:"12:15–12:30", speaker:"Vera Savidi, MS.",                   title:"Transthyretin Amyloid Cardiomyopathy — A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",                          session:"students"},
-  {id:11,time:"12:30–12:45", speaker:"Taha Kassim, MS.",                   title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",                             session:"students"},
-  {id:12,time:"12:45–13:00", speaker:"Syeda Fatima Zehra",                 title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",                                session:"students"},
-  {id:13,time:"13:00–14:00", speaker:"Lunch Break",                        title:"",                                                                                                                               session:"break",   isBreak:true},
-  {id:14,time:"14:00–",      speaker:"Tamar Kacharava",                    title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",                     session:"phd"},
-  {id:15,time:"",            speaker:"Nino Khutsishvili",                  title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze", session:"phd"},
-  {id:16,time:"",            speaker:"Tamar Gaprindashvili",               title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze · Zurab Pagava", session:"phd"},
-  {id:17,time:"",            speaker:"Vakhtang Gurabanidze",               title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor", session:"phd"},
-  {id:18,time:"",            speaker:"Aleksandre Ramishvili",              title:"Geomagnetic Storms on Heart Rate Variability and EEG \u03b1 Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia · Prof. Levan Tvildiani", session:"phd"},
-  {id:19,time:"",            speaker:"Elene Sherozia",                     title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari · Prof. Maia Gotua", session:"phd"},
-  {id:20,time:"",            speaker:"Mariam Kacheishvili",                title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari · Prof. Alexi Baidoshvili", session:"phd"},
-  {id:21,time:"",            speaker:"David Makaridze",                    title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili",                  session:"phd"},
-  {id:22,time:"",            speaker:"Tamta Darsalia",                     title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.",        session:"phd"},
-  {id:23,time:"",            speaker:"Tinatin Giuashvili",                 title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD",               session:"phd"},
-  {id:24,time:"",            speaker:"Ana Bedoshvili",                     title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili · N. Tatishvili · A. Guzzetta · R.N. Boyd", session:"phd"},
-  {id:25,time:"",            speaker:"Ana Khoperia",                       title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.", session:"phd"},
-  {id:26,time:"",            speaker:"Mariam Gugushvili",                  title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD",                  session:"phd"},
-  {id:27,time:"",            speaker:"Nino Zavrashvili",                   title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari",                        session:"phd"},
-  // ✅ გამოსწორება #1: id:28 — speaker და time სწორი ველებშია
-  {id:28,time:"",            speaker:"Ana Kvernadze, MD, Ph.D.",           title:"Rare and Complex Epilepsies \u2013 Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD",        session:"phd"},
-  {id:29,time:"17:00",       speaker:"Closing Ceremony",                   title:"",                                                                                                                               session:"closing", isBreak:true}
-];
+const AGENDA=[{id:1,time:"09:30–10:00",speaker:"Registration, Coffee Break",title:"",session:"pre",isBreak:true},{id:2,time:"10:00–10:30",speaker:"Opening Ceremony",title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze · Nino Tabagari, MD, PhD",session:"opening",isBreak:true},{id:3,time:"10:30–10:45",speaker:"Giorgi Aladashvili, MD",title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",session:"opening"},{id:4,time:"10:45–11:00",speaker:"Nino Giorgadze",title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",session:"opening"},{id:5,time:"11:00–11:15",speaker:"Anano Verdzadze",title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",session:"students"},{id:6,time:"11:15–11:30",speaker:"Nana Megrelidze, M.D.",title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",session:"students"},{id:7,time:"11:30–11:45",speaker:"Vasil Petriashvili",title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",session:"students"},{id:8,time:"11:45–12:00",speaker:"Ketevan Tchitchinadze, MS.",title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},{id:9,time:"12:00–12:15",speaker:"Anna Bechvaya, MS.",title:"Produodopa Easier Way to Live with Parkinson's\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",session:"students"},{id:10,time:"12:15–12:30",speaker:"Vera Savidi, MS.",title:"Transthyretin Amyloid Cardiomyopathy — A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},{id:11,time:"12:45–13:00",speaker:"Taha Kassim, MS.",title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",session:"students"},{id:12,time:"12:45–13:00",speaker:"Syeda Fatima Zehra",title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",session:"students"},{id:13,time:"13:00–14:00",speaker:"Lunch Break",title:"",session:"break",isBreak:true},{id:14,time:"14:00–",speaker:"Tamar Kacharava",title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",session:"phd"},{id:15,time:"",speaker:"Nino Khutsishvili",title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze",session:"phd"},{id:16,time:"",speaker:"Tamar Gaprindashvili",title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze · Zurab Pagava",session:"phd"},{id:17,time:"",speaker:"Vakhtang Gurabanidze",title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor",session:"phd"},{id:18,time:"",speaker:"Aleksandre Ramishvili",title:"Geomagnetic Storms on Heart Rate Variability and EEG α Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia · Prof. Levan Tvildiani",session:"phd"},{id:19,time:"",speaker:"Elene Sherozia",title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari · Prof. Maia Gotua",session:"phd"},{id:20,time:"",speaker:"Mariam Kacheishvili",title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari · Prof. Alexi Baidoshvili",session:"phd"},{id:21,time:"",speaker:"David Makaridze",title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili",session:"phd"},{id:22,time:"",speaker:"Tamta Darsalia",title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.",session:"phd"},{id:23,time:"",speaker:"Tinatin Giuashvili",title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD",session:"phd"},{id:24,time:"",speaker:"Ana Bedoshvili",title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili · N. Tatishvili · A. Guzzetta · R.N. Boyd",session:"phd"},{id:25,time:"",speaker:"Ana Khoperia",title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.",session:"phd"},{id:26,time:"",speaker:"Mariam Gugushvili",title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD",session:"phd"},{id:27,time:"",speaker:"Nino Zavrashvili",title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari",session:"phd"},{id:28,time:"Ana Kvernadze, MD, Ph.D.",title:"Rare and Complex Epilepsies – Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD",session:"phd"},{id:29,time:"17:00",speaker:"Closing Ceremony",title:"",session:"closing",isBreak:true}];
 
-// ═══════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════
-let sb = null;
-let currentId = 3;
-let speakerStartedAt = Date.now();
-let audTimerInterval = null;
-let chatOpen = false, fbOpen = false, unread = 0;
-let aiEnabled = true, showCountdown = false, cdInterval = null;
-const CONF_START = new Date('2026-06-13T05:00:00Z');
+let sb=null,currentId=3,speakerStartedAt=Date.now(),audTimerInterval=null;
+let chatOpen=false,fbOpen=false,unread=0;
+let aiEnabled=true,showCountdown=false,cdInterval=null;
+const CONF_START=new Date('2026-06-13T05:00:00Z');
 
-// ✅ Session ID — localStorage
-let sessionId = localStorage.getItem('syssa_sid');
-if (!sessionId) {
-  sessionId = 'p_' + Math.random().toString(36).substr(2, 8);
-  localStorage.setItem('syssa_sid', sessionId);
-}
+let sessionId=localStorage.getItem('syssa_sid');
+if(!sessionId){sessionId='p_'+Math.random().toString(36).substr(2,8);localStorage.setItem('syssa_sid',sessionId);}
 
-// ═══════════════════════════════════════════
-//  ✅ გამოსწორება #2: escText — XSS დაცვა
-//  innerHTML-ის ნაცვლად textContent გამოვიყენებთ
-//  bubble-ებში, ან სპეციალური escape ფუნქცია
-// ═══════════════════════════════════════════
-function escText(str) {
-  return String(str || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-// ═══════════════════════════════════════════
-//  Helpers
-// ═══════════════════════════════════════════
-function getNext(id) {
-  const ci = AGENDA.findIndex(a => a.id === id);
-  for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak) return AGENDA[i];
+function getNext(id){
+  const ci=AGENDA.findIndex(a=>a.id===id);
+  for(let i=ci+1;i<AGENDA.length;i++)if(!AGENDA[i].isBreak)return AGENDA[i];
   return null;
 }
 
-function withTimeout(p, ms) {
-  return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+function tickCountdown(){
+  const diff=CONF_START.getTime()-Date.now();
+  if(diff<=0){showCountdown=false;applyCountdownMode();return;}
+  const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-days').textContent=String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent=String(s).padStart(2,'0');
 }
 
-// ═══════════════════════════════════════════
-//  Countdown
-// ═══════════════════════════════════════════
-function tickCountdown() {
-  const diff = CONF_START.getTime() - Date.now();
-  if (diff <= 0) { showCountdown = false; applyCountdownMode(); return; }
-  const d = Math.floor(diff / 86400000),
-        h = Math.floor((diff % 86400000) / 3600000),
-        m = Math.floor((diff % 3600000) / 60000),
-        s = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
-  document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+function applyCountdownMode(){
+  const shouldShow=showCountdown&&CONF_START.getTime()>Date.now();
+  document.getElementById('countdown-section').style.display=shouldShow?'block':'none';
+  document.getElementById('now-section').style.display=shouldShow?'none':'block';
+  document.getElementById('next-section').style.display=shouldShow?'none':'block';
+  document.getElementById('agenda-section').style.display='block';
+  if(shouldShow){if(!cdInterval){tickCountdown();cdInterval=setInterval(tickCountdown,1000);}}
+  else{if(cdInterval){clearInterval(cdInterval);cdInterval=null;}}
 }
 
-function applyCountdownMode() {
-  const shouldShow = showCountdown && CONF_START.getTime() > Date.now();
-  document.getElementById('countdown-section').style.display = shouldShow ? 'block' : 'none';
-  document.getElementById('now-section').style.display  = shouldShow ? 'none' : 'block';
-  document.getElementById('next-section').style.display = shouldShow ? 'none' : 'block';
-  document.getElementById('agenda-section').style.display = 'block';
-  if (shouldShow) { if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); } }
-  else { if (cdInterval) { clearInterval(cdInterval); cdInterval = null; } }
+function updateAIIcon(){
+  const icon=document.getElementById('ai-icon');
+  const sub=document.getElementById('ai-status-sub');
+  if(icon){icon.className='panel-icon '+(aiEnabled?'ai-on':'ai-off');}
+  if(sub){sub.textContent=aiEnabled?'Powered by AI · Ask anything':'Currently offline';}
 }
 
-// ═══════════════════════════════════════════
-//  AI Icon status
-// ═══════════════════════════════════════════
-function updateAIIcon() {
-  const icon = document.getElementById('ai-icon');
-  const sub  = document.getElementById('ai-status-sub');
-  if (icon) icon.className = 'panel-icon ' + (aiEnabled ? 'ai-on' : 'ai-off');
-  if (sub)  sub.textContent = aiEnabled ? 'Powered by AI \u00b7 Ask anything' : 'Currently offline';
-}
-
-// ═══════════════════════════════════════════
-//  Notifications
-// ═══════════════════════════════════════════
-function requestNotifPermission() {
-  if (!('Notification' in window)) return;
-  Notification.requestPermission().then(p => {
-    document.getElementById('notif-banner').style.display = 'none';
-    if (p === 'granted') new Notification('Notifications enabled', {body: 'You will be notified when organizers reply.'});
+function requestNotifPermission(){
+  if(!('Notification' in window))return;
+  Notification.requestPermission().then(p=>{
+    document.getElementById('notif-banner').style.display='none';
+    if(p==='granted')new Notification('Notifications enabled',{body:'You will be notified when organizers reply.'});
   });
 }
-function showNotifBannerIfNeeded() {
-  if ('Notification' in window && Notification.permission === 'default')
-    document.getElementById('notif-banner').style.display = 'flex';
-}
-function sendPushIfNeeded(text) {
-  if ('Notification' in window && Notification.permission === 'granted')
-    new Notification('Reply from Organizer', {body: text, tag: 'organizer-reply'});
-}
 
-// ═══════════════════════════════════════════
-//  Init
-// ═══════════════════════════════════════════
-window.addEventListener('load', async () => {
-  try {
-    sb = supabase.createClient(SB_URL, SB_KEY);
-    const {data, error} = await withTimeout(
-      sb.from('live_state').select('current_id,speaker_started_at').eq('id',1).single(), 8000
-    );
-    if (error) throw error;
-    currentId = data.current_id;
-    speakerStartedAt = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
-    try {
-      const {data: d2} = await sb.from('live_state').select('ai_enabled,show_countdown').eq('id',1).single();
-      if (d2) {
-        if (d2.ai_enabled   != null) aiEnabled     = Boolean(d2.ai_enabled);
-        if (d2.show_countdown != null) showCountdown = Boolean(d2.show_countdown);
-      }
-    } catch(e) {}
-    updateAIIcon();
-    applyCountdownMode();
-    startApp();
-    showNotifBannerIfNeeded();
-  } catch(e) {
-    document.getElementById('loading').style.display     = 'none';
-    document.getElementById('error-screen').style.display = 'flex';
+function showNotifBannerIfNeeded(){if('Notification' in window&&Notification.permission==='default')document.getElementById('notif-banner').style.display='flex';}
+function sendPushIfNeeded(text){if('Notification' in window&&Notification.permission==='granted')new Notification('Reply from Organizer',{body:text,tag:'organizer-reply'});}
+function withTimeout(p,ms){return Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),ms))]);}
+
+window.addEventListener('load',async()=>{
+  try{
+    sb=supabase.createClient(SB_URL,SB_KEY);
+    const{data,error}=await withTimeout(sb.from('live_state').select('current_id,speaker_started_at').eq('id',1).single(),8000);
+    if(error)throw error;
+    currentId=data.current_id;
+    speakerStartedAt=data.speaker_started_at?new Date(data.speaker_started_at).getTime():Date.now();
+    try{
+      const{data:d2}=await sb.from('live_state').select('ai_enabled,show_countdown').eq('id',1).single();
+      if(d2){if(d2.ai_enabled!=null)aiEnabled=d2.ai_enabled;if(d2.show_countdown!=null)showCountdown=Boolean(d2.show_countdown);}
+    }catch(e){}
+    updateAIIcon();applyCountdownMode();startApp();showNotifBannerIfNeeded();
+  }catch(e){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('error-screen').style.display='flex';
   }
 });
 
-function startApp() {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('app').style.display     = 'flex';
-
+function startApp(){
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='flex';
   sb.channel('live_state_ch')
-    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'live_state'}, async p => {
-      try {
-        const {data: fresh} = await sb.from('live_state')
-          .select('current_id,speaker_started_at,ai_enabled,show_countdown').eq('id',1).single();
-        if (fresh) {
-          currentId        = fresh.current_id;
-          speakerStartedAt = fresh.speaker_started_at ? new Date(fresh.speaker_started_at).getTime() : Date.now();
-          if (fresh.ai_enabled    != null) aiEnabled     = Boolean(fresh.ai_enabled);
-          if (fresh.show_countdown != null) { showCountdown = Boolean(fresh.show_countdown); applyCountdownMode(); }
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'live_state'},async p=>{
+      try{
+        const{data:fresh}=await sb.from('live_state').select('current_id,speaker_started_at,ai_enabled,show_countdown').eq('id',1).single();
+        if(fresh){
+          currentId=fresh.current_id;
+          speakerStartedAt=fresh.speaker_started_at?new Date(fresh.speaker_started_at).getTime():Date.now();
+          if(fresh.ai_enabled!=null)aiEnabled=Boolean(fresh.ai_enabled);
+          if(fresh.show_countdown!=null){showCountdown=Boolean(fresh.show_countdown);applyCountdownMode();}
           updateAIIcon();
         }
-      } catch(e) { if (p.new.current_id) currentId = p.new.current_id; }
-      render(); startAudTimer();
-      const nc = document.getElementById('now-card');
-      if (nc && nc.offsetParent !== null) {
-        nc.style.outline = '2px solid var(--live)';
-        setTimeout(() => nc.style.outline = 'none', 500);
-      }
+      }catch(e){if(p.new.current_id)currentId=p.new.current_id;}
+      render();startAudTimer();
+      const nc=document.getElementById('now-card');
+      if(nc&&nc.offsetParent!==null){nc.style.outline='2px solid var(--live)';setTimeout(()=>nc.style.outline='none',500);}
     })
-    .subscribe(s => {
-      document.getElementById('f-dot').classList.toggle('off', s !== 'SUBSCRIBED');
-      document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
+    .subscribe(s=>{
+      document.getElementById('f-dot').classList.toggle('off',s!=='SUBSCRIBED');
+      document.getElementById('f-label').textContent=s==='SUBSCRIBED'?'Live':'Connecting…';
     });
-
-  sb.channel('my_replies_' + sessionId)
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'messages'}, p => {
-      if (p.new.session_id === sessionId && p.new.sender === 'organizer') {
-        appendBubble('Host', p.new.text, 'org');
+  sb.channel('my_replies_'+sessionId)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages'},p=>{
+      if(p.new.session_id===sessionId&&p.new.sender==='organizer'){
+        appendBubble('Host',p.new.text,'org');
         sendPushIfNeeded(p.new.text);
         unread++;
-        const b = document.getElementById('fab-badge');
-        b.style.display = 'flex';
-        b.textContent   = unread;
+        const b=document.getElementById('fab-badge');b.style.display='flex';b.textContent=unread;
       }
     }).subscribe();
-
-  render();
-  startAudTimer();
-  loadChatHistory();
+  render();startAudTimer();loadChatHistory();
 }
 
-// ═══════════════════════════════════════════
-//  Timer
-// ═══════════════════════════════════════════
-function startAudTimer() {
-  if (audTimerInterval) clearInterval(audTimerInterval);
-  audTimerInterval = setInterval(() => {
-    const e = Math.floor((Date.now() - speakerStartedAt) / 1000);
-    const v = String(Math.floor(e / 60)).padStart(2,'0') + ':' + String(e % 60).padStart(2,'0');
-    const over = e >= 900;
-    const el = document.getElementById('aud-timer');
-    if (el) { el.textContent = v; el.style.color = over ? 'var(--warn)' : 'var(--navy)'; }
-    const ae = document.getElementById('aud-agenda-timer');
-    if (ae) { ae.textContent = v; ae.style.color = over ? 'var(--warn)' : '#ffffff'; }
-  }, 1000);
+function startAudTimer(){
+  if(audTimerInterval)clearInterval(audTimerInterval);
+  audTimerInterval=setInterval(()=>{
+    const e=Math.floor((Date.now()-speakerStartedAt)/1000);
+    const v=String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0');
+    const over=e>=900;
+    const el=document.getElementById('aud-timer');
+    if(el){el.textContent=v;el.style.color=over?'var(--warn)':'var(--navy)';}
+    const ae=document.getElementById('aud-agenda-timer');
+    if(ae){ae.textContent=v;ae.style.color=over?'var(--warn)':'#ffffff';}
+  },1000);
 }
 
-// ═══════════════════════════════════════════
-//  Render
-// ═══════════════════════════════════════════
-function render() {
-  const cur = AGENDA.find(a => a.id === currentId);
-  const nxt = getNext(currentId);
-  const s   = cur ? cur.title.split('\n') : [];
-
-  // ✅ textContent — XSS-safe
-  document.getElementById('now-speaker').textContent = cur ? cur.speaker : '—';
-  document.getElementById('now-title').textContent   = s[0] || '';
-  document.getElementById('now-sub').textContent     = s[1] || '';
-  document.getElementById('next-name').textContent   = nxt ? nxt.speaker : 'Program Concluded';
-  document.getElementById('next-title').textContent  = nxt ? (nxt.title.split('\n')[0] || '') : '';
-
-  const SECS = [
-    {key:'pre',     label:''},
-    {key:'opening', label:'Opening Session (10:00–11:00)'},
-    {key:'students',label:"Students' Session (11:00–13:00)"},
-    {key:'break',   label:''},
-    {key:'phd',     label:'PhD Session (14:00–17:00)'},
-    {key:'closing', label:''}
+function render(){
+  const cur=AGENDA.find(a=>a.id===currentId),nxt=getNext(currentId);
+  const s=cur?cur.title.split('\n'):[];
+  document.getElementById('now-speaker').textContent=cur?cur.speaker:'—';
+  document.getElementById('now-title').textContent=s[0]||'';
+  document.getElementById('now-sub').textContent=s[1]||'';
+  document.getElementById('next-name').textContent=nxt?nxt.speaker:'Program Concluded';
+  document.getElementById('next-title').textContent=nxt?(nxt.title.split('\n')[0]||''):'';
+  const SECS=[
+    {key:'pre',label:''},{key:'opening',label:'Opening Session (10:00–11:00)'},
+    {key:'students',label:"Students' Session (11:00–13:00)"},{key:'break',label:''},
+    {key:'phd',label:'PhD Session (14:00–17:00)'},{key:'closing',label:''}
   ];
-
-  let html = '';
-  SECS.forEach(sec => {
-    const items = AGENDA.filter(a => a.session === sec.key);
-    if (!items.length) return;
-    if (sec.label) html += `<div class="a-session-title">${escText(sec.label)}</div>`;
-    items.forEach(item => {
-      const isCur   = item.id === currentId;
-      const isNxt   = nxt && item.id === nxt.id;
-      const s2      = item.title ? item.title.split('\n') : [];
-      const cdActive = showCountdown && CONF_START.getTime() > Date.now();
-      html += `<div class="a-row ${(isCur && !cdActive) ? 'a-live' : ''} ${item.isBreak ? 'a-break' : ''}">
-        <div class="a-time">${escText(item.time || '')}</div>
-        <div class="a-divl"></div>
+  let html='';
+  SECS.forEach(sec=>{
+    const items=AGENDA.filter(a=>a.session===sec.key);if(!items.length)return;
+    if(sec.label)html+=`<div class="a-session-title">${sec.label}</div>`;
+    items.forEach(item=>{
+      const isCur=item.id===currentId,isNxt=nxt&&item.id===nxt.id,s2=item.title?item.title.split('\n'):[];
+      const cdActive=showCountdown&&CONF_START.getTime()>Date.now();
+      html+=`<div class="a-row ${(isCur&&!cdActive)?'a-live':''} ${item.isBreak?'a-break':''}">
+        <div class="a-time">${item.time||''}</div><div class="a-divl"></div>
         <div class="a-info">
-          <div class="a-name">${escText(item.speaker)}
-            ${(isCur && !cdActive) ? `<span class="a-badge a-badge-live">Speaking</span><span class="a-badge a-badge-live" id="aud-agenda-timer" style="min-width:40px;text-align:center;margin-left:4px;color:#ffffff!important;">00:00</span>` : ''}
-            ${(isNxt && !cdActive) ? '<span class="a-badge a-badge-next">Up next</span>' : ''}
+          <div class="a-name">${item.speaker}
+            ${(isCur&&!cdActive)?`<span class="a-badge a-badge-live">Speaking</span><span class="a-badge a-badge-live" id="aud-agenda-timer" style="min-width:40px;text-align:center;margin-left:4px;color:#ffffff!important;">00:00</span>`:''}
+            ${(isNxt&&!cdActive)?'<span class="a-badge a-badge-next">Up next</span>':''}
           </div>
-          ${s2[0] ? `<div class="a-sub">${escText(s2[0])}</div>` : ''}
-          ${s2[1] ? `<div class="a-sub-sup">${escText(s2[1])}</div>` : ''}
-        </div>
-      </div>`;
+          ${s2[0]?`<div class="a-sub">${s2[0]}</div>`:''}
+          ${s2[1]?`<div class="a-sub-sup">${s2[1]}</div>`:''}
+        </div></div>`;
     });
   });
-  document.getElementById('agenda-list').innerHTML = html;
-  setTimeout(() => {
-    const l = document.querySelector('.a-row.a-live');
-    if (l) l.scrollIntoView({behavior:'smooth', block:'nearest'});
-  }, 200);
+  document.getElementById('agenda-list').innerHTML=html;
+  setTimeout(()=>{const l=document.querySelector('.a-row.a-live');if(l)l.scrollIntoView({behavior:'smooth',block:'nearest'});},200);
 }
 
-// ═══════════════════════════════════════════
-//  Panel toggles
-// ═══════════════════════════════════════════
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chat-panel').classList.toggle('open', chatOpen);
-  if (chatOpen) {
-    updateAIIcon();
-    unread = 0;
-    document.getElementById('fab-badge').style.display = 'none';
-    setTimeout(() => { const w = document.getElementById('chat-msgs'); w.scrollTop = w.scrollHeight; }, 50);
+function toggleChat(){
+  chatOpen=!chatOpen;
+  document.getElementById('chat-panel').classList.toggle('open',chatOpen);
+  if(chatOpen){updateAIIcon();unread=0;document.getElementById('fab-badge').style.display='none';setTimeout(()=>{const w=document.getElementById('chat-msgs');w.scrollTop=w.scrollHeight;},50);}
+  if(fbOpen){fbOpen=false;document.getElementById('fb-panel').classList.remove('open');}
+}
+
+function toggleFb(){
+  fbOpen=!fbOpen;
+  document.getElementById('fb-panel').classList.toggle('open',fbOpen);
+  if(chatOpen){chatOpen=false;document.getElementById('chat-panel').classList.remove('open');}
+}
+
+function saveChatHistory(){
+  const bubbles=Array.from(document.querySelectorAll('#chat-msgs .bubble')).map(b=>({
+    author:b.querySelector('.bubble-author')?b.querySelector('.bubble-author').textContent:'',
+    text:b.querySelector('.bubble-author')?b.innerHTML.replace(b.querySelector('.bubble-author').outerHTML,'').trim():b.innerHTML.trim(),
+    type:b.classList.contains('org')?'org':'them'
+  }));
+  localStorage.setItem('syssa_chat_'+sessionId,JSON.stringify(bubbles));
+}
+
+function loadChatHistory(){
+  const saved=localStorage.getItem('syssa_chat_'+sessionId);
+  if(!saved)return;
+  try{
+    const bubbles=JSON.parse(saved);
+    if(bubbles&&bubbles.length){const wrap=document.getElementById('chat-msgs');wrap.innerHTML='';bubbles.forEach(b=>appendBubbleRaw(b.author,b.text,b.type));setTimeout(()=>{wrap.scrollTop=wrap.scrollHeight;},50);}
+  }catch(e){}
+}
+
+function appendBubbleRaw(author,text,type){
+  const wrap=document.getElementById('chat-msgs');
+  const emp=wrap.querySelector('.chat-empty-msg');if(emp)emp.remove();
+  const d=document.createElement('div');d.className='bubble '+type;
+  d.innerHTML=`<div class="bubble-author">${author}</div>${text}`;
+  wrap.appendChild(d);wrap.scrollTop=wrap.scrollHeight;
+}
+
+function appendBubble(author,text,type){appendBubbleRaw(author,text,type);saveChatHistory();}
+
+function appendTyping(){
+  const wrap=document.getElementById('chat-msgs');
+  const d=document.createElement('div');d.className='bubble org';d.id='typing-indicator';
+  d.innerHTML='<div class="bubble-author">AI Assistant</div><span style="opacity:.5;letter-spacing:2px">●●●</span>';
+  wrap.appendChild(d);wrap.scrollTop=wrap.scrollHeight;
+}
+
+function removeTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
+
+let chatHistory=[];
+const MAX_HISTORY_MSGS=6;
+
+function buildSystemPrompt(){
+  const cur=AGENDA.find(a=>a.id===currentId),nxt=getNext(currentId);
+  const now=Date.now();
+  const confStart=CONF_START.getTime();
+  const beforeConf=now<confStart;
+  let timeUntil='';
+  if(beforeConf){
+    const diff=confStart-now;
+    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m=Math.floor((diff%3600000)/60000);
+    timeUntil=`${d} day(s), ${h} hour(s), and ${m} minute(s)`;
   }
-  if (fbOpen) { fbOpen = false; document.getElementById('fb-panel').classList.remove('open'); }
-}
-function toggleFb() {
-  fbOpen = !fbOpen;
-  document.getElementById('fb-panel').classList.toggle('open', fbOpen);
-  if (chatOpen) { chatOpen = false; document.getElementById('chat-panel').classList.remove('open'); }
-}
+  return `You are the official AI Assistant for the "XI International Conference" organized by SYSSA. Your goal is to assist participants with any organizational or content-related questions in real-time. Critical rule: Never mention "Nobel's Day" or "Nobel Days"; the only name of the event is "XI International Conference".
 
-// ═══════════════════════════════════════════
-//  ✅ გამოსწორება #2: Bubble — XSS-safe
-//  innerHTML-ის ნაცვლად textContent გამოვიყენებთ
-// ═══════════════════════════════════════════
-function appendBubble(author, text, type) {
-  const wrap = document.getElementById('chat-msgs');
-  const emp  = wrap.querySelector('.chat-empty-msg');
-  if (emp) emp.remove();
+CONFERENCE STATUS: ${beforeConf?`NOT STARTED YET. The conference begins on June 13, 2026 at 09:00 AM. Time remaining until start: approximately ${timeUntil}.`:'IN PROGRESS.'}
 
-  const d      = document.createElement('div');
-  d.className  = 'bubble ' + type;
+${beforeConf?`CRITICAL: Since the conference has not started yet, if anyone asks "who is speaking now", "what is the current topic", or "who is next" — you MUST answer that the conference has not started yet and tell them how much time is left. Do NOT mention any speaker names as currently speaking.`:`Live Agenda and Real-Time Tracking:
+- Current Speaker: ${cur?cur.speaker:'—'}
+- Next Speaker: ${nxt?nxt.speaker:'Conference Concluded'}
+- Participants will often ask "Who is speaking now?", "Who is the next speaker?", or "What is the topic right now?". Always use the dynamic data above to answer these questions.`}
 
-  const authorEl = document.createElement('div');
-  authorEl.className   = 'bubble-author';
-  authorEl.textContent = author;       // ✅ textContent — safe
+- If asked about the general scientific themes of the conference, respond that the conference is multidisciplinary and covers leading medical fields such as: cardiology, neurology, pediatrics, obstetrics & gynecology, pharmacology, stem cells, medical education, and others.
 
-  const textEl = document.createElement('div');
-  textEl.className   = 'bubble-text';
-  textEl.textContent = text;           // ✅ textContent — safe
+Core Conference Information (FAQ):
+- Registration: Opens on June 13, exactly at 09:00 AM.
+- Certificates: Participants will receive their certificates via email within the next 24 hours after checking out on the second day. It is mandatory to successfully complete both check-in and check-out via QR code on both days.
+- Breaks/Catering: Coffee Break is at 09:30, and Lunch Break is from 13:00 to 14:00.
+- Location/WiFi/Technical Issues: If a question concerns a specific room or WiFi, advise them to directly approach the organizing team members on-site.
+- System Author: The conference platform and the AI Assistant were created by Giorgi Eliashvili.
 
-  d.appendChild(authorEl);
-  d.appendChild(textEl);
-  wrap.appendChild(d);
-  wrap.scrollTop = wrap.scrollHeight;
-  saveChatHistory();
-}
-
-// ═══════════════════════════════════════════
-//  Chat history — localStorage
-// ═══════════════════════════════════════════
-function saveChatHistory() {
-  try {
-    const bubbles = Array.from(document.querySelectorAll('#chat-msgs .bubble')).map(b => ({
-      author: b.querySelector('.bubble-author') ? b.querySelector('.bubble-author').textContent : '',
-      text:   b.querySelector('.bubble-text')   ? b.querySelector('.bubble-text').textContent   : '',
-      type:   b.classList.contains('org') ? 'org' : 'them'
-    }));
-    localStorage.setItem('syssa_chat_' + sessionId, JSON.stringify(bubbles));
-  } catch(e) {}
-}
-
-function loadChatHistory() {
-  try {
-    const saved = localStorage.getItem('syssa_chat_' + sessionId);
-    if (!saved) return;
-    const bubbles = JSON.parse(saved);
-    if (bubbles && bubbles.length) {
-      const wrap = document.getElementById('chat-msgs');
-      wrap.innerHTML = '';
-      bubbles.forEach(b => appendBubble(b.author, b.text, b.type));
-      setTimeout(() => { wrap.scrollTop = wrap.scrollHeight; }, 50);
-    }
-  } catch(e) {}
-}
-
-// ═══════════════════════════════════════════
-//  Typing indicator
-// ═══════════════════════════════════════════
-function appendTyping() {
-  const wrap = document.getElementById('chat-msgs');
-  const d    = document.createElement('div');
-  d.className = 'bubble org';
-  d.id        = 'typing-indicator';
-
-  const authorEl = document.createElement('div');
-  authorEl.className   = 'bubble-author';
-  authorEl.textContent = 'AI Assistant';
-
-  const dotEl = document.createElement('span');
-  dotEl.style.cssText = 'opacity:.5;letter-spacing:2px';
-  dotEl.textContent   = '\u25cf\u25cf\u25cf';
-
-  d.appendChild(authorEl);
-  d.appendChild(dotEl);
-  wrap.appendChild(d);
-  wrap.scrollTop = wrap.scrollHeight;
-}
-function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
-
-// ═══════════════════════════════════════════
-//  ✅ გამოსწორება #3: AI System Prompt
-//  "Nobel's Day" აღიარებულია სახელად — წინააღმდეგობა აღმოფხვრილია.
-//  System prompt ახლა ეხება SYSSA-ს ღონისძიებას სწორი სახელებით.
-// ═══════════════════════════════════════════
-let chatHistory = [];
-const MAX_HISTORY_MSGS = 6;
-
-function buildSystemPrompt() {
-  const cur = AGENDA.find(a => a.id === currentId);
-  const nxt = getNext(currentId);
-  const now = Date.now();
-  const confStart = CONF_START.getTime();
-  const beforeConf = now < confStart;
-  let timeUntil = '';
-  if (beforeConf) {
-    const diff = confStart - now;
-    const d = Math.floor(diff / 86400000),
-          h = Math.floor((diff % 86400000) / 3600000),
-          m = Math.floor((diff % 3600000) / 60000);
-    timeUntil = `${d} day(s), ${h} hour(s), and ${m} minute(s)`;
-  }
-
-  // ✅ სახელების წინააღმდეგობა აღმოფხვრილია:
-  //    AI-ს ეუბნება ღონისძიების სრული სახელი — იყენებს ორივეს სწორად
-  return `You are the official AI Assistant for the SYSSA XIII Scientific Session — A Nobel's Day conference. Your goal is to assist participants with any organizational or content-related questions in real-time.
-
-The official name of this event is "SYSSA XIII Scientific Session: A Nobel's Day". You may refer to it as "SYSSA" or "A Nobel's Day" or the full name — all are correct and acceptable. Never use "XI International Conference" when referring to this SYSSA event.
-
-CONFERENCE STATUS: ${beforeConf
-  ? `NOT STARTED YET. The conference begins on June 13, 2026 at 09:00 AM. Time remaining: approximately ${timeUntil}.`
-  : 'IN PROGRESS.'}
-
-${beforeConf
-  ? `CRITICAL: Since the conference has not started yet, if anyone asks "who is speaking now", "what is the current topic", or "who is next" — answer that the conference has not started yet and tell them how much time is left.`
-  : `Live Status:
-- Current Speaker: ${cur ? cur.speaker : '—'}
-- Current Topic: ${cur ? (cur.title.split('\n')[0] || '') : '—'}
-- Next Speaker: ${nxt ? nxt.speaker : 'Conference Concluded'}
-- Next Topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}
-Answer "who is speaking now", "who is next" using this live data.`}
-
-General conference topics include: cardiology, neurology, pediatrics, obstetrics and gynecology, pharmacology, stem cells, medical education, and more.
-
-Key Information (FAQ):
-- Registration opens June 13 at exactly 09:00 AM.
-- Certificates are sent via email within 24 hours after check-out on the second day. Both check-in and check-out via QR code on both days are mandatory.
-- Coffee Break: 09:30. Lunch Break: 13:00 to 14:00.
-- WiFi or room questions: direct participants to the organizing team on-site.
-- This platform and AI Assistant were created by Giorgi Eliashvili.
-
-SYSSA Board:
+SYSSA Board Members and Their Responsibilities:
 - Mariam Chubinidze — President
 - Elene Imnaishvili — Vice President
-- Giorgi Eliashvili — Head of IT (Technologies and digital platform)
+- Giorgi Eliashvili — Head of IT Department (Technologies, digital systems, and platform)
 - Lika Khalvashi — General Secretary
 - Sameer Khan — Head of Information Department
 - Aravind Unnikrishnan — Treasurer / Financial Manager
-- Giorgi Riabinkin — Head of Research Department
-- Aleksandra Nadiradze / Aleksandre Ramishvili — Ph.D. Representatives
+- Giorgi Riabinkin — Head of Research Department (Promoting student scientific research)
+- Aleksandra Nadiradze / Aleksandre Ramishvili — Ph.D. Representatives (Communication and coordination with Ph.D. students)
 
-Response Rules (STRICT):
-1. Start your response directly — no intro phrases like "Great question".
-2. Never use bold (**), markdown headers, or colons at the start of a phrase.
-3. Be concise — 1 to 2 sentences maximum. Get to the point immediately.
-4. Use at most 1 or 2 emojis where natural (e.g. 🎓 ✅ 📋 🕘).
-5. LANGUAGE RULE — CRITICAL: Respond in exactly the same language the user wrote in. Georgian question = Georgian answer. English question = English answer. Never mix languages.`;
+Strict Response Rules:
+1. Start your response directly, without any introduction or phrases like "What a great question".
+2. Never use bold text (**), headings, or colons (:) at the beginning of a phrase in your final output text.
+3. Be as concise as possible — the response must consist of only 1 or 2 sentences. Get straight to the point immediately.
+4. Where natural, use a maximum of 1-2 emojis (e.g., 🎓, 🕘, ✅, 📋).
+5. Language Rule (CRITICAL): Respond exactly in the same language the question was asked (in Georgian for Georgian questions, in English for English questions). Never mix languages.`;
 }
 
-// ═══════════════════════════════════════════
-//  ✅ გამოსწორება #4: getAIReply
-//  chatHistory push მხოლოდ ერთხელ ხდება — retry-ზე არ ემატება
-//  წარუმატებელი AI reply ისტორიაში არ რჩება
-// ═══════════════════════════════════════════
-async function getAIReply(userMessage, retries = 3) {
-  const sys = buildSystemPrompt();
-
-  // ✅ push მხოლოდ ერთხელ — retry-ის გარეთ
-  chatHistory.push({role: 'user', content: userMessage});
-  if (chatHistory.length > MAX_HISTORY_MSGS)
-    chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY_MSGS);
-
-  let lastError = null;
-
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      const resp = await fetch('https://wxhaukichoycniioakbo.supabase.co/functions/v1/claude-proxy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + SB_KEY
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 300,
-          temperature: 0.3,
-          system: sys,
-          messages: chatHistory
-        })
+async function getAIReply(userMessage,retries=3){
+  const sys=buildSystemPrompt();
+  chatHistory.push({role:'user',content:userMessage});
+  if(chatHistory.length>MAX_HISTORY_MSGS)chatHistory=chatHistory.slice(chatHistory.length-MAX_HISTORY_MSGS);
+  for(let attempt=1;attempt<=retries;attempt++){
+    try{
+      const resp=await fetch('https://wxhaukichoycniioakbo.supabase.co/functions/v1/claude-proxy',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw'},
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,temperature:0.3,system:sys,messages:chatHistory})
       });
-
-      if (resp.status === 429) {
-        await new Promise(r => setTimeout(r, attempt * 2000));
-        continue;
-      }
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error('Claude error: ' + (err.error?.message || resp.status));
-      }
-
-      const data  = await resp.json();
-      const reply = data.content?.[0]?.text || 'Response could not be generated.';
-
-      // ✅ push assistant reply მხოლოდ წარმატებისას
-      chatHistory.push({role: 'assistant', content: reply});
-      if (chatHistory.length > MAX_HISTORY_MSGS)
-        chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY_MSGS);
-
+      if(resp.status===429){await new Promise(r=>setTimeout(r,attempt*2000));continue;}
+      if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error('Claude error: '+(err.error?.message||resp.status));}
+      const data=await resp.json();
+      const reply=data.content?.[0]?.text||'Response could not be generated.';
+      chatHistory.push({role:'assistant',content:reply});
+      if(chatHistory.length>MAX_HISTORY_MSGS)chatHistory=chatHistory.slice(chatHistory.length-MAX_HISTORY_MSGS);
       return reply;
-
-    } catch(e) {
-      lastError = e;
-      if (attempt < retries) await new Promise(r => setTimeout(r, attempt * 1500));
-    }
+    }catch(e){if(attempt===retries)throw e;await new Promise(r=>setTimeout(r,attempt*1500));}
   }
-
-  // ✅ წარუმატებელი — user message ისტორიიდან ამოვიღოთ
-  //    რომ გაფუჭებული კონტექსტი არ დარჩეს
-  chatHistory.pop();
-  throw lastError || new Error('Max retries reached');
+  throw new Error('Max retries reached');
 }
 
-// ═══════════════════════════════════════════
-//  sendChat
-// ═══════════════════════════════════════════
-async function sendChat() {
-  const inp  = document.getElementById('chat-inp');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value    = '';
-  inp.disabled = true;
-
-  appendBubble('You', text, 'them');
-
-  // Trim visible bubbles to max 6
-  const wrap    = document.getElementById('chat-msgs');
-  const bubbles = wrap.querySelectorAll('.bubble');
-  if (bubbles.length > 6) for (let i = 0; i < bubbles.length - 6; i++) bubbles[i].remove();
-
-  // Save to Supabase (fire and forget)
-  sb.from('messages').insert({session_id: sessionId, sender: 'participant', text}).catch(() => {});
-
-  // Refresh AI enabled state
-  try {
-    const {data: st} = await sb.from('live_state').select('ai_enabled').eq('id',1).single();
-    if (st && st.ai_enabled != null) aiEnabled = Boolean(st.ai_enabled);
-  } catch(e) {}
-
-  if (!aiEnabled) { inp.disabled = false; return; }
-
+async function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';inp.disabled=true;
+  appendBubble('You',text,'them');
+  const wrap=document.getElementById('chat-msgs');
+  const bubbles=wrap.querySelectorAll('.bubble');
+  if(bubbles.length>6)for(let i=0;i<bubbles.length-6;i++)bubbles[i].remove();
+  await sb.from('messages').insert({session_id:sessionId,sender:'participant',text});
+  try{
+    const{data:st}=await sb.from('live_state').select('ai_enabled').eq('id',1).single();
+    if(st&&st.ai_enabled!=null)aiEnabled=Boolean(st.ai_enabled);
+  }catch(e){}
+  if(!aiEnabled){inp.disabled=false;return;}
   appendTyping();
-  try {
-    const aiReply = await getAIReply(text);
+  try{
+    const aiReply=await getAIReply(text);
     removeTyping();
-    sb.from('messages').insert({session_id: sessionId, sender: 'ai', text: aiReply}).catch(() => {});
-    appendBubble('AI Assistant', aiReply, 'org');
-
-    const bubblesAfter = wrap.querySelectorAll('.bubble');
-    if (bubblesAfter.length > 6) for (let i = 0; i < bubblesAfter.length - 6; i++) bubblesAfter[i].remove();
-  } catch(err) {
+    try{await sb.from('messages').insert({session_id:sessionId,sender:'ai',text:aiReply});}catch(e){}
+    appendBubble('AI Assistant',aiReply,'org');
+    const bubblesAfter=wrap.querySelectorAll('.bubble');
+    if(bubblesAfter.length>6)for(let i=0;i<bubblesAfter.length-6;i++)bubblesAfter[i].remove();
+  }catch(err){
     removeTyping();
-    appendBubble('AI Assistant', 'Connection error. Please try again.', 'org');
+    appendBubble('AI Assistant','Connection error. Please try again.','org');
   }
-  inp.disabled = false;
-  inp.focus();
+  inp.disabled=false;inp.focus();
 }
 
-// ═══════════════════════════════════════════
-//  sendFeedback
-// ═══════════════════════════════════════════
-async function sendFeedback() {
-  const text = document.getElementById('fb-ta').value.trim();
-  if (!text) return;
-  const cur = AGENDA.find(a => a.id === currentId);
-  await sb.from('feedback').insert({text, speaker: cur ? cur.speaker : '—', session_id: sessionId});
-  document.getElementById('fb-inner').innerHTML =
-    '<div style="padding:32px 16px;text-align:center;">' +
-    '<div style="font-size:20px;margin-bottom:10px;color:var(--navy)">&#10003;</div>' +
-    '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div>' +
-    '<div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div>' +
-    '</div>';
-  setTimeout(() => {
-    document.getElementById('fb-inner').innerHTML =
-      '<div class="fb-body">' +
-      '<div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div>' +
-      '<div class="fb-info">Please share your honest feedback on any topic \u2014 the good, the bad, and everything in between!</div></div>' +
-      '<div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div>' +
-      '<div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div>' +
-      '</div>';
-  }, 3000);
+async function sendFeedback(){
+  const text=document.getElementById('fb-ta').value.trim();if(!text)return;
+  const cur=AGENDA.find(a=>a.id===currentId);
+  await sb.from('feedback').insert({text,speaker:cur?cur.speaker:'—',session_id:sessionId});
+  document.getElementById('fb-inner').innerHTML='<div style="padding:32px 16px;text-align:center;"><div style="font-size:20px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
+  setTimeout(()=>{document.getElementById('fb-inner').innerHTML=`<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div><div class="fb-info">Please share your honest feedback on any topic — the good, the bad, and everything in between!</div></div><div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div><div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>`;},3000);
 }
 </script>
 </body>
 </html>
-ENDOFFILE
-echo "Done"
