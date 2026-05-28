@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>XI International Conference</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -66,18 +66,86 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ── Banner ── */
   .card-img {
-    width: 100%; height: 148px;
-    display: flex; align-items: center; justify-content: center;
-    border-bottom: 1px solid var(--border); overflow: hidden;
+    width: 100%;
+    height: 148px;
+    background: linear-gradient(135deg, #1A365D 0%, #2a5298 50%, #1a3a5c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
   }
-  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Decorative geometric elements for banner */
+  .card-img::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+  }
+  .card-img::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -20px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+
+  .banner-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .banner-roman {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+  }
+
+  .banner-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .banner-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,255,255,0.3);
+    margin: 0 auto 8px;
+  }
+
+  .banner-sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 
   .card-body   { padding: 24px 28px 28px; background: var(--surface); }
   .card-header { margin-bottom: 24px; }
 
   .card-title {
-    font-family: 'Playfair Display', 'DM Serif Display', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 24px;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -138,7 +206,7 @@
     text-underline-offset: 2px; white-space: nowrap;
   }
 
-  /* ── Location blocked panel (მხოლოდ Deny-სთვის) ── */
+  /* ── Location blocked panel ── */
   #locationBlock {
     display: none;
     background: #FFF8F6;
@@ -156,16 +224,6 @@
     font-size: 12px; font-weight: 400; color: #8B4035;
     line-height: 1.6; margin-bottom: 12px;
   }
-
-  #retryLocBtn {
-    width: 100%; padding: 10px; margin-top: 12px;
-    background: var(--navy); color: #fff;
-    border: none; border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
-    cursor: pointer; transition: opacity 0.15s;
-  }
-  #retryLocBtn:active { opacity: 0.8; }
 
   /* ── Submit ── */
   .submit {
@@ -197,13 +255,30 @@
     vertical-align: middle; margin-right: 7px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Retry counter badge ── */
+  .retry-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-soft);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+  }
 </style>
 </head>
 <body>
 
 <div class="card">
+
+  <!-- ✅ გამოსწორება #1: ბანერი — base64 ნაცვლად CSS banner -->
   <div class="card-img">
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCAGQAyADASIAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAAAAEFBgIEBwMI/8QATBAAAQMDAwIEAwYEAggEBAUFAQIDEQAEBRIhMQZBEyJRYRRxgQcjMpGhsRVCwfBS0RYkM2JyguHxU5KishdDY4MlNHN0k8IINkSz/8QAGQEBAAMBAQAAAAAAAAAAAAAAAAECAwQF/8QALhEAAgICAgEEAgECBgEBAAAAAAECEQMhEjFBBBMiUTJhcYGhFCMzQpGx8FLR/9oADAMBAAIRAxEAPwD6W4opUe1ULjoml3ooQB3o4oiihIc0GilQBRRBmigHzQTSpmgEKAaKJmhAGmDRFERQkJoBpGgbUAwaZpUGgFRRToQKgU6RoSMUGil2oA7UU4pHY0AxTPNIGmaADxS4pz60ooAoFFFAFOaD9KKARpGmaKABQYoooAFB3oooBb096Q+VP6UAUxRG1FABNKnSigHRFKaAaAKJ3imaVAFFFOgClO9OlFAMcUUdqKAKdKnQCO1FG9E0A5o5oFOgEaAKZpChAGgU9qKAKBRTFABpU6cUBjzTopLUlCVLWoJSkSpRMBI9z2oQZRtSNQ6+omrhSm8Qw/k3AYKmAA" alt="Conference banner">
+    <div class="banner-content">
+      <div class="banner-roman">XI · International</div>
+      <div class="banner-title">Conference</div>
+      <div class="banner-divider"></div>
+      <div class="banner-sub">Attendance Registration</div>
+    </div>
   </div>
 
   <div class="card-body">
@@ -243,14 +318,14 @@
         <div class="loc-text" id="locText">Detecting location…</div>
       </div>
 
-      <!-- Location blocked panel — მხოლოდ Deny-სთვის -->
+      <!-- Location blocked panel -->
       <div id="locationBlock">
-        <div class="loc-block-title" id="locBlockTitle">Location access required</div>
-        <div class="loc-block-desc" id="locBlockDesc">
+        <div class="loc-block-title">Location access required</div>
+        <div class="loc-block-desc">
           Location access is blocked in your browser settings.
           Follow the steps below to enable it, then reload the page.
         </div>
-        <div id="locBlockSteps" style="background:rgba(192,80,58,0.07); border-radius:6px; padding:12px; margin-bottom:4px;">
+        <div style="background:rgba(192,80,58,0.07); border-radius:6px; padding:12px; margin-bottom:4px;">
           <div style="font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">How to enable</div>
           <div style="font-size:11px; font-weight:400; color:#8B4035; line-height:1.9;">
             <b>iPhone (Safari):</b> Settings → Safari → Location → Allow<br>
@@ -261,6 +336,7 @@
     </div>
 
     <button class="submit" id="submit-btn" onclick="submitForm()" disabled>Confirm Attendance</button>
+    <div id="retry-info" class="retry-badge" style="display:none;"></div>
     <div class="msg" id="msg"></div>
   </div>
 </div>
@@ -275,6 +351,42 @@
   var userLat = null, userLng = null;
   var locationReady = false;
 
+  // ════════════════════════════════════════════
+  // ✅ გამოსწორება #2: Retry logic — concurrent
+  //    submit შეცდომისთვის ავტომატური retry
+  // ════════════════════════════════════════════
+  var MAX_RETRIES    = 3;
+  var RETRY_DELAY_MS = 2500;  // 2.5 წამი თითო retry-ს შემდეგ
+
+  function fetchWithRetry(url, retriesLeft, onSuccess, onFail) {
+    var retryNum = MAX_RETRIES - retriesLeft + 1;
+
+    fetch(url)
+      .then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function(result) {
+        onSuccess(result.trim());
+      })
+      .catch(function(err) {
+        if (retriesLeft > 1) {
+          // კვლავ ვცდით RETRY_DELAY_MS-ის შემდეგ
+          var retryInfo = document.getElementById('retry-info');
+          retryInfo.style.display = 'block';
+          retryInfo.textContent = 'Connection issue — retrying (' + retryNum + '/' + MAX_RETRIES + ')…';
+
+          setTimeout(function() {
+            fetchWithRetry(url, retriesLeft - 1, onSuccess, onFail);
+          }, RETRY_DELAY_MS);
+        } else {
+          // ყველა retry ამოიწურა
+          document.getElementById('retry-info').style.display = 'none';
+          onFail();
+        }
+      });
+  }
+
   // ════ Location ════
 
   function requestLocation() {
@@ -285,7 +397,6 @@
     locationReady = false;
 
     if (!navigator.geolocation) {
-      // Browser-ი საერთოდ არ უჭერს მხარს — გაუშვი off-site-ად
       _handleNoLocation('Location not supported by this browser');
       return;
     }
@@ -293,7 +404,6 @@
     if (navigator.permissions) {
       navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
         if (result.state === 'denied') {
-          // მომხმარებელმა შეგნებულად უარყო → ბლოკი
           onLocDenied();
         } else {
           _doGetPosition();
@@ -312,8 +422,8 @@
       onLocError,
       {
         enableHighAccuracy: true,
-        timeout: 20000,      // 20 წამი — შენობისთვის
-        maximumAge: 60000    // 1 წუთის cache — GPS-ი უკვე ჰქონდეს
+        timeout: 20000,
+        maximumAge: 60000
       }
     );
   }
@@ -339,19 +449,13 @@
   }
 
   function onLocError(err) {
-    // err.code === 1  → PERMISSION_DENIED  (შეგნებული deny)
-    // err.code === 2  → POSITION_UNAVAILABLE
-    // err.code === 3  → TIMEOUT (შენობაში GPS სუსტია)
-
     if (err && err.code === 1) {
       onLocDenied();
     } else {
-      // Timeout ან სიგნალი არ არის — გაუშვი, off-site დაიწერება
       _handleNoLocation('Location unavailable — will be marked off-site');
     }
   }
 
-  // Deny შემთხვევა — ბლოკი
   function onLocDenied() {
     userLat = null; userLng = null; locationReady = false;
     _setLoc('denied', 'Location access blocked', false);
@@ -360,10 +464,9 @@
     document.getElementById('submit-btn').disabled = true;
   }
 
-  // Timeout / GPS არ არის — გაუშვი off-site-ად
   function _handleNoLocation(msg) {
     userLat = null; userLng = null;
-    locationReady = true; // submit-ის უფლება ეძლევა
+    locationReady = true;
     _setLoc('offsite', msg, true);
     document.getElementById('locationBlock').style.display = 'none';
     document.getElementById('email-inp').disabled = false;
@@ -410,12 +513,13 @@
     var btn = document.getElementById('submit-btn');
     btn.disabled = false;
     btn.innerHTML = 'Confirm Attendance';
+    document.getElementById('retry-info').style.display = 'none';
 
     var map = {
-      'SUCCESS':         { text: '✅ Attendance recorded successfully!',             type: 'success' },
-      'SUCCESS_OFFSITE': { text: '✅ Attendance recorded (off-site location noted).', type: 'success' },
-      'ALREADY_DONE':    { text: '⚠️ Attendance already recorded for this slot.',    type: 'info'    },
-      'NO_CHECKIN':      { text: '⚠️ You must check in before checking out.',        type: 'info'    },
+      'SUCCESS':         { text: '✅ Attendance recorded successfully!',                type: 'success' },
+      'SUCCESS_OFFSITE': { text: '✅ Attendance recorded (off-site location noted).',   type: 'success' },
+      'ALREADY_DONE':    { text: '⚠️ Attendance already recorded for this slot.',       type: 'info'    },
+      'NO_CHECKIN':      { text: '⚠️ You must check in before checking out.',           type: 'info'    },
       'NOT_FOUND':       { text: '❌ Email not found. Please use your registered email.', type: 'error' },
       'INVALID_EMAIL':   { text: '❌ Invalid email address.',                             type: 'error' }
     };
@@ -432,7 +536,7 @@
     }
   }
 
-  // ════ Rate limiting: 7 საათი ══
+  // ════ Rate limiting: 7 საათი ════
 
   var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;
   var RATE_LIMIT_KEY = 'xi_conf_last_submit';
@@ -487,8 +591,8 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Processing…';
     showMsg('Submitting attendance…', 'info');
+    document.getElementById('retry-info').style.display = 'none';
 
-    // lat/lng null-ის შემთხვევაში "null" string-ის ნაცვლად ცარიელს ვაგზავნით
     var latParam = (userLat !== null) ? userLat : '';
     var lngParam = (userLng !== null) ? userLng : '';
 
@@ -499,15 +603,21 @@
       + '&lat='    + latParam
       + '&lng='    + lngParam;
 
-    fetch(url)
-      .then(function(r) { return r.text(); })
-      .then(function(result) { handleResult(result.trim()); })
-      .catch(function() {
+    // ✅ გამოსწორება #3: fetchWithRetry — 30 concurrent user-ის შეცდომებს
+    //    ავტომატურად გაიმეორებს 3-ჯერ 2.5 წამის ინტერვალებით
+    fetchWithRetry(
+      url,
+      MAX_RETRIES,
+      function(result) {
+        handleResult(result);
+      },
+      function() {
         var btn = document.getElementById('submit-btn');
         btn.disabled = false;
         btn.innerHTML = 'Confirm Attendance';
-        showMsg('❌ Connection error. Please try again.', 'error');
-      });
+        showMsg('❌ Connection error after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
+      }
+    );
   }
 
   // ════ Init ════
