@@ -590,7 +590,7 @@ async function getAIReply(userMessage,retries=3){
       const resp=await fetch('https://wxhaukichoycniioakbo.supabase.co/functions/v1/claude-proxy',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw'},
-        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:120,temperature:0.3,system:sys,messages:chatHistory})
+        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,temperature:0.3,system:sys,messages:chatHistory})
       });
       if(resp.status===429){await new Promise(r=>setTimeout(r,attempt*2000));continue;}
       if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error('Claude error: '+(err.error?.message||resp.status));}
