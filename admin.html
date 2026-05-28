@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SYSSA Admin — Analytics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Serif+Display&display=swap');
+:root {
+  --bg: #0D1117; --bg2: #161B22; --bg3: #1C2128;
+  --surface: #21262D; --border: #30363D; --border2: #3D444D;
+  --text: #E6EDF3; --text-dim: #8B949E; --text-faint: #484F58;
+  --navy: #388BFD; --navy-soft: rgba(56,139,253,0.1); --navy-border: rgba(56,139,253,0.3);
+  --gold: #F0B429; --gold-soft: rgba(240,180,41,0.1); --gold-border: rgba(240,180,41,0.3);
+  --green: #3FB950; --green-soft: rgba(63,185,80,0.1);
+  --red: #F85149; --red-soft: rgba(248,81,73,0.1);
+  --purple: #BC8CFF; --purple-soft: rgba(188,140,255,0.1);
+  --radius: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;}
+
+/* ── LAYOUT ── */
+.shell{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;}
+.main{flex:1;overflow:auto;}
+
+/* ── SIDEBAR ── */
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+.sb-logo-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);letter-spacing:.03em;}
+.sb-logo-sub{font-size:10px;color:var(--text-faint);margin-top:2px;letter-spacing:.06em;text-transform:uppercase;}
+.sb-nav{padding:12px 10px;flex:1;}
+.sb-section{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;padding:10px 8px 4px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:background .15s,color .15s;border:none;background:none;width:100%;text-align:left;}
+.sb-item:hover{background:var(--surface);color:var(--text);}
+.sb-item.active{background:var(--navy-soft);color:var(--navy);}
+.sb-item-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0;}
+.sb-footer{padding:14px 16px;border-top:1px solid var(--border);}
+.sb-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.sb-online{font-size:13px;font-weight:700;color:var(--green);}
+
+/* ── TOPBAR ── */
+.topbar{padding:16px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);position:sticky;top:0;z-index:10;}
+.topbar-title{font-size:14px;font-weight:700;color:var(--text);}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.tb-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
+.tb-badge-live{background:var(--green-soft);color:var(--green);border:1px solid rgba(63,185,80,.3);}
+.tb-badge-time{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);font-size:11px;font-variant-numeric:tabular-nums;}
+.topbar-refresh{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px;}
+.topbar-refresh:hover{border-color:var(--border2);color:var(--text);}
+
+/* ── CONTENT AREA ── */
+.content{padding:24px 28px;display:none;}
+.content.active{display:block;}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;}
+.stat-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1;}
+.stat-sub{font-size:11px;color:var(--text-dim);margin-top:6px;}
+.stat-card.accent-navy{border-color:var(--navy-border);background:var(--navy-soft);}
+.stat-card.accent-navy .stat-val{color:var(--navy);}
+.stat-card.accent-green{border-color:rgba(63,185,80,.3);background:var(--green-soft);}
+.stat-card.accent-green .stat-val{color:var(--green);}
+.stat-card.accent-gold{border-color:var(--gold-border);background:var(--gold-soft);}
+.stat-card.accent-gold .stat-val{color:var(--gold);}
+.stat-card.accent-purple{border-color:rgba(188,140,255,.3);background:var(--purple-soft);}
+.stat-card.accent-purple .stat-val{color:var(--purple);}
+
+/* ── SECTION HEADERS ── */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:28px;}
+.sec-title{font-size:12px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;}
+.sec-count{font-size:11px;color:var(--text-faint);}
+
+/* ── CHARTS ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;}
+.chart-title{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
+.chart-wrap{position:relative;height:180px;}
+.chart-wrap-tall{position:relative;height:220px;}
+@media(max-width:900px){.chart-grid{grid-template-columns:1fr;}}
+
+/* ── TABLES ── */
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;}
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--bg3);padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg3);}
+tbody td{padding:10px 14px;color:var(--text-dim);vertical-align:middle;}
+tbody td:first-child{color:var(--text);}
+.td-mono{font-family:monospace;font-size:11px;}
+.td-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;}
+.td-badge-mobile{background:rgba(56,139,253,.15);color:var(--navy);}
+.td-badge-desktop{background:rgba(63,185,80,.15);color:var(--green);}
+.td-badge-tablet{background:var(--gold-soft);color:var(--gold);}
+.td-badge-chat{background:var(--navy-soft);color:var(--navy);}
+.td-badge-fb{background:var(--gold-soft);color:var(--gold);}
+
+/* ── FEED ── */
+.feed{display:flex;flex-direction:column;gap:8px;}
+.feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+.feed-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.feed-sender{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+.feed-sender.participant{color:var(--navy);}
+.feed-sender.feedback{color:var(--gold);}
+.feed-text{font-size:13px;color:var(--text);line-height:1.6;}
+.feed-meta{font-size:10px;color:var(--text-faint);margin-top:4px;}
+.feed-time{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
+
+/* ── QUESTIONS ── */
+.q-list{display:flex;flex-direction:column;gap:6px;}
+.q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;}
+.q-rank{font-size:9px;font-weight:700;color:var(--text-faint);min-width:20px;}
+.q-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
+.q-count{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;}
+
+/* ── SPEAKER BARS ── */
+.speaker-bars{display:flex;flex-direction:column;gap:8px;}
+.speaker-bar-row{display:flex;align-items:center;gap:10px;}
+.speaker-bar-name{font-size:11px;color:var(--text-dim);min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.speaker-bar-track{flex:1;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden;}
+.speaker-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--purple));transition:width .6s ease;}
+.speaker-bar-count{font-size:10px;color:var(--text-faint);min-width:28px;text-align:right;}
+
+/* ── LIVE CONTROL ── */
+.control-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.control-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.control-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
+.ctrl-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;}
+.ctrl-select:focus{border-color:var(--navy-border);}
+.ctrl-btn{padding:10px 20px;border-radius:6px;border:none;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s;}
+.ctrl-btn:hover{opacity:.85;}
+.ctrl-btn-primary{background:var(--navy);color:#fff;}
+.ctrl-btn-danger{background:var(--red);color:#fff;}
+.ctrl-btn-gold{background:var(--gold);color:#000;}
+.ctrl-toggle{display:flex;align-items:center;gap:12px;margin-top:12px;}
+.toggle-sw{position:relative;width:40px;height:22px;cursor:pointer;}
+.toggle-sw input{opacity:0;width:0;height:0;}
+.toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.2s;}
+.toggle-track::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--text-dim);border-radius:50%;transition:.2s;}
+.toggle-sw input:checked + .toggle-track{background:var(--green);}
+.toggle-sw input:checked + .toggle-track::before{transform:translateX(18px);background:#fff;}
+.toggle-label{font-size:13px;color:var(--text);}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
+
+/* ── LOADING ── */
+.loading-state{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--text-faint);font-size:12px;gap:8px;}
+.spinner{width:16px;height:16px;border:1.5px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:32px;font-size:12px;color:var(--text-faint);}
+
+/* ── MISC ── */
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.pill-green{background:var(--green-soft);color:var(--green);}
+.pill-navy{background:var(--navy-soft);color:var(--navy);}
+.pill-red{background:var(--red-soft);color:var(--red);}
+
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .control-grid{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .content{padding:16px;}
+  .topbar{padding:12px 16px;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title">SYSSA Admin</div>
+      <div class="sb-logo-sub">Analytics Dashboard</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Overview</div>
+      <button class="sb-item active" onclick="showPage('overview',this)"><span class="sb-item-icon">◈</span>Overview</button>
+      <button class="sb-item" onclick="showPage('sessions',this)"><span class="sb-item-icon">◉</span>Sessions</button>
+      <div class="sb-section">Activity</div>
+      <button class="sb-item" onclick="showPage('chat',this)"><span class="sb-item-icon">◎</span>Chat & AI</button>
+      <button class="sb-item" onclick="showPage('feedback',this)"><span class="sb-item-icon">◇</span>Feedback</button>
+      <button class="sb-item" onclick="showPage('questions',this)"><span class="sb-item-icon">◈</span>Top Questions</button>
+      <div class="sb-section">Control</div>
+      <button class="sb-item" onclick="showPage('control',this)"><span class="sb-item-icon">◆</span>Live Control</button>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-status">
+        <div class="sb-dot"></div>
+        <span class="sb-online" id="sb-online">—</span>
+        <span style="font-size:11px;color:var(--text-faint)">online now</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-right">
+        <span class="tb-badge tb-badge-live">● Live</span>
+        <span class="tb-badge tb-badge-time" id="topbar-time">—</span>
+        <button class="topbar-refresh" onclick="loadAll()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="content active" id="page-overview">
+      <div class="stat-grid" id="stat-cards">
+        <div class="stat-card accent-green">
+          <div class="stat-label">Online Now</div>
+          <div class="stat-val" id="s-online">—</div>
+          <div class="stat-sub">Real-time presence</div>
+        </div>
+        <div class="stat-card accent-navy">
+          <div class="stat-label">Total Sessions</div>
+          <div class="stat-val" id="s-sessions">—</div>
+          <div class="stat-sub">Unique visitors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Visits</div>
+          <div class="stat-val" id="s-visits">—</div>
+          <div class="stat-sub">Including returns</div>
+        </div>
+        <div class="stat-card accent-gold">
+          <div class="stat-label">Chat Messages</div>
+          <div class="stat-val" id="s-msgs">—</div>
+          <div class="stat-sub">From participants</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Feedback</div>
+          <div class="stat-val" id="s-fb">—</div>
+          <div class="stat-sub">Submissions</div>
+        </div>
+        <div class="stat-card accent-purple">
+          <div class="stat-label">Avg. Time</div>
+          <div class="stat-val" id="s-time">—</div>
+          <div class="stat-sub">Minutes on page</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">Visitors by Hour</div>
+          <div class="chart-wrap"><canvas id="chart-hourly"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Device Breakdown</div>
+          <div class="chart-wrap"><canvas id="chart-device"></canvas></div>
+        </div>
+      </div>
+
+      <div class="sec-header"><div class="sec-title">Peak Viewers by Speaker</div></div>
+      <div class="chart-card" style="margin-bottom:24px;">
+        <div class="speaker-bars" id="speaker-bars">
+          <div class="loading-state"><div class="spinner"></div>Loading...</div>
+        </div>
+      </div>
+
+      <div class="sec-header"><div class="sec-title">Top Countries</div></div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Country</th><th>City</th><th>Visitors</th></tr></thead>
+            <tbody id="geo-table"><tr><td colspan="3"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SESSIONS ══ -->
+    <div class="content" id="page-sessions">
+      <div class="sec-header">
+        <div class="sec-title">All Sessions</div>
+        <div class="sec-count" id="sessions-count"></div>
+      </div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Session ID</th>
+                <th>First Seen</th>
+                <th>Last Seen</th>
+                <th>Visits</th>
+                <th>Device</th>
+                <th>Browser</th>
+                <th>OS</th>
+                <th>Country</th>
+                <th>City</th>
+                <th>ISP</th>
+                <th>Chat</th>
+                <th>Msgs</th>
+                <th>Feedback</th>
+                <th>Time (min)</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-table">
+              <tr><td colspan="14"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHAT ══ -->
+    <div class="content" id="page-chat">
+      <div class="sec-header">
+        <div class="sec-title">Chat Messages</div>
+        <div class="sec-count" id="chat-count"></div>
+      </div>
+      <div class="feed" id="chat-feed">
+        <div class="loading-state"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <!-- ══ FEEDBACK ══ -->
+    <div class="content" id="page-feedback">
+      <div class="sec-header">
+        <div class="sec-title">Feedback Submissions</div>
+        <div class="sec-count" id="fb-count"></div>
+      </div>
+      <div class="feed" id="fb-feed">
+        <div class="loading-state"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <!-- ══ QUESTIONS ══ -->
+    <div class="content" id="page-questions">
+      <div class="sec-header">
+        <div class="sec-title">Most Common Questions</div>
+      </div>
+      <div class="q-list" id="q-list">
+        <div class="loading-state"><div class="spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <!-- ══ LIVE CONTROL ══ -->
+    <div class="content" id="page-control">
+      <div class="control-grid">
+        <div class="control-card">
+          <div class="control-label">Current Speaker</div>
+          <select class="ctrl-select" id="ctrl-speaker-sel">
+            <option value="">Loading agenda...</option>
+          </select>
+          <div class="ctrl-row">
+            <button class="ctrl-btn ctrl-btn-primary" onclick="setSpeaker()">▶ Set Live</button>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-faint)" id="ctrl-speaker-status"></div>
+        </div>
+        <div class="control-card">
+          <div class="control-label">AI Assistant</div>
+          <div class="ctrl-toggle">
+            <label class="toggle-sw">
+              <input type="checkbox" id="ctrl-ai-toggle" onchange="setAI()">
+              <span class="toggle-track"></span>
+            </label>
+            <span class="toggle-label" id="ctrl-ai-label">Loading...</span>
+          </div>
+          <div style="margin-top:14px;" class="control-label">Countdown Mode</div>
+          <div class="ctrl-toggle">
+            <label class="toggle-sw">
+              <input type="checkbox" id="ctrl-cd-toggle" onchange="setCountdown()">
+              <span class="toggle-track"></span>
+            </label>
+            <span class="toggle-label" id="ctrl-cd-label">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-header" style="margin-top:0"><div class="sec-title">Reply to Participant</div></div>
+      <div class="control-card" style="margin-bottom:14px;">
+        <div class="control-label">Select Session</div>
+        <select class="ctrl-select" id="ctrl-reply-sel" style="margin-bottom:10px;">
+          <option value="">— choose a session —</option>
+        </select>
+        <div class="control-label" style="margin-top:12px;">Message</div>
+        <textarea id="ctrl-reply-text" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;" placeholder="Type a reply..."></textarea>
+        <div class="ctrl-row" style="margin-top:10px;">
+          <button class="ctrl-btn ctrl-btn-gold" onclick="sendReply()">Send Reply</button>
+          <span style="font-size:11px;color:var(--text-faint)" id="ctrl-reply-status"></span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════
+const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+
+const AGENDA = [
+  {id:1,  speaker:"Registration, Coffee Break",   isBreak:true},
+  {id:2,  speaker:"Opening Ceremony",             isBreak:true},
+  {id:3,  speaker:"Giorgi Aladashvili, MD"},
+  {id:4,  speaker:"Nino Giorgadze"},
+  {id:5,  speaker:"Anano Verdzadze"},
+  {id:6,  speaker:"Nana Megrelidze, M.D."},
+  {id:7,  speaker:"Vasil Petriashvili"},
+  {id:8,  speaker:"Ketevan Tchitchinadze, MS."},
+  {id:9,  speaker:"Anna Bechvaya, MS."},
+  {id:10, speaker:"Vera Savidi, MS."},
+  {id:11, speaker:"Taha Kassim, MS."},
+  {id:12, speaker:"Syeda Fatima Zehra"},
+  {id:13, speaker:"Lunch Break",                  isBreak:true},
+  {id:14, speaker:"Tamar Kacharava"},
+  {id:15, speaker:"Nino Khutsishvili"},
+  {id:16, speaker:"Tamar Gaprindashvili"},
+  {id:17, speaker:"Vakhtang Gurabanidze"},
+  {id:18, speaker:"Aleksandre Ramishvili"},
+  {id:19, speaker:"Elene Sherozia"},
+  {id:20, speaker:"Mariam Kacheishvili"},
+  {id:21, speaker:"David Makaridze"},
+  {id:22, speaker:"Tamta Darsalia"},
+  {id:23, speaker:"Tinatin Giuashvili"},
+  {id:24, speaker:"Ana Bedoshvili"},
+  {id:25, speaker:"Ana Khoperia"},
+  {id:26, speaker:"Mariam Gugushvili"},
+  {id:27, speaker:"Nino Zavrashvili"},
+  {id:28, speaker:"Ana Kvernadze, MD, Ph.D."},
+  {id:29, speaker:"Closing Ceremony",             isBreak:true}
+];
+
+let sb, charts = {}, onlineCount = 0;
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+window.addEventListener('load', async () => {
+  sb = supabase.createClient(SB_URL, SB_KEY);
+  tickClock();
+  setInterval(tickClock, 1000);
+  populateSpeakerSelect();
+  populateReplySelect();
+  loadAll();
+  loadControl();
+  subscribePresence();
+  setInterval(() => loadOverviewStats(), 30000);
+});
+
+function tickClock() {
+  const now = new Date();
+  document.getElementById('topbar-time').textContent =
+    now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// ════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════
+const PAGE_TITLES = {
+  overview: 'Overview', sessions: 'Sessions',
+  chat: 'Chat & AI', feedback: 'Feedback',
+  questions: 'Top Questions', control: 'Live Control'
+};
+function showPage(id, btn) {
+  document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
+  // Lazy load
+  if (id === 'sessions')  loadSessions();
+  if (id === 'chat')      loadChat();
+  if (id === 'feedback')  loadFeedback();
+  if (id === 'questions') loadQuestions();
+}
+
+// ════════════════════════════════════════════
+//  LOAD ALL (overview)
+// ════════════════════════════════════════════
+async function loadAll() {
+  await Promise.all([loadOverviewStats(), loadHourlyChart(), loadDeviceChart(), loadSpeakerPeak(), loadGeo()]);
+}
+
+// ════════════════════════════════════════════
+//  STATS
+// ════════════════════════════════════════════
+async function loadOverviewStats() {
+  try {
+    const [sessRes, msgRes, fbRes, timeRes] = await Promise.all([
+      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec', {count:'exact'}),
+      sb.from('messages').select('id', {count:'exact'}).eq('sender','participant'),
+      sb.from('feedback').select('id', {count:'exact'}),
+      sb.from('sessions').select('total_time_sec')
+    ]);
+
+    const sessions = sessRes.data || [];
+    const totalVisits = sessions.reduce((a,s) => a + (s.visit_count||1), 0);
+    const avgSec = sessions.length
+      ? sessions.reduce((a,s) => a + (s.total_time_sec||0), 0) / sessions.length
+      : 0;
+
+    document.getElementById('s-sessions').textContent = sessions.length;
+    document.getElementById('s-visits').textContent   = totalVisits;
+    document.getElementById('s-msgs').textContent     = msgRes.count || 0;
+    document.getElementById('s-fb').textContent       = fbRes.count  || 0;
+    document.getElementById('s-time').textContent     = avgSec ? (avgSec/60).toFixed(1) : '—';
+
+    // Populate reply select with sessions
+    const sel = document.getElementById('ctrl-reply-sel');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">— choose a session —</option>';
+    sessions.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.id;
+      opt.textContent = s.id + (s.chat_opened ? ' (chatted)' : '');
+      sel.appendChild(opt);
+    });
+    if (cur) sel.value = cur;
+  } catch(e) { console.warn('stats error', e); }
+}
+
+// ════════════════════════════════════════════
+//  HOURLY CHART
+// ════════════════════════════════════════════
+async function loadHourlyChart() {
+  try {
+    const {data} = await sb.from('page_events')
+      .select('created_at')
+      .eq('event_type','visit')
+      .order('created_at', {ascending:true});
+
+    const hourBuckets = {};
+    (data||[]).forEach(r => {
+      const h = new Date(r.created_at).getHours();
+      hourBuckets[h] = (hourBuckets[h]||0) + 1;
+    });
+    const labels = Array.from({length:24}, (_,i) => i + ':00');
+    const values = Array.from({length:24}, (_,i) => hourBuckets[i]||0);
+
+    const ctx = document.getElementById('chart-hourly').getContext('2d');
+    if (charts.hourly) charts.hourly.destroy();
+    charts.hourly = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: 'rgba(56,139,253,0.5)',
+          borderColor: 'rgba(56,139,253,0.9)',
+          borderWidth: 1,
+          borderRadius: 3
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {legend:{display:false}},
+        scales: {
+          x: {ticks:{color:'#484F58',font:{size:9}},grid:{color:'#21262D'}},
+          y: {ticks:{color:'#484F58',font:{size:9}},grid:{color:'#21262D'},beginAtZero:true}
+        }
+      }
+    });
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  DEVICE CHART
+// ════════════════════════════════════════════
+async function loadDeviceChart() {
+  try {
+    const {data} = await sb.from('sessions').select('device_type');
+    const counts = {mobile:0, desktop:0, tablet:0};
+    (data||[]).forEach(s => { if (s.device_type) counts[s.device_type] = (counts[s.device_type]||0) + 1; });
+
+    const ctx = document.getElementById('chart-device').getContext('2d');
+    if (charts.device) charts.device.destroy();
+    charts.device = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Mobile','Desktop','Tablet'],
+        datasets: [{
+          data: [counts.mobile, counts.desktop, counts.tablet],
+          backgroundColor: ['rgba(56,139,253,0.7)','rgba(63,185,80,0.7)','rgba(240,180,41,0.7)'],
+          borderColor: ['#388BFD','#3FB950','#F0B429'],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom',labels:{color:'#8B949E',font:{size:11},padding:16}}}
+      }
+    });
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  SPEAKER PEAK
+// ════════════════════════════════════════════
+async function loadSpeakerPeak() {
+  try {
+    const {data} = await sb.from('page_events')
+      .select('speaker_id, speaker_name')
+      .eq('event_type','heartbeat')
+      .not('speaker_id','is',null);
+
+    const counts = {};
+    (data||[]).forEach(r => {
+      const key = r.speaker_name || ('Speaker ' + r.speaker_id);
+      counts[key] = (counts[key]||0) + 1;
+    });
+
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const max = sorted[0]?.[1] || 1;
+    const container = document.getElementById('speaker-bars');
+
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No data yet</div>'; return; }
+
+    container.innerHTML = sorted.map(([name,count]) =>
+      `<div class="speaker-bar-row">
+        <div class="speaker-bar-name">${name}</div>
+        <div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count/max*100)}%"></div></div>
+        <div class="speaker-bar-count">${count}</div>
+       </div>`
+    ).join('');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  GEO TABLE
+// ════════════════════════════════════════════
+async function loadGeo() {
+  try {
+    const {data} = await sb.from('sessions').select('country,city');
+    const counts = {};
+    (data||[]).forEach(s => {
+      const key = (s.country||'Unknown') + '||' + (s.city||'—');
+      counts[key] = (counts[key]||0) + 1;
+    });
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,20);
+    const tbody = document.getElementById('geo-table');
+    if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No data yet</div></td></tr>'; return; }
+    tbody.innerHTML = sorted.map(([key,count]) => {
+      const [country,city] = key.split('||');
+      return `<tr><td>${country}</td><td style="color:var(--text-faint)">${city}</td><td><span class="pill pill-navy">${count}</span></td></tr>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  SESSIONS TABLE
+// ════════════════════════════════════════════
+async function loadSessions() {
+  try {
+    const {data} = await sb.from('sessions').select('*').order('last_seen',{ascending:false});
+    const tbody = document.getElementById('sessions-table');
+    document.getElementById('sessions-count').textContent = (data||[]).length + ' sessions';
+    if (!(data||[]).length) { tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>'; return; }
+    tbody.innerHTML = (data||[]).map(s => {
+      const deviceBadge = s.device_type
+        ? `<span class="td-badge td-badge-${s.device_type||'desktop'}">${s.device_type||'—'}</span>` : '—';
+      const chatBadge  = s.chat_opened ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
+      const fbBadge    = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
+      const firstSeen  = s.first_seen ? new Date(s.first_seen).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'}) : '—';
+      const lastSeen   = s.last_seen  ? new Date(s.last_seen).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'})  : '—';
+      const mins       = s.total_time_sec ? Math.round(s.total_time_sec/60) : 0;
+      return `<tr>
+        <td class="td-mono">${s.id}</td>
+        <td>${firstSeen}</td>
+        <td>${lastSeen}</td>
+        <td style="text-align:center">${s.visit_count||1}</td>
+        <td>${deviceBadge}</td>
+        <td style="color:var(--text-faint)">${s.browser||'—'}</td>
+        <td style="color:var(--text-faint)">${s.os||'—'}</td>
+        <td>${s.country||'—'}</td>
+        <td style="color:var(--text-faint)">${s.city||'—'}</td>
+        <td style="color:var(--text-faint);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.isp||'—'}</td>
+        <td>${chatBadge}</td>
+        <td style="text-align:center">${s.chat_msg_count||0}</td>
+        <td>${fbBadge}</td>
+        <td style="text-align:center">${mins > 0 ? mins + 'm' : '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) { document.getElementById('sessions-table').innerHTML = '<tr><td colspan="14"><div class="empty-state">Error loading sessions</div></td></tr>'; }
+}
+
+// ════════════════════════════════════════════
+//  CHAT FEED
+// ════════════════════════════════════════════
+async function loadChat() {
+  try {
+    const {data, count} = await sb.from('messages')
+      .select('*', {count:'exact'})
+      .eq('sender','participant')
+      .order('created_at',{ascending:false})
+      .limit(100);
+    document.getElementById('chat-count').textContent = (count||0) + ' messages';
+    const feed = document.getElementById('chat-feed');
+    if (!(data||[]).length) { feed.innerHTML = '<div class="empty-state">No chat messages yet</div>'; return; }
+    feed.innerHTML = (data||[]).map(m => {
+      const t = new Date(m.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+      return `<div class="feed-item">
+        <div class="feed-item-top">
+          <span class="feed-sender participant">${m.session_id}</span>
+          <span class="feed-time">${t}</span>
+        </div>
+        <div class="feed-text">${escHtml(m.text)}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  FEEDBACK FEED
+// ════════════════════════════════════════════
+async function loadFeedback() {
+  try {
+    const {data, count} = await sb.from('feedback')
+      .select('*', {count:'exact'})
+      .order('created_at',{ascending:false});
+    document.getElementById('fb-count').textContent = (count||0) + ' submissions';
+    const feed = document.getElementById('fb-feed');
+    if (!(data||[]).length) { feed.innerHTML = '<div class="empty-state">No feedback yet</div>'; return; }
+    feed.innerHTML = (data||[]).map(f => {
+      const t = new Date(f.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+      return `<div class="feed-item">
+        <div class="feed-item-top">
+          <span class="feed-sender feedback">Feedback</span>
+          <span class="feed-time">${t}</span>
+        </div>
+        <div class="feed-text">${escHtml(f.text)}</div>
+        ${f.speaker ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  COMMON QUESTIONS
+// ════════════════════════════════════════════
+async function loadQuestions() {
+  try {
+    const {data} = await sb.from('messages')
+      .select('text')
+      .eq('sender','participant');
+
+    const counts = {};
+    (data||[]).forEach(m => {
+      const t = (m.text||'').trim().toLowerCase();
+      if (t.length > 2) counts[m.text.trim()] = (counts[m.text.trim()]||0) + 1;
+    });
+    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,30);
+    const container = document.getElementById('q-list');
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
+    container.innerHTML = sorted.map(([text,count],i) =>
+      `<div class="q-item">
+        <div class="q-rank">#${i+1}</div>
+        <div class="q-text">${escHtml(text)}</div>
+        <div class="q-count">×${count}</div>
+       </div>`
+    ).join('');
+  } catch(e) {}
+}
+
+// ════════════════════════════════════════════
+//  ONLINE PRESENCE
+// ════════════════════════════════════════════
+function subscribePresence() {
+  const room = sb.channel('presence_room');
+  room.on('presence', {event: 'sync'}, () => {
+    const state = room.presenceState();
+    const count = Object.keys(state).length;
+    onlineCount = count;
+    document.getElementById('s-online').textContent    = count;
+    document.getElementById('sb-online').textContent   = count;
+  }).subscribe();
+}
+
+// ════════════════════════════════════════════
+//  LIVE CONTROL
+// ════════════════════════════════════════════
+function populateSpeakerSelect() {
+  const sel = document.getElementById('ctrl-speaker-sel');
+  sel.innerHTML = AGENDA.map(a =>
+    `<option value="${a.id}">${a.id}. ${a.speaker}${a.isBreak?' (break)':''}</option>`
+  ).join('');
+}
+
+function populateReplySelect() {
+  // Will be populated dynamically after sessions load
+}
+
+async function loadControl() {
+  try {
+    const {data} = await sb.from('live_state').select('*').eq('id',1).single();
+    if (!data) return;
+    document.getElementById('ctrl-speaker-sel').value = data.current_id;
+    const aiToggle = document.getElementById('ctrl-ai-toggle');
+    aiToggle.checked = Boolean(data.ai_enabled);
+    document.getElementById('ctrl-ai-label').textContent = aiToggle.checked ? 'AI Enabled' : 'AI Disabled';
+    const cdToggle = document.getElementById('ctrl-cd-toggle');
+    cdToggle.checked = Boolean(data.show_countdown);
+    document.getElementById('ctrl-cd-label').textContent = cdToggle.checked ? 'Countdown ON' : 'Countdown OFF';
+  } catch(e) {}
+}
+
+async function setSpeaker() {
+  const sel = document.getElementById('ctrl-speaker-sel');
+  const id  = parseInt(sel.value);
+  const status = document.getElementById('ctrl-speaker-status');
+  status.textContent = 'Saving...';
+  try {
+    await sb.from('live_state').update({
+      current_id: id,
+      speaker_started_at: new Date().toISOString()
+    }).eq('id',1);
+    status.textContent = '✓ Speaker updated at ' + new Date().toLocaleTimeString();
+    status.style.color = 'var(--green)';
+  } catch(e) {
+    status.textContent = '✗ Error: ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+}
+
+async function setAI() {
+  const tog = document.getElementById('ctrl-ai-toggle');
+  const label = document.getElementById('ctrl-ai-label');
+  label.textContent = 'Saving...';
+  try {
+    await sb.from('live_state').update({ai_enabled: tog.checked}).eq('id',1);
+    label.textContent = tog.checked ? 'AI Enabled' : 'AI Disabled';
+  } catch(e) { label.textContent = 'Error'; }
+}
+
+async function setCountdown() {
+  const tog = document.getElementById('ctrl-cd-toggle');
+  const label = document.getElementById('ctrl-cd-label');
+  label.textContent = 'Saving...';
+  try {
+    await sb.from('live_state').update({show_countdown: tog.checked}).eq('id',1);
+    label.textContent = tog.checked ? 'Countdown ON' : 'Countdown OFF';
+  } catch(e) { label.textContent = 'Error'; }
+}
+
+async function sendReply() {
+  const sel    = document.getElementById('ctrl-reply-sel');
+  const text   = document.getElementById('ctrl-reply-text').value.trim();
+  const status = document.getElementById('ctrl-reply-status');
+  if (!sel.value || !text) { status.textContent = 'Select a session and enter a message'; status.style.color='var(--red)'; return; }
+  status.textContent = 'Sending...'; status.style.color = 'var(--text-faint)';
+  try {
+    await sb.from('messages').insert({session_id: sel.value, sender: 'organizer', text});
+    document.getElementById('ctrl-reply-text').value = '';
+    status.textContent = '✓ Sent!'; status.style.color = 'var(--green)';
+    setTimeout(() => { status.textContent = ''; }, 3000);
+  } catch(e) {
+    status.textContent = '✗ Error: ' + e.message; status.style.color = 'var(--red)';
+  }
+}
+
+// ════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
