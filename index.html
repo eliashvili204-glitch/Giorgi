@@ -783,7 +783,7 @@ async function sendChat() {
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
 
-  if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'participant', text}).catch(() => {});
+  if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'participant', text}).then(() => {}).catch(() => {});
 
   try {
     const {data: st} = await sb.from('live_state').select('ai_enabled').eq('id',1).single();
@@ -800,7 +800,7 @@ async function sendChat() {
   try {
     const reply = await getAIReply(text);
     removeTyping();
-    if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'ai', text: reply}).catch(() => {});
+    if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'ai', text: reply}).then(() => {}).catch(() => {});
     appendBubble('AI Assistant', reply, 'org');
   } catch(e) {
     removeTyping();
