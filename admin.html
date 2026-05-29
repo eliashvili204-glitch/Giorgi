@@ -226,6 +226,9 @@ tbody td:first-child{color:var(--text);}
 .status-err{color:var(--red);}
 .status-info{color:var(--text-faint);}
 
+/* ── WORKSHOP REGISTERED TABLE ── */
+.workshop-reg-count{display:inline-flex;align-items:center;gap:6px;background:rgba(240,180,41,0.12);border:1px solid var(--gold-border);border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--gold);}
+
 /* ════════════ MOBILE ════════════ */
 @media(max-width:768px){
   .sidebar{display:none;}
@@ -451,6 +454,7 @@ tbody td:first-child{color:var(--text);}
       </div>
 
       <div class="control-grid">
+        <!-- Jump to Speaker -->
         <div class="control-card">
           <div class="control-label">Jump to Speaker</div>
           <select class="ctrl-select" id="ctrl-speaker-sel" onchange="jumpSpeaker()">
@@ -458,6 +462,8 @@ tbody td:first-child{color:var(--text);}
           </select>
           <div style="margin-top:8px;font-size:11px;color:var(--text-faint)">სიიდან პირდაპირ გადახტომა</div>
         </div>
+
+        <!-- Toggles -->
         <div class="control-card">
           <div class="control-label">AI Assistant</div>
           <div class="ctrl-toggle">
@@ -467,6 +473,7 @@ tbody td:first-child{color:var(--text);}
             </label>
             <span class="toggle-label" id="ctrl-ai-label">Loading...</span>
           </div>
+
           <div style="margin-top:14px;" class="control-label">Countdown Mode</div>
           <div class="ctrl-toggle">
             <label class="toggle-sw">
@@ -475,6 +482,16 @@ tbody td:first-child{color:var(--text);}
             </label>
             <span class="toggle-label" id="ctrl-cd-label">Loading...</span>
           </div>
+
+          <div style="margin-top:14px;" class="control-label">Workshop Registration</div>
+          <div class="ctrl-toggle">
+            <label class="toggle-sw">
+              <input type="checkbox" id="ctrl-ws-toggle" onchange="setWorkshop()">
+              <span class="toggle-track"></span>
+            </label>
+            <span class="toggle-label" id="ctrl-ws-label">Loading...</span>
+          </div>
+          <div style="margin-top:6px;font-size:10px;color:var(--text-faint)">Participant-ებს workshop registration card-ს უჩვენებს</div>
         </div>
       </div>
 
@@ -585,7 +602,6 @@ window.addEventListener('load', async () => {
   await loadAll();
   await loadControl();
   subscribePresence();
-  // Auto-refresh stats every 30s
   setInterval(loadOverviewStats, 30000);
 });
 
@@ -630,7 +646,6 @@ async function switchEpoch(epoch) {
   currentEpoch = epoch;
   renderEpochBar();
   await loadAll();
-  // Also reload whichever sub-page is currently active
   const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
   if (activePage === 'sessions')  loadSessions();
   if (activePage === 'chat')      loadChat();
@@ -698,13 +713,11 @@ function showPage(id, btn, source) {
   document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
   if (btn) btn.classList.add('active');
 
-  // Sync the other nav (sidebar <-> mobile)
   const otherSelector = source === 'mob' ? '.sb-item' : '.mob-nav-item';
   document.querySelectorAll(otherSelector).forEach(el => {
     if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
   });
 
-  // Lazy-load page data
   if (id === 'sessions')  loadSessions();
   if (id === 'chat')      loadChat();
   if (id === 'feedback')  loadFeedback();
@@ -751,7 +764,6 @@ async function loadOverviewStats() {
     document.getElementById('s-fb').textContent       = fbRes.count  ?? 0;
     document.getElementById('s-time').textContent     = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
 
-    // Populate reply dropdown
     const sel = document.getElementById('ctrl-reply-sel');
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
@@ -783,7 +795,7 @@ async function loadDeviceTimeBreakdown() {
     (data || []).forEach(s => {
       const dt = (s.device_type || 'desktop').toLowerCase();
       if (groups[dt]) groups[dt].push(s);
-      else groups['desktop'].push(s); // fallback
+      else groups['desktop'].push(s);
     });
 
     const deviceMeta = {
@@ -1062,7 +1074,7 @@ async function loadChat() {
 
     feed.innerHTML = (data || []).map(m => {
       const t = new Date(m.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
-      const senderClass = m.sender === 'organizer' ? 'organizer' : m.sender === 'participant' ? 'participant' : 'participant';
+      const senderClass = m.sender === 'organizer' ? 'organizer' : 'participant';
       const senderLabel = m.sender === 'organizer' ? '🏢 Organizer' : escHtml((m.session_id || '').substring(0, 16) + '…');
       return `<div class="feed-item">
         <div class="feed-item-top">
@@ -1154,9 +1166,7 @@ async function loadQuestions() {
 //  PRESENCE (online count)
 // ════════════════════════════════════════════
 function subscribePresence() {
-  if (presenceChannel) {
-    sb.removeChannel(presenceChannel);
-  }
+  if (presenceChannel) sb.removeChannel(presenceChannel);
   presenceChannel = sb.channel('presence_room');
   presenceChannel.on('presence', { event: 'sync' }, () => {
     const count = Object.keys(presenceChannel.presenceState()).length;
@@ -1208,6 +1218,10 @@ async function loadControl() {
     const cdToggle = document.getElementById('ctrl-cd-toggle');
     cdToggle.checked = Boolean(data.show_countdown);
     document.getElementById('ctrl-cd-label').textContent = cdToggle.checked ? 'Countdown ON' : 'Countdown OFF';
+
+    const wsToggle = document.getElementById('ctrl-ws-toggle');
+    wsToggle.checked = Boolean(data.show_workshop);
+    document.getElementById('ctrl-ws-label').textContent = wsToggle.checked ? 'Workshop ON' : 'Workshop OFF';
   } catch(e) {
     console.warn('Control load error:', e.message);
   }
@@ -1254,7 +1268,7 @@ async function setAI() {
     label.textContent = tog.checked ? 'AI Enabled' : 'AI Disabled';
   } catch(e) {
     label.textContent = '✗ Error';
-    tog.checked = !tog.checked; // revert
+    tog.checked = !tog.checked;
   }
 }
 
@@ -1268,7 +1282,21 @@ async function setCountdown() {
     label.textContent = tog.checked ? 'Countdown ON' : 'Countdown OFF';
   } catch(e) {
     label.textContent = '✗ Error';
-    tog.checked = !tog.checked; // revert
+    tog.checked = !tog.checked;
+  }
+}
+
+async function setWorkshop() {
+  const tog   = document.getElementById('ctrl-ws-toggle');
+  const label = document.getElementById('ctrl-ws-label');
+  label.textContent = 'Saving...';
+  try {
+    const { error } = await sb.from('live_state').update({ show_workshop: tog.checked }).eq('id', 1);
+    if (error) throw error;
+    label.textContent = tog.checked ? 'Workshop ON' : 'Workshop OFF';
+  } catch(e) {
+    label.textContent = '✗ Error';
+    tog.checked = !tog.checked;
   }
 }
 
