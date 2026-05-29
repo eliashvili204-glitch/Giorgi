@@ -440,6 +440,65 @@ async function registerWorkshop() {
   mig.classList.add('show');
 
   try {
+    // 1. Workshop registration
+    const { error: wErr } = await sb.from('workshop_registrations').insert({
+      email:       email,
+      session_id:  sessionId,
+      reset_epoch: currentEpoch
+    });
+    if (wErr && wErr.code !== '23505') throw wErr;
+
+    // 2. Session-ზე email დაწერა
+    await sb.from('sessions').update({ participant_email: email })
+      .eq('id', sessionId);
+
+    // 3. ყველა წინა message განახლება
+    await sb.from('messages')
+      .update({ participant_email: email })
+      .eq('session_id', sessionId);
+
+    // 4. ყველა წინა feedback განახლება
+    await sb.from('feedback')
+      .update({ participant_email: email })
+      .eq('session_id', sessionId);
+
+    participantEmail = email;
+    localStorage.setItem('syssa_workshop_email', email);
+
+    document.getElementById('workshop-form').style.display = 'none';
+    document.getElementById('workshop-done').style.display = 'block';
+    document.getElementById('workshop-done-email').textContent = email;
+
+  } catch(e) {
+    err.textContent = 'Registration failed. Please try again.';
+    err.classList.add('show');
+    inp.classList.add('err');
+    btn.disabled = false;
+    inp.disabled = false;
+  } finally {
+    mig.classList.remove('show');
+  }
+}
+  const inp   = document.getElementById('workshop-email-inp');
+  const btn   = document.getElementById('workshop-btn');
+  const err   = document.getElementById('workshop-err');
+  const mig   = document.getElementById('workshop-migrating');
+  const email = (inp.value || '').trim().toLowerCase();
+
+  err.classList.remove('show');
+  inp.classList.remove('err');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    inp.classList.add('err');
+    err.textContent = 'Please enter a valid email address.';
+    err.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  inp.disabled = true;
+  mig.classList.add('show');
+
+  try {
     const { error: wErr } = await sb.from('workshop_registrations').insert({
       email:       email,
       session_id:  sessionId,
