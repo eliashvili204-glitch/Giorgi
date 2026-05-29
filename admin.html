@@ -119,11 +119,9 @@ tbody td:first-child{color:var(--text);}
 .td-badge-chat{background:var(--navy-soft);color:var(--navy);}
 .td-badge-fb{background:var(--gold-soft);color:var(--gold);}
 
-/* ── ACTIVITY BUTTON ── */
 .activity-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;color:var(--text-faint);cursor:pointer;transition:all .15s;white-space:nowrap;}
 .activity-btn:hover{border-color:var(--navy-border);color:var(--navy);}
 
-/* ── ACTIVITY MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px);transition:transform .2s;}
@@ -138,7 +136,6 @@ tbody td:first-child{color:var(--text);}
 .modal-body::-webkit-scrollbar{width:4px;}
 .modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-/* ── ACTIVITY TIMELINE ── */
 .activity-section-title{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
 .activity-section-title::before{content:'';flex:none;width:16px;height:1px;background:var(--border);}
 .activity-section-title:first-child{margin-top:0;}
@@ -166,6 +163,55 @@ tbody td:first-child{color:var(--text);}
 .activity-stat-chip-val{font-size:18px;font-weight:700;color:var(--text);}
 .activity-stat-chip-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;}
 
+/* ══ CHAT CONVERSATIONS ══ */
+.conv-list{display:flex;flex-direction:column;gap:12px;}
+.conv-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
+.conv-card:hover{border-color:var(--border2);}
+.conv-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none;}
+.conv-header:hover{background:var(--bg3);}
+.conv-header-left{display:flex;align-items:center;gap:10px;min-width:0;}
+.conv-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy-soft);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.conv-identity{min-width:0;}
+.conv-email{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-sid{font-size:10px;color:var(--text-faint);font-family:monospace;}
+.conv-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.conv-msg-count{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);}
+.conv-ai-toggle{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-size:10px;font-weight:700;transition:all .15s;white-space:nowrap;}
+.conv-ai-toggle.ai-on{border-color:var(--green);color:var(--green);background:var(--green-soft);}
+.conv-ai-toggle.ai-off{border-color:var(--red);color:var(--red);background:var(--red-soft);}
+.conv-ai-toggle.ai-global{border-color:var(--border);color:var(--text-faint);background:var(--bg3);}
+.conv-chevron{font-size:10px;color:var(--text-faint);transition:transform .2s;flex-shrink:0;}
+.conv-chevron.open{transform:rotate(180deg);}
+.conv-body{display:none;border-top:1px solid var(--border);}
+.conv-body.open{display:flex;flex-direction:column;}
+.conv-messages{padding:14px 16px;display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;}
+.conv-messages::-webkit-scrollbar{width:3px;}
+.conv-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.msg-bubble{display:flex;flex-direction:column;gap:3px;max-width:85%;}
+.msg-bubble.participant{align-self:flex-start;}
+.msg-bubble.ai{align-self:flex-end;}
+.msg-bubble.organizer{align-self:flex-end;}
+.msg-bubble-inner{padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;word-break:break-word;}
+.msg-bubble.participant .msg-bubble-inner{background:var(--bg3);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--text);}
+.msg-bubble.ai .msg-bubble-inner{background:var(--purple-soft);border:1px solid rgba(188,140,255,.3);border-bottom-right-radius:3px;color:var(--text);}
+.msg-bubble.organizer .msg-bubble-inner{background:var(--navy-soft);border:1px solid var(--navy-border);border-bottom-right-radius:3px;color:var(--text);}
+.msg-bubble-meta{font-size:9px;color:var(--text-faint);display:flex;align-items:center;gap:4px;}
+.msg-bubble.participant .msg-bubble-meta{align-self:flex-start;}
+.msg-bubble.ai .msg-bubble-meta,.msg-bubble.organizer .msg-bubble-meta{align-self:flex-end;}
+.msg-sender-label{font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.msg-sender-participant{color:var(--navy);}
+.msg-sender-ai{color:var(--purple);}
+.msg-sender-organizer{color:var(--green);}
+.conv-reply-area{padding:12px 16px;border-top:1px solid var(--border);background:var(--bg3);display:flex;gap:8px;align-items:flex-end;}
+.conv-reply-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:40px;max-height:120px;line-height:1.5;transition:border-color .15s;}
+.conv-reply-inp:focus{border-color:var(--navy-border);}
+.conv-reply-inp::placeholder{color:var(--text-faint);}
+.conv-reply-btn{background:var(--navy);border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;transition:opacity .15s;flex-shrink:0;}
+.conv-reply-btn:hover{opacity:.85;}
+.conv-reply-btn:disabled{opacity:.4;cursor:not-allowed;}
+.conv-reply-status{font-size:10px;padding:4px 0;color:var(--green);}
+
+/* ══ EXISTING FEED / Q / SPEAKER STYLES ══ */
 .feed{display:flex;flex-direction:column;gap:8px;}
 .feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;transition:border-color .15s;}
 .feed-item:hover{border-color:var(--border2);}
@@ -259,7 +305,6 @@ tbody td:first-child{color:var(--text);}
 .status-err{color:var(--red);}
 .status-info{color:var(--text-faint);}
 
-/* realtime flash animation */
 @keyframes flash-row{0%{background:rgba(56,139,253,.18)}100%{background:transparent}}
 .row-flash{animation:flash-row 1.5s ease-out;}
 
@@ -283,10 +328,7 @@ tbody td:first-child{color:var(--text);}
   .snc-name{font-size:18px;}
   .snc-name-next{font-size:15px;}
   .modal-box{max-height:92vh;}
-}
-@media(max-width:400px){
-  .stat-grid{grid-template-columns:1fr 1fr;}
-  .stat-val{font-size:22px;}
+  .conv-ai-toggle span:last-child{display:none;}
 }
 </style>
 </head>
@@ -456,10 +498,10 @@ tbody td:first-child{color:var(--text);}
     <!-- ══ CHAT ══ -->
     <div class="content" id="page-chat">
       <div class="sec-header">
-        <div class="sec-title">Chat Messages</div>
+        <div class="sec-title">Chat Conversations</div>
         <div class="sec-count" id="chat-count"></div>
       </div>
-      <div class="feed" id="chat-feed">
+      <div class="conv-list" id="conv-list">
         <div class="loading-state"><div class="spinner"></div>Loading...</div>
       </div>
     </div>
@@ -509,7 +551,6 @@ tbody td:first-child{color:var(--text);}
 
     <!-- ══ LIVE CONTROL ══ -->
     <div class="content" id="page-control">
-
       <div class="speaker-now-card" style="margin-bottom:14px;">
         <div class="snc-row">
           <div class="snc-block snc-now">
@@ -651,22 +692,20 @@ const AGENDA = [
   {id:29, speaker:"Closing Ceremony",             isBreak:true}
 ];
 
-// ════════════════════════════════
-//  STATE
-// ════════════════════════════════
+// ════ STATE ════
 let sb = null;
 let charts = {};
 let currentEpoch = 1;
 let liveEpoch = 1;
 let presenceChannel = null;
-let realtimeChannel = null; // for sessions/workshop realtime
-
-// emailMap: session_id → email  (built from workshop_registrations + sessions.participant_email)
+let realtimeChannel = null;
 let emailMap = {};
+// per-session AI override cache: sessionId → null|true|false
+let aiOverrideMap = {};
+// expanded conversation tracking
+let expandedConvs = new Set();
 
-// ════════════════════════════════
-//  INIT
-// ════════════════════════════════
+// ════ INIT ════
 window.addEventListener('load', async () => {
   sb = supabase.createClient(SB_URL, SB_KEY);
   tickClock();
@@ -677,7 +716,7 @@ window.addEventListener('load', async () => {
   await loadAll();
   await loadControl();
   subscribePresence();
-  subscribeRealtimeEmails(); // ← NEW: watch for email changes in realtime
+  subscribeRealtimeEmails();
   setInterval(loadOverviewStats, 30000);
 });
 
@@ -686,82 +725,57 @@ function tickClock() {
     new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
-// ════════════════════════════════
-//  EMAIL MAP
-//  Builds session_id → email from:
-//  1. workshop_registrations table
-//  2. sessions.participant_email column
-// ════════════════════════════════
+// ════ EMAIL MAP ════
 async function loadEmailMap() {
   try {
-    // Primary: workshop_registrations (most reliable — user typed email here)
     const { data: wData } = await sb.from('workshop_registrations').select('session_id, email');
     emailMap = {};
     (wData || []).forEach(r => {
       if (r.session_id && r.email) emailMap[r.session_id] = r.email.toLowerCase().trim();
     });
-
-    // Fallback: sessions.participant_email (written by index.html on workshop register)
-    const { data: sData } = await sb.from('sessions').select('id, participant_email');
+    const { data: sData } = await sb.from('sessions').select('id, participant_email, ai_override');
     (sData || []).forEach(s => {
       if (s.id && s.participant_email && !emailMap[s.id]) {
         emailMap[s.id] = s.participant_email.toLowerCase().trim();
       }
+      if (s.id) aiOverrideMap[s.id] = s.ai_override; // null | true | false
     });
   } catch(e) {
     console.warn('loadEmailMap error:', e.message);
   }
 }
 
-// ════════════════════════════════
-//  REALTIME EMAIL SYNC
-//  Listens for INSERT on workshop_registrations and
-//  UPDATE on sessions (participant_email column) so the
-//  emailMap updates without a manual refresh.
-// ════════════════════════════════
 function subscribeRealtimeEmails() {
   if (realtimeChannel) sb.removeChannel(realtimeChannel);
-
   realtimeChannel = sb.channel('admin_email_sync')
-    // New workshop registration
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'workshop_registrations' }, payload => {
       const r = payload.new;
       if (r && r.session_id && r.email) {
         const email = r.email.toLowerCase().trim();
         const wasUnknown = !emailMap[r.session_id];
         emailMap[r.session_id] = email;
-
-        // Silently refresh the active page's data so email shows up instantly
         refreshCurrentPageAfterEmailUpdate(r.session_id, email, wasUnknown);
       }
     })
-    // sessions row updated (participant_email set)
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'sessions' }, payload => {
       const s = payload.new;
-      if (s && s.id && s.participant_email) {
-        const email = s.participant_email.toLowerCase().trim();
-        if (!emailMap[s.id]) {
-          emailMap[s.id] = email;
-          refreshCurrentPageAfterEmailUpdate(s.id, email, true);
+      if (s && s.id) {
+        if (s.participant_email && !emailMap[s.id]) {
+          emailMap[s.id] = s.participant_email.toLowerCase().trim();
+          refreshCurrentPageAfterEmailUpdate(s.id, emailMap[s.id], true);
         }
+        // sync ai_override changes
+        aiOverrideMap[s.id] = s.ai_override;
       }
     })
     .subscribe();
 }
 
-// Called when a new email arrives via realtime.
-// Updates the currently visible page without a full reload.
 function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
   const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
-
-  // Always refresh the reply dropdown
   refreshReplySel();
-
-  if (!wasUnknown) return; // email already known, nothing changed visually
-
-  // Flash/update the sessions table row if visible
+  if (!wasUnknown) return;
   if (activePage === 'sessions') {
-    // Find the row by session ID data attribute and update the visitor cell
     const row = document.querySelector(`tr[data-sid="${CSS.escape(sessionId)}"]`);
     if (row) {
       const visitorCell = row.querySelector('td:first-child');
@@ -771,27 +785,10 @@ function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
         setTimeout(() => row.classList.remove('row-flash'), 1600);
       }
     } else {
-      // Row not in DOM yet (maybe new session), reload table
       loadSessions();
     }
   }
-
-  // Update chat feed — replace session ID labels with email
-  if (activePage === 'chat') {
-    document.querySelectorAll(`[data-sid="${CSS.escape(sessionId)}"]`).forEach(el => {
-      el.innerHTML = escHtml(email);
-      // add email tag if not already there
-      const tag = el.nextElementSibling;
-      if (!tag || !tag.classList.contains('feed-email-tag')) {
-        const span = document.createElement('span');
-        span.className = 'feed-email-tag';
-        span.textContent = email;
-        el.after(span);
-      }
-    });
-  }
-
-  // Update feedback feed
+  if (activePage === 'chat') loadChat();
   if (activePage === 'feedback') {
     document.querySelectorAll(`[data-sid="${CSS.escape(sessionId)}"]`).forEach(el => {
       el.innerHTML = escHtml(email);
@@ -799,7 +796,6 @@ function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
   }
 }
 
-// Refresh reply dropdown with latest emailMap without reload
 function refreshReplySel() {
   const sel = document.getElementById('ctrl-reply-sel');
   if (!sel) return;
@@ -809,23 +805,19 @@ function refreshReplySel() {
     const sid = opt.value;
     if (emailMap[sid]) {
       const hasMark = opt.textContent.endsWith(' ✉');
-      const base = emailMap[sid] + (hasMark ? ' ✉' : '');
-      if (opt.textContent !== base) opt.textContent = base;
+      opt.textContent = emailMap[sid] + (hasMark ? ' ✉' : '');
     }
   });
   if (cur) sel.value = cur;
 }
 
-// Helper: display label for a session
 function getSessionLabel(sessionId) {
   if (!sessionId) return '—';
   if (emailMap[sessionId]) return emailMap[sessionId];
   return sessionId.substring(0, 14) + '…';
 }
 
-// ════════════════════════════════
-//  EPOCH SYSTEM
-// ════════════════════════════════
+// ════ EPOCH ════
 async function loadEpochState() {
   try {
     const { data, error } = await sb.from('live_state').select('current_epoch').eq('id', 1).single();
@@ -834,7 +826,6 @@ async function loadEpochState() {
     currentEpoch = liveEpoch;
     renderEpochBar();
   } catch(e) {
-    console.warn('Epoch load error:', e.message);
     liveEpoch = 1; currentEpoch = 1;
     renderEpochBar();
   }
@@ -846,10 +837,7 @@ function renderEpochBar() {
   for (let i = 1; i <= liveEpoch; i++) {
     const isLive   = i === liveEpoch;
     const isActive = i === currentEpoch;
-    html += `<button
-      class="epoch-btn${isActive ? ' active' : ''}${isLive ? ' live-epoch' : ''}"
-      onclick="switchEpoch(${i})"
-    >Session ${i}</button>`;
+    html += `<button class="epoch-btn${isActive?' active':''}${isLive?' live-epoch':''}" onclick="switchEpoch(${i})">Session ${i}</button>`;
   }
   container.innerHTML = html;
 }
@@ -867,9 +855,7 @@ async function switchEpoch(epoch) {
   if (activePage === 'workshop')  loadWorkshop();
 }
 
-// ════════════════════════════════
-//  RESET
-// ════════════════════════════════
+// ════ RESET ════
 function showResetConfirm() {
   document.getElementById('reset-next-num').textContent = liveEpoch + 1;
   document.getElementById('reset-status').textContent = '';
@@ -881,16 +867,13 @@ function hideResetConfirm() {
 async function doReset() {
   const btn    = document.getElementById('reset-confirm-btn');
   const status = document.getElementById('reset-status');
-  btn.disabled = true;
-  btn.textContent = 'Processing...';
-  status.className = 'status-msg status-info';
-  status.textContent = 'Saving new epoch...';
+  btn.disabled = true; btn.textContent = 'Processing...';
+  status.className = 'status-msg status-info'; status.textContent = 'Saving new epoch...';
   try {
     const newEpoch = liveEpoch + 1;
     const { error } = await sb.from('live_state').update({ current_epoch: newEpoch }).eq('id', 1);
     if (error) throw error;
-    liveEpoch    = newEpoch;
-    currentEpoch = newEpoch;
+    liveEpoch = newEpoch; currentEpoch = newEpoch;
     renderEpochBar();
     hideResetConfirm();
     await loadAll();
@@ -899,47 +882,38 @@ async function doReset() {
     status.className = 'status-msg status-err';
     status.textContent = '✗ Error: ' + e.message;
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'დადასტურება';
+    btn.disabled = false; btn.textContent = 'დადასტურება';
   }
 }
 
-// ════════════════════════════════
-//  NAVIGATION
-// ════════════════════════════════
+// ════ NAVIGATION ════
 const PAGE_TITLES = {
-  overview: 'Overview', sessions: 'Sessions', chat: 'Chat & AI',
-  feedback: 'Feedback', questions: 'Top Questions',
-  workshop: 'Workshop Registrations', control: 'Live Control'
+  overview:'Overview', sessions:'Sessions', chat:'Chat & AI',
+  feedback:'Feedback', questions:'Top Questions',
+  workshop:'Workshop Registrations', control:'Live Control'
 };
 
 function showPage(id, btn, source) {
   document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.mob-nav-item').forEach(el => el.classList.remove('active'));
-
   document.getElementById('page-' + id).classList.add('active');
   document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
   if (btn) btn.classList.add('active');
-
   const otherSelector = source === 'mob' ? '.sb-item' : '.mob-nav-item';
   document.querySelectorAll(otherSelector).forEach(el => {
     if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
   });
-
   if (id === 'sessions')  loadSessions();
   if (id === 'chat')      loadChat();
   if (id === 'feedback')  loadFeedback();
   if (id === 'questions') loadQuestions();
   if (id === 'workshop')  loadWorkshop();
   if (id === 'control')   loadControl();
-
   window.scrollTo(0, 0);
 }
 
-// ════════════════════════════════
-//  LOAD ALL
-// ════════════════════════════════
+// ════ LOAD ALL ════
 async function loadAll() {
   await loadEmailMap();
   await Promise.allSettled([
@@ -952,19 +926,16 @@ async function loadAll() {
   ]);
 }
 
-// ════════════════════════════════
-//  OVERVIEW STATS
-// ════════════════════════════════
+// ════ OVERVIEW STATS ════
 async function loadOverviewStats() {
   try {
     const ep = currentEpoch;
     const [sessRes, msgRes, fbRes, wsRes] = await Promise.all([
-      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, participant_email').eq('reset_epoch', ep),
+      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, participant_email, ai_override').eq('reset_epoch', ep),
       sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender', 'participant').eq('reset_epoch', ep),
       sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep),
       sb.from('workshop_registrations').select('id', { count: 'exact', head: true })
     ]);
-
     const sessions    = sessRes.data || [];
     const totalVisits = sessions.reduce((a, s) => a + (s.visit_count || 1), 0);
     const totalSec    = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
@@ -977,7 +948,9 @@ async function loadOverviewStats() {
     document.getElementById('s-time').textContent      = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
     document.getElementById('s-workshop').textContent  = wsRes.count  ?? 0;
 
-    // Populate reply dropdown — show email if available
+    // Update ai override cache
+    sessions.forEach(s => { aiOverrideMap[s.id] = s.ai_override; });
+
     const sel = document.getElementById('ctrl-reply-sel');
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
@@ -990,100 +963,62 @@ async function loadOverviewStats() {
       sel.appendChild(opt);
     });
     if (cur) sel.value = cur;
-
   } catch(e) {
     console.warn('Stats error:', e.message);
   }
 }
 
-// ════════════════════════════════
-//  DEVICE TIME BREAKDOWN
-// ════════════════════════════════
+// ════ DEVICE TIME BREAKDOWN ════
 async function loadDeviceTimeBreakdown() {
   const container = document.getElementById('device-time-grid');
   try {
     const { data, error } = await sb.from('sessions')
-      .select('device_type, total_time_sec, visit_count')
-      .eq('reset_epoch', currentEpoch);
+      .select('device_type, total_time_sec, visit_count').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-
     const groups = { mobile: [], desktop: [], tablet: [] };
     (data || []).forEach(s => {
       const dt = (s.device_type || 'desktop').toLowerCase();
-      if (groups[dt]) groups[dt].push(s);
-      else groups['desktop'].push(s);
+      if (groups[dt]) groups[dt].push(s); else groups['desktop'].push(s);
     });
-
     const deviceMeta = {
-      mobile:  { label: 'Mobile',  icon: '📱', color: 'var(--navy)' },
-      desktop: { label: 'Desktop', icon: '🖥️',  color: 'var(--green)' },
-      tablet:  { label: 'Tablet',  icon: '📋', color: 'var(--gold)' },
+      mobile:  { label:'Mobile',  icon:'📱', color:'var(--navy)' },
+      desktop: { label:'Desktop', icon:'🖥️',  color:'var(--green)' },
+      tablet:  { label:'Tablet',  icon:'📋', color:'var(--gold)' },
     };
-
     const fmtMin = sec => sec > 0 ? (sec / 60).toFixed(1) + ' min' : '—';
-
     container.innerHTML = Object.entries(groups).map(([type, sessions]) => {
       const meta  = deviceMeta[type];
       const count = sessions.length;
-      if (count === 0) return `
-        <div class="device-time-card">
-          <div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div>
-          <div style="font-size:12px;color:var(--text-faint);text-align:center;padding:10px 0">No data</div>
-        </div>`;
+      if (count === 0) return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div><div style="font-size:12px;color:var(--text-faint);text-align:center;padding:10px 0">No data</div></div>`;
       const totalSec = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
       const avgSec   = totalSec / count;
       const maxSec   = Math.max(...sessions.map(s => s.total_time_sec || 0));
       const posArr   = sessions.filter(s => s.total_time_sec > 0).map(s => s.total_time_sec);
       const minSec   = posArr.length ? Math.min(...posArr) : 0;
-      return `
-        <div class="device-time-card">
-          <div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div>
-          <div class="dtc-stat-row"><span class="dtc-stat-label">Sessions</span><span class="dtc-stat-val" style="color:${meta.color}">${count}</span></div>
-          <div class="dtc-stat-row"><span class="dtc-stat-label">Avg. Time</span><span class="dtc-stat-val">${fmtMin(avgSec)}</span></div>
-          <div class="dtc-stat-row"><span class="dtc-stat-label">Total Time</span><span class="dtc-stat-val">${fmtMin(totalSec)}</span></div>
-          <div class="dtc-stat-row"><span class="dtc-stat-label">Longest</span><span class="dtc-stat-val">${fmtMin(maxSec)}</span></div>
-          <div class="dtc-stat-row"><span class="dtc-stat-label">Shortest</span><span class="dtc-stat-val">${minSec ? fmtMin(minSec) : '—'}</span></div>
-        </div>`;
+      return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Sessions</span><span class="dtc-stat-val" style="color:${meta.color}">${count}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Avg. Time</span><span class="dtc-stat-val">${fmtMin(avgSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Total Time</span><span class="dtc-stat-val">${fmtMin(totalSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Longest</span><span class="dtc-stat-val">${fmtMin(maxSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Shortest</span><span class="dtc-stat-val">${minSec ? fmtMin(minSec) : '—'}</span></div></div>`;
     }).join('');
   } catch(e) {
     container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
   }
 }
 
-// ════════════════════════════════
-//  CHARTS
-// ════════════════════════════════
+// ════ CHARTS ════
 async function loadHourlyChart() {
   try {
     const { data, error } = await sb.from('page_events')
       .select('created_at').eq('event_type', 'visit').eq('reset_epoch', currentEpoch)
       .order('created_at', { ascending: true });
     if (error) throw error;
-
     const hourBuckets = {};
-    (data || []).forEach(r => {
-      const h = new Date(r.created_at).getHours();
-      hourBuckets[h] = (hourBuckets[h] || 0) + 1;
-    });
+    (data || []).forEach(r => { const h = new Date(r.created_at).getHours(); hourBuckets[h] = (hourBuckets[h] || 0) + 1; });
     const labels = Array.from({ length: 24 }, (_, i) => i + ':00');
     const values = Array.from({ length: 24 }, (_, i) => hourBuckets[i] || 0);
-
     const ctx = document.getElementById('chart-hourly').getContext('2d');
     if (charts.hourly) { charts.hourly.destroy(); charts.hourly = null; }
     charts.hourly = new Chart(ctx, {
       type: 'bar',
-      data: {
-        labels,
-        datasets: [{ data: values, backgroundColor: 'rgba(56,139,253,0.5)', borderColor: 'rgba(56,139,253,0.9)', borderWidth: 1, borderRadius: 3 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#484F58', font: { size: 9 }, maxRotation: 0 }, grid: { color: '#21262D' } },
-          y: { ticks: { color: '#484F58', font: { size: 9 } }, grid: { color: '#21262D' }, beginAtZero: true }
-        }
-      }
+      data: { labels, datasets: [{ data: values, backgroundColor: 'rgba(56,139,253,0.5)', borderColor: 'rgba(56,139,253,0.9)', borderWidth: 1, borderRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color:'#484F58', font:{ size:9 }, maxRotation:0 }, grid:{ color:'#21262D' } }, y: { ticks: { color:'#484F58', font:{ size:9 } }, grid:{ color:'#21262D' }, beginAtZero:true } } }
     });
   } catch(e) { console.warn('Hourly chart error:', e.message); }
 }
@@ -1092,30 +1027,14 @@ async function loadDeviceChart() {
   try {
     const { data, error } = await sb.from('sessions').select('device_type').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-
     const counts = { mobile: 0, desktop: 0, tablet: 0 };
-    (data || []).forEach(s => {
-      const dt = (s.device_type || 'desktop').toLowerCase();
-      if (counts[dt] !== undefined) counts[dt]++;
-      else counts['desktop']++;
-    });
-
+    (data || []).forEach(s => { const dt = (s.device_type || 'desktop').toLowerCase(); if (counts[dt] !== undefined) counts[dt]++; else counts['desktop']++; });
     const ctx = document.getElementById('chart-device').getContext('2d');
     if (charts.device) { charts.device.destroy(); charts.device = null; }
     charts.device = new Chart(ctx, {
       type: 'doughnut',
-      data: {
-        labels: ['Mobile', 'Desktop', 'Tablet'],
-        datasets: [{
-          data: [counts.mobile, counts.desktop, counts.tablet],
-          backgroundColor: ['rgba(56,139,253,0.7)', 'rgba(63,185,80,0.7)', 'rgba(240,180,41,0.7)'],
-          borderColor: ['#388BFD', '#3FB950', '#F0B429'], borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { color: '#8B949E', font: { size: 11 }, padding: 12 } } }
-      }
+      data: { labels: ['Mobile','Desktop','Tablet'], datasets: [{ data: [counts.mobile, counts.desktop, counts.tablet], backgroundColor: ['rgba(56,139,253,0.7)','rgba(63,185,80,0.7)','rgba(240,180,41,0.7)'], borderColor: ['#388BFD','#3FB950','#F0B429'], borderWidth: 1 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position:'bottom', labels:{ color:'#8B949E', font:{ size:11 }, padding:12 } } } }
     });
   } catch(e) { console.warn('Device chart error:', e.message); }
 }
@@ -1127,22 +1046,13 @@ async function loadSpeakerPeak() {
       .select('speaker_id, speaker_name').eq('event_type', 'heartbeat').eq('reset_epoch', currentEpoch)
       .not('speaker_id', 'is', null);
     if (error) throw error;
-
     const counts = {};
-    (data || []).forEach(r => {
-      const key = r.speaker_name || ('Speaker ' + r.speaker_id);
-      counts[key] = (counts[key] || 0) + 1;
-    });
+    (data || []).forEach(r => { const key = r.speaker_name || ('Speaker ' + r.speaker_id); counts[key] = (counts[key] || 0) + 1; });
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
     const max = sorted[0]?.[1] || 1;
-
     if (!sorted.length) { container.innerHTML = '<div class="empty-state">No speaker data yet</div>'; return; }
     container.innerHTML = sorted.map(([name, count]) =>
-      `<div class="speaker-bar-row">
-        <div class="speaker-bar-name" title="${escHtml(name)}">${escHtml(name)}</div>
-        <div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count / max * 100)}%"></div></div>
-        <div class="speaker-bar-count">${count}</div>
-      </div>`
+      `<div class="speaker-bar-row"><div class="speaker-bar-name" title="${escHtml(name)}">${escHtml(name)}</div><div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count/max*100)}%"></div></div><div class="speaker-bar-count">${count}</div></div>`
     ).join('');
   } catch(e) {
     container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
@@ -1154,14 +1064,9 @@ async function loadGeo() {
   try {
     const { data, error } = await sb.from('sessions').select('country, city').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-
     const counts = {};
-    (data || []).forEach(s => {
-      const key = (s.country || 'Unknown') + '||' + (s.city || '—');
-      counts[key] = (counts[key] || 0) + 1;
-    });
+    (data || []).forEach(s => { const key = (s.country || 'Unknown') + '||' + (s.city || '—'); counts[key] = (counts[key] || 0) + 1; });
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 20);
-
     if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>'; return; }
     tbody.innerHTML = sorted.map(([key, count]) => {
       const [country, city] = key.split('||');
@@ -1172,12 +1077,7 @@ async function loadGeo() {
   }
 }
 
-// ════════════════════════════════
-//  SESSIONS TABLE
-//  — Shows email instead of session ID
-//  — Adds "Activity" button per row
-//  — data-sid attribute on each row for realtime updates
-// ════════════════════════════════
+// ════ SESSIONS TABLE ════
 async function loadSessions() {
   const tbody = document.getElementById('sessions-table');
   tbody.innerHTML = '<tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
@@ -1185,344 +1085,379 @@ async function loadSessions() {
     const { data, error } = await sb.from('sessions').select('*')
       .eq('reset_epoch', currentEpoch).order('last_seen', { ascending: false });
     if (error) throw error;
-
     document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
-
-    if (!(data || []).length) {
-      tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state">No sessions yet</div></td></tr>'; return;
-    }
-
-    const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' }) : '—';
-    const fmtTime = sec => {
-      if (!sec || sec <= 0) return '—';
-      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-      return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
-    };
-
+    if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state">No sessions yet</div></td></tr>'; return; }
+    const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' }) : '—';
+    const fmtTime = sec => { if (!sec || sec <= 0) return '—'; const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${s}s`:`${s}s`; };
     tbody.innerHTML = (data || []).map(s => {
       const devType = (s.device_type || '').toLowerCase();
-      const deviceBadge = devType
-        ? `<span class="td-badge td-badge-${devType}">${devType}</span>`
-        : '<span style="color:var(--text-faint)">—</span>';
+      const deviceBadge = devType ? `<span class="td-badge td-badge-${devType}">${devType}</span>` : '<span style="color:var(--text-faint)">—</span>';
       const chatBadge = s.chat_opened   ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
       const fbBadge   = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>'   : '<span style="color:var(--text-faint)">—</span>';
-
-      // Show email if registered, otherwise short session ID
       const email = emailMap[s.id] || s.participant_email;
-      const visitorCell = email
-        ? `<span class="td-email">${escHtml(email)}</span>`
-        : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id || '').substring(0, 12))}…</span>`;
-
-      return `<tr data-sid="${escHtml(s.id)}">
-        <td>${visitorCell}</td>
-        <td>${fmtDate(s.first_seen)}</td>
-        <td>${fmtDate(s.last_seen)}</td>
-        <td style="text-align:center">${s.visit_count || 1}</td>
-        <td>${deviceBadge}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.browser || '—')}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.os || '—')}</td>
-        <td>${escHtml(s.country || '—')}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.city || '—')}</td>
-        <td style="color:var(--text-faint);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(s.isp || '')}">${escHtml(s.isp || '—')}</td>
-        <td>${chatBadge}</td>
-        <td style="text-align:center">${s.chat_msg_count || 0}</td>
-        <td>${fbBadge}</td>
-        <td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td>
-        <td><button class="activity-btn" onclick="openActivityModal('${escHtml(s.id)}')">Activity ▸</button></td>
-      </tr>`;
+      const visitorCell = email ? `<span class="td-email">${escHtml(email)}</span>` : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id||'').substring(0,12))}…</span>`;
+      return `<tr data-sid="${escHtml(s.id)}"><td>${visitorCell}</td><td>${fmtDate(s.first_seen)}</td><td>${fmtDate(s.last_seen)}</td><td style="text-align:center">${s.visit_count||1}</td><td>${deviceBadge}</td><td style="color:var(--text-faint)">${escHtml(s.browser||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.os||'—')}</td><td>${escHtml(s.country||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.city||'—')}</td><td style="color:var(--text-faint);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(s.isp||'')}">${escHtml(s.isp||'—')}</td><td>${chatBadge}</td><td style="text-align:center">${s.chat_msg_count||0}</td><td>${fbBadge}</td><td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td><td><button class="activity-btn" onclick="openActivityModal('${escHtml(s.id)}')">Activity ▸</button></td></tr>`;
     }).join('');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="15"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
-// ════════════════════════════════
-//  ACTIVITY MODAL
-//  Shows full per-session timeline:
-//  visits, chat messages (user + AI replies), feedback, workshop reg
-// ════════════════════════════════
+// ════════════════════════════════════════════════════════
+//  CHAT CONVERSATIONS — grouped by session, with bubbles,
+//  per-session AI toggle, and inline reply
+// ════════════════════════════════════════════════════════
+async function loadChat() {
+  const container = document.getElementById('conv-list');
+  container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
+  try {
+    // Load all messages for this epoch
+    const { data: msgs, error } = await sb.from('messages')
+      .select('*').eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
+
+    // Load sessions to get ai_override
+    const { data: sessions } = await sb.from('sessions')
+      .select('id, ai_override, chat_opened').eq('reset_epoch', currentEpoch);
+    const sessionMap = {};
+    (sessions || []).forEach(s => {
+      sessionMap[s.id] = s;
+      aiOverrideMap[s.id] = s.ai_override;
+    });
+
+    // Group messages by session_id
+    const grouped = {};
+    (msgs || []).forEach(m => {
+      if (!grouped[m.session_id]) grouped[m.session_id] = [];
+      grouped[m.session_id].push(m);
+    });
+
+    // Only show sessions that have at least one participant message
+    const sessionIds = Object.keys(grouped).filter(sid =>
+      grouped[sid].some(m => m.sender === 'participant')
+    );
+
+    document.getElementById('chat-count').textContent = sessionIds.length + ' conversations';
+
+    if (!sessionIds.length) {
+      container.innerHTML = '<div class="empty-state">No chat conversations yet</div>';
+      return;
+    }
+
+    // Sort: most recently active first
+    sessionIds.sort((a, b) => {
+      const la = grouped[a][grouped[a].length - 1]?.created_at || '';
+      const lb = grouped[b][grouped[b].length - 1]?.created_at || '';
+      return lb.localeCompare(la);
+    });
+
+    container.innerHTML = sessionIds.map(sid => buildConvCard(sid, grouped[sid], sessionMap[sid])).join('');
+
+    // Re-expand previously expanded convs
+    expandedConvs.forEach(sid => {
+      const body = document.getElementById('conv-body-' + sid);
+      const chev = document.getElementById('conv-chev-' + sid);
+      if (body) { body.classList.add('open'); }
+      if (chev) { chev.classList.add('open'); }
+      scrollConvToBottom(sid);
+    });
+
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
+}
+
+function buildConvCard(sid, msgs, sessInfo) {
+  const email = emailMap[sid];
+  const label = email ? email : (sid.substring(0, 14) + '…');
+  const initial = (email ? email[0] : sid[0] || '?').toUpperCase();
+  const participantMsgs = msgs.filter(m => m.sender === 'participant');
+  const msgCount = participantMsgs.length;
+  const aiOverride = aiOverrideMap[sid]; // null | true | false
+
+  // AI toggle label
+  let aiToggleClass, aiToggleIcon, aiToggleLabel;
+  if (aiOverride === false) {
+    aiToggleClass = 'conv-ai-toggle ai-off';
+    aiToggleIcon  = '✕';
+    aiToggleLabel = 'AI Off';
+  } else if (aiOverride === true) {
+    aiToggleClass = 'conv-ai-toggle ai-on';
+    aiToggleIcon  = '✓';
+    aiToggleLabel = 'AI On';
+  } else {
+    aiToggleClass = 'conv-ai-toggle ai-global';
+    aiToggleIcon  = '◎';
+    aiToggleLabel = 'AI Global';
+  }
+
+  // Build message bubbles HTML
+  const bubblesHtml = msgs.map(m => {
+    const t = new Date(m.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+    let senderClass, senderLabel, bubbleClass;
+    if (m.sender === 'participant') {
+      senderClass = 'msg-sender-participant'; senderLabel = '👤 Participant'; bubbleClass = 'participant';
+    } else if (m.sender === 'ai') {
+      senderClass = 'msg-sender-ai'; senderLabel = '🤖 AI Assistant'; bubbleClass = 'ai';
+    } else {
+      senderClass = 'msg-sender-organizer'; senderLabel = '🏢 Organizer'; bubbleClass = 'organizer';
+    }
+    return `<div class="msg-bubble ${bubbleClass}">
+      <div class="msg-bubble-meta">
+        <span class="msg-sender-label ${senderClass}">${senderLabel}</span>
+        <span>· ${t}</span>
+      </div>
+      <div class="msg-bubble-inner">${escHtml(m.text)}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="conv-card" id="conv-card-${escHtml(sid)}">
+    <div class="conv-header" onclick="toggleConv('${escHtml(sid)}')">
+      <div class="conv-header-left">
+        <div class="conv-avatar">${escHtml(initial)}</div>
+        <div class="conv-identity">
+          <div class="conv-email">${escHtml(label)}</div>
+          <div class="conv-sid">${escHtml(sid.substring(0,16))}…</div>
+        </div>
+      </div>
+      <div class="conv-meta">
+        <span class="conv-msg-count">${msgCount} msg${msgCount !== 1 ? 's' : ''}</span>
+        <button class="conv-ai-toggle ${aiToggleClass}" onclick="toggleSessionAI(event,'${escHtml(sid)}')" title="Toggle AI for this session">
+          <span>${aiToggleIcon}</span>
+          <span>${aiToggleLabel}</span>
+        </button>
+        <span class="conv-chevron" id="conv-chev-${escHtml(sid)}">▼</span>
+      </div>
+    </div>
+    <div class="conv-body" id="conv-body-${escHtml(sid)}">
+      <div class="conv-messages" id="conv-msgs-${escHtml(sid)}">
+        ${bubblesHtml || '<div style="text-align:center;padding:16px;font-size:12px;color:var(--text-faint)">No messages</div>'}
+      </div>
+      <div class="conv-reply-area">
+        <textarea class="conv-reply-inp" id="conv-inp-${escHtml(sid)}" placeholder="Type a reply... (Enter to send)" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvReply('${escHtml(sid)}')}"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button class="conv-reply-btn" id="conv-btn-${escHtml(sid)}" onclick="sendConvReply('${escHtml(sid)}')">Send</button>
+      </div>
+      <div class="conv-reply-status" id="conv-status-${escHtml(sid)}" style="padding:0 16px 10px;display:none"></div>
+    </div>
+  </div>`;
+}
+
+function toggleConv(sid) {
+  const body = document.getElementById('conv-body-' + sid);
+  const chev = document.getElementById('conv-chev-' + sid);
+  if (!body) return;
+  const isOpen = body.classList.toggle('open');
+  if (chev) chev.classList.toggle('open', isOpen);
+  if (isOpen) {
+    expandedConvs.add(sid);
+    scrollConvToBottom(sid);
+  } else {
+    expandedConvs.delete(sid);
+  }
+}
+
+function scrollConvToBottom(sid) {
+  setTimeout(() => {
+    const el = document.getElementById('conv-msgs-' + sid);
+    if (el) el.scrollTop = el.scrollHeight;
+  }, 50);
+}
+
+// ── Per-session AI Toggle ──
+async function toggleSessionAI(event, sid) {
+  event.stopPropagation(); // don't expand/collapse card
+  const current = aiOverrideMap[sid]; // null | true | false
+  // Cycle: global → off → on → global
+  let next;
+  if (current === null || current === undefined) next = false;
+  else if (current === false) next = true;
+  else next = null;
+
+  aiOverrideMap[sid] = next;
+  updateConvAIToggle(sid, next);
+
+  try {
+    const { error } = await sb.from('sessions').update({ ai_override: next }).eq('id', sid);
+    if (error) throw error;
+  } catch(e) {
+    // Revert on error
+    aiOverrideMap[sid] = current;
+    updateConvAIToggle(sid, current);
+    console.warn('AI toggle error:', e.message);
+  }
+}
+
+function updateConvAIToggle(sid, val) {
+  const btn = document.querySelector(`#conv-card-${CSS.escape(sid)} .conv-ai-toggle`);
+  if (!btn) return;
+  btn.className = 'conv-ai-toggle ' + (val === false ? 'ai-off' : val === true ? 'ai-on' : 'ai-global');
+  const spans = btn.querySelectorAll('span');
+  if (spans[0]) spans[0].textContent = val === false ? '✕' : val === true ? '✓' : '◎';
+  if (spans[1]) spans[1].textContent = val === false ? 'AI Off' : val === true ? 'AI On' : 'AI Global';
+}
+
+// ── Inline Reply ──
+async function sendConvReply(sid) {
+  const inp    = document.getElementById('conv-inp-' + sid);
+  const btn    = document.getElementById('conv-btn-' + sid);
+  const status = document.getElementById('conv-status-' + sid);
+  const text   = inp ? inp.value.trim() : '';
+  if (!text) return;
+
+  btn.disabled = true;
+  inp.disabled = true;
+
+  try {
+    const { error } = await sb.from('messages').insert({
+      session_id: sid,
+      sender: 'organizer',
+      text,
+      reset_epoch: liveEpoch
+    });
+    if (error) throw error;
+
+    // Disable AI for this session automatically when organizer replies
+    if (aiOverrideMap[sid] !== false) {
+      aiOverrideMap[sid] = false;
+      updateConvAIToggle(sid, false);
+      await sb.from('sessions').update({ ai_override: false }).eq('id', sid);
+    }
+
+    inp.value = '';
+    inp.style.height = 'auto';
+
+    // Append bubble immediately
+    const msgsEl = document.getElementById('conv-msgs-' + sid);
+    if (msgsEl) {
+      const t = new Date().toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble organizer';
+      bubble.innerHTML = `<div class="msg-bubble-meta"><span class="msg-sender-label msg-sender-organizer">🏢 Organizer</span><span>· ${t}</span></div><div class="msg-bubble-inner">${escHtml(text)}</div>`;
+      msgsEl.appendChild(bubble);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    if (status) {
+      status.style.display = 'block';
+      status.textContent = '✓ Sent! AI disabled for this session.';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    }
+  } catch(e) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.color = 'var(--red)';
+      status.textContent = '✗ Error: ' + e.message;
+    }
+  } finally {
+    btn.disabled = false;
+    inp.disabled = false;
+    inp.focus();
+  }
+}
+
+// ════ ACTIVITY MODAL ════
 async function openActivityModal(sessionId) {
   const modal = document.getElementById('activity-modal');
   const body  = document.getElementById('modal-body');
   const title = document.getElementById('modal-title');
   const sub   = document.getElementById('modal-sub');
   const emailTag = document.getElementById('modal-email-tag');
-
-  // Set header
   const email = emailMap[sessionId];
   title.textContent = email ? email : ('Session ' + sessionId.substring(0, 12) + '…');
-  if (email) {
-    emailTag.textContent = email;
-    emailTag.style.display = 'inline-block';
-  } else {
-    emailTag.style.display = 'none';
-  }
+  if (email) { emailTag.textContent = email; emailTag.style.display = 'inline-block'; }
+  else emailTag.style.display = 'none';
   sub.textContent = 'Loading activity…';
   body.innerHTML  = '<div class="loading-state"><div class="spinner"></div>Loading activity...</div>';
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
-
   try {
-    // Fetch all data for this session in parallel
     const [sessRes, msgsRes, fbRes, wsRes, eventsRes] = await Promise.all([
       sb.from('sessions').select('*').eq('id', sessionId).single(),
       sb.from('messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
       sb.from('feedback').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
       sb.from('workshop_registrations').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
-      sb.from('page_events').select('*').eq('session_id', sessionId)
-        .in('event_type', ['visit', 'page_hidden', 'page_visible'])
-        .order('created_at', { ascending: true }).limit(20)
+      sb.from('page_events').select('*').eq('session_id', sessionId).in('event_type', ['visit','page_hidden','page_visible']).order('created_at', { ascending: true }).limit(20)
     ]);
-
-    const sess    = sessRes.data;
-    const msgs    = msgsRes.data    || [];
-    const feedbacks = fbRes.data    || [];
-    const wsRegs  = wsRes.data      || [];
-    const events  = eventsRes.data  || [];
-
-    if (!sess) {
-      body.innerHTML = '<div class="empty-state">Session not found.</div>';
-      sub.textContent = '';
-      return;
-    }
-
-    // Update sub with device/location info
+    const sess = sessRes.data;
+    const msgs = msgsRes.data || [];
+    const feedbacks = fbRes.data || [];
+    const wsRegs  = wsRes.data  || [];
+    const events  = eventsRes.data || [];
+    if (!sess) { body.innerHTML = '<div class="empty-state">Session not found.</div>'; sub.textContent = ''; return; }
     const parts = [];
     if (sess.device_type) parts.push(sess.device_type);
     if (sess.browser)     parts.push(sess.browser);
     if (sess.os)          parts.push(sess.os);
     if (sess.country)     parts.push(sess.country + (sess.city ? ', ' + sess.city : ''));
     sub.textContent = parts.join(' · ') || 'No device info';
-
-    const fmtTime = ts => new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    const fmtDate = ts => new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
-    const fmtDur  = sec => {
-      if (!sec || sec <= 0) return '—';
-      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
-      return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
-    };
-
-    // Count participant msgs vs AI msgs
+    const fmtDate = ts => new Date(ts).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+    const fmtDur  = sec => { if (!sec || sec <= 0) return '—'; const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${s}s`:`${s}s`; };
     const userMsgs = msgs.filter(m => m.sender === 'participant');
-    const aiMsgs   = msgs.filter(m => m.sender === 'ai');
-
-    // ── Build HTML ──
-    let html = '';
-
-    // Summary chips
-    html += `<div class="activity-stats-row">
-      <div class="activity-stat-chip">
-        <span class="activity-stat-chip-val">${sess.visit_count || 1}</span>
-        <span class="activity-stat-chip-label">Visits</span>
-      </div>
-      <div class="activity-stat-chip">
-        <span class="activity-stat-chip-val">${userMsgs.length}</span>
-        <span class="activity-stat-chip-label">Chat msgs</span>
-      </div>
-      <div class="activity-stat-chip">
-        <span class="activity-stat-chip-val">${feedbacks.length}</span>
-        <span class="activity-stat-chip-label">Feedback</span>
-      </div>
-      <div class="activity-stat-chip">
-        <span class="activity-stat-chip-val">${fmtDur(sess.total_time_sec)}</span>
-        <span class="activity-stat-chip-label">Time on site</span>
-      </div>
-    </div>`;
-
-    // Workshop registration
-    if (wsRegs.length > 0) {
+    let html = `<div class="activity-stats-row"><div class="activity-stat-chip"><span class="activity-stat-chip-val">${sess.visit_count||1}</span><span class="activity-stat-chip-label">Visits</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${userMsgs.length}</span><span class="activity-stat-chip-label">Chat msgs</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${feedbacks.length}</span><span class="activity-stat-chip-label">Feedback</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${fmtDur(sess.total_time_sec)}</span><span class="activity-stat-chip-label">Time on site</span></div></div>`;
+    if (wsRegs.length) {
       html += `<div class="activity-section-title">Workshop Registration</div><div class="activity-timeline">`;
-      wsRegs.forEach(r => {
-        html += `<div class="activity-item">
-          <div class="activity-dot activity-dot-workshop"></div>
-          <div class="activity-content">
-            <div class="activity-type activity-type-workshop">Registered</div>
-            <div class="activity-text">✉ ${escHtml(r.email)}</div>
-          </div>
-          <div class="activity-time">${fmtDate(r.created_at)}</div>
-        </div>`;
-      });
+      wsRegs.forEach(r => { html += `<div class="activity-item"><div class="activity-dot activity-dot-workshop"></div><div class="activity-content"><div class="activity-type activity-type-workshop">Registered</div><div class="activity-text">✉ ${escHtml(r.email)}</div></div><div class="activity-time">${fmtDate(r.created_at)}</div></div>`; });
       html += `</div>`;
     }
-
-    // Chat conversation (user + AI interleaved, chronological)
-    if (msgs.length > 0) {
+    if (msgs.length) {
       html += `<div class="activity-section-title">Chat Conversation</div><div class="activity-timeline">`;
       msgs.forEach(m => {
-        const isUser = m.sender === 'participant';
-        const isAI   = m.sender === 'ai';
-        const isOrg  = m.sender === 'organizer';
-        let dotClass  = isUser ? 'activity-dot-chat' : (isAI ? 'activity-dot-ai' : 'activity-dot-visit');
-        let typeClass = isUser ? 'activity-type-chat' : (isAI ? 'activity-type-ai' : 'activity-type-visit');
-        let typeLabel = isUser ? '👤 Participant' : (isAI ? '🤖 AI Assistant' : '🏢 Organizer');
-        html += `<div class="activity-item">
-          <div class="activity-dot ${dotClass}"></div>
-          <div class="activity-content">
-            <div class="activity-type ${typeClass}">${typeLabel}</div>
-            <div class="activity-text">${escHtml(m.text)}</div>
-          </div>
-          <div class="activity-time">${fmtDate(m.created_at)}</div>
-        </div>`;
+        const isUser=m.sender==='participant', isAI=m.sender==='ai';
+        const dotClass  = isUser?'activity-dot-chat':isAI?'activity-dot-ai':'activity-dot-visit';
+        const typeClass = isUser?'activity-type-chat':isAI?'activity-type-ai':'activity-type-visit';
+        const typeLabel = isUser?'👤 Participant':isAI?'🤖 AI Assistant':'🏢 Organizer';
+        html += `<div class="activity-item"><div class="activity-dot ${dotClass}"></div><div class="activity-content"><div class="activity-type ${typeClass}">${typeLabel}</div><div class="activity-text">${escHtml(m.text)}</div></div><div class="activity-time">${fmtDate(m.created_at)}</div></div>`;
       });
       html += `</div>`;
     }
-
-    // Feedback
-    if (feedbacks.length > 0) {
+    if (feedbacks.length) {
       html += `<div class="activity-section-title">Feedback</div><div class="activity-timeline">`;
-      feedbacks.forEach(f => {
-        html += `<div class="activity-item">
-          <div class="activity-dot activity-dot-fb"></div>
-          <div class="activity-content">
-            <div class="activity-type activity-type-fb">Feedback${f.speaker ? ' · during ' + escHtml(f.speaker) : ''}</div>
-            <div class="activity-text">${escHtml(f.text)}</div>
-          </div>
-          <div class="activity-time">${fmtDate(f.created_at)}</div>
-        </div>`;
-      });
+      feedbacks.forEach(f => { html += `<div class="activity-item"><div class="activity-dot activity-dot-fb"></div><div class="activity-content"><div class="activity-type activity-type-fb">Feedback${f.speaker?' · during '+escHtml(f.speaker):''}</div><div class="activity-text">${escHtml(f.text)}</div></div><div class="activity-time">${fmtDate(f.created_at)}</div></div>`; });
       html += `</div>`;
     }
-
-    // Visit events
-    if (events.length > 0) {
+    if (events.length) {
       html += `<div class="activity-section-title">Page Events</div><div class="activity-timeline">`;
-      events.forEach(e => {
-        const labels = { visit: '🟢 Page opened', page_hidden: '🟡 Switched tab', page_visible: '🟢 Returned' };
-        html += `<div class="activity-item">
-          <div class="activity-dot activity-dot-visit"></div>
-          <div class="activity-content">
-            <div class="activity-type activity-type-visit">${labels[e.event_type] || e.event_type}</div>
-          </div>
-          <div class="activity-time">${fmtDate(e.created_at)}</div>
-        </div>`;
-      });
+      const labels = { visit:'🟢 Page opened', page_hidden:'🟡 Switched tab', page_visible:'🟢 Returned' };
+      events.forEach(e => { html += `<div class="activity-item"><div class="activity-dot activity-dot-visit"></div><div class="activity-content"><div class="activity-type activity-type-visit">${labels[e.event_type]||e.event_type}</div></div><div class="activity-time">${fmtDate(e.created_at)}</div></div>`; });
       html += `</div>`;
     }
-
-    if (!wsRegs.length && !msgs.length && !feedbacks.length && !events.length) {
-      html = '<div class="activity-empty">No activity recorded yet for this session.</div>';
-    }
-
+    if (!wsRegs.length && !msgs.length && !feedbacks.length && !events.length) html = '<div class="activity-empty">No activity recorded yet.</div>';
     body.innerHTML = html;
-
   } catch(e) {
-    body.innerHTML = '<div class="error-state">Error loading activity: ' + escHtml(e.message) + '</div>';
+    body.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
     sub.textContent = '';
   }
 }
 
-function closeActivityModal(event) {
-  if (event.target === document.getElementById('activity-modal')) closeActivityModalDirect();
-}
-function closeActivityModalDirect() {
-  document.getElementById('activity-modal').classList.remove('open');
-  document.body.style.overflow = '';
-}
+function closeActivityModal(event) { if (event.target === document.getElementById('activity-modal')) closeActivityModalDirect(); }
+function closeActivityModalDirect() { document.getElementById('activity-modal').classList.remove('open'); document.body.style.overflow = ''; }
 
-// ════════════════════════════════
-//  CHAT FEED
-//  — Shows email instead of session ID
-//  — data-sid on sender span for realtime update
-// ════════════════════════════════
-async function loadChat() {
-  const feed = document.getElementById('chat-feed');
-  feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
-  try {
-    const { data, count, error } = await sb.from('messages')
-      .select('*', { count: 'exact' })
-      .eq('reset_epoch', currentEpoch)
-      .order('created_at', { ascending: false })
-      .limit(200);
-    if (error) throw error;
-
-    document.getElementById('chat-count').textContent = (count || 0) + ' messages';
-
-    if (!(data || []).length) { feed.innerHTML = '<div class="empty-state">No chat messages yet</div>'; return; }
-
-    feed.innerHTML = (data || []).map(m => {
-      const t = new Date(m.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
-      const senderClass = m.sender === 'organizer' ? 'organizer' : 'participant';
-      const email = m.sender === 'participant' ? emailMap[m.session_id] : null;
-      const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
-
-      let senderLabel;
-      if (m.sender === 'organizer') {
-        senderLabel = '🏢 Organizer';
-      } else if (m.sender === 'ai') {
-        senderLabel = '🤖 AI Reply';
-      } else {
-        // Use email if known, otherwise show session ID with data-sid for realtime update
-        senderLabel = email
-          ? `<span class="feed-sender participant">${escHtml(email)}</span>`
-          : `<span class="feed-sender participant" data-sid="${escHtml(m.session_id)}">${escHtml(getSessionLabel(m.session_id))}</span>`;
-        return `<div class="feed-item">
-          <div class="feed-item-top">
-            <span>${senderLabel}${emailTag}</span>
-            <span class="feed-time">${t}</span>
-          </div>
-          <div class="feed-text">${escHtml(m.text)}</div>
-        </div>`;
-      }
-
-      return `<div class="feed-item">
-        <div class="feed-item-top">
-          <span><span class="feed-sender ${senderClass}">${senderLabel}</span>${emailTag}</span>
-          <span class="feed-time">${t}</span>
-        </div>
-        <div class="feed-text">${escHtml(m.text)}</div>
-        ${m.sender === 'ai' && m.session_id ? `<div class="feed-meta">In reply to: ${escHtml(getSessionLabel(m.session_id))}</div>` : ''}
-      </div>`;
-    }).join('');
-  } catch(e) {
-    feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
-  }
-}
-
-// ════════════════════════════════
-//  FEEDBACK FEED
-//  — Shows email instead of session ID
-// ════════════════════════════════
+// ════ FEEDBACK ════
 async function loadFeedback() {
   const feed = document.getElementById('fb-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
     const { data, count, error } = await sb.from('feedback')
-      .select('*', { count: 'exact' })
-      .eq('reset_epoch', currentEpoch)
+      .select('*', { count: 'exact' }).eq('reset_epoch', currentEpoch)
       .order('created_at', { ascending: false });
     if (error) throw error;
-
     document.getElementById('fb-count').textContent = (count || 0) + ' submissions';
-
     if (!(data || []).length) { feed.innerHTML = '<div class="empty-state">No feedback yet</div>'; return; }
-
     feed.innerHTML = (data || []).map(f => {
-      const t = new Date(f.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
+      const t = new Date(f.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
       const email = emailMap[f.session_id];
       const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
-
-      return `<div class="feed-item">
-        <div class="feed-item-top">
-          <span>
-            <span class="feed-sender feedback" data-sid="${escHtml(f.session_id || '')}">
-              ${email ? escHtml(email) : 'Feedback'}
-            </span>${emailTag}
-          </span>
-          <span class="feed-time">${t}</span>
-        </div>
-        <div class="feed-text">${escHtml(f.text)}</div>
-        ${f.speaker ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
-        ${!email && f.session_id ? `<div class="feed-meta">Session: ${escHtml(getSessionLabel(f.session_id))}</div>` : ''}
-      </div>`;
+      return `<div class="feed-item"><div class="feed-item-top"><span><span class="feed-sender feedback" data-sid="${escHtml(f.session_id||'')}">${email?escHtml(email):'Feedback'}</span>${emailTag}</span><span class="feed-time">${t}</span></div><div class="feed-text">${escHtml(f.text)}</div>${f.speaker?`<div class="feed-meta">During: ${escHtml(f.speaker)}</div>`:''}</div>`;
     }).join('');
   } catch(e) {
     feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
   }
 }
 
-// ════════════════════════════════
-//  QUESTIONS
-// ════════════════════════════════
+// ════ QUESTIONS ════
 async function loadQuestions() {
   const container = document.getElementById('q-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1530,66 +1465,41 @@ async function loadQuestions() {
     const { data, error } = await sb.from('messages')
       .select('text').eq('sender', 'participant').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-
     const counts = {};
-    (data || []).forEach(m => {
-      const t = (m.text || '').trim();
-      if (t.length > 2) counts[t] = (counts[t] || 0) + 1;
-    });
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 30);
-
+    (data || []).forEach(m => { const t = (m.text||'').trim(); if (t.length > 2) counts[t] = (counts[t]||0)+1; });
+    const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 30);
     if (!sorted.length) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
     container.innerHTML = sorted.map(([text, count], i) =>
-      `<div class="q-item">
-        <div class="q-rank">#${i + 1}</div>
-        <div class="q-text">${escHtml(text)}</div>
-        <div class="q-count">×${count}</div>
-      </div>`
+      `<div class="q-item"><div class="q-rank">#${i+1}</div><div class="q-text">${escHtml(text)}</div><div class="q-count">×${count}</div></div>`
     ).join('');
   } catch(e) {
     container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
   }
 }
 
-// ════════════════════════════════
-//  WORKSHOP REGISTRATIONS
-// ════════════════════════════════
+// ════ WORKSHOP ════
 async function loadWorkshop() {
   const tbody = document.getElementById('workshop-table');
   tbody.innerHTML = '<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
   try {
     const { data, count, error } = await sb.from('workshop_registrations')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false });
+      .select('*', { count: 'exact' }).order('created_at', { ascending: false });
     if (error) throw error;
-
     document.getElementById('workshop-count').textContent = (count || 0) + ' registrations';
     const banner = document.getElementById('workshop-banner');
-    const regNum = document.getElementById('workshop-reg-num');
-    if (count > 0) { banner.style.display = 'flex'; regNum.textContent = count; }
-    else           { banner.style.display = 'none'; }
-
-    if (!(data || []).length) {
-      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No workshop registrations yet</div></td></tr>'; return;
-    }
-
+    if (count > 0) { banner.style.display = 'flex'; document.getElementById('workshop-reg-num').textContent = count; }
+    else banner.style.display = 'none';
+    if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No registrations yet</div></td></tr>'; return; }
     tbody.innerHTML = (data || []).map(r => {
-      const t = new Date(r.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
-      return `<tr>
-        <td class="td-email">${escHtml(r.email)}</td>
-        <td class="td-mono" title="${escHtml(r.session_id || '')}">${escHtml((r.session_id || '').substring(0, 12))}…</td>
-        <td style="color:var(--text-faint)">${t}</td>
-        <td><span class="pill pill-navy">Session ${r.reset_epoch || 1}</span></td>
-      </tr>`;
+      const t = new Date(r.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+      return `<tr><td class="td-email">${escHtml(r.email)}</td><td class="td-mono" title="${escHtml(r.session_id||'')}">${escHtml((r.session_id||'').substring(0,12))}…</td><td style="color:var(--text-faint)">${t}</td><td><span class="pill pill-navy">Session ${r.reset_epoch||1}</span></td></tr>`;
     }).join('');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="4"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
-// ════════════════════════════════
-//  PRESENCE
-// ════════════════════════════════
+// ════ PRESENCE ════
 function subscribePresence() {
   if (presenceChannel) sb.removeChannel(presenceChannel);
   presenceChannel = sb.channel('presence_room');
@@ -1601,26 +1511,21 @@ function subscribePresence() {
   }).subscribe();
 }
 
-// ════════════════════════════════
-//  LIVE CONTROL
-// ════════════════════════════════
+// ════ LIVE CONTROL ════
 function populateSpeakerSelect() {
   const sel = document.getElementById('ctrl-speaker-sel');
-  sel.innerHTML = AGENDA.map(a =>
-    `<option value="${a.id}">${a.id}. ${escHtml(a.speaker)}${a.isBreak ? ' (break)' : ''}</option>`
-  ).join('');
+  sel.innerHTML = AGENDA.map(a => `<option value="${a.id}">${a.id}. ${escHtml(a.speaker)}${a.isBreak?' (break)':''}</option>`).join('');
 }
 
 function renderSpeakerCard(currentId) {
   const idx  = AGENDA.findIndex(a => a.id === currentId);
   const cur  = idx >= 0 ? AGENDA[idx] : null;
   const next = idx >= 0 ? (AGENDA[idx + 1] || null) : null;
-
   document.getElementById('snc-current-name').textContent = cur  ? cur.speaker  : '—';
-  document.getElementById('snc-current-sub').textContent  = cur  ? (cur.isBreak  ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`) : '';
+  document.getElementById('snc-current-sub').textContent  = cur  ? (cur.isBreak ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`) : '';
   document.getElementById('snc-next-name').textContent    = next ? next.speaker : '—';
   document.getElementById('snc-next-sub').textContent     = next ? (next.isBreak ? 'Break / Ceremony' : '') : (cur ? 'Program ended' : '');
-  document.getElementById('snc-idx').textContent          = idx >= 0 ? `${idx + 1} / ${AGENDA.length}` : '—';
+  document.getElementById('snc-idx').textContent          = idx >= 0 ? `${idx+1} / ${AGENDA.length}` : '—';
   document.getElementById('ctrl-speaker-sel').value       = currentId || '';
 }
 
@@ -1629,23 +1534,17 @@ async function loadControl() {
     const { data, error } = await sb.from('live_state').select('*').eq('id', 1).single();
     if (error) throw error;
     if (!data) return;
-
     renderSpeakerCard(data.current_id);
-
     const aiToggle = document.getElementById('ctrl-ai-toggle');
     aiToggle.checked = Boolean(data.ai_enabled);
     document.getElementById('ctrl-ai-label').textContent = aiToggle.checked ? 'AI Enabled' : 'AI Disabled';
-
     const cdToggle = document.getElementById('ctrl-cd-toggle');
     cdToggle.checked = Boolean(data.show_countdown);
     document.getElementById('ctrl-cd-label').textContent = cdToggle.checked ? 'Countdown ON' : 'Countdown OFF';
-
     const wsToggle = document.getElementById('ctrl-ws-toggle');
     wsToggle.checked = Boolean(data.show_workshop);
     document.getElementById('ctrl-ws-label').textContent = wsToggle.checked ? 'Workshop ON' : 'Workshop OFF';
-  } catch(e) {
-    console.warn('Control load error:', e.message);
-  }
+  } catch(e) { console.warn('Control load error:', e.message); }
 }
 
 async function stepSpeaker(dir) {
@@ -1662,19 +1561,16 @@ async function jumpSpeaker() {
 
 async function _saveSpeaker(id) {
   const status = document.getElementById('ctrl-speaker-status');
-  status.className = 'status-msg status-info';
-  status.textContent = 'Saving...';
+  status.className = 'status-msg status-info'; status.textContent = 'Saving...';
   try {
-    const { error } = await sb.from('live_state')
-      .update({ current_id: id, speaker_started_at: new Date().toISOString() }).eq('id', 1);
+    const { error } = await sb.from('live_state').update({ current_id: id, speaker_started_at: new Date().toISOString() }).eq('id', 1);
     if (error) throw error;
     renderSpeakerCard(id);
     status.className = 'status-msg status-ok';
     status.textContent = '✓ Updated at ' + new Date().toLocaleTimeString();
     setTimeout(() => { status.textContent = ''; }, 3000);
   } catch(e) {
-    status.className = 'status-msg status-err';
-    status.textContent = '✗ Error: ' + e.message;
+    status.className = 'status-msg status-err'; status.textContent = '✗ Error: ' + e.message;
   }
 }
 
@@ -1715,38 +1611,26 @@ async function sendReply() {
   const sel    = document.getElementById('ctrl-reply-sel');
   const text   = document.getElementById('ctrl-reply-text').value.trim();
   const status = document.getElementById('ctrl-reply-status');
-
-  if (!sel.value) { status.className = 'status-msg status-err'; status.textContent = 'Please select a session'; return; }
-  if (!text)      { status.className = 'status-msg status-err'; status.textContent = 'Please enter a message';  return; }
-
-  status.className = 'status-msg status-info';
-  status.textContent = 'Sending...';
+  if (!sel.value) { status.className='status-msg status-err'; status.textContent='Please select a session'; return; }
+  if (!text)      { status.className='status-msg status-err'; status.textContent='Please enter a message'; return; }
+  status.className = 'status-msg status-info'; status.textContent = 'Sending...';
   try {
-    const { error } = await sb.from('messages').insert({
-      session_id: sel.value, sender: 'organizer', text, reset_epoch: liveEpoch
-    });
+    const { error } = await sb.from('messages').insert({ session_id: sel.value, sender: 'organizer', text, reset_epoch: liveEpoch });
     if (error) throw error;
     document.getElementById('ctrl-reply-text').value = '';
-    status.className = 'status-msg status-ok';
-    status.textContent = '✓ Sent!';
+    status.className = 'status-msg status-ok'; status.textContent = '✓ Sent!';
     setTimeout(() => { status.textContent = ''; }, 3000);
   } catch(e) {
-    status.className = 'status-msg status-err';
-    status.textContent = '✗ Error: ' + e.message;
+    status.className = 'status-msg status-err'; status.textContent = '✗ Error: ' + e.message;
   }
 }
 
-// ════════════════════════════════
-//  UTILS
-// ════════════════════════════════
+// ════ UTILS ════
 function escHtml(str) {
-  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// Keyboard: Escape closes modal
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeActivityModalDirect();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeActivityModalDirect(); });
 </script>
 </body>
 </html>
