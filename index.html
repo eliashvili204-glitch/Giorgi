@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/participant.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +47,32 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .now-sub{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.5;font-style:italic;}
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
 .speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
+
+/* ── WORKSHOP CARD ── */
+.workshop-section{padding:14px 20px 0;}
+.workshop-card{background:var(--surface);border:1px solid var(--gold-border);border-radius:12px;padding:18px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.03);}
+.workshop-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.workshop-icon{font-size:14px;}
+.workshop-tag{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;}
+.workshop-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.workshop-desc{font-size:11px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;}
+.workshop-registered{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;}
+.workshop-registered-icon{font-size:16px;}
+.workshop-registered-text{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
+.workshop-registered-email{font-size:10px;color:var(--text-faint);margin-top:1px;}
+.workshop-inp-row{display:flex;gap:8px;align-items:stretch;}
+.workshop-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;touch-action:auto;transition:border-color .2s;}
+.workshop-inp:focus{border-color:var(--gold-border);}
+.workshop-inp::placeholder{color:var(--text-faint);}
+.workshop-inp.err{border-color:var(--warn);}
+.workshop-btn{background:var(--navy);border:none;border-radius:8px;padding:10px 18px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.06em;transition:opacity .2s;-webkit-user-select:none;user-select:none;}
+.workshop-btn:active{opacity:.8;}
+.workshop-btn:disabled{opacity:.5;cursor:not-allowed;}
+.workshop-err{font-size:10px;color:var(--warn);margin-top:6px;display:none;}
+.workshop-err.show{display:block;}
+.workshop-migrating{font-size:11px;color:var(--text-faint);margin-top:8px;display:none;align-items:center;gap:6px;}
+.workshop-migrating.show{display:flex;}
+.workshop-migrating .spinner{width:12px;height:12px;border-width:1.5px;}
 
 .next-section{padding:12px 20px 0;}
 .next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
@@ -208,6 +237,51 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     </div>
   </div>
 
+  <!-- WORKSHOP REGISTRATION CARD -->
+  <div id="workshop-section" class="workshop-section" style="display:none;">
+    <div class="workshop-card">
+      <div class="workshop-top">
+        <span class="workshop-icon">✦</span>
+        <span class="workshop-tag">Workshop Registration</span>
+      </div>
+      <div class="workshop-title">Register for the Workshop</div>
+      <div class="workshop-desc">Enter your email to register and link your activity to your account.</div>
+
+      <!-- Already registered state -->
+      <div id="workshop-done" style="display:none;">
+        <div class="workshop-registered">
+          <span class="workshop-registered-icon">✓</span>
+          <div>
+            <div class="workshop-registered-text">Registered</div>
+            <div class="workshop-registered-email" id="workshop-done-email"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input state -->
+      <div id="workshop-form">
+        <div class="workshop-inp-row">
+          <input
+            class="workshop-inp"
+            id="workshop-email-inp"
+            type="email"
+            placeholder="your@email.com"
+            maxlength="120"
+            autocomplete="email"
+            inputmode="email"
+            onkeydown="if(event.key==='Enter')registerWorkshop()"
+          >
+          <button class="workshop-btn" id="workshop-btn" onclick="registerWorkshop()">Register</button>
+        </div>
+        <div class="workshop-err" id="workshop-err">Please enter a valid email address.</div>
+        <div class="workshop-migrating" id="workshop-migrating">
+          <div class="spinner"></div>
+          <span>Linking your account...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="next-section" class="next-section">
     <div class="next-card">
       <div class="next-label">Up next</div>
@@ -262,7 +336,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="panel-header">
     <div class="panel-header-left">
       <div class="panel-icon panel-icon-fb">&#9672;</div>
-      <div><div class="panel-title">Help Us Improve</div><div class="panel-sub">Anonymous &middot; No data collected</div></div>
+      <div><div class="panel-title">Help Us Improve</div><div class="panel-sub">Share your thoughts</div></div>
     </div>
     <button class="panel-close" onclick="toggleFb()">&#x2715;</button>
   </div>
@@ -332,16 +406,102 @@ let sb = null;
 let currentId = 3, speakerStartedAt = Date.now();
 let audTimerInterval = null;
 let chatOpen = false, fbOpen = false, unread = 0;
-let aiEnabled = true, showCountdown = false, cdInterval = null;
+let aiEnabled = true, showCountdown = false, showWorkshop = false;
+let cdInterval = null;
 let pageEnterTime = Date.now();
 let heartbeatInterval = null;
 let sessionTracked = false;
 
+// Session ID — may be email after workshop registration
 let sessionId = localStorage.getItem('syssa_sid');
 const isReturning = !!sessionId;
 if (!sessionId) {
   sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
   localStorage.setItem('syssa_sid', sessionId);
+}
+
+// ════════════════════════════════════════════
+//  WORKSHOP REGISTRATION
+// ════════════════════════════════════════════
+function applyWorkshopMode() {
+  const sec = document.getElementById('workshop-section');
+  if (!sec) return;
+  sec.style.display = showWorkshop ? 'block' : 'none';
+
+  // If already registered with email, show done state
+  const registeredEmail = localStorage.getItem('syssa_workshop_email');
+  if (registeredEmail && showWorkshop) {
+    document.getElementById('workshop-form').style.display = 'none';
+    document.getElementById('workshop-done').style.display = 'block';
+    document.getElementById('workshop-done-email').textContent = registeredEmail;
+  }
+}
+
+async function registerWorkshop() {
+  const inp   = document.getElementById('workshop-email-inp');
+  const btn   = document.getElementById('workshop-btn');
+  const err   = document.getElementById('workshop-err');
+  const mig   = document.getElementById('workshop-migrating');
+  const email = (inp.value || '').trim().toLowerCase();
+
+  // Validate email
+  err.classList.remove('show');
+  inp.classList.remove('err');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    inp.classList.add('err');
+    err.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  inp.disabled = true;
+  mig.classList.add('show');
+
+  const oldSessionId = sessionId;
+
+  try {
+    // Call the migration RPC — moves all old data to email
+    const { error } = await sb.rpc('migrate_session_to_email', {
+      old_session_id: oldSessionId,
+      new_session_id: email
+    });
+    if (error) throw error;
+
+    // Update local state
+    sessionId = email;
+    localStorage.setItem('syssa_sid', email);
+    localStorage.setItem('syssa_workshop_email', email);
+
+    // Move chat history key
+    const oldChat = localStorage.getItem('syssa_chat_' + oldSessionId);
+    if (oldChat) {
+      localStorage.setItem('syssa_chat_' + email, oldChat);
+      localStorage.removeItem('syssa_chat_' + oldSessionId);
+    }
+    const oldVisits = localStorage.getItem('syssa_visits_' + oldSessionId);
+    if (oldVisits) {
+      localStorage.setItem('syssa_visits_' + email, oldVisits);
+      localStorage.removeItem('syssa_visits_' + oldSessionId);
+    }
+
+    // Re-subscribe realtime replies channel with new session id
+    sb.channel('replies_' + oldSessionId).unsubscribe();
+    subscribeReplies();
+
+    // Show done state
+    document.getElementById('workshop-form').style.display = 'none';
+    document.getElementById('workshop-done').style.display = 'block';
+    document.getElementById('workshop-done-email').textContent = email;
+
+  } catch(e) {
+    err.textContent = 'Registration failed. Please try again.';
+    err.classList.add('show');
+    inp.classList.add('err');
+    btn.disabled = false;
+    inp.disabled = false;
+  } finally {
+    mig.classList.remove('show');
+  }
 }
 
 // ════════════════════════════════════════════
@@ -352,137 +512,83 @@ function getDeviceInfo() {
   let device = 'desktop';
   if (/tablet|ipad|playbook|silk/i.test(ua)) device = 'tablet';
   else if (/mobile|iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(ua)) device = 'mobile';
-
   let browser = 'other';
-  if (/edg\//i.test(ua))       browser = 'Edge';
-  else if (/chrome/i.test(ua)) browser = 'Chrome';
-  else if (/safari/i.test(ua)) browser = 'Safari';
-  else if (/firefox/i.test(ua))browser = 'Firefox';
-  else if (/opr\//i.test(ua))  browser = 'Opera';
-
+  if (/edg\//i.test(ua))        browser = 'Edge';
+  else if (/chrome/i.test(ua))  browser = 'Chrome';
+  else if (/safari/i.test(ua))  browser = 'Safari';
+  else if (/firefox/i.test(ua)) browser = 'Firefox';
+  else if (/opr\//i.test(ua))   browser = 'Opera';
   let os = 'other';
-  if (/windows/i.test(ua))     os = 'Windows';
+  if (/windows/i.test(ua))          os = 'Windows';
   else if (/iphone|ipad/i.test(ua)) os = 'iOS';
-  else if (/android/i.test(ua)) os = 'Android';
-  else if (/mac/i.test(ua))    os = 'macOS';
-  else if (/linux/i.test(ua))  os = 'Linux';
-
-  return {
-    device_type:   device,
-    browser:       browser,
-    os:            os,
-    screen_width:  screen.width,
-    screen_height: screen.height
-  };
+  else if (/android/i.test(ua))     os = 'Android';
+  else if (/mac/i.test(ua))         os = 'macOS';
+  else if (/linux/i.test(ua))       os = 'Linux';
+  return { device_type: device, browser, os, screen_width: screen.width, screen_height: screen.height };
 }
 
 // ════════════════════════════════════════════
-//  GEO (IP-based, no permission needed)
+//  GEO
 // ════════════════════════════════════════════
 async function getGeo() {
   try {
     const r = await fetch('https://ipapi.co/json/', {signal: AbortSignal.timeout(4000)});
     if (!r.ok) return {};
     const d = await r.json();
-    return {
-      country:  d.country_name || null,
-      city:     d.city         || null,
-      isp:      d.org          || null,
-      timezone: d.timezone     || null
-    };
+    return { country: d.country_name||null, city: d.city||null, isp: d.org||null, timezone: d.timezone||null };
   } catch(e) { return {}; }
 }
 
 // ════════════════════════════════════════════
-//  ANALYTICS — SESSION UPSERT
+//  ANALYTICS — SESSION
 // ════════════════════════════════════════════
 async function trackSession() {
   if (!sb || sessionTracked) return;
   sessionTracked = true;
-
   const dev = getDeviceInfo();
   const geo = await getGeo();
-
   const visitCount = parseInt(localStorage.getItem('syssa_visits_' + sessionId) || '0') + 1;
   localStorage.setItem('syssa_visits_' + sessionId, String(visitCount));
-
-  const payload = {
-    id:           sessionId,
-    last_seen:    new Date().toISOString(),
-    visit_count:  visitCount,
-    ...dev,
-    ...geo
-  };
-
-  // Upsert: insert on first visit, update on return
   try {
-    const { error } = await sb.from('sessions').upsert(payload, {onConflict: 'id'});
-    if (error) console.warn('session upsert:', error.message);
+    await sb.from('sessions').upsert({
+      id: sessionId, last_seen: new Date().toISOString(),
+      visit_count: visitCount, ...dev, ...geo
+    }, {onConflict: 'id'});
   } catch(e) {}
-
-  // Log visit event
   logEvent('visit', {is_returning: isReturning, visit_number: visitCount});
 }
 
-// ════════════════════════════════════════════
-//  ANALYTICS — EVENT LOGGER
-// ════════════════════════════════════════════
 function logEvent(type, payload = {}) {
   if (!sb) return;
   const cur = AGENDA.find(a => a.id === currentId);
   sb.from('page_events').insert({
-    session_id:   sessionId,
-    event_type:   type,
-    speaker_id:   currentId,
-    speaker_name: cur ? cur.speaker : null,
-    payload:      payload
-  }).then(() => {}).catch(() => {});
+    session_id: sessionId, event_type: type,
+    speaker_id: currentId, speaker_name: cur ? cur.speaker : null, payload
+  }).then(()=>{}).catch(()=>{});
 }
 
-// ════════════════════════════════════════════
-//  ANALYTICS — HEARTBEAT (online presence + time tracking)
-// ════════════════════════════════════════════
 function startHeartbeat() {
   if (heartbeatInterval) clearInterval(heartbeatInterval);
-  // Every 30s: log presence + update total_time_sec
   heartbeatInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - pageEnterTime) / 1000);
     logEvent('heartbeat', {time_on_page_sec: elapsed});
-    // Update total_time on session
-    if (sb) {
-      sb.from('sessions').update({
-        last_seen:      new Date().toISOString(),
-        total_time_sec: elapsed
-      }).eq('id', sessionId).then(() => {}).catch(() => {});
-    }
+    if (sb) sb.from('sessions').update({last_seen: new Date().toISOString(), total_time_sec: elapsed})
+      .eq('id', sessionId).then(()=>{}).catch(()=>{});
   }, 30000);
 }
 
-// ════════════════════════════════════════════
-//  PAGE VISIBILITY TRACKING
-// ════════════════════════════════════════════
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    logEvent('page_hidden', {time_on_page_sec: Math.floor((Date.now() - pageEnterTime)/1000)});
-  } else {
-    logEvent('page_visible');
-  }
+  if (document.hidden) logEvent('page_hidden', {time_on_page_sec: Math.floor((Date.now()-pageEnterTime)/1000)});
+  else logEvent('page_visible');
 });
 
-// ════════════════════════════════════════════
-//  BEFORE UNLOAD — save final time
-// ════════════════════════════════════════════
 window.addEventListener('beforeunload', () => {
   const elapsed = Math.floor((Date.now() - pageEnterTime) / 1000);
-  // Use sendBeacon for reliability on unload
   if (navigator.sendBeacon && sb) {
-    const body = JSON.stringify({
-      session_id:  sessionId,
-      event_type:  'page_exit',
-      speaker_id:  currentId,
-      payload:     {time_on_page_sec: elapsed}
-    });
-    navigator.sendBeacon(SB_URL + '/rest/v1/page_events', body);
+    navigator.sendBeacon(SB_URL + '/rest/v1/page_events', JSON.stringify({
+      session_id: sessionId, event_type: 'page_exit', speaker_id: currentId,
+      payload: {time_on_page_sec: elapsed}
+    }));
   }
 });
 
@@ -556,28 +662,44 @@ window.addEventListener('load', async () => {
   try {
     sb = supabase.createClient(SB_URL, SB_KEY);
     const { data, error } = await withTimeout(
-      sb.from('live_state').select('current_id,speaker_started_at,ai_enabled,show_countdown').eq('id',1).single(),
+      sb.from('live_state').select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop').eq('id',1).single(),
       8000
     );
     if (error) throw error;
     currentId        = data.current_id;
     speakerStartedAt = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
-    if (data.ai_enabled    != null) aiEnabled     = Boolean(data.ai_enabled);
-    if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
+    if (data.ai_enabled     != null) aiEnabled     = Boolean(data.ai_enabled);
+    if (data.show_countdown != null) showCountdown  = Boolean(data.show_countdown);
+    if (data.show_workshop  != null) showWorkshop   = Boolean(data.show_workshop);
     updateAIIcon();
     applyCountdownMode();
+    applyWorkshopMode();
     startApp();
     showNotifBannerIfNeeded();
-
-    // Analytics — track after app loads
     trackSession();
     startHeartbeat();
-
-  } catch (e) {
+  } catch(e) {
     document.getElementById('loading').style.display      = 'none';
     document.getElementById('error-screen').style.display = 'flex';
   }
 });
+
+// ════════════════════════════════════════════
+//  REALTIME REPLIES SUBSCRIPTION
+// ════════════════════════════════════════════
+function subscribeReplies() {
+  sb.channel('replies_' + sessionId)
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'messages'}, p => {
+      if (p.new.session_id === sessionId && p.new.sender === 'organizer') {
+        appendBubble('Host', p.new.text, 'org');
+        sendPushIfNeeded(p.new.text);
+        unread++;
+        const b = document.getElementById('fab-badge');
+        b.style.display = 'flex';
+        b.textContent   = unread;
+      }
+    }).subscribe();
+}
 
 function startApp() {
   document.getElementById('loading').style.display = 'none';
@@ -587,12 +709,13 @@ function startApp() {
     .on('postgres_changes', {event:'UPDATE', schema:'public', table:'live_state'}, async p => {
       try {
         const { data: f } = await sb.from('live_state')
-          .select('current_id,speaker_started_at,ai_enabled,show_countdown').eq('id',1).single();
+          .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop').eq('id',1).single();
         if (f) {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
-          if (f.ai_enabled    != null) aiEnabled     = Boolean(f.ai_enabled);
+          if (f.ai_enabled     != null) aiEnabled    = Boolean(f.ai_enabled);
           if (f.show_countdown != null) { showCountdown = Boolean(f.show_countdown); applyCountdownMode(); }
+          if (f.show_workshop  != null) { showWorkshop  = Boolean(f.show_workshop);  applyWorkshopMode(); }
           updateAIIcon();
         }
       } catch(e) { if (p.new && p.new.current_id) currentId = p.new.current_id; }
@@ -608,7 +731,6 @@ function startApp() {
       document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
     });
 
-  // Realtime presence channel for online count
   sb.channel('presence_room', {config:{presence:{key: sessionId}}})
     .on('presence', {event: 'sync'}, () => {})
     .subscribe(async (status) => {
@@ -617,18 +739,7 @@ function startApp() {
       }
     });
 
-  sb.channel('replies_' + sessionId)
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'messages'}, p => {
-      if (p.new.session_id === sessionId && p.new.sender === 'organizer') {
-        appendBubble('Host', p.new.text, 'org');
-        sendPushIfNeeded(p.new.text);
-        unread++;
-        const b = document.getElementById('fab-badge');
-        b.style.display = 'flex';
-        b.textContent   = unread;
-      }
-    }).subscribe();
-
+  subscribeReplies();
   render();
   startAudTimer();
   loadChatHistory();
@@ -688,28 +799,22 @@ function render() {
       const isCur = item.id === currentId;
       const isNxt = nxt && item.id === nxt.id;
       const p2    = item.title ? item.title.split('\n') : [];
-
       const row = document.createElement('div');
       row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
-
       const timeEl = document.createElement('div');
       timeEl.className = 'a-time';
       timeEl.textContent = item.time || '';
       row.appendChild(timeEl);
-
       const divl = document.createElement('div');
       divl.className = 'a-divl';
       row.appendChild(divl);
-
       const info = document.createElement('div');
       info.className = 'a-info';
-
       const nameRow = document.createElement('div');
       nameRow.className = 'a-name';
       const nameSpan = document.createElement('span');
       nameSpan.textContent = item.speaker;
       nameRow.appendChild(nameSpan);
-
       if (isCur && !cdOn) {
         const bl = document.createElement('span');
         bl.className = 'a-badge a-badge-live';
@@ -729,10 +834,8 @@ function render() {
         nameRow.appendChild(bn);
       }
       info.appendChild(nameRow);
-
       if (p2[0]) { const s1 = document.createElement('div'); s1.className='a-sub'; s1.textContent=p2[0]; info.appendChild(s1); }
       if (p2[1]) { const s2 = document.createElement('div'); s2.className='a-sub-sup'; s2.textContent=p2[1]; info.appendChild(s2); }
-
       row.appendChild(info);
       frag.appendChild(row);
     });
@@ -758,9 +861,7 @@ function toggleChat() {
     unread = 0;
     document.getElementById('fab-badge').style.display = 'none';
     setTimeout(() => { const w=document.getElementById('chat-msgs'); w.scrollTop=w.scrollHeight; }, 60);
-    // Track chat open
     logEvent('chat_open');
-    // Update session flag
     if (sb) sb.from('sessions').update({chat_opened: true}).eq('id', sessionId).then(()=>{}).catch(()=>{});
   }
   if (fbOpen) { fbOpen=false; document.getElementById('fb-panel').classList.remove('open'); }
@@ -778,18 +879,14 @@ function appendBubble(author, text, type) {
   const wrap = document.getElementById('chat-msgs');
   const emp  = wrap.querySelector('.chat-empty-msg');
   if (emp) emp.remove();
-
   const d = document.createElement('div');
   d.className = 'bubble ' + type;
-
   const a = document.createElement('div');
   a.className = 'bubble-author';
   a.textContent = author;
-
   const t = document.createElement('div');
   t.className = 'bubble-text';
   t.textContent = text;
-
   d.appendChild(a);
   d.appendChild(t);
   wrap.appendChild(d);
@@ -841,7 +938,7 @@ function removeTyping() {
 }
 
 // ════════════════════════════════════════════
-//  AI — SUPABASE EDGE FUNCTION PROXY
+//  AI
 // ════════════════════════════════════════════
 let chatHistory = [];
 const MAX_HISTORY = 6;
@@ -886,9 +983,7 @@ Rules: Reply directly, no filler phrases. No markdown bold or headers. Max 1–2
 
 async function getAIReply(userMessage) {
   chatHistory.push({role: 'user', content: userMessage});
-  if (chatHistory.length > MAX_HISTORY)
-    chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
-
+  if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const resp = await fetch(SB_URL + '/functions/v1/claude-proxy', {
@@ -900,7 +995,7 @@ async function getAIReply(userMessage) {
         })
       });
       if (resp.status === 429) { await new Promise(r => setTimeout(r, attempt * 2000)); continue; }
-      if (!resp.ok) { const err = await resp.json().catch(() => ({})); throw new Error('Proxy error ' + resp.status + ': ' + (err.error?.message || 'unknown')); }
+      if (!resp.ok) { const err = await resp.json().catch(()=>({})); throw new Error('Proxy error ' + resp.status + ': ' + (err.error?.message||'unknown')); }
       const data  = await resp.json();
       const reply = data.content?.[0]?.text;
       if (!reply) throw new Error('Empty response');
@@ -923,22 +1018,17 @@ async function sendChat() {
   if (!text) return;
   inp.value    = '';
   inp.disabled = true;
-
   appendBubble('You', text, 'them');
-
   const wrap = document.getElementById('chat-msgs');
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
 
-  if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'participant', text}).then(() => {}).catch(() => {});
-
-  // Track message sent event + increment counter on session
+  if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'participant', text, reset_epoch: 1}).then(()=>{}).catch(()=>{});
   logEvent('message_sent', {text_length: text.length});
   if (sb) {
     sb.rpc('increment_chat_count', {sid: sessionId}).then(()=>{}).catch(()=>{
-      // fallback if RPC not set up
       sb.from('sessions').select('chat_msg_count').eq('id', sessionId).single().then(({data: s}) => {
-        if (s) sb.from('sessions').update({chat_msg_count: (s.chat_msg_count||0) + 1, chat_opened: true}).eq('id', sessionId).then(()=>{}).catch(()=>{});
+        if (s) sb.from('sessions').update({chat_msg_count: (s.chat_msg_count||0)+1, chat_opened: true}).eq('id', sessionId).then(()=>{}).catch(()=>{});
       }).catch(()=>{});
     });
   }
@@ -958,13 +1048,12 @@ async function sendChat() {
   try {
     const reply = await getAIReply(text);
     removeTyping();
-    if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'ai', text: reply}).then(() => {}).catch(() => {});
+    if (sb) sb.from('messages').insert({session_id: sessionId, sender: 'ai', text: reply, reset_epoch: 1}).then(()=>{}).catch(()=>{});
     appendBubble('AI Assistant', reply, 'org');
   } catch(e) {
     removeTyping();
     appendBubble('AI Assistant', 'Connection error. Please try again.', 'org');
   }
-
   inp.disabled = false;
   inp.focus();
 }
@@ -977,9 +1066,14 @@ async function sendFeedback() {
   const text = ta ? ta.value.trim() : '';
   if (!text) return;
   const cur = AGENDA.find(a => a.id === currentId);
-  try { await sb.from('feedback').insert({text, speaker: cur ? cur.speaker : '—', session_id: sessionId}); } catch(e) {}
-
-  // Track feedback event + update session flag
+  try {
+    await sb.from('feedback').insert({
+      text,
+      speaker:    cur ? cur.speaker : '—',
+      session_id: sessionId,
+      reset_epoch: 1
+    });
+  } catch(e) {}
   logEvent('feedback_sent', {text_length: text.length});
   if (sb) sb.from('sessions').update({feedback_sent: true}).eq('id', sessionId).then(()=>{}).catch(()=>{});
 
@@ -1001,3 +1095,5 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done: $(wc -l < /home/claude/participant.html) lines"
