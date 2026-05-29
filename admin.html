@@ -23,12 +23,10 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;}
 
-/* ── LAYOUT ── */
 .shell{display:flex;min-height:100vh;}
 .sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .main{flex:1;overflow:auto;}
 
-/* ── SIDEBAR ── */
 .sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
 .sb-logo-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);letter-spacing:.03em;}
 .sb-logo-sub{font-size:10px;color:var(--text-faint);margin-top:2px;letter-spacing:.06em;text-transform:uppercase;}
@@ -44,7 +42,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .sb-online{font-size:13px;font-weight:700;color:var(--green);}
 
-/* ── TOPBAR ── */
 .topbar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);position:sticky;top:0;z-index:10;}
 .topbar-title{font-size:14px;font-weight:700;color:var(--text);}
 .topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -54,7 +51,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .topbar-refresh{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
 .topbar-refresh:hover{border-color:var(--border2);color:var(--text);}
 
-/* ── EPOCH SWITCHER ── */
 .epoch-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
 .epoch-bar-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;flex-shrink:0;}
 .epoch-btns{display:flex;gap:6px;flex-wrap:nowrap;}
@@ -63,18 +59,15 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .epoch-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
 .epoch-btn.live-epoch::after{content:'●';margin-left:4px;font-size:8px;color:var(--green);vertical-align:middle;}
 
-/* ── MOBILE BOTTOM NAV ── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--mob-nav-h);background:var(--bg2);border-top:1px solid var(--border);z-index:100;align-items:stretch;}
 .mob-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:none;color:var(--text-faint);font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 2px;transition:color .15s;}
 .mob-nav-item:hover,.mob-nav-item.active{color:var(--navy);}
 .mob-nav-item.active .mob-icon{background:var(--navy-soft);border-radius:8px;}
 .mob-icon{font-size:18px;width:32px;height:22px;display:flex;align-items:center;justify-content:center;}
 
-/* ── CONTENT AREA ── */
 .content{padding:20px 16px;display:none;}
 .content.active{display:block;}
 
-/* ── STAT CARDS ── */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
 .stat-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
@@ -89,7 +82,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .stat-card.accent-purple{border-color:rgba(188,140,255,.3);background:var(--purple-soft);}
 .stat-card.accent-purple .stat-val{color:var(--purple);}
 
-/* ── DEVICE TIME CARDS ── */
 .device-time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
 .device-time-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
 .dtc-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -100,18 +92,15 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .dtc-stat-label{font-size:11px;color:var(--text-faint);}
 .dtc-stat-val{font-size:13px;font-weight:700;color:var(--text);}
 
-/* ── SECTION HEADERS ── */
 .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:24px;}
 .sec-title{font-size:12px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;}
 .sec-count{font-size:11px;color:var(--text-faint);}
 
-/* ── CHARTS ── */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
 .chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
 .chart-title{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;}
 .chart-wrap{position:relative;height:180px;}
 
-/* ── TABLES ── */
 .table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -122,6 +111,7 @@ tbody tr:hover{background:var(--bg3);}
 tbody td{padding:9px 12px;color:var(--text-dim);vertical-align:middle;}
 tbody td:first-child{color:var(--text);}
 .td-mono{font-family:monospace;font-size:11px;color:var(--text-faint) !important;}
+.td-email{font-size:11px;color:var(--navy) !important;font-weight:600;}
 .td-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;}
 .td-badge-mobile{background:rgba(56,139,253,.15);color:var(--navy);}
 .td-badge-desktop{background:rgba(63,185,80,.15);color:var(--green);}
@@ -129,7 +119,6 @@ tbody td:first-child{color:var(--text);}
 .td-badge-chat{background:var(--navy-soft);color:var(--navy);}
 .td-badge-fb{background:var(--gold-soft);color:var(--gold);}
 
-/* ── FEED ── */
 .feed{display:flex;flex-direction:column;gap:8px;}
 .feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;transition:border-color .15s;}
 .feed-item:hover{border-color:var(--border2);}
@@ -138,11 +127,11 @@ tbody td:first-child{color:var(--text);}
 .feed-sender.participant{color:var(--navy);}
 .feed-sender.feedback{color:var(--gold);}
 .feed-sender.organizer{color:var(--green);}
+.feed-email-tag{display:inline-block;background:rgba(56,139,253,0.12);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;margin-left:6px;letter-spacing:.02em;vertical-align:middle;}
 .feed-text{font-size:13px;color:var(--text);line-height:1.6;}
 .feed-meta{font-size:10px;color:var(--text-faint);margin-top:4px;}
 .feed-time{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
 
-/* ── QUESTIONS ── */
 .q-list{display:flex;flex-direction:column;gap:6px;}
 .q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .15s;}
 .q-item:hover{border-color:var(--border2);}
@@ -150,7 +139,6 @@ tbody td:first-child{color:var(--text);}
 .q-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
 .q-count{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;}
 
-/* ── SPEAKER BARS ── */
 .speaker-bars{display:flex;flex-direction:column;gap:8px;}
 .speaker-bar-row{display:flex;align-items:center;gap:10px;}
 .speaker-bar-name{font-size:11px;color:var(--text-dim);min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -158,7 +146,6 @@ tbody td:first-child{color:var(--text);}
 .speaker-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--purple));transition:width .6s ease;}
 .speaker-bar-count{font-size:10px;color:var(--text-faint);min-width:28px;text-align:right;}
 
-/* ── SPEAKER NOW CARD ── */
 .speaker-now-card{background:var(--bg2);border:1px solid var(--navy-border);border-radius:var(--radius);overflow:hidden;}
 .snc-row{display:flex;align-items:stretch;}
 .snc-block{flex:1;padding:20px 22px;}
@@ -175,7 +162,6 @@ tbody td:first-child{color:var(--text);}
 .snc-next-btn:hover{opacity:.85;}
 .snc-idx{font-size:12px;color:var(--text-faint);font-variant-numeric:tabular-nums;}
 
-/* ── LIVE CONTROL ── */
 .control-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
 .control-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
 .control-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
@@ -197,7 +183,6 @@ tbody td:first-child{color:var(--text);}
 .toggle-label{font-size:13px;color:var(--text);}
 .ctrl-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
 
-/* ── RESET CARD ── */
 .reset-card{background:var(--bg2);border:1px solid rgba(248,81,73,.3);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
 .reset-card-title{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
 .reset-card-desc{font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;}
@@ -205,18 +190,20 @@ tbody td:first-child{color:var(--text);}
 .reset-confirm.visible{display:block;}
 .reset-confirm-text{font-size:12px;color:var(--text);margin-bottom:10px;}
 
-/* ── REPLY CARD ── */
 .reply-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;transition:border-color .15s;}
 .reply-textarea:focus{border-color:var(--navy-border);}
 
-/* ── LOADING / EMPTY ── */
+/* ── WORKSHOP REGISTRATIONS SECTION ── */
+.workshop-reg-banner{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
+.workshop-reg-count{font-size:13px;font-weight:700;color:var(--gold);}
+.workshop-reg-label{font-size:11px;color:var(--text-dim);}
+
 .loading-state{display:flex;align-items:center;justify-content:center;padding:32px;color:var(--text-faint);font-size:12px;gap:8px;}
 .spinner{width:16px;height:16px;border:1.5px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-state{text-align:center;padding:28px;font-size:12px;color:var(--text-faint);}
 .error-state{text-align:center;padding:28px;font-size:12px;color:var(--red);}
 
-/* ── MISC ── */
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .pill-green{background:var(--green-soft);color:var(--green);}
 .pill-navy{background:var(--navy-soft);color:var(--navy);}
@@ -226,10 +213,6 @@ tbody td:first-child{color:var(--text);}
 .status-err{color:var(--red);}
 .status-info{color:var(--text-faint);}
 
-/* ── WORKSHOP REGISTERED TABLE ── */
-.workshop-reg-count{display:inline-flex;align-items:center;gap:6px;background:rgba(240,180,41,0.12);border:1px solid var(--gold-border);border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;color:var(--gold);}
-
-/* ════════════ MOBILE ════════════ */
 @media(max-width:768px){
   .sidebar{display:none;}
   .mob-nav{display:flex;}
@@ -258,7 +241,6 @@ tbody td:first-child{color:var(--text);}
 </head>
 <body>
 <div class="shell">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-title">SYSSA Admin</div>
@@ -272,6 +254,7 @@ tbody td:first-child{color:var(--text);}
       <button class="sb-item" onclick="showPage('chat',this)"><span class="sb-item-icon">◎</span>Chat & AI</button>
       <button class="sb-item" onclick="showPage('feedback',this)"><span class="sb-item-icon">◇</span>Feedback</button>
       <button class="sb-item" onclick="showPage('questions',this)"><span class="sb-item-icon">◈</span>Top Questions</button>
+      <button class="sb-item" onclick="showPage('workshop',this)"><span class="sb-item-icon">✦</span>Workshop</button>
       <div class="sb-section">Control</div>
       <button class="sb-item" onclick="showPage('control',this)"><span class="sb-item-icon">◆</span>Live Control</button>
     </nav>
@@ -284,7 +267,6 @@ tbody td:first-child{color:var(--text);}
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Overview</div>
@@ -295,7 +277,6 @@ tbody td:first-child{color:var(--text);}
       </div>
     </div>
 
-    <!-- EPOCH SWITCHER BAR -->
     <div class="epoch-bar">
       <span class="epoch-bar-label">Session:</span>
       <div class="epoch-btns" id="epoch-btns">
@@ -335,6 +316,11 @@ tbody td:first-child{color:var(--text);}
           <div class="stat-label">Avg. Time</div>
           <div class="stat-val" id="s-time">—</div>
           <div class="stat-sub">Mins on page</div>
+        </div>
+        <div class="stat-card accent-gold">
+          <div class="stat-label">Workshop</div>
+          <div class="stat-val" id="s-workshop">—</div>
+          <div class="stat-sub">Registered emails</div>
         </div>
       </div>
 
@@ -385,7 +371,7 @@ tbody td:first-child{color:var(--text);}
           <table>
             <thead>
               <tr>
-                <th>Session ID</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
+                <th>Visitor</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
                 <th>Device</th><th>Browser</th><th>OS</th><th>Country</th><th>City</th>
                 <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th>
               </tr>
@@ -428,10 +414,33 @@ tbody td:first-child{color:var(--text);}
       </div>
     </div>
 
+    <!-- ══ WORKSHOP ══ -->
+    <div class="content" id="page-workshop">
+      <div class="sec-header">
+        <div class="sec-title">Workshop Registrations</div>
+        <div class="sec-count" id="workshop-count"></div>
+      </div>
+      <div id="workshop-banner" style="display:none" class="workshop-reg-banner">
+        <span class="workshop-reg-count" id="workshop-reg-num">0</span>
+        <span class="workshop-reg-label">people registered for the workshop</span>
+      </div>
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Email</th><th>Session ID</th><th>Registered At</th><th>Session #</th></tr>
+            </thead>
+            <tbody id="workshop-table">
+              <tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- ══ LIVE CONTROL ══ -->
     <div class="content" id="page-control">
 
-      <!-- SPEAKER DISPLAY CARD -->
       <div class="speaker-now-card" style="margin-bottom:14px;">
         <div class="snc-row">
           <div class="snc-block snc-now">
@@ -454,7 +463,6 @@ tbody td:first-child{color:var(--text);}
       </div>
 
       <div class="control-grid">
-        <!-- Jump to Speaker -->
         <div class="control-card">
           <div class="control-label">Jump to Speaker</div>
           <select class="ctrl-select" id="ctrl-speaker-sel" onchange="jumpSpeaker()">
@@ -463,7 +471,6 @@ tbody td:first-child{color:var(--text);}
           <div style="margin-top:8px;font-size:11px;color:var(--text-faint)">სიიდან პირდაპირ გადახტომა</div>
         </div>
 
-        <!-- Toggles -->
         <div class="control-card">
           <div class="control-label">AI Assistant</div>
           <div class="ctrl-toggle">
@@ -495,7 +502,6 @@ tbody td:first-child{color:var(--text);}
         </div>
       </div>
 
-      <!-- RESET CARD -->
       <div class="reset-card">
         <div class="reset-card-title">⚠ Session Reset</div>
         <div class="reset-card-desc">
@@ -513,7 +519,6 @@ tbody td:first-child{color:var(--text);}
         </div>
       </div>
 
-      <!-- REPLY CARD -->
       <div class="sec-header" style="margin-top:0"><div class="sec-title">Reply to Participant</div></div>
       <div class="control-card" style="margin-bottom:14px;">
         <div class="control-label">Select Session</div>
@@ -529,23 +534,19 @@ tbody td:first-child{color:var(--text);}
       </div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /shell -->
+  </div>
+</div>
 
-<!-- MOBILE BOTTOM NAV -->
 <nav class="mob-nav" id="mob-nav">
   <button class="mob-nav-item active" onclick="showPage('overview',this,'mob')"><span class="mob-icon">◈</span>Overview</button>
   <button class="mob-nav-item" onclick="showPage('sessions',this,'mob')"><span class="mob-icon">◉</span>Sessions</button>
   <button class="mob-nav-item" onclick="showPage('chat',this,'mob')"><span class="mob-icon">◎</span>Chat</button>
   <button class="mob-nav-item" onclick="showPage('feedback',this,'mob')"><span class="mob-icon">◇</span>Feedback</button>
-  <button class="mob-nav-item" onclick="showPage('questions',this,'mob')"><span class="mob-icon">◈</span>Q&A</button>
+  <button class="mob-nav-item" onclick="showPage('workshop',this,'mob')"><span class="mob-icon">✦</span>Workshop</button>
   <button class="mob-nav-item" onclick="showPage('control',this,'mob')"><span class="mob-icon">◆</span>Control</button>
 </nav>
 
 <script>
-// ════════════════════════════════════════════
-//  CONFIG
-// ════════════════════════════════════════════
 const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
@@ -581,24 +582,28 @@ const AGENDA = [
   {id:29, speaker:"Closing Ceremony",             isBreak:true}
 ];
 
-// ════════════════════════════════════════════
+// ════════════════
 //  STATE
-// ════════════════════════════════════════════
+// ════════════════
 let sb = null;
 let charts = {};
 let currentEpoch = 1;
 let liveEpoch = 1;
 let presenceChannel = null;
 
-// ════════════════════════════════════════════
+// ── EMAIL MAP: session_id → email (populated once on load, refreshed on loadAll) ──
+let emailMap = {}; // { 'p_abc123': 'user@email.com', ... }
+
+// ════════════════
 //  INIT
-// ════════════════════════════════════════════
+// ════════════════
 window.addEventListener('load', async () => {
   sb = supabase.createClient(SB_URL, SB_KEY);
   tickClock();
   setInterval(tickClock, 1000);
   populateSpeakerSelect();
   await loadEpochState();
+  await loadEmailMap();   // ← load email map first
   await loadAll();
   await loadControl();
   subscribePresence();
@@ -610,9 +615,41 @@ function tickClock() {
     new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
-// ════════════════════════════════════════════
+// ════════════════
+//  EMAIL MAP
+//  Loads ALL workshop registrations and builds session_id → email lookup
+// ════════════════
+async function loadEmailMap() {
+  try {
+    const { data, error } = await sb.from('workshop_registrations').select('session_id, email');
+    if (error) throw error;
+    emailMap = {};
+    (data || []).forEach(r => {
+      if (r.session_id && r.email) emailMap[r.session_id] = r.email;
+    });
+
+    // Also load from sessions table registered_email column (backup)
+    const { data: sessData } = await sb.from('sessions').select('id, registered_email');
+    (sessData || []).forEach(s => {
+      if (s.id && s.registered_email && !emailMap[s.id]) {
+        emailMap[s.id] = s.registered_email;
+      }
+    });
+  } catch(e) {
+    console.warn('Email map load error:', e.message);
+  }
+}
+
+// Helper: get display label for a session (email if registered, shortened ID otherwise)
+function getSessionLabel(sessionId) {
+  if (!sessionId) return '—';
+  if (emailMap[sessionId]) return emailMap[sessionId];
+  return sessionId.substring(0, 14) + '…';
+}
+
+// ════════════════
 //  EPOCH SYSTEM
-// ════════════════════════════════════════════
+// ════════════════
 async function loadEpochState() {
   try {
     const { data, error } = await sb.from('live_state').select('current_epoch').eq('id', 1).single();
@@ -645,27 +682,27 @@ function renderEpochBar() {
 async function switchEpoch(epoch) {
   currentEpoch = epoch;
   renderEpochBar();
+  await loadEmailMap(); // refresh email map on epoch switch
   await loadAll();
   const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
   if (activePage === 'sessions')  loadSessions();
   if (activePage === 'chat')      loadChat();
   if (activePage === 'feedback')  loadFeedback();
   if (activePage === 'questions') loadQuestions();
+  if (activePage === 'workshop')  loadWorkshop();
 }
 
-// ════════════════════════════════════════════
-//  RESET SESSION
-// ════════════════════════════════════════════
+// ════════════════
+//  RESET
+// ════════════════
 function showResetConfirm() {
   document.getElementById('reset-next-num').textContent = liveEpoch + 1;
   document.getElementById('reset-status').textContent = '';
   document.getElementById('reset-confirm').classList.add('visible');
 }
-
 function hideResetConfirm() {
   document.getElementById('reset-confirm').classList.remove('visible');
 }
-
 async function doReset() {
   const btn    = document.getElementById('reset-confirm-btn');
   const status = document.getElementById('reset-status');
@@ -692,16 +729,13 @@ async function doReset() {
   }
 }
 
-// ════════════════════════════════════════════
+// ════════════════
 //  NAVIGATION
-// ════════════════════════════════════════════
+// ════════════════
 const PAGE_TITLES = {
-  overview: 'Overview',
-  sessions: 'Sessions',
-  chat:     'Chat & AI',
-  feedback: 'Feedback',
-  questions:'Top Questions',
-  control:  'Live Control'
+  overview: 'Overview', sessions: 'Sessions', chat: 'Chat & AI',
+  feedback: 'Feedback', questions: 'Top Questions',
+  workshop: 'Workshop Registrations', control: 'Live Control'
 };
 
 function showPage(id, btn, source) {
@@ -722,15 +756,17 @@ function showPage(id, btn, source) {
   if (id === 'chat')      loadChat();
   if (id === 'feedback')  loadFeedback();
   if (id === 'questions') loadQuestions();
+  if (id === 'workshop')  loadWorkshop();
   if (id === 'control')   loadControl();
 
   window.scrollTo(0, 0);
 }
 
-// ════════════════════════════════════════════
-//  LOAD ALL (overview)
-// ════════════════════════════════════════════
+// ════════════════
+//  LOAD ALL
+// ════════════════
 async function loadAll() {
+  await loadEmailMap(); // always refresh email map
   await Promise.allSettled([
     loadOverviewStats(),
     loadDeviceTimeBreakdown(),
@@ -741,16 +777,17 @@ async function loadAll() {
   ]);
 }
 
-// ════════════════════════════════════════════
+// ════════════════
 //  OVERVIEW STATS
-// ════════════════════════════════════════════
+// ════════════════
 async function loadOverviewStats() {
   try {
     const ep = currentEpoch;
-    const [sessRes, msgRes, fbRes] = await Promise.all([
-      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec').eq('reset_epoch', ep),
+    const [sessRes, msgRes, fbRes, wsRes] = await Promise.all([
+      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, registered_email').eq('reset_epoch', ep),
       sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender', 'participant').eq('reset_epoch', ep),
-      sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep)
+      sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep),
+      sb.from('workshop_registrations').select('id', { count: 'exact', head: true })
     ]);
 
     const sessions    = sessRes.data || [];
@@ -758,19 +795,22 @@ async function loadOverviewStats() {
     const totalSec    = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
     const avgSec      = sessions.length ? totalSec / sessions.length : 0;
 
-    document.getElementById('s-sessions').textContent = sessions.length;
-    document.getElementById('s-visits').textContent   = totalVisits;
-    document.getElementById('s-msgs').textContent     = msgRes.count ?? 0;
-    document.getElementById('s-fb').textContent       = fbRes.count  ?? 0;
-    document.getElementById('s-time').textContent     = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
+    document.getElementById('s-sessions').textContent  = sessions.length;
+    document.getElementById('s-visits').textContent    = totalVisits;
+    document.getElementById('s-msgs').textContent      = msgRes.count ?? 0;
+    document.getElementById('s-fb').textContent        = fbRes.count  ?? 0;
+    document.getElementById('s-time').textContent      = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
+    document.getElementById('s-workshop').textContent  = wsRes.count  ?? 0;
 
+    // Populate reply dropdown — show email if available
     const sel = document.getElementById('ctrl-reply-sel');
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
     sessions.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id;
-      opt.textContent = s.id.substring(0, 16) + '…' + (s.chat_opened ? ' (chatted)' : '');
+      const opt     = document.createElement('option');
+      opt.value     = s.id;
+      const label   = emailMap[s.id] || s.registered_email || (s.id.substring(0, 16) + '…');
+      opt.textContent = label + (s.chat_opened ? ' ✉' : '');
       sel.appendChild(opt);
     });
     if (cur) sel.value = cur;
@@ -780,9 +820,9 @@ async function loadOverviewStats() {
   }
 }
 
-// ════════════════════════════════════════════
+// ════════════════
 //  DEVICE TIME BREAKDOWN
-// ════════════════════════════════════════════
+// ════════════════
 async function loadDeviceTimeBreakdown() {
   const container = document.getElementById('device-time-grid');
   try {
@@ -830,19 +870,17 @@ async function loadDeviceTimeBreakdown() {
         </div>`;
     }).join('');
   } catch(e) {
-    container.innerHTML = '<div class="error-state">Error loading device stats: ' + escHtml(e.message) + '</div>';
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
   }
 }
 
-// ════════════════════════════════════════════
-//  HOURLY CHART
-// ════════════════════════════════════════════
+// ════════════════
+//  CHARTS
+// ════════════════
 async function loadHourlyChart() {
   try {
     const { data, error } = await sb.from('page_events')
-      .select('created_at')
-      .eq('event_type', 'visit')
-      .eq('reset_epoch', currentEpoch)
+      .select('created_at').eq('event_type', 'visit').eq('reset_epoch', currentEpoch)
       .order('created_at', { ascending: true });
     if (error) throw error;
 
@@ -860,17 +898,10 @@ async function loadHourlyChart() {
       type: 'bar',
       data: {
         labels,
-        datasets: [{
-          data: values,
-          backgroundColor: 'rgba(56,139,253,0.5)',
-          borderColor: 'rgba(56,139,253,0.9)',
-          borderWidth: 1,
-          borderRadius: 3
-        }]
+        datasets: [{ data: values, backgroundColor: 'rgba(56,139,253,0.5)', borderColor: 'rgba(56,139,253,0.9)', borderWidth: 1, borderRadius: 3 }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
           x: { ticks: { color: '#484F58', font: { size: 9 }, maxRotation: 0 }, grid: { color: '#21262D' } },
@@ -878,14 +909,9 @@ async function loadHourlyChart() {
         }
       }
     });
-  } catch(e) {
-    console.warn('Hourly chart error:', e.message);
-  }
+  } catch(e) { console.warn('Hourly chart error:', e.message); }
 }
 
-// ════════════════════════════════════════════
-//  DEVICE CHART
-// ════════════════════════════════════════════
 async function loadDeviceChart() {
   try {
     const { data, error } = await sb.from('sessions').select('device_type').eq('reset_epoch', currentEpoch);
@@ -907,31 +933,22 @@ async function loadDeviceChart() {
         datasets: [{
           data: [counts.mobile, counts.desktop, counts.tablet],
           backgroundColor: ['rgba(56,139,253,0.7)', 'rgba(63,185,80,0.7)', 'rgba(240,180,41,0.7)'],
-          borderColor: ['#388BFD', '#3FB950', '#F0B429'],
-          borderWidth: 1
+          borderColor: ['#388BFD', '#3FB950', '#F0B429'], borderWidth: 1
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         plugins: { legend: { position: 'bottom', labels: { color: '#8B949E', font: { size: 11 }, padding: 12 } } }
       }
     });
-  } catch(e) {
-    console.warn('Device chart error:', e.message);
-  }
+  } catch(e) { console.warn('Device chart error:', e.message); }
 }
 
-// ════════════════════════════════════════════
-//  SPEAKER PEAK BARS
-// ════════════════════════════════════════════
 async function loadSpeakerPeak() {
   const container = document.getElementById('speaker-bars');
   try {
     const { data, error } = await sb.from('page_events')
-      .select('speaker_id, speaker_name')
-      .eq('event_type', 'heartbeat')
-      .eq('reset_epoch', currentEpoch)
+      .select('speaker_id, speaker_name').eq('event_type', 'heartbeat').eq('reset_epoch', currentEpoch)
       .not('speaker_id', 'is', null);
     if (error) throw error;
 
@@ -943,10 +960,7 @@ async function loadSpeakerPeak() {
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
     const max = sorted[0]?.[1] || 1;
 
-    if (!sorted.length) {
-      container.innerHTML = '<div class="empty-state">No speaker data yet</div>';
-      return;
-    }
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No speaker data yet</div>'; return; }
     container.innerHTML = sorted.map(([name, count]) =>
       `<div class="speaker-bar-row">
         <div class="speaker-bar-name" title="${escHtml(name)}">${escHtml(name)}</div>
@@ -959,9 +973,6 @@ async function loadSpeakerPeak() {
   }
 }
 
-// ════════════════════════════════════════════
-//  GEO TABLE
-// ════════════════════════════════════════════
 async function loadGeo() {
   const tbody = document.getElementById('geo-table');
   try {
@@ -975,40 +986,31 @@ async function loadGeo() {
     });
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 20);
 
-    if (!sorted.length) {
-      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>';
-      return;
-    }
+    if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>'; return; }
     tbody.innerHTML = sorted.map(([key, count]) => {
       const [country, city] = key.split('||');
-      return `<tr>
-        <td>${escHtml(country)}</td>
-        <td style="color:var(--text-faint)">${escHtml(city)}</td>
-        <td><span class="pill pill-navy">${count}</span></td>
-      </tr>`;
+      return `<tr><td>${escHtml(country)}</td><td style="color:var(--text-faint)">${escHtml(city)}</td><td><span class="pill pill-navy">${count}</span></td></tr>`;
     }).join('');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="3"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
-// ════════════════════════════════════════════
-//  SESSIONS TABLE
-// ════════════════════════════════════════════
+// ════════════════
+//  SESSIONS TABLE — shows email instead of session ID
+// ════════════════
 async function loadSessions() {
   const tbody = document.getElementById('sessions-table');
   tbody.innerHTML = '<tr><td colspan="14"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
   try {
     const { data, error } = await sb.from('sessions').select('*')
-      .eq('reset_epoch', currentEpoch)
-      .order('last_seen', { ascending: false });
+      .eq('reset_epoch', currentEpoch).order('last_seen', { ascending: false });
     if (error) throw error;
 
     document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
 
     if (!(data || []).length) {
-      tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>';
-      return;
+      tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>'; return;
     }
 
     const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' }) : '—';
@@ -1023,14 +1025,17 @@ async function loadSessions() {
       const deviceBadge = devType
         ? `<span class="td-badge td-badge-${devType}">${devType}</span>`
         : '<span style="color:var(--text-faint)">—</span>';
-      const chatBadge = s.chat_opened
-        ? '<span class="td-badge td-badge-chat">Yes</span>'
-        : '<span style="color:var(--text-faint)">—</span>';
-      const fbBadge = s.feedback_sent
-        ? '<span class="td-badge td-badge-fb">Yes</span>'
-        : '<span style="color:var(--text-faint)">—</span>';
+      const chatBadge = s.chat_opened   ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
+      const fbBadge   = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>'   : '<span style="color:var(--text-faint)">—</span>';
+
+      // ── Show email if registered, otherwise short session ID ──
+      const email = emailMap[s.id] || s.registered_email;
+      const visitorCell = email
+        ? `<span class="td-email">${escHtml(email)}</span>`
+        : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id || '').substring(0, 12))}…</span>`;
+
       return `<tr>
-        <td class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id || '').substring(0, 12))}…</td>
+        <td>${visitorCell}</td>
         <td>${fmtDate(s.first_seen)}</td>
         <td>${fmtDate(s.last_seen)}</td>
         <td style="text-align:center">${s.visit_count || 1}</td>
@@ -1051,9 +1056,9 @@ async function loadSessions() {
   }
 }
 
-// ════════════════════════════════════════════
-//  CHAT FEED
-// ════════════════════════════════════════════
+// ════════════════
+//  CHAT FEED — shows email instead of session ID
+// ════════════════
 async function loadChat() {
   const feed = document.getElementById('chat-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1067,18 +1072,22 @@ async function loadChat() {
 
     document.getElementById('chat-count').textContent = (count || 0) + ' messages';
 
-    if (!(data || []).length) {
-      feed.innerHTML = '<div class="empty-state">No chat messages yet</div>';
-      return;
-    }
+    if (!(data || []).length) { feed.innerHTML = '<div class="empty-state">No chat messages yet</div>'; return; }
 
     feed.innerHTML = (data || []).map(m => {
       const t = new Date(m.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
       const senderClass = m.sender === 'organizer' ? 'organizer' : 'participant';
-      const senderLabel = m.sender === 'organizer' ? '🏢 Organizer' : escHtml((m.session_id || '').substring(0, 16) + '…');
+
+      // ── Show email tag next to sender if we know their email ──
+      const email = m.sender === 'participant' ? emailMap[m.session_id] : null;
+      const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
+      const senderLabel = m.sender === 'organizer'
+        ? '🏢 Organizer'
+        : escHtml(getSessionLabel(m.session_id));
+
       return `<div class="feed-item">
         <div class="feed-item-top">
-          <span class="feed-sender ${senderClass}">${senderLabel}</span>
+          <span><span class="feed-sender ${senderClass}">${senderLabel}</span>${emailTag}</span>
           <span class="feed-time">${t}</span>
         </div>
         <div class="feed-text">${escHtml(m.text)}</div>
@@ -1089,9 +1098,9 @@ async function loadChat() {
   }
 }
 
-// ════════════════════════════════════════════
-//  FEEDBACK FEED
-// ════════════════════════════════════════════
+// ════════════════
+//  FEEDBACK FEED — shows email instead of session ID
+// ════════════════
 async function loadFeedback() {
   const feed = document.getElementById('fb-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1104,21 +1113,23 @@ async function loadFeedback() {
 
     document.getElementById('fb-count').textContent = (count || 0) + ' submissions';
 
-    if (!(data || []).length) {
-      feed.innerHTML = '<div class="empty-state">No feedback yet</div>';
-      return;
-    }
+    if (!(data || []).length) { feed.innerHTML = '<div class="empty-state">No feedback yet</div>'; return; }
 
     feed.innerHTML = (data || []).map(f => {
       const t = new Date(f.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
+
+      // ── Show email if known, otherwise session ID ──
+      const email = emailMap[f.session_id];
+      const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
+
       return `<div class="feed-item">
         <div class="feed-item-top">
-          <span class="feed-sender feedback">Feedback</span>
+          <span><span class="feed-sender feedback">Feedback</span>${emailTag}</span>
           <span class="feed-time">${t}</span>
         </div>
         <div class="feed-text">${escHtml(f.text)}</div>
-        ${f.speaker ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
-        ${f.session_id ? `<div class="feed-meta">Session: ${escHtml((f.session_id || '').substring(0, 16))}…</div>` : ''}
+        ${f.speaker    ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
+        ${!email && f.session_id ? `<div class="feed-meta">Session: ${escHtml(getSessionLabel(f.session_id))}</div>` : ''}
       </div>`;
     }).join('');
   } catch(e) {
@@ -1126,17 +1137,15 @@ async function loadFeedback() {
   }
 }
 
-// ════════════════════════════════════════════
-//  COMMON QUESTIONS
-// ════════════════════════════════════════════
+// ════════════════
+//  QUESTIONS
+// ════════════════
 async function loadQuestions() {
   const container = document.getElementById('q-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
     const { data, error } = await sb.from('messages')
-      .select('text')
-      .eq('sender', 'participant')
-      .eq('reset_epoch', currentEpoch);
+      .select('text').eq('sender', 'participant').eq('reset_epoch', currentEpoch);
     if (error) throw error;
 
     const counts = {};
@@ -1146,10 +1155,7 @@ async function loadQuestions() {
     });
     const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 30);
 
-    if (!sorted.length) {
-      container.innerHTML = '<div class="empty-state">No messages yet</div>';
-      return;
-    }
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
     container.innerHTML = sorted.map(([text, count], i) =>
       `<div class="q-item">
         <div class="q-rank">#${i + 1}</div>
@@ -1162,9 +1168,49 @@ async function loadQuestions() {
   }
 }
 
-// ════════════════════════════════════════════
-//  PRESENCE (online count)
-// ════════════════════════════════════════════
+// ════════════════
+//  WORKSHOP REGISTRATIONS PAGE
+// ════════════════
+async function loadWorkshop() {
+  const tbody = document.getElementById('workshop-table');
+  tbody.innerHTML = '<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
+  try {
+    const { data, count, error } = await sb.from('workshop_registrations')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    document.getElementById('workshop-count').textContent = (count || 0) + ' registrations';
+    const banner = document.getElementById('workshop-banner');
+    const regNum = document.getElementById('workshop-reg-num');
+    if (count > 0) {
+      banner.style.display = 'flex';
+      regNum.textContent   = count;
+    } else {
+      banner.style.display = 'none';
+    }
+
+    if (!(data || []).length) {
+      tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No workshop registrations yet</div></td></tr>'; return;
+    }
+
+    tbody.innerHTML = (data || []).map(r => {
+      const t = new Date(r.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
+      return `<tr>
+        <td class="td-email">${escHtml(r.email)}</td>
+        <td class="td-mono" title="${escHtml(r.session_id || '')}">${escHtml((r.session_id || '').substring(0, 12))}…</td>
+        <td style="color:var(--text-faint)">${t}</td>
+        <td><span class="pill pill-navy">Session ${r.reset_epoch || 1}</span></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="4"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+  }
+}
+
+// ════════════════
+//  PRESENCE
+// ════════════════
 function subscribePresence() {
   if (presenceChannel) sb.removeChannel(presenceChannel);
   presenceChannel = sb.channel('presence_room');
@@ -1176,9 +1222,9 @@ function subscribePresence() {
   }).subscribe();
 }
 
-// ════════════════════════════════════════════
-//  LIVE CONTROL — SPEAKER
-// ════════════════════════════════════════════
+// ════════════════
+//  LIVE CONTROL
+// ════════════════
 function populateSpeakerSelect() {
   const sel = document.getElementById('ctrl-speaker-sel');
   sel.innerHTML = AGENDA.map(a =>
@@ -1191,14 +1237,10 @@ function renderSpeakerCard(currentId) {
   const cur  = idx >= 0 ? AGENDA[idx] : null;
   const next = idx >= 0 ? (AGENDA[idx + 1] || null) : null;
 
-  document.getElementById('snc-current-name').textContent = cur ? cur.speaker : '—';
-  document.getElementById('snc-current-sub').textContent  = cur
-    ? (cur.isBreak ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`)
-    : '';
+  document.getElementById('snc-current-name').textContent = cur  ? cur.speaker  : '—';
+  document.getElementById('snc-current-sub').textContent  = cur  ? (cur.isBreak  ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`) : '';
   document.getElementById('snc-next-name').textContent    = next ? next.speaker : '—';
-  document.getElementById('snc-next-sub').textContent     = next
-    ? (next.isBreak ? 'Break / Ceremony' : '')
-    : (cur ? 'Program ended' : '');
+  document.getElementById('snc-next-sub').textContent     = next ? (next.isBreak ? 'Break / Ceremony' : '') : (cur ? 'Program ended' : '');
   document.getElementById('snc-idx').textContent          = idx >= 0 ? `${idx + 1} / ${AGENDA.length}` : '—';
   document.getElementById('ctrl-speaker-sel').value       = currentId || '';
 }
@@ -1245,8 +1287,7 @@ async function _saveSpeaker(id) {
   status.textContent = 'Saving...';
   try {
     const { error } = await sb.from('live_state')
-      .update({ current_id: id, speaker_started_at: new Date().toISOString() })
-      .eq('id', 1);
+      .update({ current_id: id, speaker_started_at: new Date().toISOString() }).eq('id', 1);
     if (error) throw error;
     renderSpeakerCard(id);
     status.className = 'status-msg status-ok';
@@ -1259,45 +1300,36 @@ async function _saveSpeaker(id) {
 }
 
 async function setAI() {
-  const tog   = document.getElementById('ctrl-ai-toggle');
+  const tog = document.getElementById('ctrl-ai-toggle');
   const label = document.getElementById('ctrl-ai-label');
   label.textContent = 'Saving...';
   try {
     const { error } = await sb.from('live_state').update({ ai_enabled: tog.checked }).eq('id', 1);
     if (error) throw error;
     label.textContent = tog.checked ? 'AI Enabled' : 'AI Disabled';
-  } catch(e) {
-    label.textContent = '✗ Error';
-    tog.checked = !tog.checked;
-  }
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
 }
 
 async function setCountdown() {
-  const tog   = document.getElementById('ctrl-cd-toggle');
+  const tog = document.getElementById('ctrl-cd-toggle');
   const label = document.getElementById('ctrl-cd-label');
   label.textContent = 'Saving...';
   try {
     const { error } = await sb.from('live_state').update({ show_countdown: tog.checked }).eq('id', 1);
     if (error) throw error;
     label.textContent = tog.checked ? 'Countdown ON' : 'Countdown OFF';
-  } catch(e) {
-    label.textContent = '✗ Error';
-    tog.checked = !tog.checked;
-  }
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
 }
 
 async function setWorkshop() {
-  const tog   = document.getElementById('ctrl-ws-toggle');
+  const tog = document.getElementById('ctrl-ws-toggle');
   const label = document.getElementById('ctrl-ws-label');
   label.textContent = 'Saving...';
   try {
     const { error } = await sb.from('live_state').update({ show_workshop: tog.checked }).eq('id', 1);
     if (error) throw error;
     label.textContent = tog.checked ? 'Workshop ON' : 'Workshop OFF';
-  } catch(e) {
-    label.textContent = '✗ Error';
-    tog.checked = !tog.checked;
-  }
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
 }
 
 async function sendReply() {
@@ -1305,25 +1337,14 @@ async function sendReply() {
   const text   = document.getElementById('ctrl-reply-text').value.trim();
   const status = document.getElementById('ctrl-reply-status');
 
-  if (!sel.value) {
-    status.className = 'status-msg status-err';
-    status.textContent = 'Please select a session';
-    return;
-  }
-  if (!text) {
-    status.className = 'status-msg status-err';
-    status.textContent = 'Please enter a message';
-    return;
-  }
+  if (!sel.value) { status.className = 'status-msg status-err'; status.textContent = 'Please select a session'; return; }
+  if (!text)      { status.className = 'status-msg status-err'; status.textContent = 'Please enter a message';  return; }
 
   status.className = 'status-msg status-info';
   status.textContent = 'Sending...';
   try {
     const { error } = await sb.from('messages').insert({
-      session_id: sel.value,
-      sender: 'organizer',
-      text: text,
-      reset_epoch: liveEpoch
+      session_id: sel.value, sender: 'organizer', text, reset_epoch: liveEpoch
     });
     if (error) throw error;
     document.getElementById('ctrl-reply-text').value = '';
@@ -1336,9 +1357,9 @@ async function sendReply() {
   }
 }
 
-// ════════════════════════════════════════════
+// ════════════════
 //  UTILS
-// ════════════════════════════════════════════
+// ════════════════
 function escHtml(str) {
   return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
