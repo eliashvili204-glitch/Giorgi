@@ -1,6 +1,3 @@
-bash
-
-cat > /mnt/user-data/outputs/participant.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +23,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 #error-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;}
 #error-screen p{color:var(--warn);font-size:13px;max-width:360px;line-height:1.7;}
 #app{display:none;flex-direction:column;min-height:100vh;padding-bottom:84px;}
-
 .logos{background:var(--bg2);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
 .logo-circle{width:34px;height:34px;border-radius:50%;border:1px solid var(--border)!important;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--text-dim)!important;background:transparent!important;text-align:center;line-height:1.2;flex-shrink:0;letter-spacing:.02em;}
 .logo-sep{width:1px;height:22px;background:var(--border);flex-shrink:0;}
@@ -35,7 +31,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .gold-circle{border-color:var(--gold-border)!important;color:var(--gold)!important;background:var(--gold-soft)!important;font-size:7px;}
 .page-title{text-align:center;padding:24px 20px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
 .page-title h1{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--navy);letter-spacing:.03em;line-height:1.4;}
-
 .now-section{padding:20px 20px 0;}
 .now-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.02);transition:outline .2s;}
 .now-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -47,8 +42,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .now-sub{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.5;font-style:italic;}
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
 .speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
-
-/* ── WORKSHOP CARD ── */
 .workshop-section{padding:14px 20px 0;}
 .workshop-card{background:var(--surface);border:1px solid var(--gold-border);border-radius:12px;padding:18px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.03);}
 .workshop-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
@@ -73,13 +66,11 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .workshop-migrating{font-size:11px;color:var(--text-faint);margin-top:8px;display:none;align-items:center;gap:6px;}
 .workshop-migrating.show{display:flex;}
 .workshop-migrating .spinner{width:12px;height:12px;border-width:1.5px;}
-
 .next-section{padding:12px 20px 0;}
 .next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
 .next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
 .next-name{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);}
 .next-title{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-
 .agenda-section{padding:24px 20px 0;}
 .agenda-section h3{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;}
 .a-session-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;padding:14px 0 6px;border-top:1px solid var(--border);margin-top:10px;}
@@ -97,17 +88,14 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
 .a-badge-live{background:#16A34A;color:#fff;}
 .a-badge-next{background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
-
 .footer{padding:18px 20px;text-align:center;border-top:1px solid var(--border);margin-top:28px;}
 .footer-status{font-size:10px;color:var(--text-faint);display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.04em;}
 .f-dot{width:5px;height:5px;border-radius:50%;background:#16A34A;}
 .f-dot.off{background:var(--warn);}
-
 .notif-banner{background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:8px;margin:14px 20px 0;padding:10px 14px;display:flex;align-items:center;gap:10px;}
 .notif-banner-text{flex:1;font-size:11px;color:var(--navy);line-height:1.5;}
 .notif-banner-btn{background:var(--navy);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
 .notif-banner-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
-
 .fixed-panels{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:flex-end;pointer-events:none;z-index:9999;padding:0 16px 16px;}
 .chat-widget{pointer-events:all;}
 .feedback-widget{pointer-events:all;margin-left:auto;}
@@ -116,16 +104,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fab-chat{background:var(--surface);border-color:var(--navy-border);}
 .fab-fb{background:var(--surface);border-color:var(--gold-border);}
 .fab-badge{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:var(--warn);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
-
-.float-panel{
-  position:fixed;bottom:80px;
-  width:calc(100vw - 32px);max-width:340px;
-  background:rgba(255,255,255,0.98);border:1px solid var(--border);border-radius:14px;
-  box-shadow:0 16px 48px rgba(0,0,0,.12);display:flex;flex-direction:column;
-  overflow:hidden;max-height:62vh;backdrop-filter:blur(12px);z-index:9998;
-  opacity:0;transform:translateY(20px);pointer-events:none;
-  transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1);
-}
+.float-panel{position:fixed;bottom:80px;width:calc(100vw - 32px);max-width:340px;background:rgba(255,255,255,0.98);border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;max-height:62vh;backdrop-filter:blur(12px);z-index:9998;opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1);}
 .float-panel.open{opacity:1;transform:translateY(0);pointer-events:all;}
 .chat-panel{left:16px;}
 .fb-panel{right:16px;}
@@ -138,7 +117,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .panel-title{font-size:13px;font-weight:700;color:var(--text);}
 .panel-sub{font-size:10px;color:var(--text-faint);margin-top:1px;}
 .panel-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;line-height:1;padding:2px 4px;}
-
 .chat-msgs{overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:80px;}
 .chat-msgs::-webkit-scrollbar{width:3px;}
 .chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -155,7 +133,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-inp:focus{border-color:var(--navy-border);}
 .chat-inp::placeholder{color:var(--text-faint);}
 .chat-send-btn{background:var(--navy);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
-
 .fb-body{display:flex;flex-direction:column;}
 .fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;}
 .fb-info-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px;}
@@ -167,7 +144,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fb-ta::placeholder{color:var(--text-faint);font-style:italic;}
 .fb-submit-wrap{padding:0 16px 16px;}
 .fb-submit{padding:12px;background:var(--gold);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.1em;text-transform:uppercase;}
-
 .countdown-wrap{padding:24px 20px 8px;}
 .countdown-card{background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.02);}
 .cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 12px;margin-bottom:18px;}
@@ -237,38 +213,26 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     </div>
   </div>
 
-  <!-- WORKSHOP REGISTRATION CARD -->
   <div id="workshop-section" class="workshop-section" style="display:none;">
     <div class="workshop-card">
       <div class="workshop-top">
-        <span class="workshop-icon">✦</span>
+        <span class="workshop-icon">&#10022;</span>
         <span class="workshop-tag">Workshop Registration</span>
       </div>
       <div class="workshop-title">Register for the Workshop</div>
       <div class="workshop-desc">Enter your email to register for the workshop.</div>
-
       <div id="workshop-done" style="display:none;">
         <div class="workshop-registered">
-          <span class="workshop-registered-icon">✓</span>
+          <span class="workshop-registered-icon">&#10003;</span>
           <div>
             <div class="workshop-registered-text">Registered!</div>
             <div class="workshop-registered-email" id="workshop-done-email"></div>
           </div>
         </div>
       </div>
-
       <div id="workshop-form">
         <div class="workshop-inp-row">
-          <input
-            class="workshop-inp"
-            id="workshop-email-inp"
-            type="email"
-            placeholder="your@email.com"
-            maxlength="120"
-            autocomplete="email"
-            inputmode="email"
-            onkeydown="if(event.key==='Enter')registerWorkshop()"
-          >
+          <input class="workshop-inp" id="workshop-email-inp" type="email" placeholder="your@email.com" maxlength="120" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')registerWorkshop()">
           <button class="workshop-btn" id="workshop-btn" onclick="registerWorkshop()">Register</button>
         </div>
         <div class="workshop-err" id="workshop-err">Please enter a valid email address.</div>
@@ -402,12 +366,40 @@ let cdInterval = null;
 let pageEnterTime = Date.now();
 let heartbeatInterval = null;
 let sessionTracked = false;
+let participantEmail = null; // FIX: global email state
 
-let sessionId = localStorage.getItem('syssa_sid');
-const isReturning = !!sessionId;
-if (!sessionId) {
-  sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
+// Session ID — will be reset on epoch mismatch
+let sessionId = localStorage.getItem('syssa_sid') || ('p_' + Math.random().toString(36).substr(2,9));
+if (!localStorage.getItem('syssa_sid')) localStorage.setItem('syssa_sid', sessionId);
+const isReturning = !!localStorage.getItem('syssa_sid');
+
+// ── EPOCH CHANGE HANDLER ──
+function handleEpochChange(newEpoch) {
+  if (newEpoch === currentEpoch) return;
+  currentEpoch = newEpoch;
+  localStorage.setItem('syssa_epoch', String(newEpoch));
+  // Clear workshop state for new epoch
+  localStorage.removeItem('syssa_workshop_email');
+  participantEmail = null;
+  // Reset workshop UI
+  const wForm = document.getElementById('workshop-form');
+  const wDone = document.getElementById('workshop-done');
+  if (wForm) wForm.style.display = 'block';
+  if (wDone) wDone.style.display = 'none';
+  const wInp = document.getElementById('workshop-email-inp');
+  const wBtn = document.getElementById('workshop-btn');
+  if (wInp) { wInp.value = ''; wInp.disabled = false; wInp.classList.remove('err'); }
+  if (wBtn) wBtn.disabled = false;
+  document.getElementById('workshop-err').classList.remove('show');
+  // Clear chat history for new epoch
+  chatHistory = [];
+  document.getElementById('chat-msgs').innerHTML =
+    '<div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>';
+  // New session ID for new epoch
+  sessionId = 'p_' + Math.random().toString(36).substr(2,9);
   localStorage.setItem('syssa_sid', sessionId);
+  sessionTracked = false;
+  trackSession();
 }
 
 // ── WORKSHOP ──
@@ -416,11 +408,12 @@ function applyWorkshopMode() {
   if (!sec) return;
   sec.style.display = showWorkshop ? 'block' : 'none';
   if (showWorkshop) {
-    const registeredEmail = localStorage.getItem('syssa_workshop_email');
-    if (registeredEmail) {
+    const storedEmail = localStorage.getItem('syssa_workshop_email');
+    if (storedEmail) {
+      participantEmail = storedEmail;
       document.getElementById('workshop-form').style.display = 'none';
       document.getElementById('workshop-done').style.display = 'block';
-      document.getElementById('workshop-done-email').textContent = registeredEmail;
+      document.getElementById('workshop-done-email').textContent = storedEmail;
     }
   }
 }
@@ -446,13 +439,19 @@ async function registerWorkshop() {
   mig.classList.add('show');
 
   try {
-    const { error } = await sb.from('workshop_registrations').insert({
+    // Insert into workshop_registrations (ignore duplicate email)
+    const { error: wErr } = await sb.from('workshop_registrations').insert({
       email:       email,
       session_id:  sessionId,
       reset_epoch: currentEpoch
     });
-    if (error) throw error;
+    if (wErr && wErr.code !== '23505') throw wErr;
 
+    // FIX: also write email to sessions table so admin can see participant_email column
+    await sb.from('sessions').update({ participant_email: email })
+      .eq('id', sessionId);
+
+    participantEmail = email;
     localStorage.setItem('syssa_workshop_email', email);
 
     document.getElementById('workshop-form').style.display = 'none';
@@ -509,14 +508,17 @@ async function trackSession() {
   const geo = await getGeo();
   const visitCount = parseInt(localStorage.getItem('syssa_visits_' + sessionId) || '0') + 1;
   localStorage.setItem('syssa_visits_' + sessionId, String(visitCount));
+  const upsertData = {
+    id: sessionId,
+    last_seen: new Date().toISOString(),
+    visit_count: visitCount,
+    reset_epoch: currentEpoch,
+    ...dev, ...geo
+  };
+  // FIX: include email on upsert if already known (returning user who already registered)
+  if (participantEmail) upsertData.participant_email = participantEmail;
   try {
-    await sb.from('sessions').upsert({
-      id: sessionId,
-      last_seen: new Date().toISOString(),
-      visit_count: visitCount,
-      reset_epoch: currentEpoch,
-      ...dev, ...geo
-    }, {onConflict: 'id'});
+    await sb.from('sessions').upsert(upsertData, {onConflict: 'id'});
   } catch(e) {}
   logEvent('visit', {is_returning: isReturning, visit_number: visitCount});
 }
@@ -539,9 +541,11 @@ function startHeartbeat() {
   heartbeatInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - pageEnterTime) / 1000);
     logEvent('heartbeat', {time_on_page_sec: elapsed});
-    if (sb) sb.from('sessions')
-      .update({last_seen: new Date().toISOString(), total_time_sec: elapsed})
-      .eq('id', sessionId).then(()=>{}).catch(()=>{});
+    if (sb) {
+      const upd = {last_seen: new Date().toISOString(), total_time_sec: elapsed};
+      if (participantEmail) upd.participant_email = participantEmail;
+      sb.from('sessions').update(upd).eq('id', sessionId).then(()=>{}).catch(()=>{});
+    }
   }, 30000);
 }
 
@@ -555,8 +559,7 @@ window.addEventListener('beforeunload', () => {
   if (navigator.sendBeacon && sb) {
     navigator.sendBeacon(SB_URL + '/rest/v1/page_events', JSON.stringify({
       session_id: sessionId, event_type: 'page_exit', speaker_id: currentId,
-      reset_epoch: currentEpoch,
-      payload: {time_on_page_sec: elapsed}
+      reset_epoch: currentEpoch, payload: {time_on_page_sec: elapsed}
     }));
   }
 });
@@ -625,12 +628,27 @@ window.addEventListener('load', async () => {
     );
     if (error) throw error;
 
+    const serverEpoch = data.current_epoch ?? 1;
+    const storedEpoch = parseInt(localStorage.getItem('syssa_epoch') || '0');
+
+    // FIX: if epoch changed, generate new session ID and clear stale data BEFORE anything else
+    if (storedEpoch !== serverEpoch) {
+      localStorage.removeItem('syssa_workshop_email');
+      sessionId = 'p_' + Math.random().toString(36).substr(2,9);
+      localStorage.setItem('syssa_sid', sessionId);
+      localStorage.setItem('syssa_epoch', String(serverEpoch));
+    }
+    currentEpoch = serverEpoch;
+
     currentId        = data.current_id;
     speakerStartedAt = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
-    currentEpoch     = data.current_epoch ?? 1;
     if (data.ai_enabled     != null) aiEnabled    = Boolean(data.ai_enabled);
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
+
+    // Restore email if available
+    const storedEmail = localStorage.getItem('syssa_workshop_email');
+    if (storedEmail) participantEmail = storedEmail;
 
     updateAIIcon();
     applyCountdownMode();
@@ -646,10 +664,14 @@ window.addEventListener('load', async () => {
 });
 
 // ── REALTIME REPLIES ──
+// FIX: use server-side filter so only this session's organizer messages arrive
 function subscribeReplies() {
   sb.channel('replies_' + sessionId)
-    .on('postgres_changes', {event:'INSERT', schema:'public', table:'messages'}, p => {
-      if (p.new.session_id === sessionId && p.new.sender === 'organizer') {
+    .on('postgres_changes', {
+      event:'INSERT', schema:'public', table:'messages',
+      filter: 'session_id=eq.' + sessionId
+    }, p => {
+      if (p.new.sender === 'organizer') {
         appendBubble('Host', p.new.text, 'org');
         sendPushIfNeeded(p.new.text);
         unread++;
@@ -673,7 +695,8 @@ function startApp() {
         if (f) {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
-          if (f.current_epoch != null) currentEpoch = f.current_epoch;
+          // FIX: handle epoch change via dedicated function
+          if (f.current_epoch != null) handleEpochChange(f.current_epoch);
           if (f.ai_enabled     != null) aiEnabled    = Boolean(f.ai_enabled);
           if (f.show_countdown != null) { showCountdown = Boolean(f.show_countdown); applyCountdownMode(); }
           if (f.show_workshop  != null) { showWorkshop  = Boolean(f.show_workshop);  applyWorkshopMode(); }
@@ -692,11 +715,15 @@ function startApp() {
       document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
     });
 
-  sb.channel('presence_room', {config:{presence:{key: sessionId}}})
+  // FIX: unique presence channel per session to avoid channel name collisions
+  sb.channel('presence_' + sessionId, {config:{presence:{key: sessionId}}})
     .on('presence', {event: 'sync'}, () => {})
     .subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
-        await sb.channel('presence_room').track({session_id: sessionId, online_at: new Date().toISOString()});
+        await sb.channel('presence_' + sessionId).track({
+          session_id: sessionId,
+          online_at: new Date().toISOString()
+        });
       }
     });
 
@@ -972,9 +999,12 @@ async function sendChat() {
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
 
-  if (sb) sb.from('messages').insert({
+  // FIX: include participant_email in messages so admin sees it alongside session_id
+  const msgData = {
     session_id: sessionId, sender: 'participant', text, reset_epoch: currentEpoch
-  }).then(()=>{}).catch(()=>{});
+  };
+  if (participantEmail) msgData.participant_email = participantEmail;
+  if (sb) sb.from('messages').insert(msgData).then(()=>{}).catch(()=>{});
 
   logEvent('message_sent', {text_length: text.length});
   if (sb) {
@@ -1019,15 +1049,22 @@ async function sendFeedback() {
   if (!text) return;
   const cur = AGENDA.find(a => a.id === currentId);
   try {
-    await sb.from('feedback').insert({
+    const fbData = {
       text,
       speaker:     cur ? cur.speaker : '—',
       session_id:  sessionId,
       reset_epoch: currentEpoch
-    });
+    };
+    // FIX: include email in feedback row
+    if (participantEmail) fbData.participant_email = participantEmail;
+    await sb.from('feedback').insert(fbData);
   } catch(e) {}
   logEvent('feedback_sent', {text_length: text.length});
-  if (sb) sb.from('sessions').update({feedback_sent: true}).eq('id', sessionId).then(()=>{}).catch(()=>{});
+  if (sb) {
+    const upd = {feedback_sent: true};
+    if (participantEmail) upd.participant_email = participantEmail;
+    sb.from('sessions').update(upd).eq('id', sessionId).then(()=>{}).catch(()=>{});
+  }
 
   const inner = document.getElementById('fb-inner');
   inner.innerHTML =
@@ -1047,5 +1084,3 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done: $(wc -l < /mnt/user-data/outputs/participant.html) lines"
