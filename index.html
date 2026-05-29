@@ -323,6 +323,12 @@ const SB_URL  = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 const CONF_START = new Date('2026-06-13T05:00:00Z');
 
+// ─────────────────────────────────────────
+//  PRESENCE CHANNEL NAME — must match admin
+//  admin.html listens on 'presence_room'
+// ─────────────────────────────────────────
+const PRESENCE_CHANNEL = 'presence_room';
+
 const AGENDA = [
   {id:1,  time:"09:30\u201310:00", speaker:"Registration, Coffee Break",      title:"",session:"pre",isBreak:true},
   {id:2,  time:"10:00\u201310:30", speaker:"Opening Ceremony",                title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze \u00b7 Nino Tabagari, MD, PhD",session:"opening",isBreak:true},
@@ -366,22 +372,19 @@ let cdInterval = null;
 let pageEnterTime = Date.now();
 let heartbeatInterval = null;
 let sessionTracked = false;
-let participantEmail = null; // FIX: global email state
+let participantEmail = null;
 
-// Session ID — will be reset on epoch mismatch
 let sessionId = localStorage.getItem('syssa_sid') || ('p_' + Math.random().toString(36).substr(2,9));
 if (!localStorage.getItem('syssa_sid')) localStorage.setItem('syssa_sid', sessionId);
 const isReturning = !!localStorage.getItem('syssa_sid');
 
-// ── EPOCH CHANGE HANDLER ──
+// ── EPOCH CHANGE ──
 function handleEpochChange(newEpoch) {
   if (newEpoch === currentEpoch) return;
   currentEpoch = newEpoch;
   localStorage.setItem('syssa_epoch', String(newEpoch));
-  // Clear workshop state for new epoch
   localStorage.removeItem('syssa_workshop_email');
   participantEmail = null;
-  // Reset workshop UI
   const wForm = document.getElementById('workshop-form');
   const wDone = document.getElementById('workshop-done');
   if (wForm) wForm.style.display = 'block';
@@ -391,11 +394,9 @@ function handleEpochChange(newEpoch) {
   if (wInp) { wInp.value = ''; wInp.disabled = false; wInp.classList.remove('err'); }
   if (wBtn) wBtn.disabled = false;
   document.getElementById('workshop-err').classList.remove('show');
-  // Clear chat history for new epoch
   chatHistory = [];
   document.getElementById('chat-msgs').innerHTML =
     '<div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>';
-  // New session ID for new epoch
   sessionId = 'p_' + Math.random().toString(36).substr(2,9);
   localStorage.setItem('syssa_sid', sessionId);
   sessionTracked = false;
@@ -439,7 +440,6 @@ async function registerWorkshop() {
   mig.classList.add('show');
 
   try {
-    // Insert into workshop_registrations (ignore duplicate email)
     const { error: wErr } = await sb.from('workshop_registrations').insert({
       email:       email,
       session_id:  sessionId,
@@ -447,7 +447,7 @@ async function registerWorkshop() {
     });
     if (wErr && wErr.code !== '23505') throw wErr;
 
-    // FIX: also write email to sessions table so admin can see participant_email column
+    // Write email to sessions table (participant_email column)
     await sb.from('sessions').update({ participant_email: email })
       .eq('id', sessionId);
 
@@ -515,7 +515,6 @@ async function trackSession() {
     reset_epoch: currentEpoch,
     ...dev, ...geo
   };
-  // FIX: include email on upsert if already known (returning user who already registered)
   if (participantEmail) upsertData.participant_email = participantEmail;
   try {
     await sb.from('sessions').upsert(upsertData, {onConflict: 'id'});
@@ -631,7 +630,6 @@ window.addEventListener('load', async () => {
     const serverEpoch = data.current_epoch ?? 1;
     const storedEpoch = parseInt(localStorage.getItem('syssa_epoch') || '0');
 
-    // FIX: if epoch changed, generate new session ID and clear stale data BEFORE anything else
     if (storedEpoch !== serverEpoch) {
       localStorage.removeItem('syssa_workshop_email');
       sessionId = 'p_' + Math.random().toString(36).substr(2,9);
@@ -646,7 +644,6 @@ window.addEventListener('load', async () => {
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
 
-    // Restore email if available
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
 
@@ -663,8 +660,7 @@ window.addEventListener('load', async () => {
   }
 });
 
-// ── REALTIME REPLIES ──
-// FIX: use server-side filter so only this session's organizer messages arrive
+// ── REALTIME REPLIES (filtered to this session only) ──
 function subscribeReplies() {
   sb.channel('replies_' + sessionId)
     .on('postgres_changes', {
@@ -695,7 +691,6 @@ function startApp() {
         if (f) {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
-          // FIX: handle epoch change via dedicated function
           if (f.current_epoch != null) handleEpochChange(f.current_epoch);
           if (f.ai_enabled     != null) aiEnabled    = Boolean(f.ai_enabled);
           if (f.show_countdown != null) { showCountdown = Boolean(f.show_countdown); applyCountdownMode(); }
@@ -715,12 +710,18 @@ function startApp() {
       document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
     });
 
-  // FIX: unique presence channel per session to avoid channel name collisions
-  sb.channel('presence_' + sessionId, {config:{presence:{key: sessionId}}})
-    .on('presence', {event: 'sync'}, () => {})
+  // ─────────────────────────────────────────────────────────
+  //  PRESENCE — uses shared channel name 'presence_room'
+  //  so admin.html can count all participants in one place
+  // ─────────────────────────────────────────────────────────
+  const presenceCh = sb.channel(PRESENCE_CHANNEL, {
+    config: { presence: { key: sessionId } }
+  });
+  presenceCh
+    .on('presence', { event: 'sync' }, () => {})
     .subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
-        await sb.channel('presence_' + sessionId).track({
+        await presenceCh.track({
           session_id: sessionId,
           online_at: new Date().toISOString()
         });
@@ -999,7 +1000,7 @@ async function sendChat() {
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
 
-  // FIX: include participant_email in messages so admin sees it alongside session_id
+  // Save message with email if known
   const msgData = {
     session_id: sessionId, sender: 'participant', text, reset_epoch: currentEpoch
   };
@@ -1055,7 +1056,6 @@ async function sendFeedback() {
       session_id:  sessionId,
       reset_epoch: currentEpoch
     };
-    // FIX: include email in feedback row
     if (participantEmail) fbData.participant_email = participantEmail;
     await sb.from('feedback').insert(fbData);
   } catch(e) {}
