@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap');
 :root {
   --bg: #0D1117; --bg2: #161B22; --bg3: #1C2128;
   --surface: #21262D; --border: #30363D; --border2: #3D444D;
@@ -47,12 +47,21 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 /* ── TOPBAR ── */
 .topbar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);position:sticky;top:0;z-index:10;}
 .topbar-title{font-size:14px;font-weight:700;color:var(--text);}
-.topbar-right{display:flex;align-items:center;gap:8px;}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .tb-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.04em;}
 .tb-badge-live{background:var(--green-soft);color:var(--green);border:1px solid rgba(63,185,80,.3);}
 .tb-badge-time{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);font-size:11px;font-variant-numeric:tabular-nums;}
-.topbar-refresh{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px;}
+.topbar-refresh{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
 .topbar-refresh:hover{border-color:var(--border2);color:var(--text);}
+
+/* ── EPOCH SWITCHER ── */
+.epoch-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
+.epoch-bar-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;flex-shrink:0;}
+.epoch-btns{display:flex;gap:6px;flex-wrap:nowrap;}
+.epoch-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;font-size:11px;font-weight:700;color:var(--text-dim);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.epoch-btn:hover{border-color:var(--navy-border);color:var(--navy);}
+.epoch-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+.epoch-btn.live-epoch::after{content:'●';margin-left:4px;font-size:8px;color:var(--green);vertical-align:middle;}
 
 /* ── MOBILE BOTTOM NAV ── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--mob-nav-h);background:var(--bg2);border-top:1px solid var(--border);z-index:100;align-items:stretch;}
@@ -112,7 +121,7 @@ tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:var(--bg3);}
 tbody td{padding:9px 12px;color:var(--text-dim);vertical-align:middle;}
 tbody td:first-child{color:var(--text);}
-.td-mono{font-family:monospace;font-size:11px;}
+.td-mono{font-family:monospace;font-size:11px;color:var(--text-faint) !important;}
 .td-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.04em;}
 .td-badge-mobile{background:rgba(56,139,253,.15);color:var(--navy);}
 .td-badge-desktop{background:rgba(63,185,80,.15);color:var(--green);}
@@ -122,18 +131,21 @@ tbody td:first-child{color:var(--text);}
 
 /* ── FEED ── */
 .feed{display:flex;flex-direction:column;gap:8px;}
-.feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;}
+.feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;transition:border-color .15s;}
+.feed-item:hover{border-color:var(--border2);}
 .feed-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
 .feed-sender{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
 .feed-sender.participant{color:var(--navy);}
 .feed-sender.feedback{color:var(--gold);}
+.feed-sender.organizer{color:var(--green);}
 .feed-text{font-size:13px;color:var(--text);line-height:1.6;}
 .feed-meta{font-size:10px;color:var(--text-faint);margin-top:4px;}
 .feed-time{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
 
 /* ── QUESTIONS ── */
 .q-list{display:flex;flex-direction:column;gap:6px;}
-.q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;}
+.q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .15s;}
+.q-item:hover{border-color:var(--border2);}
 .q-rank{font-size:9px;font-weight:700;color:var(--text-faint);min-width:20px;}
 .q-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
 .q-count{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;}
@@ -141,7 +153,7 @@ tbody td:first-child{color:var(--text);}
 /* ── SPEAKER BARS ── */
 .speaker-bars{display:flex;flex-direction:column;gap:8px;}
 .speaker-bar-row{display:flex;align-items:center;gap:10px;}
-.speaker-bar-name{font-size:11px;color:var(--text-dim);min-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.speaker-bar-name{font-size:11px;color:var(--text-dim);min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .speaker-bar-track{flex:1;background:var(--bg3);border-radius:4px;height:8px;overflow:hidden;}
 .speaker-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--purple));transition:width .6s ease;}
 .speaker-bar-count{font-size:10px;color:var(--text-faint);min-width:28px;text-align:right;}
@@ -155,7 +167,6 @@ tbody td:first-child{color:var(--text);}
 .snc-name{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.2;}
 .snc-name-next{font-size:18px;color:var(--text-dim);}
 .snc-sub{font-size:11px;color:var(--text-faint);margin-top:4px;}
-.snc-divider{width:1px;background:var(--border);flex-shrink:0;}
 .snc-controls{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);background:var(--bg3);}
 .snc-btn{padding:8px 20px;border-radius:6px;border:none;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.05em;transition:all .15s;}
 .snc-prev{background:var(--surface);color:var(--text-dim);border:1px solid var(--border);}
@@ -163,49 +174,59 @@ tbody td:first-child{color:var(--text);}
 .snc-next-btn{background:var(--navy);color:#fff;}
 .snc-next-btn:hover{opacity:.85;}
 .snc-idx{font-size:12px;color:var(--text-faint);font-variant-numeric:tabular-nums;}
-@media(max-width:600px){
-  .snc-row{flex-direction:column;}
-  .snc-now{border-right:none;border-bottom:1px solid var(--border);}
-  .snc-name{font-size:18px;}
-  .snc-name-next{font-size:15px;}
-}
 
-/* ── SPEAKER NOW CARD ── */
+/* ── LIVE CONTROL ── */
 .control-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
 .control-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
 .control-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
-.ctrl-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;}
+.ctrl-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;transition:border-color .15s;}
 .ctrl-select:focus{border-color:var(--navy-border);}
 .ctrl-btn{padding:9px 18px;border-radius:6px;border:none;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s;}
-.ctrl-btn:hover{opacity:.85;}
+.ctrl-btn:hover:not(:disabled){opacity:.85;}
+.ctrl-btn:disabled{opacity:.4;cursor:not-allowed;}
 .ctrl-btn-primary{background:var(--navy);color:#fff;}
 .ctrl-btn-danger{background:var(--red);color:#fff;}
 .ctrl-btn-gold{background:var(--gold);color:#000;}
 .ctrl-toggle{display:flex;align-items:center;gap:12px;margin-top:10px;}
-.toggle-sw{position:relative;width:40px;height:22px;cursor:pointer;}
-.toggle-sw input{opacity:0;width:0;height:0;}
+.toggle-sw{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute;}
 .toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.2s;}
 .toggle-track::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--text-dim);border-radius:50%;transition:.2s;}
 .toggle-sw input:checked + .toggle-track{background:var(--green);}
 .toggle-sw input:checked + .toggle-track::before{transform:translateX(18px);background:#fff;}
 .toggle-label{font-size:13px;color:var(--text);}
-.ctrl-row{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+
+/* ── RESET CARD ── */
+.reset-card{background:var(--bg2);border:1px solid rgba(248,81,73,.3);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
+.reset-card-title{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
+.reset-card-desc{font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;}
+.reset-confirm{display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:6px;border:1px solid rgba(248,81,73,.3);}
+.reset-confirm.visible{display:block;}
+.reset-confirm-text{font-size:12px;color:var(--text);margin-bottom:10px;}
+
+/* ── REPLY CARD ── */
+.reply-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;transition:border-color .15s;}
+.reply-textarea:focus{border-color:var(--navy-border);}
 
 /* ── LOADING / EMPTY ── */
 .loading-state{display:flex;align-items:center;justify-content:center;padding:32px;color:var(--text-faint);font-size:12px;gap:8px;}
-.spinner{width:16px;height:16px;border:1.5px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;}
+.spinner{width:16px;height:16px;border:1.5px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-state{text-align:center;padding:28px;font-size:12px;color:var(--text-faint);}
+.error-state{text-align:center;padding:28px;font-size:12px;color:var(--red);}
 
 /* ── MISC ── */
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .pill-green{background:var(--green-soft);color:var(--green);}
 .pill-navy{background:var(--navy-soft);color:var(--navy);}
 .pill-red{background:var(--red-soft);color:var(--red);}
+.status-msg{font-size:11px;padding:4px 0;}
+.status-ok{color:var(--green);}
+.status-err{color:var(--red);}
+.status-info{color:var(--text-faint);}
 
-/* ════════════════════════════
-   MOBILE RESPONSIVE
-════════════════════════════ */
+/* ════════════ MOBILE ════════════ */
 @media(max-width:768px){
   .sidebar{display:none;}
   .mob-nav{display:flex;}
@@ -213,28 +234,19 @@ tbody td:first-child{color:var(--text);}
   .content{padding:12px;}
   .topbar{padding:10px 12px;}
   .tb-badge-time{display:none;}
-
-  /* stat grid 2 col on mobile */
   .stat-grid{grid-template-columns:1fr 1fr;gap:10px;}
   .stat-val{font-size:26px;}
-
-  /* device time grid stack */
   .device-time-grid{grid-template-columns:1fr;}
-
-  /* charts stack */
   .chart-grid{grid-template-columns:1fr;}
   .chart-wrap{height:160px;}
-
-  /* control grid stack */
   .control-grid{grid-template-columns:1fr;}
-
-  /* speaker bar name shorter */
   .speaker-bar-name{min-width:90px;}
-
-  /* sec header compact */
   .sec-header{margin-top:18px;}
+  .snc-row{flex-direction:column;}
+  .snc-now{border-right:none;border-bottom:1px solid var(--border);}
+  .snc-name{font-size:18px;}
+  .snc-name-next{font-size:15px;}
 }
-
 @media(max-width:400px){
   .stat-grid{grid-template-columns:1fr 1fr;}
   .stat-val{font-size:22px;}
@@ -243,7 +255,7 @@ tbody td:first-child{color:var(--text);}
 </head>
 <body>
 <div class="shell">
-  <!-- SIDEBAR (desktop) -->
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-title">SYSSA Admin</div>
@@ -263,7 +275,7 @@ tbody td:first-child{color:var(--text);}
     <div class="sb-footer">
       <div class="sb-status">
         <div class="sb-dot"></div>
-        <span class="sb-online" id="sb-online">—</span>
+        <span class="sb-online" id="sb-online">0</span>
         <span style="font-size:11px;color:var(--text-faint)">online now</span>
       </div>
     </div>
@@ -274,9 +286,17 @@ tbody td:first-child{color:var(--text);}
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-right">
-        <span class="tb-badge tb-badge-live" id="topbar-live-badge">● Live &nbsp;<span id="topbar-online-count" style="font-size:12px;font-weight:800;letter-spacing:0">—</span></span>
+        <span class="tb-badge tb-badge-live">●&nbsp;<span id="topbar-online-count" style="font-size:12px;font-weight:800;letter-spacing:0">0 online</span></span>
         <span class="tb-badge tb-badge-time" id="topbar-time">—</span>
         <button class="topbar-refresh" onclick="loadAll()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- EPOCH SWITCHER BAR -->
+    <div class="epoch-bar">
+      <span class="epoch-bar-label">Session:</span>
+      <div class="epoch-btns" id="epoch-btns">
+        <div class="loading-state" style="padding:2px 0"><div class="spinner"></div></div>
       </div>
     </div>
 
@@ -285,8 +305,8 @@ tbody td:first-child{color:var(--text);}
       <div class="stat-grid">
         <div class="stat-card accent-green">
           <div class="stat-label">Online Now</div>
-          <div class="stat-val" id="s-online">—</div>
-          <div class="stat-sub">Real-time</div>
+          <div class="stat-val" id="s-online">0</div>
+          <div class="stat-sub">Real-time presence</div>
         </div>
         <div class="stat-card accent-navy">
           <div class="stat-label">Sessions</div>
@@ -301,7 +321,7 @@ tbody td:first-child{color:var(--text);}
         <div class="stat-card accent-gold">
           <div class="stat-label">Chat Msgs</div>
           <div class="stat-val" id="s-msgs">—</div>
-          <div class="stat-sub">Participants</div>
+          <div class="stat-sub">From participants</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Feedback</div>
@@ -315,7 +335,6 @@ tbody td:first-child{color:var(--text);}
         </div>
       </div>
 
-      <!-- DEVICE TIME BREAKDOWN -->
       <div class="sec-header" style="margin-top:4px">
         <div class="sec-title">Time on Site by Device</div>
       </div>
@@ -363,20 +382,9 @@ tbody td:first-child{color:var(--text);}
           <table>
             <thead>
               <tr>
-                <th>Session ID</th>
-                <th>First Seen</th>
-                <th>Last Seen</th>
-                <th>Visits</th>
-                <th>Device</th>
-                <th>Browser</th>
-                <th>OS</th>
-                <th>Country</th>
-                <th>City</th>
-                <th>ISP</th>
-                <th>Chat</th>
-                <th>Msgs</th>
-                <th>Feedback</th>
-                <th>Time on Site</th>
+                <th>Session ID</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
+                <th>Device</th><th>Browser</th><th>OS</th><th>Country</th><th>City</th>
+                <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th>
               </tr>
             </thead>
             <tbody id="sessions-table">
@@ -411,9 +419,7 @@ tbody td:first-child{color:var(--text);}
 
     <!-- ══ QUESTIONS ══ -->
     <div class="content" id="page-questions">
-      <div class="sec-header">
-        <div class="sec-title">Most Common Questions</div>
-      </div>
+      <div class="sec-header"><div class="sec-title">Most Common Questions</div></div>
       <div class="q-list" id="q-list">
         <div class="loading-state"><div class="spinner"></div>Loading...</div>
       </div>
@@ -430,8 +436,7 @@ tbody td:first-child{color:var(--text);}
             <div class="snc-name" id="snc-current-name">—</div>
             <div class="snc-sub" id="snc-current-sub"></div>
           </div>
-          <div class="snc-divider"></div>
-          <div class="snc-block snc-next">
+          <div class="snc-block">
             <div class="snc-label">⏭ შემდეგი</div>
             <div class="snc-name snc-name-next" id="snc-next-name">—</div>
             <div class="snc-sub" id="snc-next-sub"></div>
@@ -442,7 +447,7 @@ tbody td:first-child{color:var(--text);}
           <div class="snc-idx" id="snc-idx">—</div>
           <button class="snc-btn snc-next-btn" onclick="stepSpeaker(1)">Next ▶</button>
         </div>
-        <div style="font-size:11px;color:var(--text-faint);padding:0 18px 12px;text-align:center" id="ctrl-speaker-status"></div>
+        <div style="font-size:11px;padding:0 18px 12px;text-align:center" id="ctrl-speaker-status"></div>
       </div>
 
       <div class="control-grid">
@@ -473,17 +478,36 @@ tbody td:first-child{color:var(--text);}
         </div>
       </div>
 
+      <!-- RESET CARD -->
+      <div class="reset-card">
+        <div class="reset-card-title">⚠ Session Reset</div>
+        <div class="reset-card-desc">
+          Reset-ის შემდეგ ახალი session იწყება — ძველი მონაცემები ინახება და
+          Epoch Switcher-ში ხელმისაწვდომი რჩება. ახალი ვიზიტორები ახალ session-ში ჩაიწერებიან.
+        </div>
+        <button class="ctrl-btn ctrl-btn-danger" onclick="showResetConfirm()">↺ Reset Session</button>
+        <div class="reset-confirm" id="reset-confirm">
+          <div class="reset-confirm-text">დარწმუნებული ხარ? ახალი Session დაიწყება (Session <span id="reset-next-num">?</span>). ძველი მონაცემები შენახული დარჩება.</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <button class="ctrl-btn ctrl-btn-danger" onclick="doReset()" id="reset-confirm-btn">დადასტურება</button>
+            <button class="ctrl-btn" style="background:var(--surface);border:1px solid var(--border);color:var(--text-dim)" onclick="hideResetConfirm()">გაუქმება</button>
+          </div>
+          <div style="font-size:11px;" id="reset-status"></div>
+        </div>
+      </div>
+
+      <!-- REPLY CARD -->
       <div class="sec-header" style="margin-top:0"><div class="sec-title">Reply to Participant</div></div>
       <div class="control-card" style="margin-bottom:14px;">
         <div class="control-label">Select Session</div>
-        <select class="ctrl-select" id="ctrl-reply-sel" style="margin-bottom:10px;">
+        <select class="ctrl-select" id="ctrl-reply-sel">
           <option value="">— choose a session —</option>
         </select>
         <div class="control-label" style="margin-top:12px;">Message</div>
-        <textarea id="ctrl-reply-text" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;" placeholder="Type a reply..."></textarea>
-        <div class="ctrl-row" style="margin-top:10px;">
+        <textarea id="ctrl-reply-text" class="reply-textarea" placeholder="Type a reply..."></textarea>
+        <div class="ctrl-row">
           <button class="ctrl-btn ctrl-btn-gold" onclick="sendReply()">Send Reply</button>
-          <span style="font-size:11px;color:var(--text-faint)" id="ctrl-reply-status"></span>
+          <span class="status-msg" id="ctrl-reply-status"></span>
         </div>
       </div>
     </div>
@@ -493,24 +517,12 @@ tbody td:first-child{color:var(--text);}
 
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mob-nav" id="mob-nav">
-  <button class="mob-nav-item active" onclick="showPage('overview',this,'mob')">
-    <span class="mob-icon">◈</span>Overview
-  </button>
-  <button class="mob-nav-item" onclick="showPage('sessions',this,'mob')">
-    <span class="mob-icon">◉</span>Sessions
-  </button>
-  <button class="mob-nav-item" onclick="showPage('chat',this,'mob')">
-    <span class="mob-icon">◎</span>Chat
-  </button>
-  <button class="mob-nav-item" onclick="showPage('feedback',this,'mob')">
-    <span class="mob-icon">◇</span>Feedback
-  </button>
-  <button class="mob-nav-item" onclick="showPage('questions',this,'mob')">
-    <span class="mob-icon">◈</span>Q&A
-  </button>
-  <button class="mob-nav-item" onclick="showPage('control',this,'mob')">
-    <span class="mob-icon">◆</span>Control
-  </button>
+  <button class="mob-nav-item active" onclick="showPage('overview',this,'mob')"><span class="mob-icon">◈</span>Overview</button>
+  <button class="mob-nav-item" onclick="showPage('sessions',this,'mob')"><span class="mob-icon">◉</span>Sessions</button>
+  <button class="mob-nav-item" onclick="showPage('chat',this,'mob')"><span class="mob-icon">◎</span>Chat</button>
+  <button class="mob-nav-item" onclick="showPage('feedback',this,'mob')"><span class="mob-icon">◇</span>Feedback</button>
+  <button class="mob-nav-item" onclick="showPage('questions',this,'mob')"><span class="mob-icon">◈</span>Q&A</button>
+  <button class="mob-nav-item" onclick="showPage('control',this,'mob')"><span class="mob-icon">◆</span>Control</button>
 </nav>
 
 <script>
@@ -552,7 +564,14 @@ const AGENDA = [
   {id:29, speaker:"Closing Ceremony",             isBreak:true}
 ];
 
-let sb, charts = {}, onlineCount = 0;
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let sb = null;
+let charts = {};
+let currentEpoch = 1;
+let liveEpoch = 1;
+let presenceChannel = null;
 
 // ════════════════════════════════════════════
 //  INIT
@@ -562,66 +581,136 @@ window.addEventListener('load', async () => {
   tickClock();
   setInterval(tickClock, 1000);
   populateSpeakerSelect();
-  loadAll();
-  loadControl();
+  await loadEpochState();
+  await loadAll();
+  await loadControl();
   subscribePresence();
-  setInterval(() => loadOverviewStats(), 30000);
+  // Auto-refresh stats every 30s
+  setInterval(loadOverviewStats, 30000);
 });
 
 function tickClock() {
-  const now = new Date();
   document.getElementById('topbar-time').textContent =
-    now.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
 // ════════════════════════════════════════════
-//  NAV — handles both sidebar and mobile nav
+//  EPOCH SYSTEM
+// ════════════════════════════════════════════
+async function loadEpochState() {
+  try {
+    const { data, error } = await sb.from('live_state').select('current_epoch').eq('id', 1).single();
+    if (error) throw error;
+    liveEpoch    = data?.current_epoch ?? 1;
+    currentEpoch = liveEpoch;
+    renderEpochBar();
+  } catch(e) {
+    console.warn('Epoch load error:', e.message);
+    liveEpoch = 1;
+    currentEpoch = 1;
+    renderEpochBar();
+  }
+}
+
+function renderEpochBar() {
+  const container = document.getElementById('epoch-btns');
+  let html = '';
+  for (let i = 1; i <= liveEpoch; i++) {
+    const isLive   = i === liveEpoch;
+    const isActive = i === currentEpoch;
+    html += `<button
+      class="epoch-btn${isActive ? ' active' : ''}${isLive ? ' live-epoch' : ''}"
+      onclick="switchEpoch(${i})"
+    >Session ${i}</button>`;
+  }
+  container.innerHTML = html;
+}
+
+async function switchEpoch(epoch) {
+  currentEpoch = epoch;
+  renderEpochBar();
+  await loadAll();
+  // Also reload whichever sub-page is currently active
+  const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
+  if (activePage === 'sessions')  loadSessions();
+  if (activePage === 'chat')      loadChat();
+  if (activePage === 'feedback')  loadFeedback();
+  if (activePage === 'questions') loadQuestions();
+}
+
+// ════════════════════════════════════════════
+//  RESET SESSION
+// ════════════════════════════════════════════
+function showResetConfirm() {
+  document.getElementById('reset-next-num').textContent = liveEpoch + 1;
+  document.getElementById('reset-status').textContent = '';
+  document.getElementById('reset-confirm').classList.add('visible');
+}
+
+function hideResetConfirm() {
+  document.getElementById('reset-confirm').classList.remove('visible');
+}
+
+async function doReset() {
+  const btn    = document.getElementById('reset-confirm-btn');
+  const status = document.getElementById('reset-status');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+  status.className = 'status-msg status-info';
+  status.textContent = 'Saving new epoch...';
+  try {
+    const newEpoch = liveEpoch + 1;
+    const { error } = await sb.from('live_state').update({ current_epoch: newEpoch }).eq('id', 1);
+    if (error) throw error;
+    liveEpoch    = newEpoch;
+    currentEpoch = newEpoch;
+    renderEpochBar();
+    hideResetConfirm();
+    await loadAll();
+    await loadControl();
+  } catch(e) {
+    status.className = 'status-msg status-err';
+    status.textContent = '✗ Error: ' + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'დადასტურება';
+  }
+}
+
+// ════════════════════════════════════════════
+//  NAVIGATION
 // ════════════════════════════════════════════
 const PAGE_TITLES = {
-  overview:'Overview', sessions:'Sessions',
-  chat:'Chat & AI', feedback:'Feedback',
-  questions:'Top Questions', control:'Live Control'
+  overview: 'Overview',
+  sessions: 'Sessions',
+  chat:     'Chat & AI',
+  feedback: 'Feedback',
+  questions:'Top Questions',
+  control:  'Live Control'
 };
 
 function showPage(id, btn, source) {
-  // Hide all pages
   document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-  // Deactivate sidebar items
   document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
-  // Deactivate mobile nav items
   document.querySelectorAll('.mob-nav-item').forEach(el => el.classList.remove('active'));
 
-  // Show selected page
   document.getElementById('page-' + id).classList.add('active');
-  // Set title
   document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
-  // Activate the clicked button
   if (btn) btn.classList.add('active');
 
-  // Also sync the other nav (sidebar ↔ mobile)
-  if (source === 'mob') {
-    // find matching sidebar button by its onclick
-    document.querySelectorAll('.sb-item').forEach(el => {
-      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+id+"'")) {
-        el.classList.add('active');
-      }
-    });
-  } else {
-    // find matching mobile button
-    document.querySelectorAll('.mob-nav-item').forEach(el => {
-      if (el.getAttribute('onclick') && el.getAttribute('onclick').includes("'"+id+"'")) {
-        el.classList.add('active');
-      }
-    });
-  }
+  // Sync the other nav (sidebar <-> mobile)
+  const otherSelector = source === 'mob' ? '.sb-item' : '.mob-nav-item';
+  document.querySelectorAll(otherSelector).forEach(el => {
+    if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
+  });
 
-  // Lazy load
+  // Lazy-load page data
   if (id === 'sessions')  loadSessions();
   if (id === 'chat')      loadChat();
   if (id === 'feedback')  loadFeedback();
   if (id === 'questions') loadQuestions();
+  if (id === 'control')   loadControl();
 
-  // Scroll to top on mobile
   window.scrollTo(0, 0);
 }
 
@@ -629,7 +718,7 @@ function showPage(id, btn, source) {
 //  LOAD ALL (overview)
 // ════════════════════════════════════════════
 async function loadAll() {
-  await Promise.all([
+  await Promise.allSettled([
     loadOverviewStats(),
     loadDeviceTimeBreakdown(),
     loadHourlyChart(),
@@ -640,114 +729,96 @@ async function loadAll() {
 }
 
 // ════════════════════════════════════════════
-//  STATS
+//  OVERVIEW STATS
 // ════════════════════════════════════════════
 async function loadOverviewStats() {
   try {
+    const ep = currentEpoch;
     const [sessRes, msgRes, fbRes] = await Promise.all([
-      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec', {count:'exact'}),
-      sb.from('messages').select('id', {count:'exact'}).eq('sender','participant'),
-      sb.from('feedback').select('id', {count:'exact'})
+      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec').eq('reset_epoch', ep),
+      sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender', 'participant').eq('reset_epoch', ep),
+      sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep)
     ]);
 
-    const sessions = sessRes.data || [];
-    const totalVisits = sessions.reduce((a,s) => a + (s.visit_count||1), 0);
-    const avgSec = sessions.length
-      ? sessions.reduce((a,s) => a + (s.total_time_sec||0), 0) / sessions.length
-      : 0;
+    const sessions    = sessRes.data || [];
+    const totalVisits = sessions.reduce((a, s) => a + (s.visit_count || 1), 0);
+    const totalSec    = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
+    const avgSec      = sessions.length ? totalSec / sessions.length : 0;
 
     document.getElementById('s-sessions').textContent = sessions.length;
     document.getElementById('s-visits').textContent   = totalVisits;
-    document.getElementById('s-msgs').textContent     = msgRes.count || 0;
-    document.getElementById('s-fb').textContent       = fbRes.count  || 0;
-    document.getElementById('s-time').textContent     = avgSec ? (avgSec/60).toFixed(1) : '—';
+    document.getElementById('s-msgs').textContent     = msgRes.count ?? 0;
+    document.getElementById('s-fb').textContent       = fbRes.count  ?? 0;
+    document.getElementById('s-time').textContent     = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
 
-    // Populate reply select
+    // Populate reply dropdown
     const sel = document.getElementById('ctrl-reply-sel');
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
     sessions.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
-      opt.textContent = s.id + (s.chat_opened ? ' (chatted)' : '');
+      opt.textContent = s.id.substring(0, 16) + '…' + (s.chat_opened ? ' (chatted)' : '');
       sel.appendChild(opt);
     });
     if (cur) sel.value = cur;
-  } catch(e) { console.warn('stats error', e); }
+
+  } catch(e) {
+    console.warn('Stats error:', e.message);
+  }
 }
 
 // ════════════════════════════════════════════
-//  DEVICE TIME BREAKDOWN (NEW)
+//  DEVICE TIME BREAKDOWN
 // ════════════════════════════════════════════
 async function loadDeviceTimeBreakdown() {
   const container = document.getElementById('device-time-grid');
   try {
-    const {data} = await sb.from('sessions').select('device_type, total_time_sec, visit_count');
+    const { data, error } = await sb.from('sessions')
+      .select('device_type, total_time_sec, visit_count')
+      .eq('reset_epoch', currentEpoch);
+    if (error) throw error;
 
-    const groups = {mobile:[], desktop:[], tablet:[]};
-    (data||[]).forEach(s => {
-      const dt = (s.device_type||'desktop').toLowerCase();
+    const groups = { mobile: [], desktop: [], tablet: [] };
+    (data || []).forEach(s => {
+      const dt = (s.device_type || 'desktop').toLowerCase();
       if (groups[dt]) groups[dt].push(s);
+      else groups['desktop'].push(s); // fallback
     });
 
     const deviceMeta = {
-      mobile:  {label:'Mobile',  icon:'📱', color:'var(--navy)'},
-      desktop: {label:'Desktop', icon:'🖥️',  color:'var(--green)'},
-      tablet:  {label:'Tablet',  icon:'📋', color:'var(--gold)'},
+      mobile:  { label: 'Mobile',  icon: '📱', color: 'var(--navy)' },
+      desktop: { label: 'Desktop', icon: '🖥️',  color: 'var(--green)' },
+      tablet:  { label: 'Tablet',  icon: '📋', color: 'var(--gold)' },
     };
 
-    const cards = Object.entries(groups).map(([type, sessions]) => {
-      const meta = deviceMeta[type];
+    const fmtMin = sec => sec > 0 ? (sec / 60).toFixed(1) + ' min' : '—';
+
+    container.innerHTML = Object.entries(groups).map(([type, sessions]) => {
+      const meta  = deviceMeta[type];
       const count = sessions.length;
       if (count === 0) return `
         <div class="device-time-card">
-          <div class="dtc-header">
-            <span class="dtc-icon">${meta.icon}</span>
-            <span class="dtc-title" style="color:${meta.color}">${meta.label}</span>
-          </div>
+          <div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div>
           <div style="font-size:12px;color:var(--text-faint);text-align:center;padding:10px 0">No data</div>
         </div>`;
-
-      const totalSec = sessions.reduce((a,s) => a + (s.total_time_sec||0), 0);
+      const totalSec = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
       const avgSec   = totalSec / count;
-      const maxSec   = Math.max(...sessions.map(s => s.total_time_sec||0));
-      const minSec   = Math.min(...sessions.filter(s => s.total_time_sec > 0).map(s => s.total_time_sec||0));
-
-      const fmtMin = sec => sec > 0 ? (sec/60).toFixed(1) + ' min' : '—';
-
+      const maxSec   = Math.max(...sessions.map(s => s.total_time_sec || 0));
+      const posArr   = sessions.filter(s => s.total_time_sec > 0).map(s => s.total_time_sec);
+      const minSec   = posArr.length ? Math.min(...posArr) : 0;
       return `
         <div class="device-time-card">
-          <div class="dtc-header">
-            <span class="dtc-icon">${meta.icon}</span>
-            <span class="dtc-title" style="color:${meta.color}">${meta.label}</span>
-          </div>
-          <div class="dtc-stat-row">
-            <span class="dtc-stat-label">Sessions</span>
-            <span class="dtc-stat-val" style="color:${meta.color}">${count}</span>
-          </div>
-          <div class="dtc-stat-row">
-            <span class="dtc-stat-label">Avg. Time</span>
-            <span class="dtc-stat-val">${fmtMin(avgSec)}</span>
-          </div>
-          <div class="dtc-stat-row">
-            <span class="dtc-stat-label">Total Time</span>
-            <span class="dtc-stat-val">${fmtMin(totalSec)}</span>
-          </div>
-          <div class="dtc-stat-row">
-            <span class="dtc-stat-label">Longest</span>
-            <span class="dtc-stat-val">${fmtMin(maxSec)}</span>
-          </div>
-          <div class="dtc-stat-row">
-            <span class="dtc-stat-label">Shortest</span>
-            <span class="dtc-stat-val">${minSec < Infinity ? fmtMin(minSec) : '—'}</span>
-          </div>
+          <div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div>
+          <div class="dtc-stat-row"><span class="dtc-stat-label">Sessions</span><span class="dtc-stat-val" style="color:${meta.color}">${count}</span></div>
+          <div class="dtc-stat-row"><span class="dtc-stat-label">Avg. Time</span><span class="dtc-stat-val">${fmtMin(avgSec)}</span></div>
+          <div class="dtc-stat-row"><span class="dtc-stat-label">Total Time</span><span class="dtc-stat-val">${fmtMin(totalSec)}</span></div>
+          <div class="dtc-stat-row"><span class="dtc-stat-label">Longest</span><span class="dtc-stat-val">${fmtMin(maxSec)}</span></div>
+          <div class="dtc-stat-row"><span class="dtc-stat-label">Shortest</span><span class="dtc-stat-val">${minSec ? fmtMin(minSec) : '—'}</span></div>
         </div>`;
-    });
-
-    container.innerHTML = cards.join('');
+    }).join('');
   } catch(e) {
-    container.innerHTML = '<div class="empty-state">Error loading device stats</div>';
-    console.warn('device time error', e);
+    container.innerHTML = '<div class="error-state">Error loading device stats: ' + escHtml(e.message) + '</div>';
   }
 }
 
@@ -756,18 +827,20 @@ async function loadDeviceTimeBreakdown() {
 // ════════════════════════════════════════════
 async function loadHourlyChart() {
   try {
-    const {data} = await sb.from('page_events')
+    const { data, error } = await sb.from('page_events')
       .select('created_at')
-      .eq('event_type','visit')
-      .order('created_at', {ascending:true});
+      .eq('event_type', 'visit')
+      .eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
 
     const hourBuckets = {};
-    (data||[]).forEach(r => {
+    (data || []).forEach(r => {
       const h = new Date(r.created_at).getHours();
-      hourBuckets[h] = (hourBuckets[h]||0) + 1;
+      hourBuckets[h] = (hourBuckets[h] || 0) + 1;
     });
-    const labels = Array.from({length:24}, (_,i) => i + ':00');
-    const values = Array.from({length:24}, (_,i) => hourBuckets[i]||0);
+    const labels = Array.from({ length: 24 }, (_, i) => i + ':00');
+    const values = Array.from({ length: 24 }, (_, i) => hourBuckets[i] || 0);
 
     const ctx = document.getElementById('chart-hourly').getContext('2d');
     if (charts.hourly) { charts.hourly.destroy(); charts.hourly = null; }
@@ -784,15 +857,18 @@ async function loadHourlyChart() {
         }]
       },
       options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {legend:{display:false}},
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
         scales: {
-          x: {ticks:{color:'#484F58',font:{size:9},maxRotation:0},grid:{color:'#21262D'}},
-          y: {ticks:{color:'#484F58',font:{size:9}},grid:{color:'#21262D'},beginAtZero:true}
+          x: { ticks: { color: '#484F58', font: { size: 9 }, maxRotation: 0 }, grid: { color: '#21262D' } },
+          y: { ticks: { color: '#484F58', font: { size: 9 } }, grid: { color: '#21262D' }, beginAtZero: true }
         }
       }
     });
-  } catch(e) { console.warn('hourly chart error', e); }
+  } catch(e) {
+    console.warn('Hourly chart error:', e.message);
+  }
 }
 
 // ════════════════════════════════════════════
@@ -800,81 +876,108 @@ async function loadHourlyChart() {
 // ════════════════════════════════════════════
 async function loadDeviceChart() {
   try {
-    const {data} = await sb.from('sessions').select('device_type');
-    const counts = {mobile:0, desktop:0, tablet:0};
-    (data||[]).forEach(s => { if (s.device_type) counts[s.device_type] = (counts[s.device_type]||0) + 1; });
+    const { data, error } = await sb.from('sessions').select('device_type').eq('reset_epoch', currentEpoch);
+    if (error) throw error;
+
+    const counts = { mobile: 0, desktop: 0, tablet: 0 };
+    (data || []).forEach(s => {
+      const dt = (s.device_type || 'desktop').toLowerCase();
+      if (counts[dt] !== undefined) counts[dt]++;
+      else counts['desktop']++;
+    });
 
     const ctx = document.getElementById('chart-device').getContext('2d');
     if (charts.device) { charts.device.destroy(); charts.device = null; }
     charts.device = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Mobile','Desktop','Tablet'],
+        labels: ['Mobile', 'Desktop', 'Tablet'],
         datasets: [{
           data: [counts.mobile, counts.desktop, counts.tablet],
-          backgroundColor: ['rgba(56,139,253,0.7)','rgba(63,185,80,0.7)','rgba(240,180,41,0.7)'],
-          borderColor: ['#388BFD','#3FB950','#F0B429'],
+          backgroundColor: ['rgba(56,139,253,0.7)', 'rgba(63,185,80,0.7)', 'rgba(240,180,41,0.7)'],
+          borderColor: ['#388BFD', '#3FB950', '#F0B429'],
           borderWidth: 1
         }]
       },
       options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{position:'bottom',labels:{color:'#8B949E',font:{size:11},padding:12}}}
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: '#8B949E', font: { size: 11 }, padding: 12 } } }
       }
     });
-  } catch(e) { console.warn('device chart error', e); }
+  } catch(e) {
+    console.warn('Device chart error:', e.message);
+  }
 }
 
 // ════════════════════════════════════════════
-//  SPEAKER PEAK
+//  SPEAKER PEAK BARS
 // ════════════════════════════════════════════
 async function loadSpeakerPeak() {
+  const container = document.getElementById('speaker-bars');
   try {
-    const {data} = await sb.from('page_events')
+    const { data, error } = await sb.from('page_events')
       .select('speaker_id, speaker_name')
-      .eq('event_type','heartbeat')
-      .not('speaker_id','is',null);
+      .eq('event_type', 'heartbeat')
+      .eq('reset_epoch', currentEpoch)
+      .not('speaker_id', 'is', null);
+    if (error) throw error;
 
     const counts = {};
-    (data||[]).forEach(r => {
-      const key = escHtml(r.speaker_name || ('Speaker ' + r.speaker_id));
-      counts[key] = (counts[key]||0) + 1;
+    (data || []).forEach(r => {
+      const key = r.speaker_name || ('Speaker ' + r.speaker_id);
+      counts[key] = (counts[key] || 0) + 1;
     });
-
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
     const max = sorted[0]?.[1] || 1;
-    const container = document.getElementById('speaker-bars');
 
-    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No data yet</div>'; return; }
-    container.innerHTML = sorted.map(([name,count]) =>
+    if (!sorted.length) {
+      container.innerHTML = '<div class="empty-state">No speaker data yet</div>';
+      return;
+    }
+    container.innerHTML = sorted.map(([name, count]) =>
       `<div class="speaker-bar-row">
-        <div class="speaker-bar-name">${name}</div>
-        <div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count/max*100)}%"></div></div>
+        <div class="speaker-bar-name" title="${escHtml(name)}">${escHtml(name)}</div>
+        <div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count / max * 100)}%"></div></div>
         <div class="speaker-bar-count">${count}</div>
-       </div>`
+      </div>`
     ).join('');
-  } catch(e) { console.warn('speaker peak error', e); }
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════════════════════════════════════════════
 //  GEO TABLE
 // ════════════════════════════════════════════
 async function loadGeo() {
+  const tbody = document.getElementById('geo-table');
   try {
-    const {data} = await sb.from('sessions').select('country,city');
+    const { data, error } = await sb.from('sessions').select('country, city').eq('reset_epoch', currentEpoch);
+    if (error) throw error;
+
     const counts = {};
-    (data||[]).forEach(s => {
-      const key = (s.country||'Unknown') + '||' + (s.city||'—');
-      counts[key] = (counts[key]||0) + 1;
+    (data || []).forEach(s => {
+      const key = (s.country || 'Unknown') + '||' + (s.city || '—');
+      counts[key] = (counts[key] || 0) + 1;
     });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,20);
-    const tbody = document.getElementById('geo-table');
-    if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No data yet</div></td></tr>'; return; }
-    tbody.innerHTML = sorted.map(([key,count]) => {
-      const [country,city] = key.split('||');
-      return `<tr><td>${escHtml(country)}</td><td style="color:var(--text-faint)">${escHtml(city)}</td><td><span class="pill pill-navy">${count}</span></td></tr>`;
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 20);
+
+    if (!sorted.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = sorted.map(([key, count]) => {
+      const [country, city] = key.split('||');
+      return `<tr>
+        <td>${escHtml(country)}</td>
+        <td style="color:var(--text-faint)">${escHtml(city)}</td>
+        <td><span class="pill pill-navy">${count}</span></td>
+      </tr>`;
     }).join('');
-  } catch(e) { console.warn('geo error', e); }
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="3"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+  }
 }
 
 // ════════════════════════════════════════════
@@ -884,47 +987,55 @@ async function loadSessions() {
   const tbody = document.getElementById('sessions-table');
   tbody.innerHTML = '<tr><td colspan="14"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
   try {
-    const {data} = await sb.from('sessions').select('*').order('last_seen',{ascending:false});
-    document.getElementById('sessions-count').textContent = (data||[]).length + ' sessions';
-    if (!(data||[]).length) { tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>'; return; }
-    tbody.innerHTML = (data||[]).map(s => {
-      const deviceBadge = s.device_type
-        ? `<span class="td-badge td-badge-${s.device_type||'desktop'}">${s.device_type||'—'}</span>` : '—';
-      const chatBadge  = s.chat_opened ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
-      const fbBadge    = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
-      const firstSeen  = s.first_seen ? new Date(s.first_seen).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'}) : '—';
-      const lastSeen   = s.last_seen  ? new Date(s.last_seen).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'})  : '—';
-      // Format time nicely
-      const totalSec = s.total_time_sec || 0;
-      let timeStr = '—';
-      if (totalSec > 0) {
-        const h = Math.floor(totalSec / 3600);
-        const m = Math.floor((totalSec % 3600) / 60);
-        const sec = totalSec % 60;
-        if (h > 0) timeStr = `${h}h ${m}m`;
-        else if (m > 0) timeStr = `${m}m ${sec}s`;
-        else timeStr = `${sec}s`;
-      }
+    const { data, error } = await sb.from('sessions').select('*')
+      .eq('reset_epoch', currentEpoch)
+      .order('last_seen', { ascending: false });
+    if (error) throw error;
+
+    document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
+
+    if (!(data || []).length) {
+      tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>';
+      return;
+    }
+
+    const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' }) : '—';
+    const fmtTime = sec => {
+      if (!sec || sec <= 0) return '—';
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
+    };
+
+    tbody.innerHTML = (data || []).map(s => {
+      const devType = (s.device_type || '').toLowerCase();
+      const deviceBadge = devType
+        ? `<span class="td-badge td-badge-${devType}">${devType}</span>`
+        : '<span style="color:var(--text-faint)">—</span>';
+      const chatBadge = s.chat_opened
+        ? '<span class="td-badge td-badge-chat">Yes</span>'
+        : '<span style="color:var(--text-faint)">—</span>';
+      const fbBadge = s.feedback_sent
+        ? '<span class="td-badge td-badge-fb">Yes</span>'
+        : '<span style="color:var(--text-faint)">—</span>';
       return `<tr>
-        <td class="td-mono">${escHtml(s.id)}</td>
-        <td>${firstSeen}</td>
-        <td>${lastSeen}</td>
-        <td style="text-align:center">${s.visit_count||1}</td>
+        <td class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id || '').substring(0, 12))}…</td>
+        <td>${fmtDate(s.first_seen)}</td>
+        <td>${fmtDate(s.last_seen)}</td>
+        <td style="text-align:center">${s.visit_count || 1}</td>
         <td>${deviceBadge}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.browser||'—')}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.os||'—')}</td>
-        <td>${escHtml(s.country||'—')}</td>
-        <td style="color:var(--text-faint)">${escHtml(s.city||'—')}</td>
-        <td style="color:var(--text-faint);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(s.isp||'—')}</td>
+        <td style="color:var(--text-faint)">${escHtml(s.browser || '—')}</td>
+        <td style="color:var(--text-faint)">${escHtml(s.os || '—')}</td>
+        <td>${escHtml(s.country || '—')}</td>
+        <td style="color:var(--text-faint)">${escHtml(s.city || '—')}</td>
+        <td style="color:var(--text-faint);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(s.isp || '')}">${escHtml(s.isp || '—')}</td>
         <td>${chatBadge}</td>
-        <td style="text-align:center">${s.chat_msg_count||0}</td>
+        <td style="text-align:center">${s.chat_msg_count || 0}</td>
         <td>${fbBadge}</td>
-        <td style="font-weight:600;color:var(--text)">${timeStr}</td>
+        <td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td>
       </tr>`;
     }).join('');
   } catch(e) {
-    console.warn('sessions error', e);
-    tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">Error loading sessions</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="14"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
@@ -935,24 +1046,35 @@ async function loadChat() {
   const feed = document.getElementById('chat-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    const {data, count} = await sb.from('messages')
-      .select('*', {count:'exact'})
-      .eq('sender','participant')
-      .order('created_at',{ascending:false})
-      .limit(100);
-    document.getElementById('chat-count').textContent = (count||0) + ' messages';
-    if (!(data||[]).length) { feed.innerHTML = '<div class="empty-state">No chat messages yet</div>'; return; }
-    feed.innerHTML = (data||[]).map(m => {
-      const t = new Date(m.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+    const { data, count, error } = await sb.from('messages')
+      .select('*', { count: 'exact' })
+      .eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (error) throw error;
+
+    document.getElementById('chat-count').textContent = (count || 0) + ' messages';
+
+    if (!(data || []).length) {
+      feed.innerHTML = '<div class="empty-state">No chat messages yet</div>';
+      return;
+    }
+
+    feed.innerHTML = (data || []).map(m => {
+      const t = new Date(m.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
+      const senderClass = m.sender === 'organizer' ? 'organizer' : m.sender === 'participant' ? 'participant' : 'participant';
+      const senderLabel = m.sender === 'organizer' ? '🏢 Organizer' : escHtml((m.session_id || '').substring(0, 16) + '…');
       return `<div class="feed-item">
         <div class="feed-item-top">
-          <span class="feed-sender participant">${escHtml(m.session_id)}</span>
+          <span class="feed-sender ${senderClass}">${senderLabel}</span>
           <span class="feed-time">${t}</span>
         </div>
         <div class="feed-text">${escHtml(m.text)}</div>
       </div>`;
     }).join('');
-  } catch(e) { feed.innerHTML = '<div class="empty-state">Error loading messages</div>'; }
+  } catch(e) {
+    feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════════════════════════════════════════════
@@ -962,13 +1084,21 @@ async function loadFeedback() {
   const feed = document.getElementById('fb-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    const {data, count} = await sb.from('feedback')
-      .select('*', {count:'exact'})
-      .order('created_at',{ascending:false});
-    document.getElementById('fb-count').textContent = (count||0) + ' submissions';
-    if (!(data||[]).length) { feed.innerHTML = '<div class="empty-state">No feedback yet</div>'; return; }
-    feed.innerHTML = (data||[]).map(f => {
-      const t = new Date(f.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+    const { data, count, error } = await sb.from('feedback')
+      .select('*', { count: 'exact' })
+      .eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+
+    document.getElementById('fb-count').textContent = (count || 0) + ' submissions';
+
+    if (!(data || []).length) {
+      feed.innerHTML = '<div class="empty-state">No feedback yet</div>';
+      return;
+    }
+
+    feed.innerHTML = (data || []).map(f => {
+      const t = new Date(f.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
       return `<div class="feed-item">
         <div class="feed-item-top">
           <span class="feed-sender feedback">Feedback</span>
@@ -976,9 +1106,12 @@ async function loadFeedback() {
         </div>
         <div class="feed-text">${escHtml(f.text)}</div>
         ${f.speaker ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
+        ${f.session_id ? `<div class="feed-meta">Session: ${escHtml((f.session_id || '').substring(0, 16))}…</div>` : ''}
       </div>`;
     }).join('');
-  } catch(e) { feed.innerHTML = '<div class="empty-state">Error loading feedback</div>'; }
+  } catch(e) {
+    feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════════════════════════════════════════════
@@ -988,157 +1121,190 @@ async function loadQuestions() {
   const container = document.getElementById('q-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    const {data} = await sb.from('messages')
+    const { data, error } = await sb.from('messages')
       .select('text')
-      .eq('sender','participant');
+      .eq('sender', 'participant')
+      .eq('reset_epoch', currentEpoch);
+    if (error) throw error;
 
     const counts = {};
-    (data||[]).forEach(m => {
-      const t = (m.text||'').trim();
-      if (t.length > 2) counts[t] = (counts[t]||0) + 1;
+    (data || []).forEach(m => {
+      const t = (m.text || '').trim();
+      if (t.length > 2) counts[t] = (counts[t] || 0) + 1;
     });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,30);
-    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
-    container.innerHTML = sorted.map(([text,count],i) =>
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 30);
+
+    if (!sorted.length) {
+      container.innerHTML = '<div class="empty-state">No messages yet</div>';
+      return;
+    }
+    container.innerHTML = sorted.map(([text, count], i) =>
       `<div class="q-item">
-        <div class="q-rank">#${i+1}</div>
+        <div class="q-rank">#${i + 1}</div>
         <div class="q-text">${escHtml(text)}</div>
         <div class="q-count">×${count}</div>
-       </div>`
+      </div>`
     ).join('');
-  } catch(e) { container.innerHTML = '<div class="empty-state">Error loading questions</div>'; }
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════════════════════════════════════════════
-//  ONLINE PRESENCE
+//  PRESENCE (online count)
 // ════════════════════════════════════════════
 function subscribePresence() {
-  const room = sb.channel('presence_room');
-  room.on('presence', {event: 'sync'}, () => {
-    const state = room.presenceState();
-    const count = Object.keys(state).length;
-    onlineCount = count;
-    document.getElementById('s-online').textContent         = count;
-    document.getElementById('sb-online').textContent        = count;
+  if (presenceChannel) {
+    sb.removeChannel(presenceChannel);
+  }
+  presenceChannel = sb.channel('presence_room');
+  presenceChannel.on('presence', { event: 'sync' }, () => {
+    const count = Object.keys(presenceChannel.presenceState()).length;
+    document.getElementById('s-online').textContent            = count;
+    document.getElementById('sb-online').textContent           = count;
     document.getElementById('topbar-online-count').textContent = count + ' online';
   }).subscribe();
 }
 
 // ════════════════════════════════════════════
-//  LIVE CONTROL
+//  LIVE CONTROL — SPEAKER
 // ════════════════════════════════════════════
 function populateSpeakerSelect() {
   const sel = document.getElementById('ctrl-speaker-sel');
   sel.innerHTML = AGENDA.map(a =>
-    `<option value="${a.id}">${a.id}. ${escHtml(a.speaker)}${a.isBreak?' (break)':''}</option>`
+    `<option value="${a.id}">${a.id}. ${escHtml(a.speaker)}${a.isBreak ? ' (break)' : ''}</option>`
   ).join('');
 }
 
-// ── Render the speaker NOW/NEXT card ──
 function renderSpeakerCard(currentId) {
   const idx  = AGENDA.findIndex(a => a.id === currentId);
-  const cur  = AGENDA[idx];
-  const next = AGENDA[idx + 1] || null;
+  const cur  = idx >= 0 ? AGENDA[idx] : null;
+  const next = idx >= 0 ? (AGENDA[idx + 1] || null) : null;
 
-  if (cur) {
-    document.getElementById('snc-current-name').textContent = cur.speaker;
-    document.getElementById('snc-current-sub').textContent  = cur.isBreak ? 'Break / Ceremony' : ('Item ' + cur.id + ' of ' + AGENDA.length);
-  }
-  if (next) {
-    document.getElementById('snc-next-name').textContent = next.speaker;
-    document.getElementById('snc-next-sub').textContent  = next.isBreak ? 'Break / Ceremony' : '';
-  } else {
-    document.getElementById('snc-next-name').textContent = '—';
-    document.getElementById('snc-next-sub').textContent  = 'Program ended';
-  }
-  document.getElementById('snc-idx').textContent = (idx + 1) + ' / ' + AGENDA.length;
-  document.getElementById('ctrl-speaker-sel').value = currentId;
+  document.getElementById('snc-current-name').textContent = cur ? cur.speaker : '—';
+  document.getElementById('snc-current-sub').textContent  = cur
+    ? (cur.isBreak ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`)
+    : '';
+  document.getElementById('snc-next-name').textContent    = next ? next.speaker : '—';
+  document.getElementById('snc-next-sub').textContent     = next
+    ? (next.isBreak ? 'Break / Ceremony' : '')
+    : (cur ? 'Program ended' : '');
+  document.getElementById('snc-idx').textContent          = idx >= 0 ? `${idx + 1} / ${AGENDA.length}` : '—';
+  document.getElementById('ctrl-speaker-sel').value       = currentId || '';
 }
 
 async function loadControl() {
   try {
-    const {data} = await sb.from('live_state').select('*').eq('id',1).single();
+    const { data, error } = await sb.from('live_state').select('*').eq('id', 1).single();
+    if (error) throw error;
     if (!data) return;
+
     renderSpeakerCard(data.current_id);
+
     const aiToggle = document.getElementById('ctrl-ai-toggle');
     aiToggle.checked = Boolean(data.ai_enabled);
     document.getElementById('ctrl-ai-label').textContent = aiToggle.checked ? 'AI Enabled' : 'AI Disabled';
+
     const cdToggle = document.getElementById('ctrl-cd-toggle');
     cdToggle.checked = Boolean(data.show_countdown);
     document.getElementById('ctrl-cd-label').textContent = cdToggle.checked ? 'Countdown ON' : 'Countdown OFF';
-  } catch(e) { console.warn('control load error', e); }
+  } catch(e) {
+    console.warn('Control load error:', e.message);
+  }
 }
 
-// ── Previous / Next buttons ──
 async function stepSpeaker(dir) {
-  const sel = document.getElementById('ctrl-speaker-sel');
-  const curId = parseInt(sel.value) || AGENDA[0].id;
-  const idx = AGENDA.findIndex(a => a.id === curId);
+  const curId  = parseInt(document.getElementById('ctrl-speaker-sel').value) || AGENDA[0].id;
+  const idx    = AGENDA.findIndex(a => a.id === curId);
   const newIdx = Math.max(0, Math.min(AGENDA.length - 1, idx + dir));
   await _saveSpeaker(AGENDA[newIdx].id);
 }
 
-// ── Jump from dropdown ──
 async function jumpSpeaker() {
-  const sel = document.getElementById('ctrl-speaker-sel');
-  const id  = parseInt(sel.value);
+  const id = parseInt(document.getElementById('ctrl-speaker-sel').value);
   if (id) await _saveSpeaker(id);
 }
 
 async function _saveSpeaker(id) {
   const status = document.getElementById('ctrl-speaker-status');
-  status.textContent = 'Saving...'; status.style.color = 'var(--text-faint)';
+  status.className = 'status-msg status-info';
+  status.textContent = 'Saving...';
   try {
-    await sb.from('live_state').update({
-      current_id: id,
-      speaker_started_at: new Date().toISOString()
-    }).eq('id',1);
+    const { error } = await sb.from('live_state')
+      .update({ current_id: id, speaker_started_at: new Date().toISOString() })
+      .eq('id', 1);
+    if (error) throw error;
     renderSpeakerCard(id);
+    status.className = 'status-msg status-ok';
     status.textContent = '✓ Updated at ' + new Date().toLocaleTimeString();
-    status.style.color = 'var(--green)';
     setTimeout(() => { status.textContent = ''; }, 3000);
   } catch(e) {
+    status.className = 'status-msg status-err';
     status.textContent = '✗ Error: ' + e.message;
-    status.style.color = 'var(--red)';
   }
 }
 
 async function setAI() {
-  const tog = document.getElementById('ctrl-ai-toggle');
+  const tog   = document.getElementById('ctrl-ai-toggle');
   const label = document.getElementById('ctrl-ai-label');
   label.textContent = 'Saving...';
   try {
-    await sb.from('live_state').update({ai_enabled: tog.checked}).eq('id',1);
+    const { error } = await sb.from('live_state').update({ ai_enabled: tog.checked }).eq('id', 1);
+    if (error) throw error;
     label.textContent = tog.checked ? 'AI Enabled' : 'AI Disabled';
-  } catch(e) { label.textContent = 'Error'; tog.checked = !tog.checked; }
+  } catch(e) {
+    label.textContent = '✗ Error';
+    tog.checked = !tog.checked; // revert
+  }
 }
 
 async function setCountdown() {
-  const tog = document.getElementById('ctrl-cd-toggle');
+  const tog   = document.getElementById('ctrl-cd-toggle');
   const label = document.getElementById('ctrl-cd-label');
   label.textContent = 'Saving...';
   try {
-    await sb.from('live_state').update({show_countdown: tog.checked}).eq('id',1);
+    const { error } = await sb.from('live_state').update({ show_countdown: tog.checked }).eq('id', 1);
+    if (error) throw error;
     label.textContent = tog.checked ? 'Countdown ON' : 'Countdown OFF';
-  } catch(e) { label.textContent = 'Error'; tog.checked = !tog.checked; }
+  } catch(e) {
+    label.textContent = '✗ Error';
+    tog.checked = !tog.checked; // revert
+  }
 }
 
 async function sendReply() {
   const sel    = document.getElementById('ctrl-reply-sel');
   const text   = document.getElementById('ctrl-reply-text').value.trim();
   const status = document.getElementById('ctrl-reply-status');
-  if (!sel.value || !text) {
-    status.textContent = 'Select a session and enter a message';
-    status.style.color = 'var(--red)'; return;
+
+  if (!sel.value) {
+    status.className = 'status-msg status-err';
+    status.textContent = 'Please select a session';
+    return;
   }
-  status.textContent = 'Sending...'; status.style.color = 'var(--text-faint)';
+  if (!text) {
+    status.className = 'status-msg status-err';
+    status.textContent = 'Please enter a message';
+    return;
+  }
+
+  status.className = 'status-msg status-info';
+  status.textContent = 'Sending...';
   try {
-    await sb.from('messages').insert({session_id: sel.value, sender: 'organizer', text});
+    const { error } = await sb.from('messages').insert({
+      session_id: sel.value,
+      sender: 'organizer',
+      text: text,
+      reset_epoch: liveEpoch
+    });
+    if (error) throw error;
     document.getElementById('ctrl-reply-text').value = '';
-    status.textContent = '✓ Sent!'; status.style.color = 'var(--green)';
+    status.className = 'status-msg status-ok';
+    status.textContent = '✓ Sent!';
     setTimeout(() => { status.textContent = ''; }, 3000);
   } catch(e) {
-    status.textContent = '✗ Error: ' + e.message; status.style.color = 'var(--red)';
+    status.className = 'status-msg status-err';
+    status.textContent = '✗ Error: ' + e.message;
   }
 }
 
@@ -1146,7 +1312,7 @@ async function sendReply() {
 //  UTILS
 // ════════════════════════════════════════════
 function escHtml(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
 </body>
