@@ -119,6 +119,53 @@ tbody td:first-child{color:var(--text);}
 .td-badge-chat{background:var(--navy-soft);color:var(--navy);}
 .td-badge-fb{background:var(--gold-soft);color:var(--gold);}
 
+/* ── ACTIVITY BUTTON ── */
+.activity-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;color:var(--text-faint);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.activity-btn:hover{border-color:var(--navy-border);color:var(--navy);}
+
+/* ── ACTIVITY MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px);transition:transform .2s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;}
+.modal-header-left{display:flex;flex-direction:column;gap:4px;}
+.modal-title{font-size:14px;font-weight:700;color:var(--text);}
+.modal-sub{font-size:11px;color:var(--text-faint);}
+.modal-email-tag{display:inline-block;background:rgba(56,139,253,.12);border:1px solid var(--navy-border);color:var(--navy);font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-top:2px;}
+.modal-close{background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:2px 4px;flex-shrink:0;}
+.modal-body{overflow-y:auto;padding:16px 20px;flex:1;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── ACTIVITY TIMELINE ── */
+.activity-section-title{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.activity-section-title::before{content:'';flex:none;width:16px;height:1px;background:var(--border);}
+.activity-section-title:first-child{margin-top:0;}
+.activity-timeline{display:flex;flex-direction:column;gap:0;}
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);position:relative;}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.activity-dot-chat{background:var(--navy);}
+.activity-dot-ai{background:var(--purple);}
+.activity-dot-fb{background:var(--gold);}
+.activity-dot-visit{background:var(--green);}
+.activity-dot-workshop{background:var(--green);}
+.activity-content{flex:1;min-width:0;}
+.activity-type{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
+.activity-type-chat{color:var(--navy);}
+.activity-type-ai{color:var(--purple);}
+.activity-type-fb{color:var(--gold);}
+.activity-type-visit{color:var(--green);}
+.activity-type-workshop{color:var(--green);}
+.activity-text{font-size:12px;color:var(--text);line-height:1.5;word-break:break-word;}
+.activity-time{font-size:10px;color:var(--text-faint);flex-shrink:0;margin-top:4px;}
+.activity-empty{text-align:center;padding:24px;font-size:12px;color:var(--text-faint);}
+.activity-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.activity-stat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;flex-direction:column;gap:2px;flex:1;min-width:80px;}
+.activity-stat-chip-val{font-size:18px;font-weight:700;color:var(--text);}
+.activity-stat-chip-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;}
+
 .feed{display:flex;flex-direction:column;gap:8px;}
 .feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;transition:border-color .15s;}
 .feed-item:hover{border-color:var(--border2);}
@@ -193,7 +240,6 @@ tbody td:first-child{color:var(--text);}
 .reply-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;transition:border-color .15s;}
 .reply-textarea:focus{border-color:var(--navy-border);}
 
-/* ── WORKSHOP REGISTRATIONS SECTION ── */
 .workshop-reg-banner{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
 .workshop-reg-count{font-size:13px;font-weight:700;color:var(--gold);}
 .workshop-reg-label{font-size:11px;color:var(--text-dim);}
@@ -212,6 +258,10 @@ tbody td:first-child{color:var(--text);}
 .status-ok{color:var(--green);}
 .status-err{color:var(--red);}
 .status-info{color:var(--text-faint);}
+
+/* realtime flash animation */
+@keyframes flash-row{0%{background:rgba(56,139,253,.18)}100%{background:transparent}}
+.row-flash{animation:flash-row 1.5s ease-out;}
 
 @media(max-width:768px){
   .sidebar{display:none;}
@@ -232,6 +282,7 @@ tbody td:first-child{color:var(--text);}
   .snc-now{border-right:none;border-bottom:1px solid var(--border);}
   .snc-name{font-size:18px;}
   .snc-name-next{font-size:15px;}
+  .modal-box{max-height:92vh;}
 }
 @media(max-width:400px){
   .stat-grid{grid-template-columns:1fr 1fr;}
@@ -240,6 +291,24 @@ tbody td:first-child{color:var(--text);}
 </style>
 </head>
 <body>
+
+<!-- ══ ACTIVITY MODAL ══ -->
+<div class="modal-overlay" id="activity-modal" onclick="closeActivityModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-title" id="modal-title">Session Activity</div>
+        <div class="modal-email-tag" id="modal-email-tag" style="display:none"></div>
+        <div class="modal-sub" id="modal-sub">Loading...</div>
+      </div>
+      <button class="modal-close" onclick="closeActivityModalDirect()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="loading-state"><div class="spinner"></div>Loading activity...</div>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
   <aside class="sidebar">
     <div class="sb-logo">
@@ -373,11 +442,11 @@ tbody td:first-child{color:var(--text);}
               <tr>
                 <th>Visitor</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
                 <th>Device</th><th>Browser</th><th>OS</th><th>Country</th><th>City</th>
-                <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th>
+                <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th><th>Activity</th>
               </tr>
             </thead>
             <tbody id="sessions-table">
-              <tr><td colspan="14"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
+              <tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
             </tbody>
           </table>
         </div>
@@ -582,31 +651,33 @@ const AGENDA = [
   {id:29, speaker:"Closing Ceremony",             isBreak:true}
 ];
 
-// ════════════════
+// ════════════════════════════════
 //  STATE
-// ════════════════
+// ════════════════════════════════
 let sb = null;
 let charts = {};
 let currentEpoch = 1;
 let liveEpoch = 1;
 let presenceChannel = null;
+let realtimeChannel = null; // for sessions/workshop realtime
 
-// ── EMAIL MAP: session_id → email (populated once on load, refreshed on loadAll) ──
-let emailMap = {}; // { 'p_abc123': 'user@email.com', ... }
+// emailMap: session_id → email  (built from workshop_registrations + sessions.participant_email)
+let emailMap = {};
 
-// ════════════════
+// ════════════════════════════════
 //  INIT
-// ════════════════
+// ════════════════════════════════
 window.addEventListener('load', async () => {
   sb = supabase.createClient(SB_URL, SB_KEY);
   tickClock();
   setInterval(tickClock, 1000);
   populateSpeakerSelect();
   await loadEpochState();
-  await loadEmailMap();   // ← load email map first
+  await loadEmailMap();
   await loadAll();
   await loadControl();
   subscribePresence();
+  subscribeRealtimeEmails(); // ← NEW: watch for email changes in realtime
   setInterval(loadOverviewStats, 30000);
 });
 
@@ -615,41 +686,146 @@ function tickClock() {
     new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
-// ════════════════
+// ════════════════════════════════
 //  EMAIL MAP
-//  Loads ALL workshop registrations and builds session_id → email lookup
-// ════════════════
+//  Builds session_id → email from:
+//  1. workshop_registrations table
+//  2. sessions.participant_email column
+// ════════════════════════════════
 async function loadEmailMap() {
   try {
-    const { data, error } = await sb.from('workshop_registrations').select('session_id, email');
-    if (error) throw error;
+    // Primary: workshop_registrations (most reliable — user typed email here)
+    const { data: wData } = await sb.from('workshop_registrations').select('session_id, email');
     emailMap = {};
-    (data || []).forEach(r => {
-      if (r.session_id && r.email) emailMap[r.session_id] = r.email;
+    (wData || []).forEach(r => {
+      if (r.session_id && r.email) emailMap[r.session_id] = r.email.toLowerCase().trim();
     });
 
-    // Also load from sessions table registered_email column (backup)
-    const { data: sessData } = await sb.from('sessions').select('id, registered_email');
-    (sessData || []).forEach(s => {
-      if (s.id && s.registered_email && !emailMap[s.id]) {
-        emailMap[s.id] = s.registered_email;
+    // Fallback: sessions.participant_email (written by index.html on workshop register)
+    const { data: sData } = await sb.from('sessions').select('id, participant_email');
+    (sData || []).forEach(s => {
+      if (s.id && s.participant_email && !emailMap[s.id]) {
+        emailMap[s.id] = s.participant_email.toLowerCase().trim();
       }
     });
   } catch(e) {
-    console.warn('Email map load error:', e.message);
+    console.warn('loadEmailMap error:', e.message);
   }
 }
 
-// Helper: get display label for a session (email if registered, shortened ID otherwise)
+// ════════════════════════════════
+//  REALTIME EMAIL SYNC
+//  Listens for INSERT on workshop_registrations and
+//  UPDATE on sessions (participant_email column) so the
+//  emailMap updates without a manual refresh.
+// ════════════════════════════════
+function subscribeRealtimeEmails() {
+  if (realtimeChannel) sb.removeChannel(realtimeChannel);
+
+  realtimeChannel = sb.channel('admin_email_sync')
+    // New workshop registration
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'workshop_registrations' }, payload => {
+      const r = payload.new;
+      if (r && r.session_id && r.email) {
+        const email = r.email.toLowerCase().trim();
+        const wasUnknown = !emailMap[r.session_id];
+        emailMap[r.session_id] = email;
+
+        // Silently refresh the active page's data so email shows up instantly
+        refreshCurrentPageAfterEmailUpdate(r.session_id, email, wasUnknown);
+      }
+    })
+    // sessions row updated (participant_email set)
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'sessions' }, payload => {
+      const s = payload.new;
+      if (s && s.id && s.participant_email) {
+        const email = s.participant_email.toLowerCase().trim();
+        if (!emailMap[s.id]) {
+          emailMap[s.id] = email;
+          refreshCurrentPageAfterEmailUpdate(s.id, email, true);
+        }
+      }
+    })
+    .subscribe();
+}
+
+// Called when a new email arrives via realtime.
+// Updates the currently visible page without a full reload.
+function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
+  const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
+
+  // Always refresh the reply dropdown
+  refreshReplySel();
+
+  if (!wasUnknown) return; // email already known, nothing changed visually
+
+  // Flash/update the sessions table row if visible
+  if (activePage === 'sessions') {
+    // Find the row by session ID data attribute and update the visitor cell
+    const row = document.querySelector(`tr[data-sid="${CSS.escape(sessionId)}"]`);
+    if (row) {
+      const visitorCell = row.querySelector('td:first-child');
+      if (visitorCell) {
+        visitorCell.innerHTML = `<span class="td-email">${escHtml(email)}</span>`;
+        row.classList.add('row-flash');
+        setTimeout(() => row.classList.remove('row-flash'), 1600);
+      }
+    } else {
+      // Row not in DOM yet (maybe new session), reload table
+      loadSessions();
+    }
+  }
+
+  // Update chat feed — replace session ID labels with email
+  if (activePage === 'chat') {
+    document.querySelectorAll(`[data-sid="${CSS.escape(sessionId)}"]`).forEach(el => {
+      el.innerHTML = escHtml(email);
+      // add email tag if not already there
+      const tag = el.nextElementSibling;
+      if (!tag || !tag.classList.contains('feed-email-tag')) {
+        const span = document.createElement('span');
+        span.className = 'feed-email-tag';
+        span.textContent = email;
+        el.after(span);
+      }
+    });
+  }
+
+  // Update feedback feed
+  if (activePage === 'feedback') {
+    document.querySelectorAll(`[data-sid="${CSS.escape(sessionId)}"]`).forEach(el => {
+      el.innerHTML = escHtml(email);
+    });
+  }
+}
+
+// Refresh reply dropdown with latest emailMap without reload
+function refreshReplySel() {
+  const sel = document.getElementById('ctrl-reply-sel');
+  if (!sel) return;
+  const cur = sel.value;
+  const opts = Array.from(sel.options).filter(o => o.value && o.value !== '');
+  opts.forEach(opt => {
+    const sid = opt.value;
+    if (emailMap[sid]) {
+      const hasMark = opt.textContent.endsWith(' ✉');
+      const base = emailMap[sid] + (hasMark ? ' ✉' : '');
+      if (opt.textContent !== base) opt.textContent = base;
+    }
+  });
+  if (cur) sel.value = cur;
+}
+
+// Helper: display label for a session
 function getSessionLabel(sessionId) {
   if (!sessionId) return '—';
   if (emailMap[sessionId]) return emailMap[sessionId];
   return sessionId.substring(0, 14) + '…';
 }
 
-// ════════════════
+// ════════════════════════════════
 //  EPOCH SYSTEM
-// ════════════════
+// ════════════════════════════════
 async function loadEpochState() {
   try {
     const { data, error } = await sb.from('live_state').select('current_epoch').eq('id', 1).single();
@@ -659,8 +835,7 @@ async function loadEpochState() {
     renderEpochBar();
   } catch(e) {
     console.warn('Epoch load error:', e.message);
-    liveEpoch = 1;
-    currentEpoch = 1;
+    liveEpoch = 1; currentEpoch = 1;
     renderEpochBar();
   }
 }
@@ -682,7 +857,7 @@ function renderEpochBar() {
 async function switchEpoch(epoch) {
   currentEpoch = epoch;
   renderEpochBar();
-  await loadEmailMap(); // refresh email map on epoch switch
+  await loadEmailMap();
   await loadAll();
   const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
   if (activePage === 'sessions')  loadSessions();
@@ -692,9 +867,9 @@ async function switchEpoch(epoch) {
   if (activePage === 'workshop')  loadWorkshop();
 }
 
-// ════════════════
+// ════════════════════════════════
 //  RESET
-// ════════════════
+// ════════════════════════════════
 function showResetConfirm() {
   document.getElementById('reset-next-num').textContent = liveEpoch + 1;
   document.getElementById('reset-status').textContent = '';
@@ -729,9 +904,9 @@ async function doReset() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  NAVIGATION
-// ════════════════
+// ════════════════════════════════
 const PAGE_TITLES = {
   overview: 'Overview', sessions: 'Sessions', chat: 'Chat & AI',
   feedback: 'Feedback', questions: 'Top Questions',
@@ -762,11 +937,11 @@ function showPage(id, btn, source) {
   window.scrollTo(0, 0);
 }
 
-// ════════════════
+// ════════════════════════════════
 //  LOAD ALL
-// ════════════════
+// ════════════════════════════════
 async function loadAll() {
-  await loadEmailMap(); // always refresh email map
+  await loadEmailMap();
   await Promise.allSettled([
     loadOverviewStats(),
     loadDeviceTimeBreakdown(),
@@ -777,14 +952,14 @@ async function loadAll() {
   ]);
 }
 
-// ════════════════
+// ════════════════════════════════
 //  OVERVIEW STATS
-// ════════════════
+// ════════════════════════════════
 async function loadOverviewStats() {
   try {
     const ep = currentEpoch;
     const [sessRes, msgRes, fbRes, wsRes] = await Promise.all([
-      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, registered_email').eq('reset_epoch', ep),
+      sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, participant_email').eq('reset_epoch', ep),
       sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender', 'participant').eq('reset_epoch', ep),
       sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep),
       sb.from('workshop_registrations').select('id', { count: 'exact', head: true })
@@ -807,9 +982,10 @@ async function loadOverviewStats() {
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
     sessions.forEach(s => {
-      const opt     = document.createElement('option');
-      opt.value     = s.id;
-      const label   = emailMap[s.id] || s.registered_email || (s.id.substring(0, 16) + '…');
+      const opt   = document.createElement('option');
+      opt.value   = s.id;
+      const email = emailMap[s.id] || s.participant_email;
+      const label = email ? email : (s.id.substring(0, 16) + '…');
       opt.textContent = label + (s.chat_opened ? ' ✉' : '');
       sel.appendChild(opt);
     });
@@ -820,9 +996,9 @@ async function loadOverviewStats() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  DEVICE TIME BREAKDOWN
-// ════════════════
+// ════════════════════════════════
 async function loadDeviceTimeBreakdown() {
   const container = document.getElementById('device-time-grid');
   try {
@@ -874,9 +1050,9 @@ async function loadDeviceTimeBreakdown() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  CHARTS
-// ════════════════
+// ════════════════════════════════
 async function loadHourlyChart() {
   try {
     const { data, error } = await sb.from('page_events')
@@ -996,12 +1172,15 @@ async function loadGeo() {
   }
 }
 
-// ════════════════
-//  SESSIONS TABLE — shows email instead of session ID
-// ════════════════
+// ════════════════════════════════
+//  SESSIONS TABLE
+//  — Shows email instead of session ID
+//  — Adds "Activity" button per row
+//  — data-sid attribute on each row for realtime updates
+// ════════════════════════════════
 async function loadSessions() {
   const tbody = document.getElementById('sessions-table');
-  tbody.innerHTML = '<tr><td colspan="14"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
+  tbody.innerHTML = '<tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
   try {
     const { data, error } = await sb.from('sessions').select('*')
       .eq('reset_epoch', currentEpoch).order('last_seen', { ascending: false });
@@ -1010,7 +1189,7 @@ async function loadSessions() {
     document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
 
     if (!(data || []).length) {
-      tbody.innerHTML = '<tr><td colspan="14"><div class="empty-state">No sessions yet</div></td></tr>'; return;
+      tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state">No sessions yet</div></td></tr>'; return;
     }
 
     const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' }) : '—';
@@ -1028,13 +1207,13 @@ async function loadSessions() {
       const chatBadge = s.chat_opened   ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
       const fbBadge   = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>'   : '<span style="color:var(--text-faint)">—</span>';
 
-      // ── Show email if registered, otherwise short session ID ──
-      const email = emailMap[s.id] || s.registered_email;
+      // Show email if registered, otherwise short session ID
+      const email = emailMap[s.id] || s.participant_email;
       const visitorCell = email
         ? `<span class="td-email">${escHtml(email)}</span>`
         : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id || '').substring(0, 12))}…</span>`;
 
-      return `<tr>
+      return `<tr data-sid="${escHtml(s.id)}">
         <td>${visitorCell}</td>
         <td>${fmtDate(s.first_seen)}</td>
         <td>${fmtDate(s.last_seen)}</td>
@@ -1049,16 +1228,202 @@ async function loadSessions() {
         <td style="text-align:center">${s.chat_msg_count || 0}</td>
         <td>${fbBadge}</td>
         <td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td>
+        <td><button class="activity-btn" onclick="openActivityModal('${escHtml(s.id)}')">Activity ▸</button></td>
       </tr>`;
     }).join('');
   } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="14"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="15"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
-// ════════════════
-//  CHAT FEED — shows email instead of session ID
-// ════════════════
+// ════════════════════════════════
+//  ACTIVITY MODAL
+//  Shows full per-session timeline:
+//  visits, chat messages (user + AI replies), feedback, workshop reg
+// ════════════════════════════════
+async function openActivityModal(sessionId) {
+  const modal = document.getElementById('activity-modal');
+  const body  = document.getElementById('modal-body');
+  const title = document.getElementById('modal-title');
+  const sub   = document.getElementById('modal-sub');
+  const emailTag = document.getElementById('modal-email-tag');
+
+  // Set header
+  const email = emailMap[sessionId];
+  title.textContent = email ? email : ('Session ' + sessionId.substring(0, 12) + '…');
+  if (email) {
+    emailTag.textContent = email;
+    emailTag.style.display = 'inline-block';
+  } else {
+    emailTag.style.display = 'none';
+  }
+  sub.textContent = 'Loading activity…';
+  body.innerHTML  = '<div class="loading-state"><div class="spinner"></div>Loading activity...</div>';
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    // Fetch all data for this session in parallel
+    const [sessRes, msgsRes, fbRes, wsRes, eventsRes] = await Promise.all([
+      sb.from('sessions').select('*').eq('id', sessionId).single(),
+      sb.from('messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('feedback').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('workshop_registrations').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('page_events').select('*').eq('session_id', sessionId)
+        .in('event_type', ['visit', 'page_hidden', 'page_visible'])
+        .order('created_at', { ascending: true }).limit(20)
+    ]);
+
+    const sess    = sessRes.data;
+    const msgs    = msgsRes.data    || [];
+    const feedbacks = fbRes.data    || [];
+    const wsRegs  = wsRes.data      || [];
+    const events  = eventsRes.data  || [];
+
+    if (!sess) {
+      body.innerHTML = '<div class="empty-state">Session not found.</div>';
+      sub.textContent = '';
+      return;
+    }
+
+    // Update sub with device/location info
+    const parts = [];
+    if (sess.device_type) parts.push(sess.device_type);
+    if (sess.browser)     parts.push(sess.browser);
+    if (sess.os)          parts.push(sess.os);
+    if (sess.country)     parts.push(sess.country + (sess.city ? ', ' + sess.city : ''));
+    sub.textContent = parts.join(' · ') || 'No device info';
+
+    const fmtTime = ts => new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const fmtDate = ts => new Date(ts).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
+    const fmtDur  = sec => {
+      if (!sec || sec <= 0) return '—';
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
+    };
+
+    // Count participant msgs vs AI msgs
+    const userMsgs = msgs.filter(m => m.sender === 'participant');
+    const aiMsgs   = msgs.filter(m => m.sender === 'ai');
+
+    // ── Build HTML ──
+    let html = '';
+
+    // Summary chips
+    html += `<div class="activity-stats-row">
+      <div class="activity-stat-chip">
+        <span class="activity-stat-chip-val">${sess.visit_count || 1}</span>
+        <span class="activity-stat-chip-label">Visits</span>
+      </div>
+      <div class="activity-stat-chip">
+        <span class="activity-stat-chip-val">${userMsgs.length}</span>
+        <span class="activity-stat-chip-label">Chat msgs</span>
+      </div>
+      <div class="activity-stat-chip">
+        <span class="activity-stat-chip-val">${feedbacks.length}</span>
+        <span class="activity-stat-chip-label">Feedback</span>
+      </div>
+      <div class="activity-stat-chip">
+        <span class="activity-stat-chip-val">${fmtDur(sess.total_time_sec)}</span>
+        <span class="activity-stat-chip-label">Time on site</span>
+      </div>
+    </div>`;
+
+    // Workshop registration
+    if (wsRegs.length > 0) {
+      html += `<div class="activity-section-title">Workshop Registration</div><div class="activity-timeline">`;
+      wsRegs.forEach(r => {
+        html += `<div class="activity-item">
+          <div class="activity-dot activity-dot-workshop"></div>
+          <div class="activity-content">
+            <div class="activity-type activity-type-workshop">Registered</div>
+            <div class="activity-text">✉ ${escHtml(r.email)}</div>
+          </div>
+          <div class="activity-time">${fmtDate(r.created_at)}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Chat conversation (user + AI interleaved, chronological)
+    if (msgs.length > 0) {
+      html += `<div class="activity-section-title">Chat Conversation</div><div class="activity-timeline">`;
+      msgs.forEach(m => {
+        const isUser = m.sender === 'participant';
+        const isAI   = m.sender === 'ai';
+        const isOrg  = m.sender === 'organizer';
+        let dotClass  = isUser ? 'activity-dot-chat' : (isAI ? 'activity-dot-ai' : 'activity-dot-visit');
+        let typeClass = isUser ? 'activity-type-chat' : (isAI ? 'activity-type-ai' : 'activity-type-visit');
+        let typeLabel = isUser ? '👤 Participant' : (isAI ? '🤖 AI Assistant' : '🏢 Organizer');
+        html += `<div class="activity-item">
+          <div class="activity-dot ${dotClass}"></div>
+          <div class="activity-content">
+            <div class="activity-type ${typeClass}">${typeLabel}</div>
+            <div class="activity-text">${escHtml(m.text)}</div>
+          </div>
+          <div class="activity-time">${fmtDate(m.created_at)}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Feedback
+    if (feedbacks.length > 0) {
+      html += `<div class="activity-section-title">Feedback</div><div class="activity-timeline">`;
+      feedbacks.forEach(f => {
+        html += `<div class="activity-item">
+          <div class="activity-dot activity-dot-fb"></div>
+          <div class="activity-content">
+            <div class="activity-type activity-type-fb">Feedback${f.speaker ? ' · during ' + escHtml(f.speaker) : ''}</div>
+            <div class="activity-text">${escHtml(f.text)}</div>
+          </div>
+          <div class="activity-time">${fmtDate(f.created_at)}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Visit events
+    if (events.length > 0) {
+      html += `<div class="activity-section-title">Page Events</div><div class="activity-timeline">`;
+      events.forEach(e => {
+        const labels = { visit: '🟢 Page opened', page_hidden: '🟡 Switched tab', page_visible: '🟢 Returned' };
+        html += `<div class="activity-item">
+          <div class="activity-dot activity-dot-visit"></div>
+          <div class="activity-content">
+            <div class="activity-type activity-type-visit">${labels[e.event_type] || e.event_type}</div>
+          </div>
+          <div class="activity-time">${fmtDate(e.created_at)}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+
+    if (!wsRegs.length && !msgs.length && !feedbacks.length && !events.length) {
+      html = '<div class="activity-empty">No activity recorded yet for this session.</div>';
+    }
+
+    body.innerHTML = html;
+
+  } catch(e) {
+    body.innerHTML = '<div class="error-state">Error loading activity: ' + escHtml(e.message) + '</div>';
+    sub.textContent = '';
+  }
+}
+
+function closeActivityModal(event) {
+  if (event.target === document.getElementById('activity-modal')) closeActivityModalDirect();
+}
+function closeActivityModalDirect() {
+  document.getElementById('activity-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ════════════════════════════════
+//  CHAT FEED
+//  — Shows email instead of session ID
+//  — data-sid on sender span for realtime update
+// ════════════════════════════════
 async function loadChat() {
   const feed = document.getElementById('chat-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1077,13 +1442,27 @@ async function loadChat() {
     feed.innerHTML = (data || []).map(m => {
       const t = new Date(m.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
       const senderClass = m.sender === 'organizer' ? 'organizer' : 'participant';
-
-      // ── Show email tag next to sender if we know their email ──
       const email = m.sender === 'participant' ? emailMap[m.session_id] : null;
       const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
-      const senderLabel = m.sender === 'organizer'
-        ? '🏢 Organizer'
-        : escHtml(getSessionLabel(m.session_id));
+
+      let senderLabel;
+      if (m.sender === 'organizer') {
+        senderLabel = '🏢 Organizer';
+      } else if (m.sender === 'ai') {
+        senderLabel = '🤖 AI Reply';
+      } else {
+        // Use email if known, otherwise show session ID with data-sid for realtime update
+        senderLabel = email
+          ? `<span class="feed-sender participant">${escHtml(email)}</span>`
+          : `<span class="feed-sender participant" data-sid="${escHtml(m.session_id)}">${escHtml(getSessionLabel(m.session_id))}</span>`;
+        return `<div class="feed-item">
+          <div class="feed-item-top">
+            <span>${senderLabel}${emailTag}</span>
+            <span class="feed-time">${t}</span>
+          </div>
+          <div class="feed-text">${escHtml(m.text)}</div>
+        </div>`;
+      }
 
       return `<div class="feed-item">
         <div class="feed-item-top">
@@ -1091,6 +1470,7 @@ async function loadChat() {
           <span class="feed-time">${t}</span>
         </div>
         <div class="feed-text">${escHtml(m.text)}</div>
+        ${m.sender === 'ai' && m.session_id ? `<div class="feed-meta">In reply to: ${escHtml(getSessionLabel(m.session_id))}</div>` : ''}
       </div>`;
     }).join('');
   } catch(e) {
@@ -1098,9 +1478,10 @@ async function loadChat() {
   }
 }
 
-// ════════════════
-//  FEEDBACK FEED — shows email instead of session ID
-// ════════════════
+// ════════════════════════════════
+//  FEEDBACK FEED
+//  — Shows email instead of session ID
+// ════════════════════════════════
 async function loadFeedback() {
   const feed = document.getElementById('fb-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1117,18 +1498,20 @@ async function loadFeedback() {
 
     feed.innerHTML = (data || []).map(f => {
       const t = new Date(f.created_at).toLocaleString('en-GB', { hour12: false, timeStyle: 'short', dateStyle: 'short' });
-
-      // ── Show email if known, otherwise session ID ──
       const email = emailMap[f.session_id];
       const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
 
       return `<div class="feed-item">
         <div class="feed-item-top">
-          <span><span class="feed-sender feedback">Feedback</span>${emailTag}</span>
+          <span>
+            <span class="feed-sender feedback" data-sid="${escHtml(f.session_id || '')}">
+              ${email ? escHtml(email) : 'Feedback'}
+            </span>${emailTag}
+          </span>
           <span class="feed-time">${t}</span>
         </div>
         <div class="feed-text">${escHtml(f.text)}</div>
-        ${f.speaker    ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
+        ${f.speaker ? `<div class="feed-meta">During: ${escHtml(f.speaker)}</div>` : ''}
         ${!email && f.session_id ? `<div class="feed-meta">Session: ${escHtml(getSessionLabel(f.session_id))}</div>` : ''}
       </div>`;
     }).join('');
@@ -1137,9 +1520,9 @@ async function loadFeedback() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  QUESTIONS
-// ════════════════
+// ════════════════════════════════
 async function loadQuestions() {
   const container = document.getElementById('q-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
@@ -1168,9 +1551,9 @@ async function loadQuestions() {
   }
 }
 
-// ════════════════
-//  WORKSHOP REGISTRATIONS PAGE
-// ════════════════
+// ════════════════════════════════
+//  WORKSHOP REGISTRATIONS
+// ════════════════════════════════
 async function loadWorkshop() {
   const tbody = document.getElementById('workshop-table');
   tbody.innerHTML = '<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
@@ -1183,12 +1566,8 @@ async function loadWorkshop() {
     document.getElementById('workshop-count').textContent = (count || 0) + ' registrations';
     const banner = document.getElementById('workshop-banner');
     const regNum = document.getElementById('workshop-reg-num');
-    if (count > 0) {
-      banner.style.display = 'flex';
-      regNum.textContent   = count;
-    } else {
-      banner.style.display = 'none';
-    }
+    if (count > 0) { banner.style.display = 'flex'; regNum.textContent = count; }
+    else           { banner.style.display = 'none'; }
 
     if (!(data || []).length) {
       tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No workshop registrations yet</div></td></tr>'; return;
@@ -1208,9 +1587,9 @@ async function loadWorkshop() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  PRESENCE
-// ════════════════
+// ════════════════════════════════
 function subscribePresence() {
   if (presenceChannel) sb.removeChannel(presenceChannel);
   presenceChannel = sb.channel('presence_room');
@@ -1222,9 +1601,9 @@ function subscribePresence() {
   }).subscribe();
 }
 
-// ════════════════
+// ════════════════════════════════
 //  LIVE CONTROL
-// ════════════════
+// ════════════════════════════════
 function populateSpeakerSelect() {
   const sel = document.getElementById('ctrl-speaker-sel');
   sel.innerHTML = AGENDA.map(a =>
@@ -1357,12 +1736,17 @@ async function sendReply() {
   }
 }
 
-// ════════════════
+// ════════════════════════════════
 //  UTILS
-// ════════════════
+// ════════════════════════════════
 function escHtml(str) {
   return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// Keyboard: Escape closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeActivityModalDirect();
+});
 </script>
 </body>
 </html>
