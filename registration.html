@@ -68,7 +68,6 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Banner ── */
   .card-img {
     width: 100%; height: 148px;
     background: linear-gradient(135deg, #1A365D 0%, #2a5298 50%, #1a3a5c 100%);
@@ -118,7 +117,6 @@
   .input-field:focus    { border-color:var(--border-focus); background:var(--navy-soft); }
   .input-field:disabled { opacity:0.45; cursor:not-allowed; background:var(--bg); }
 
-  /* ── Location status badge ── */
   #locStatus {
     margin-top: 10px;
     display: flex; align-items: center; gap: 6px;
@@ -143,7 +141,6 @@
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .loc-text { flex: 1; }
 
-  /* ── Location blocked panel ── */
   #locationBlock {
     display: none;
     background: #FEF2F2;
@@ -181,14 +178,41 @@
   }
   .loc-continue-btn:hover { opacity: 0.88; }
 
-  /* ── Manual notice ── */
   .manual-notice {
     display: none; margin-top: 8px; padding: 8px 10px;
     background: var(--amber-bg); border: 1px solid var(--amber-border);
     border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
   }
 
-  /* ── Submit ── */
+  /* ── Rate limit countdown box ── */
+  #rateLimitBox {
+    display: none;
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #FFF8F0;
+    border: 1px solid #FBBF60;
+    border-radius: var(--radius);
+    animation: up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .rl-title {
+    font-size: 11px; font-weight: 700; color: #92400E;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .rl-reason {
+    font-size: 11px; color: #92400E; margin-bottom: 10px; line-height: 1.6;
+  }
+  .rl-countdown {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700; color: #92400E;
+    letter-spacing: 0.04em; text-align: center;
+    padding: 8px 0 4px;
+  }
+  .rl-countdown-label {
+    font-size: 10px; font-weight: 500; color: #B45309;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: center; margin-top: 2px;
+  }
+
   .submit {
     width:100%; padding:12px; margin-top:22px; background:var(--navy);
     border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif;
@@ -265,18 +289,15 @@
                placeholder="yourname@example.com" autocomplete="email" disabled>
       </div>
 
-      <!-- compact status badge -->
       <div id="locStatus">
         <div class="loc-pulse" id="loc-indicator"></div>
         <div class="loc-text" id="locText">Detecting location…</div>
       </div>
 
-      <!-- manual override notice -->
       <div id="manual-notice" class="manual-notice">
         ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
       </div>
 
-      <!-- blocked / error panel -->
       <div id="locationBlock">
         <div class="loc-block-title">Location Access Required</div>
         <div class="loc-block-desc" id="loc-block-desc">
@@ -286,19 +307,25 @@
           <div class="loc-how-title">How to enable</div>
           <div class="loc-how-body" id="loc-how-body"></div>
         </div>
-        <!-- shown only after 3+ page loads -->
         <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
           Continue anyway
         </button>
       </div>
 
-      <!-- shown after Continue anyway -->
       <div id="manualPanel" style="display:none; background:#FFF8F6; border:1px solid #EDD5CE; border-radius:var(--radius); padding:14px; margin-top:10px;">
         <div style="font-size:11px; font-weight:700; color:var(--warn); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px;">Submitting without location</div>
         <div style="background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.7;">
           Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag. An organiser may follow up to verify your presence.
         </div>
       </div>
+    </div>
+
+    <!-- Rate limit countdown box -->
+    <div id="rateLimitBox">
+      <div class="rl-title" id="rl-title">Registration Limit Reached</div>
+      <div class="rl-reason" id="rl-reason"></div>
+      <div class="rl-countdown" id="rl-countdown">00:00:00</div>
+      <div class="rl-countdown-label">remaining until next registration</div>
     </div>
 
     <button class="submit" id="submit-btn" onclick="submitForm()" disabled>Confirm Attendance</button>
@@ -312,19 +339,19 @@
 //  CONFIG
 // ══════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
-var CONF_LAT      = 41.6893212;
-var CONF_LNG      = 44.8192619;
-var RADIUS_M      = 300;
-var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
-var RATE_KEY_PFX  = 'xi_conf_';
-var MAX_RETRIES    = 3;
-var RETRY_DELAY_MS = 2500;
+var CONF_LAT        = 41.6893212;
+var CONF_LNG        = 44.8192619;
+var RADIUS_M        = 300;
+var RATE_LIMIT_MS   = 7 * 60 * 60 * 1000; // 7 hours in ms
+var DEVICE_RL_KEY   = 'xi_device_last_submit';  // device-level key (email-independent)
+var EMAIL_RL_PFX    = 'xi_email_';               // email-level key prefix (legacy, server handles this now)
+var MAX_RETRIES     = 3;
+var RETRY_DELAY_MS  = 2500;
 
 var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════
-//  PAGE-LOAD COUNTER (survives reload, resets on success)
-//  After 3+ loads with location blocked → show "Continue anyway"
+//  PAGE-LOAD COUNTER
 // ══════════════════════════════════════════════════════════════
 var PAGE_LOAD_KEY = 'xi_page_loads';
 var pageLoads = 0;
@@ -345,6 +372,68 @@ function resetPageLoads() {
 var geoState = 'detecting';
 var userLat  = null;
 var userLng  = null;
+var countdownInterval = null;
+
+// ══════════════════════════════════════════════════════════════
+//  RATE LIMIT HELPERS
+// ══════════════════════════════════════════════════════════════
+
+// Format milliseconds → "Xh Ym Zs"
+function formatMs(ms) {
+  if (ms <= 0) return '00:00:00';
+  var totalSec = Math.floor(ms / 1000);
+  var h = Math.floor(totalSec / 3600);
+  var m = Math.floor((totalSec % 3600) / 60);
+  var s = totalSec % 60;
+  return pad(h) + ':' + pad(m) + ':' + pad(s);
+}
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+// Device rate limit — email-independent, stored as timestamp
+function getDeviceRateRemaining() {
+  try {
+    var last = localStorage.getItem(DEVICE_RL_KEY);
+    if (!last) return 0;
+    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
+    return rem > 0 ? rem : 0;
+  } catch(e) { return 0; }
+}
+function setDeviceRateLimit() {
+  try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
+}
+
+// Start live countdown in the UI
+function startCountdown(remainingMs, reason, title) {
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  var box = document.getElementById('rateLimitBox');
+  box.style.display = 'block';
+  document.getElementById('rl-title').textContent  = title  || 'Registration Limit Reached';
+  document.getElementById('rl-reason').textContent = reason || '';
+  document.getElementById('submit-btn').disabled   = true;
+
+  var deadline = Date.now() + remainingMs;
+
+  function tick() {
+    var left = deadline - Date.now();
+    if (left <= 0) {
+      clearInterval(countdownInterval);
+      document.getElementById('rl-countdown').textContent = '00:00:00';
+      box.style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('You can now register again.', 'info');
+      return;
+    }
+    document.getElementById('rl-countdown').textContent = formatMs(left);
+  }
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+function hideRateLimitBox() {
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+  document.getElementById('rateLimitBox').style.display = 'none';
+}
 
 // ══════════════════════════════════════════════════════════════
 //  GEOLOCATION
@@ -359,6 +448,16 @@ function startLocation() {
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
+  // Check device rate limit immediately on load
+  var devRem = getDeviceRateRemaining();
+  if (devRem > 0) {
+    startCountdown(devRem,
+      'This device has already submitted a registration. Please wait before trying again.',
+      'Device Limit Active'
+    );
+    // still detect location in background but keep form disabled
+  }
+
   if (!navigator.geolocation) {
     showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
     return;
@@ -366,11 +465,8 @@ function startLocation() {
 
   if (navigator.permissions) {
     navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-      if (result.state === 'denied') {
-        onLocDenied();
-      } else {
-        tryHighAccuracy();
-      }
+      if (result.state === 'denied') { onLocDenied(); }
+      else { tryHighAccuracy(); }
     }).catch(tryHighAccuracy);
   } else {
     tryHighAccuracy();
@@ -423,7 +519,11 @@ function onGeoSuccess(pos) {
     geoState = 'offsite';
     setStatusOffsite('Off-site  ·  ' + distM.toLocaleString() + ' m from venue  ·  ±' + acc + ' m');
   }
-  setFormEnabled(true);
+
+  // Only enable form if device rate limit is not active
+  if (getDeviceRateRemaining() <= 0) {
+    setFormEnabled(true);
+  }
 }
 
 function onLocDenied() {
@@ -437,7 +537,7 @@ function onLocDenied() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  MANUAL OVERRIDE (after 3+ loads)
+//  MANUAL OVERRIDE
 // ══════════════════════════════════════════════════════════════
 function activateManual() {
   geoState = 'manual';
@@ -453,7 +553,7 @@ function activateManual() {
   document.getElementById('locText').textContent = 'Continuing without location';
   document.getElementById('locStatus').className = 'manual';
 
-  setFormEnabled(true);
+  if (getDeviceRateRemaining() <= 0) setFormEnabled(true);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -498,9 +598,6 @@ function hideBlock() {
   document.getElementById('locationBlock').style.display = 'none';
 }
 
-// ══════════════════════════════════════════════════════════════
-//  MANUAL NOTICE
-// ══════════════════════════════════════════════════════════════
 function showManualNotice() { document.getElementById('manual-notice').style.display = 'block'; }
 function hideManualNotice() { document.getElementById('manual-notice').style.display = 'none'; }
 
@@ -508,8 +605,13 @@ function hideManualNotice() { document.getElementById('manual-notice').style.dis
 //  FORM ENABLE / DISABLE
 // ══════════════════════════════════════════════════════════════
 function setFormEnabled(enabled) {
-  document.getElementById('email-inp').disabled  = !enabled;
-  document.getElementById('submit-btn').disabled = !enabled;
+  document.getElementById('email-inp').disabled = !enabled;
+  // Submit button only enabled if also no rate limit
+  if (enabled && getDeviceRateRemaining() > 0) {
+    document.getElementById('submit-btn').disabled = true;
+  } else {
+    document.getElementById('submit-btn').disabled = !enabled;
+  }
   document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
 }
 
@@ -520,23 +622,6 @@ function pick(el) {
   if (el.disabled) return;
   el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
   el.classList.add('active');
-}
-
-// ══════════════════════════════════════════════════════════════
-//  RATE LIMITING — per slot
-// ══════════════════════════════════════════════════════════════
-function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
-function checkRateLimit(day, action) {
-  try {
-    var last = localStorage.getItem(rlKey(day, action));
-    if (!last) return null;
-    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
-    if (rem > 0) return Math.floor(rem / 3600000) + 'h ' + Math.floor((rem % 3600000) / 60000) + 'm';
-    return null;
-  } catch(e) { return null; }
-}
-function setRateLimit(day, action) {
-  try { localStorage.setItem(rlKey(day, action), Date.now().toString()); } catch(e) {}
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -569,29 +654,52 @@ function showMsg(text, type) {
   el.className   = 'msg ' + type;
 }
 
-var RESULT_MAP = {
-  'SUCCESS':            { text: '✅ Attendance recorded successfully!',                 type: 'success' },
-  'SUCCESS_OFFSITE':    { text: '✅ Attendance recorded (off-site location noted).',    type: 'success' },
-  'SUCCESS_LOC_FAILED': { text: '✅ Attendance recorded. Location flagged for review.', type: 'success' },
-  'ALREADY_DONE':       { text: '⚠️ Already recorded for this slot.',                  type: 'info'    },
-  'NO_CHECKIN':         { text: '⚠️ You must check in before checking out.',            type: 'info'    },
-  'NOT_FOUND':          { text: '❌ Email not found. Use your registered email.',        type: 'error'   },
-  'INVALID_EMAIL':      { text: '❌ Invalid email address.',                             type: 'error'   }
-};
-
 function handleResult(result, day, action) {
-  document.getElementById('submit-btn').disabled  = false;
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
+
+  // Server-side email rate limit response: "RATE_LIMITED:milliseconds"
+  if (result.indexOf('RATE_LIMITED:') === 0) {
+    var remMs = parseInt(result.split(':')[1], 10);
+    document.getElementById('submit-btn').disabled = true;
+    startCountdown(
+      remMs,
+      'This email has already been registered. Please wait before trying again.',
+      'Email Limit Active'
+    );
+    return;
+  }
+
+  var RESULT_MAP = {
+    'SUCCESS':            { text: '✅ Attendance recorded successfully!',                 type: 'success' },
+    'SUCCESS_OFFSITE':    { text: '✅ Attendance recorded (off-site location noted).',    type: 'success' },
+    'SUCCESS_LOC_FAILED': { text: '✅ Attendance recorded. Location flagged for review.', type: 'success' },
+    'ALREADY_DONE':       { text: '⚠️ Already recorded for this slot.',                  type: 'info'    },
+    'NO_CHECKIN':         { text: '⚠️ You must check in before checking out.',            type: 'info'    },
+    'NOT_FOUND':          { text: '❌ Email not found. Use your registered email.',        type: 'error'   },
+    'INVALID_EMAIL':      { text: '❌ Invalid email address.',                             type: 'error'   }
+  };
 
   var entry = RESULT_MAP[result];
   if (entry) {
     showMsg(entry.text, entry.type);
-    if (entry.type === 'success') setRateLimit(day, action);
+    if (entry.type === 'success') {
+      // Set device-level rate limit on successful submission
+      setDeviceRateLimit();
+      startCountdown(
+        RATE_LIMIT_MS,
+        'Registration successful. This device cannot register again for 7 hours.',
+        'Device Limit Active'
+      );
+    } else {
+      document.getElementById('submit-btn').disabled = false;
+    }
   } else if (result.indexOf('ERROR:') === 0) {
     showMsg('❌ Server error: ' + result.replace('ERROR:', '').trim(), 'error');
+    document.getElementById('submit-btn').disabled = false;
   } else {
     showMsg('❌ Unexpected response. Please try again.', 'error');
+    document.getElementById('submit-btn').disabled = false;
   }
 }
 
@@ -605,6 +713,17 @@ function submitForm() {
     return;
   }
 
+  // Double-check device rate limit at submit time
+  var devRem = getDeviceRateRemaining();
+  if (devRem > 0) {
+    startCountdown(
+      devRem,
+      'This device has already submitted a registration. Please wait before trying again.',
+      'Device Limit Active'
+    );
+    return;
+  }
+
   var email = document.getElementById('email-inp').value.trim();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showMsg('Please enter a valid email address.', 'error');
@@ -614,15 +733,10 @@ function submitForm() {
   var day    = document.querySelector('#seg-day .seg-btn.active').textContent.trim() === 'Day 1' ? 1 : 2;
   var action = document.querySelector('#seg-action .seg-btn.active').textContent.trim() === 'Check-in' ? 'in' : 'out';
 
-  var wait = checkRateLimit(day, action);
-  if (wait) {
-    showMsg('⏳ Already submitted for this slot. Retry in ' + wait + '.', 'warning');
-    return;
-  }
-
   document.getElementById('submit-btn').disabled  = true;
   document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
   showMsg('Submitting attendance…', 'info');
+  hideRateLimitBox();
   document.getElementById('retry-info').style.display = 'none';
 
   var locStatus = geoState === 'found'   ? 'onsite'
