@@ -108,27 +108,22 @@
     margin-top:12px; border-radius:var(--radius);
     padding:12px 14px; font-size:12px; line-height:1.6;
   }
-  /* detecting */
   .loc-panel.detecting {
     display:flex; align-items:center; gap:8px;
     background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy);
   }
-  /* found */
   .loc-panel.found {
     display:flex; align-items:center; gap:8px;
     background:#F0FDF4; border:1px solid #86EFAC; color:var(--success);
   }
-  /* offsite */
   .loc-panel.offsite {
     display:flex; align-items:center; gap:8px;
     background:#FEF9EC; border:1px solid #F6D860; color:#7A5A00;
   }
-  /* manual — location failed, form unlocked with warning */
   .loc-panel.manual {
     display:block;
     background:#FFF8F6; border:1px solid #EDD5CE; color:var(--warn);
   }
-  /* error — blocked, needs resolution */
   .loc-panel.error {
     display:block;
     background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn);
@@ -248,7 +243,6 @@
         <strong>LOCATION_FAILED</strong> in the system for manual review.
       </div>
 
-      <!-- Location status panel — single element, content swapped by JS -->
       <div class="loc-panel detecting" id="loc-panel">
         <div class="loc-pulse"></div>
         <div>
@@ -274,61 +268,54 @@ var CONF_LAT       = 41.6893212;
 var CONF_LNG       = 44.8192619;
 var RADIUS_M       = 150;
 
-var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;   // 7h per slot
+var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;
 var RATE_KEY_PFX   = 'xi_conf_';
 
 var MAX_RETRIES    = 3;
 var RETRY_DELAY_MS = 2500;
 
-// How long to wait before offering "manual override" fallback
-// (total: 10s high-accuracy + 0.6s pause + 8s low-accuracy = ~19s max)
-// After both strategies fail, user can tap "Continue anyway"
 var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════════
 //  STATE
 //  geoState values:
-//    'detecting'   — in progress
-//    'found'       — on-site, coordinates known
-//    'offsite'     — coordinates known, but outside radius
-//    'denied'      — user said No in browser popup (code 1)
-//    'failed'      — both GPS and WiFi strategies exhausted (code 2/3)
-//    'manual'      — user chose to proceed despite location failure
+//    'detecting'  — in progress
+//    'found'      — on-site, coordinates known
+//    'offsite'    — coordinates known, but outside radius
+//    'denied'     — user said No in browser popup (code 1)
+//    'failed'     — both GPS and WiFi strategies exhausted
+//    'manual'     — user chose to proceed despite location failure
+//
+//  failCount — total number of failed location attempts (any reason):
+//    0 → initial state
+//    1 → show Retry only
+//    2 → show Retry only
+//    3+ → show Retry + Continue anyway
 // ══════════════════════════════════════════════════════════════════
 var geoState  = 'detecting';
 var userLat   = null;
 var userLng   = null;
-var failCount = 0;   // counts failed location attempts (denied or both strategies exhausted)
-                     // 0-1: show Retry only | 2: show Retry only | 3+: show Retry + Continue anyway
+var failCount = 0;
 
 // ══════════════════════════════════════════════════════════════════
 //  GEOLOCATION
 //
 //  Strategy sequence:
-//  1. enableHighAccuracy:true  (GPS)         — 10s timeout
-//     Fails indoors, GPS off, no satellite
-//  2. enableHighAccuracy:false (WiFi/cell)   — 8s timeout
-//     Lower accuracy but works indoors
-//  3. Both failed → show error + "Continue anyway" button
-//     Submits with locStatus='LOCATION_FAILED', lat/lng empty
-//     → Sheet shows flag for manual review
+//  1. enableHighAccuracy:true  (GPS)        — 10s timeout
+//  2. enableHighAccuracy:false (WiFi/cell)  — 8s timeout
+//  Both fail → renderError(), failCount++
 //
-//  Special cases:
-//  • code 1 (denied): no retry of position — show instructions
-//    - iOS denied: can't re-prompt → show Settings path + Reload
-//    - Android denied: can re-allow in browser bar → show Retry
-//  • maximumAge:0 — NEVER use cached coords (prevents stale/wrong city)
+//  Denied (code 1) → renderError(), failCount++
+//
+//  After 3+ failures → "Continue anyway" button appears
+//
+//  iOS retry = window.location.reload() (only way to re-prompt)
+//  Android/Desktop retry = startLocation() (re-asks permission)
+//
+//  maximumAge:0 — NEVER use cached coords
 // ══════════════════════════════════════════════════════════════════
 
 function startLocation() {
-  // iOS: after denial, calling getCurrentPosition fires code=1 instantly,
-  // no prompt ever shown again. Skip the 10s wait, count as another fail.
-  if (IS_IOS && geoState === 'denied') {
-    failCount++;
-    renderDenied();
-    return;
-  }
-
   geoState = 'detecting';
   userLat  = null;
   userLng  = null;
@@ -338,9 +325,13 @@ function startLocation() {
   renderDetecting('Detecting location…', 'Please allow location access when prompted');
 
   if (!navigator.geolocation) {
-    geoState = 'failed';
     failCount++;
-    renderFailed('not-supported');
+    renderError(
+      'Location not supported',
+      'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).',
+      null,
+      false  // no retry possible — browser doesn't support it
+    );
     return;
   }
 
@@ -351,8 +342,13 @@ function tryHighAccuracy() {
   navigator.geolocation.getCurrentPosition(
     onGeoSuccess,
     function(err) {
-      if (err.code === 1) { geoState = 'denied'; failCount++; renderDenied(); return; }
-      // GPS failed (code 2 or 3) — fallback to WiFi/cell
+      if (err.code === 1) {
+        // User denied
+        failCount++;
+        renderDeniedError();
+        return;
+      }
+      // GPS failed (code 2 or 3) — try WiFi/cell fallback
       renderDetecting('Retrying with network location…', 'GPS unavailable — trying alternate method');
       setTimeout(tryLowAccuracy, 600);
     },
@@ -364,11 +360,16 @@ function tryLowAccuracy() {
   navigator.geolocation.getCurrentPosition(
     onGeoSuccess,
     function(err) {
-      if (err.code === 1) { geoState = 'denied'; failCount++; renderDenied(); return; }
-      // Both strategies exhausted — count as one full fail attempt
-      geoState = 'failed';
+      if (err.code === 1) {
+        // User denied during fallback attempt
+        failCount++;
+        renderDeniedError();
+        return;
+      }
+      // Both strategies exhausted — count as one full fail
       failCount++;
-      renderFailed(err.code === 3 ? 'timeout' : 'unavailable');
+      var reason = err.code === 3 ? 'timeout' : 'unavailable';
+      renderPositionError(reason);
     },
     { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
   );
@@ -396,7 +397,110 @@ function onGeoSuccess(pos) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  PANEL RENDERERS
+//  ERROR RENDERERS
+//
+//  renderDeniedError() — user explicitly denied permission
+//  renderPositionError() — device could not get coordinates
+//
+//  Both funnel into renderError() which handles:
+//    - instructions (how-to box)
+//    - retry button (iOS: reload, Android/Desktop: startLocation)
+//    - "Continue anyway" — only shown when failCount >= 3
+// ══════════════════════════════════════════════════════════════════
+
+function renderDeniedError() {
+  geoState = 'denied';
+  setFormEnabled(false);
+  showManualNotice(false);
+
+  var title = 'Location access denied';
+  var body, tips;
+
+  if (IS_IOS) {
+    body = 'Location is needed to verify your attendance. Enable it in iPhone Settings, then tap Retry location.';
+    tips = 'Settings → Privacy & Security → Location Services → Safari → <b>While Using</b>';
+  } else {
+    body = 'Tap the lock icon in your address bar → Site settings → Location → Allow, then tap Retry location.';
+    tips = 'Address bar → lock/info icon → Site settings → Location → <b>Allow</b>';
+  }
+
+  renderError(title, body, tips, true);
+}
+
+function renderPositionError(reason) {
+  geoState = 'failed';
+  setFormEnabled(false);
+  showManualNotice(false);
+
+  var title = 'Location unavailable';
+  var body, tips;
+
+  if (reason === 'timeout') {
+    body = 'Location timed out on both GPS and network. Check that Location Services are on, then tap Retry location.';
+    tips = IS_IOS
+      ? '• Settings → Privacy & Security → Location Services → ON<br>• Settings → Location Services → Safari → While Using'
+      : '• Enable Location in Android Settings<br>• Briefly turn on mobile data if you\'re only on WiFi';
+  } else {
+    body = 'Your device could not determine your location. Check Location Services settings, then tap Retry location.';
+    tips = IS_IOS
+      ? '• Settings → Privacy & Security → Location Services → ON<br>• Make sure Safari has location permission'
+      : '• Enable Location in Android Settings<br>• Try mobile data if WiFi-only';
+  }
+
+  renderError(title, body, tips, true);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  UNIFIED ERROR PANEL RENDERER
+//
+//  showRetry — false only when browser doesn't support geolocation at all
+//
+//  Retry button behaviour (always labelled "↻ Retry location"):
+//    iOS     → window.location.reload()
+//              (iOS cannot re-prompt without a full page reload)
+//    Other   → startLocation()
+//              (Android/Desktop can re-ask permission in place)
+//
+//  "Continue anyway" button:
+//    Shown only when failCount >= 3 (after 3rd consecutive failure)
+//    Calls activateManual() — submits with LOCATION_FAILED flag
+// ══════════════════════════════════════════════════════════════════
+
+function renderError(title, body, tips, showRetry) {
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel error';
+
+  var tipsHtml = tips
+    ? '<div class="loc-how"><div class="loc-how-title">How to enable</div>' + tips + '</div>'
+    : '';
+
+  var retryHtml = '';
+  if (showRetry) {
+    // Label is always "Retry location" regardless of platform
+    // but iOS fires reload(), others fire startLocation()
+    var retryAction = IS_IOS ? 'window.location.reload()' : 'startLocation()';
+    retryHtml = '<button class="loc-btn loc-btn-retry" onclick="' + retryAction + '">↻ Retry location</button>';
+  }
+
+  // "Continue anyway" only appears from the 3rd failure onward
+  var continueHtml = (failCount >= 3)
+    ? '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>'
+    : '';
+
+  // Only render btn-row if there's at least one button
+  var btnRowHtml = (retryHtml || continueHtml)
+    ? '<div class="btn-row">' + retryHtml + continueHtml + '</div>'
+    : '';
+
+  p.innerHTML =
+    '<div class="loc-err-title">' + title + '</div>' +
+    '<div class="loc-err-body">'  + body  + '</div>' +
+    tipsHtml +
+    btnRowHtml;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PANEL RENDERERS — detecting / found / offsite
 // ══════════════════════════════════════════════════════════════════
 
 function renderDetecting(main, sub) {
@@ -428,90 +532,11 @@ function renderOffsite(main, sub) {
     (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
 }
 
-// Denied — user explicitly said No
-function renderDenied() {
-  setFormEnabled(false);
-  showManualNotice(false);
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel error';
-
-  if (IS_IOS) {
-    // iOS: re-prompt impossible → Settings path + Reload + "Continue anyway"
-    p.innerHTML =
-      '<div class="loc-err-title">Location access denied</div>' +
-      '<div class="loc-err-body">Location is needed to verify your attendance. Enable it in iPhone Settings, then reload this page.</div>' +
-      '<div class="loc-how">' +
-        '<div class="loc-how-title">How to enable on iPhone</div>' +
-        'Settings → Privacy & Security → Location Services → Safari → <b>While Using</b>' +
-      '</div>' +
-      '<div class="btn-row">' +
-        '<button class="loc-btn loc-btn-retry"  onclick="window.location.reload()">↻ Reload page</button>' +
-        '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
-      '</div>';
-  } else {
-    // Android/Desktop: user can re-allow in browser bar → show Retry + "Continue anyway"
-    p.innerHTML =
-      '<div class="loc-err-title">Location access denied</div>' +
-      '<div class="loc-err-body">Tap the lock icon in your address bar → Site settings → Location → Allow, then tap Retry.</div>' +
-      '<div class="loc-how">' +
-        '<div class="loc-how-title">How to enable on Android</div>' +
-        'Address bar → lock/info icon → Site settings → Location → <b>Allow</b>' +
-      '</div>' +
-      '<div class="btn-row">' +
-        '<button class="loc-btn loc-btn-retry"  onclick="startLocation()">↻ Retry location</button>' +
-        '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
-      '</div>';
-  }
-}
-
-// Failed — both GPS and WiFi exhausted
-function renderFailed(reason) {
-  setFormEnabled(false);
-  showManualNotice(false);
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel error';
-
-  var body, tips;
-
-  if (reason === 'timeout') {
-    body = 'Location timed out on both GPS and network. Check that Location Services are on, then retry.';
-    tips = IS_IOS
-      ? '• Settings → Privacy & Security → Location Services → ON<br>• Settings → Location Services → Safari → While Using'
-      : '• Enable Location in Android Settings<br>• Briefly turn on mobile data if you\'re only on WiFi';
-  } else if (reason === 'not-supported') {
-    body = 'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).';
-    tips = null;
-  } else {
-    body = 'Your device could not determine your location. Check Location Services settings, then retry.';
-    tips = IS_IOS
-      ? '• Settings → Privacy & Security → Location Services → ON<br>• Make sure Safari has location permission'
-      : '• Enable Location in Android Settings<br>• Try mobile data if WiFi-only';
-  }
-
-  var tipsHtml = tips
-    ? '<div class="loc-how"><div class="loc-how-title">Tips</div>' + tips + '</div>'
-    : '';
-
-  var retryBtn = reason !== 'not-supported'
-    ? '<button class="loc-btn loc-btn-retry" onclick="startLocation()">↻ Retry location</button>'
-    : '';
-
-  p.innerHTML =
-    '<div class="loc-err-title">Location unavailable</div>' +
-    '<div class="loc-err-body">' + body + '</div>' +
-    tipsHtml +
-    '<div class="btn-row">' +
-      retryBtn +
-      '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
-    '</div>';
-}
-
 // ══════════════════════════════════════════════════════════════════
 //  MANUAL OVERRIDE
-//  When location truly cannot be obtained after all attempts,
-//  the user can still submit. The form sends locStatus=LOCATION_FAILED
-//  (and empty lat/lng). Apps Script records the flag in a dedicated
-//  column so you can manually verify attendance for those rows.
+//  Activated when user taps "Continue anyway" after 3+ failures.
+//  Submits with locStatus=LOCATION_FAILED and empty lat/lng.
+//  Apps Script records the flag for manual organiser review.
 // ══════════════════════════════════════════════════════════════════
 
 function activateManual() {
@@ -558,10 +583,7 @@ function pick(el) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  RATE LIMITING — per slot (day + action), stored per device
-//  Prevents the same device submitting check-in twice within 7 hours
-//  Each of the 4 slots is tracked independently:
-//    xi_conf_d1_in / xi_conf_d1_out / xi_conf_d2_in / xi_conf_d2_out
+//  RATE LIMITING
 // ══════════════════════════════════════════════════════════════════
 
 function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
@@ -583,8 +605,7 @@ function setRateLimit(day, action) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  FETCH WITH RETRY — absorbs Apps Script concurrent execution limits
-//  3 attempts, 2.5s apart — covers transient 429 / timeout spikes
+//  FETCH WITH RETRY
 // ══════════════════════════════════════════════════════════════════
 
 function fetchWithRetry(url, left, onSuccess, onFail) {
@@ -646,7 +667,6 @@ function handleResult(result, day, action) {
 // ══════════════════════════════════════════════════════════════════
 
 function submitForm() {
-  // Sanity-check state — should not be possible to reach here while detecting
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
     showMsg('Please wait for location detection to complete.', 'error');
@@ -673,11 +693,7 @@ function submitForm() {
   showMsg('Submitting attendance…', 'info');
   document.getElementById('retry-info').style.display = 'none';
 
-  // locStatus tells Apps Script exactly what happened with location:
-  //   onsite        → verified within RADIUS_M
-  //   offsite       → coordinates known but outside radius
-  //   LOCATION_FAILED → device could not obtain any coordinates
-  var locStatus = geoState === 'found' ? 'onsite'
+  var locStatus = geoState === 'found'   ? 'onsite'
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
