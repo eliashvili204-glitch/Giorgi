@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/conference.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +13,7 @@
 
   :root {
     --bg:           #EAEFF2;
+    --bg2:          #D5E1EA;
     --surface:      #FFFFFF;
     --border:       #B2C4D1;
     --border-focus: #1A365D;
@@ -30,29 +34,40 @@
   }
 
   html, body {
-    min-height: 100vh; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: 'DM Sans', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   .card {
-    width: 100%; max-width: 400px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
     box-shadow: 0 4px 16px rgba(26,54,93,0.08), 0 1px 3px rgba(0,0,0,0.04);
-    animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    animation: up 0.4s cubic-bezier(0.16,1,0.3,1) both;
   }
 
   @media (max-width: 440px) {
     body { align-items: flex-start; background: var(--surface); }
-    .card { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; box-shadow: none; min-height: 100vh; }
-    .card-body { padding: 24px 20px 32px !important; }
-    .seg-btn { padding: 11px 0 !important; font-size: 14px !important; }
+    .card {
+      max-width: 100%; border-radius: 0;
+      border-left: none; border-right: none; border-top: none;
+      box-shadow: none; min-height: 100vh;
+    }
+    .card-body   { padding: 24px 20px 32px !important; }
+    .seg-btn     { padding: 11px 0 !important; font-size: 14px !important; }
     .input-field { font-size: 16px !important; padding: 12px !important; }
-    .submit { padding: 14px !important; font-size: 14px !important; }
+    .submit      { padding: 14px !important; font-size: 14px !important; }
   }
 
-  @keyframes fadeUp {
+  @keyframes up {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
@@ -64,18 +79,18 @@
     display: flex; align-items: center; justify-content: center;
     border-bottom: 1px solid var(--border); overflow: hidden; position: relative;
   }
-  .card-img::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); }
-  .card-img::after  { content:''; position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04); }
-  .banner-content   { position:relative; z-index:1; text-align:center; padding:0 20px; }
-  .banner-roman     { font-family:'Playfair Display',serif; font-size:13px; letter-spacing:0.35em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:6px; }
-  .banner-title     { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#FFF; letter-spacing:0.04em; line-height:1.2; margin-bottom:8px; }
-  .banner-divider   { width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 8px; }
-  .banner-sub       { font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:0.08em; text-transform:uppercase; }
+  .card-img::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); pointer-events:none; }
+  .card-img::after  { content:''; position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
+  .banner-content { position:relative; z-index:1; text-align:center; padding:0 20px; }
+  .banner-roman   { font-family:'Playfair Display',serif; font-size:13px; font-weight:400; letter-spacing:0.35em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:6px; }
+  .banner-title   { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#FFF; letter-spacing:0.04em; line-height:1.2; margin-bottom:8px; }
+  .banner-divider { width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 8px; }
+  .banner-sub     { font-size:11px; font-weight:400; color:rgba(255,255,255,0.5); letter-spacing:0.08em; text-transform:uppercase; }
 
-  .card-body   { padding: 24px 28px 28px; }
+  .card-body   { padding: 24px 28px 28px; background: var(--surface); }
   .card-header { margin-bottom: 24px; }
-  .card-title  { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#1A365D; margin-bottom:6px; line-height:1.2; }
-  .card-desc   { font-size:12px; color:var(--text-soft); line-height:1.6; }
+  .card-title  { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; letter-spacing:0.02em; color:#1A365D; margin-bottom:6px; line-height:1.2; }
+  .card-desc   { font-size:12px; font-weight:400; color:var(--text-soft); letter-spacing:0.01em; line-height:1.6; margin-top:2px; }
 
   .field       { margin-bottom: 18px; }
   .field-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
@@ -84,7 +99,7 @@
   .seg-btn {
     padding:9px 0; background:var(--navy-soft); border:1px solid var(--navy-border);
     border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:13px;
-    font-weight:500; color:var(--text-mid); cursor:pointer;
+    font-weight:500; color:var(--text-mid); cursor:pointer; letter-spacing:0.01em;
     transition:border-color 0.15s, background 0.15s, color 0.15s;
   }
   .seg-btn:hover:not(.active):not(:disabled) { border-color:var(--border-focus); color:var(--navy); background:#dce8f0; }
@@ -93,15 +108,17 @@
 
   .sep { height:1px; background:var(--border); margin:4px 0 18px; }
 
+  .input-wrap { position: relative; }
   .input-field {
     width:100%; padding:10px 12px; background:var(--bg);
     border:1px solid var(--border); border-radius:var(--radius);
-    font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); outline:none;
+    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:400;
+    color:var(--text); outline:none; letter-spacing:0.01em;
     transition:border-color 0.2s, background 0.2s;
   }
   .input-field::placeholder { color:var(--text-soft); }
   .input-field:focus    { border-color:var(--border-focus); background:var(--navy-soft); }
-  .input-field:disabled { opacity:0.45; cursor:not-allowed; }
+  .input-field:disabled { opacity:0.45; cursor:not-allowed; background:var(--bg); }
 
   /* ── Location panel ── */
   .loc-panel {
@@ -136,13 +153,10 @@
   .loc-main { font-weight:500; }
   .loc-sub  { font-size:11px; opacity:0.8; margin-top:2px; }
 
-  .loc-err-title { font-weight:700; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px; }
-  .loc-err-body  { font-size:12px; line-height:1.7; margin-bottom:10px; }
-  .loc-how {
-    background:rgba(192,80,58,0.07); border-radius:6px;
-    padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.9; margin-bottom:10px;
-  }
-  .loc-how-title { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
+  .loc-err-title  { font-weight:700; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px; }
+  .loc-err-body   { font-size:12px; line-height:1.7; margin-bottom:10px; }
+  .loc-how        { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.9; margin-bottom:10px; }
+  .loc-how-title  { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
   .loc-how-manual { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.7; margin-bottom:10px; }
 
   .btn-row { display:flex; gap:8px; }
@@ -152,7 +166,7 @@
     transition:background 0.15s;
   }
   .loc-btn-retry  { border:1px solid var(--warn); background:transparent; color:var(--warn); }
-  .loc-btn-retry:hover { background:rgba(192,80,58,0.07); }
+  .loc-btn-retry:hover  { background:rgba(192,80,58,0.07); }
   .loc-btn-manual { border:1px solid var(--navy); background:var(--navy); color:#fff; }
   .loc-btn-manual:hover { opacity:0.88; }
 
@@ -179,7 +193,7 @@
   .msg {
     margin-top:14px; padding:12px 14px; border-radius:var(--radius);
     font-size:12px; line-height:1.6; font-weight:500; display:none;
-    animation:fadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
+    animation:up 0.3s cubic-bezier(0.16,1,0.3,1) both;
   }
   .msg.success { display:block; background:#F0FDF4; border:1px solid #86EFAC; color:var(--success); }
   .msg.error   { display:block; background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn); }
@@ -235,8 +249,10 @@
 
     <div class="field" style="margin-bottom:0">
       <div class="field-label">Email</div>
-      <input class="input-field" id="email-inp" type="email"
-             placeholder="yourname@example.com" autocomplete="email" disabled>
+      <div class="input-wrap">
+        <input class="input-field" id="email-inp" type="email"
+               placeholder="yourname@example.com" autocomplete="email" disabled>
+      </div>
 
       <div id="manual-notice" class="manual-notice">
         ⚠️ Location could not be detected. Your attendance will be marked
@@ -264,12 +280,12 @@
 // ══════════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
 
-var CONF_LAT       = 41.6893212;
-var CONF_LNG       = 44.8192619;
-var RADIUS_M       = 150;
+var CONF_LAT      = 41.6893212;
+var CONF_LNG      = 44.8192619;
+var RADIUS_M      = 150;
 
-var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;
-var RATE_KEY_PFX   = 'xi_conf_';
+var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
+var RATE_KEY_PFX  = 'xi_conf_';
 
 var MAX_RETRIES    = 3;
 var RETRY_DELAY_MS = 2500;
@@ -278,24 +294,22 @@ var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════════
 //  STATE
-//  geoState values:
-//    'detecting'  — in progress
-//    'found'      — on-site, coordinates known
-//    'offsite'    — coordinates known, but outside radius
-//    'denied'     — user said No in browser popup (code 1)
-//    'failed'     — both GPS and WiFi strategies exhausted
-//    'manual'     — user chose to proceed despite location failure
+//  geoState:
+//    'detecting' — in progress
+//    'found'     — on-site
+//    'offsite'   — coordinates known, outside radius
+//    'denied'    — user denied permission (code 1)
+//    'failed'    — both GPS and WiFi exhausted
+//    'manual'    — user chose Continue anyway
 //
-//  failCount — persisted in sessionStorage so iOS reload doesn't reset it
-//    1 → Retry only
-//    2 → Retry only
-//    3+ → Retry + Continue anyway
+//  failCount — persisted in sessionStorage so iOS reload preserves it
+//    1-2 → Retry only
+//    3+  → Retry + Continue anyway
 // ══════════════════════════════════════════════════════════════════
-var geoState  = 'detecting';
-var userLat   = null;
-var userLng   = null;
+var geoState = 'detecting';
+var userLat  = null;
+var userLng  = null;
 
-// Read failCount from sessionStorage (survives iOS reload)
 var failCount = 0;
 try {
   var _stored = sessionStorage.getItem('xi_geo_fails');
@@ -305,7 +319,6 @@ try {
 function saveFailCount() {
   try { sessionStorage.setItem('xi_geo_fails', failCount); } catch(e) {}
 }
-
 function resetFailCount() {
   failCount = 0;
   try { sessionStorage.removeItem('xi_geo_fails'); } catch(e) {}
@@ -314,17 +327,22 @@ function resetFailCount() {
 // ══════════════════════════════════════════════════════════════════
 //  GEOLOCATION
 //
+//  Uses navigator.permissions.query first (where supported) to
+//  detect already-denied state before calling getCurrentPosition.
+//  This avoids the silent instant-denial on Android Chrome when
+//  permission was previously blocked.
+//
 //  Strategy sequence:
-//  1. enableHighAccuracy:true  (GPS)        — 10s timeout
-//  2. enableHighAccuracy:false (WiFi/cell)  — 8s timeout
+//  1. enableHighAccuracy:true  (GPS)       — 10s timeout
+//  2. enableHighAccuracy:false (WiFi/cell) — 8s timeout
 //  Both fail → failCount++, renderError()
 //
 //  Denied (code 1) → failCount++, renderError()
 //
 //  Retry button — always labelled "↻ Retry location":
-//    iOS     → saves failCount to sessionStorage, then reload()
-//              Safari may re-prompt after reload
-//    Other   → startLocation() directly (re-prompts in place)
+//    iOS     → saveFailCount() then reload()
+//              Safari re-prompts after reload
+//    Other   → startLocation() directly
 //
 //  After 3+ failures → "Continue anyway" also appears
 //
@@ -346,13 +364,34 @@ function startLocation() {
     renderError(
       'Location not supported',
       'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).',
-      null,
-      false
+      null, false
     );
     return;
   }
 
-  tryHighAccuracy();
+  // Use Permissions API where available to check current state.
+  // - 'granted'  → go straight to position (no popup needed)
+  // - 'denied'   → count as failure immediately, show error
+  // - 'prompt'   → proceed normally, popup will appear
+  // Falls back to direct call if Permissions API not supported.
+  if (navigator.permissions) {
+    navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
+      if (result.state === 'denied') {
+        // Already blocked — count as a failure and show error
+        failCount++;
+        saveFailCount();
+        renderDeniedError();
+      } else {
+        // 'granted' or 'prompt' — attempt position normally
+        tryHighAccuracy();
+      }
+    }).catch(function() {
+      // Permissions API threw — fall back to direct attempt
+      tryHighAccuracy();
+    });
+  } else {
+    tryHighAccuracy();
+  }
 }
 
 function tryHighAccuracy() {
@@ -382,18 +421,15 @@ function tryLowAccuracy() {
         renderDeniedError();
         return;
       }
-      // Both strategies exhausted — counts as one full attempt
       failCount++;
       saveFailCount();
-      var reason = err.code === 3 ? 'timeout' : 'unavailable';
-      renderPositionError(reason);
+      renderPositionError(err.code === 3 ? 'timeout' : 'unavailable');
     },
     { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
   );
 }
 
 function onGeoSuccess(pos) {
-  // Success — clear the fail counter so it resets for future sessions
   resetFailCount();
 
   userLat = pos.coords.latitude;
@@ -419,22 +455,17 @@ function onGeoSuccess(pos) {
 // ══════════════════════════════════════════════════════════════════
 //  RETRY HANDLER
 //
-//  Called by the "↻ Retry location" button on every platform.
-//
-//  iOS: saves failCount first (sessionStorage survives reload),
-//       then reloads the page — Safari may show the permission
-//       prompt again after a reload.
-//
-//  Android / Desktop / everything else:
-//       calls startLocation() directly — browser re-asks in place.
+//  iOS:   saveFailCount() → reload()
+//         Safari may re-prompt after reload; failCount survives
+//  Other: startLocation() directly — browser re-asks in place
 // ══════════════════════════════════════════════════════════════════
 
 function retryLocation() {
   if (IS_IOS) {
-    saveFailCount();           // persist before page wipes JS state
-    window.location.reload();  // Safari may re-prompt after reload
+    saveFailCount();
+    window.location.reload();
   } else {
-    startLocation();           // re-ask permission in place
+    startLocation();
   }
 }
 
@@ -447,9 +478,7 @@ function renderDeniedError() {
   setFormEnabled(false);
   showManualNotice(false);
 
-  var title = 'Location access denied';
   var body, tips;
-
   if (IS_IOS) {
     body = 'Location is needed to verify your attendance. Enable it in iPhone Settings, then tap Retry location.';
     tips = 'Settings → Privacy & Security → Location Services → Safari → <b>While Using</b>';
@@ -457,8 +486,7 @@ function renderDeniedError() {
     body = 'Tap the lock icon in your address bar → Site settings → Location → Allow, then tap Retry location.';
     tips = 'Address bar → lock/info icon → Site settings → Location → <b>Allow</b>';
   }
-
-  renderError(title, body, tips, true);
+  renderError('Location access denied', body, tips, true);
 }
 
 function renderPositionError(reason) {
@@ -466,9 +494,7 @@ function renderPositionError(reason) {
   setFormEnabled(false);
   showManualNotice(false);
 
-  var title = 'Location unavailable';
   var body, tips;
-
   if (reason === 'timeout') {
     body = 'Location timed out on both GPS and network. Check that Location Services are on, then tap Retry location.';
     tips = IS_IOS
@@ -480,19 +506,18 @@ function renderPositionError(reason) {
       ? '• Settings → Privacy & Security → Location Services → ON<br>• Make sure Safari has location permission'
       : '• Enable Location in Android Settings<br>• Try mobile data if WiFi-only';
   }
-
-  renderError(title, body, tips, true);
+  renderError('Location unavailable', body, tips, true);
 }
 
 // ══════════════════════════════════════════════════════════════════
 //  UNIFIED ERROR PANEL RENDERER
 //
-//  showRetry    — false only when browser has no geolocation support
-//  failCount    — read from sessionStorage on page load, survives iOS reload
+//  showRetry  — false only when browser has no geolocation support
+//  failCount  — from sessionStorage, survives iOS reload
 //
-//  Buttons shown:
-//    always (if showRetry):  "↻ Retry location"  → retryLocation()
-//    failCount >= 3 only:    "Continue anyway"    → activateManual()
+//  Buttons:
+//    always (if showRetry): "↻ Retry location" → retryLocation()
+//    failCount >= 3 only:   "Continue anyway"  → activateManual()
 // ══════════════════════════════════════════════════════════════════
 
 function renderError(title, body, tips, showRetry) {
@@ -518,8 +543,7 @@ function renderError(title, body, tips, showRetry) {
   p.innerHTML =
     '<div class="loc-err-title">' + title + '</div>' +
     '<div class="loc-err-body">'  + body  + '</div>' +
-    tipsHtml +
-    btnRowHtml;
+    tipsHtml + btnRowHtml;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -556,10 +580,8 @@ function renderOffsite(main, sub) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  MANUAL OVERRIDE
-//  Activated when user taps "Continue anyway" after 3+ failures.
-//  Submits with locStatus=LOCATION_FAILED and empty lat/lng.
-//  Apps Script records the flag for manual organiser review.
+//  MANUAL OVERRIDE — activated by "Continue anyway" after 3+ fails
+//  Submits with locStatus=LOCATION_FAILED, empty lat/lng
 // ══════════════════════════════════════════════════════════════════
 
 function activateManual() {
@@ -606,7 +628,7 @@ function pick(el) {
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  RATE LIMITING
+//  RATE LIMITING — per slot (day + action)
 // ══════════════════════════════════════════════════════════════════
 
 function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
@@ -616,9 +638,7 @@ function checkRateLimit(day, action) {
     var last = localStorage.getItem(rlKey(day, action));
     if (!last) return null;
     var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
-    if (rem > 0) {
-      return Math.floor(rem / 3600000) + 'h ' + Math.floor((rem % 3600000) / 60000) + 'm';
-    }
+    if (rem > 0) return Math.floor(rem / 3600000) + 'h ' + Math.floor((rem % 3600000) / 60000) + 'm';
     return null;
   } catch(e) { return null; }
 }
@@ -635,12 +655,12 @@ function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
   fetch(url)
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-    .then(function(t)  { onSuccess(t.trim()); })
-    .catch(function()  {
+    .then(function(t) { onSuccess(t.trim()); })
+    .catch(function() {
       if (left > 1) {
         var ri = document.getElementById('retry-info');
         ri.style.display = 'block';
-        ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
+        ri.textContent = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
         setTimeout(function() { fetchWithRetry(url, left - 1, onSuccess, onFail); }, RETRY_DELAY_MS);
       } else {
         document.getElementById('retry-info').style.display = 'none';
@@ -660,13 +680,13 @@ function showMsg(text, type) {
 }
 
 var RESULT_MAP = {
-  'SUCCESS':              { text: '✅ Attendance recorded successfully!',                    type: 'success' },
-  'SUCCESS_OFFSITE':      { text: '✅ Attendance recorded (off-site location noted).',        type: 'success' },
-  'SUCCESS_LOC_FAILED':   { text: '✅ Attendance recorded. Location flagged for review.',     type: 'success' },
-  'ALREADY_DONE':         { text: '⚠️ Already recorded for this slot.',                      type: 'info'    },
-  'NO_CHECKIN':           { text: '⚠️ You must check in before checking out.',                type: 'info'    },
-  'NOT_FOUND':            { text: '❌ Email not found. Use your registered email.',            type: 'error'   },
-  'INVALID_EMAIL':        { text: '❌ Invalid email address.',                                type: 'error'   }
+  'SUCCESS':            { text: '✅ Attendance recorded successfully!',                 type: 'success' },
+  'SUCCESS_OFFSITE':    { text: '✅ Attendance recorded (off-site location noted).',    type: 'success' },
+  'SUCCESS_LOC_FAILED': { text: '✅ Attendance recorded. Location flagged for review.', type: 'success' },
+  'ALREADY_DONE':       { text: '⚠️ Already recorded for this slot.',                  type: 'info'    },
+  'NO_CHECKIN':         { text: '⚠️ You must check in before checking out.',            type: 'info'    },
+  'NOT_FOUND':          { text: '❌ Email not found. Use your registered email.',        type: 'error'   },
+  'INVALID_EMAIL':      { text: '❌ Invalid email address.',                             type: 'error'   }
 };
 
 function handleResult(result, day, action) {
@@ -741,13 +761,14 @@ function submitForm() {
 
 // ══════════════════════════════════════════════════════════════════
 //  INIT
-//
-//  On iOS, "Retry location" does a full page reload.
-//  sessionStorage preserves failCount across that reload.
-//  startLocation() runs fresh — Safari may re-prompt.
-//  If denied again, failCount increments and buttons update.
+//  sessionStorage preserves failCount across iOS reloads.
+//  navigator.permissions.query detects already-denied state
+//  before calling getCurrentPosition, enabling instant error
+//  display without waiting for a silent timeout.
 // ══════════════════════════════════════════════════════════════════
 startLocation();
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
