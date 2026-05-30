@@ -286,16 +286,30 @@ var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 //    'failed'     — both GPS and WiFi strategies exhausted
 //    'manual'     — user chose to proceed despite location failure
 //
-//  failCount — total number of failed location attempts (any reason):
-//    0 → initial state
-//    1 → show Retry only
-//    2 → show Retry only
-//    3+ → show Retry + Continue anyway
+//  failCount — persisted in sessionStorage so iOS reload doesn't reset it
+//    1 → Retry only
+//    2 → Retry only
+//    3+ → Retry + Continue anyway
 // ══════════════════════════════════════════════════════════════════
 var geoState  = 'detecting';
 var userLat   = null;
 var userLng   = null;
+
+// Read failCount from sessionStorage (survives iOS reload)
 var failCount = 0;
+try {
+  var _stored = sessionStorage.getItem('xi_geo_fails');
+  if (_stored) failCount = parseInt(_stored, 10) || 0;
+} catch(e) {}
+
+function saveFailCount() {
+  try { sessionStorage.setItem('xi_geo_fails', failCount); } catch(e) {}
+}
+
+function resetFailCount() {
+  failCount = 0;
+  try { sessionStorage.removeItem('xi_geo_fails'); } catch(e) {}
+}
 
 // ══════════════════════════════════════════════════════════════════
 //  GEOLOCATION
@@ -303,14 +317,16 @@ var failCount = 0;
 //  Strategy sequence:
 //  1. enableHighAccuracy:true  (GPS)        — 10s timeout
 //  2. enableHighAccuracy:false (WiFi/cell)  — 8s timeout
-//  Both fail → renderError(), failCount++
+//  Both fail → failCount++, renderError()
 //
-//  Denied (code 1) → renderError(), failCount++
+//  Denied (code 1) → failCount++, renderError()
 //
-//  After 3+ failures → "Continue anyway" button appears
+//  Retry button — always labelled "↻ Retry location":
+//    iOS     → saves failCount to sessionStorage, then reload()
+//              Safari may re-prompt after reload
+//    Other   → startLocation() directly (re-prompts in place)
 //
-//  iOS retry = window.location.reload() (only way to re-prompt)
-//  Android/Desktop retry = startLocation() (re-asks permission)
+//  After 3+ failures → "Continue anyway" also appears
 //
 //  maximumAge:0 — NEVER use cached coords
 // ══════════════════════════════════════════════════════════════════
@@ -326,11 +342,12 @@ function startLocation() {
 
   if (!navigator.geolocation) {
     failCount++;
+    saveFailCount();
     renderError(
       'Location not supported',
       'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).',
       null,
-      false  // no retry possible — browser doesn't support it
+      false
     );
     return;
   }
@@ -343,12 +360,11 @@ function tryHighAccuracy() {
     onGeoSuccess,
     function(err) {
       if (err.code === 1) {
-        // User denied
         failCount++;
+        saveFailCount();
         renderDeniedError();
         return;
       }
-      // GPS failed (code 2 or 3) — try WiFi/cell fallback
       renderDetecting('Retrying with network location…', 'GPS unavailable — trying alternate method');
       setTimeout(tryLowAccuracy, 600);
     },
@@ -361,13 +377,14 @@ function tryLowAccuracy() {
     onGeoSuccess,
     function(err) {
       if (err.code === 1) {
-        // User denied during fallback attempt
         failCount++;
+        saveFailCount();
         renderDeniedError();
         return;
       }
-      // Both strategies exhausted — count as one full fail
+      // Both strategies exhausted — counts as one full attempt
       failCount++;
+      saveFailCount();
       var reason = err.code === 3 ? 'timeout' : 'unavailable';
       renderPositionError(reason);
     },
@@ -376,6 +393,9 @@ function tryLowAccuracy() {
 }
 
 function onGeoSuccess(pos) {
+  // Success — clear the fail counter so it resets for future sessions
+  resetFailCount();
+
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
 
@@ -397,15 +417,29 @@ function onGeoSuccess(pos) {
 }
 
 // ══════════════════════════════════════════════════════════════════
+//  RETRY HANDLER
+//
+//  Called by the "↻ Retry location" button on every platform.
+//
+//  iOS: saves failCount first (sessionStorage survives reload),
+//       then reloads the page — Safari may show the permission
+//       prompt again after a reload.
+//
+//  Android / Desktop / everything else:
+//       calls startLocation() directly — browser re-asks in place.
+// ══════════════════════════════════════════════════════════════════
+
+function retryLocation() {
+  if (IS_IOS) {
+    saveFailCount();           // persist before page wipes JS state
+    window.location.reload();  // Safari may re-prompt after reload
+  } else {
+    startLocation();           // re-ask permission in place
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
 //  ERROR RENDERERS
-//
-//  renderDeniedError() — user explicitly denied permission
-//  renderPositionError() — device could not get coordinates
-//
-//  Both funnel into renderError() which handles:
-//    - instructions (how-to box)
-//    - retry button (iOS: reload, Android/Desktop: startLocation)
-//    - "Continue anyway" — only shown when failCount >= 3
 // ══════════════════════════════════════════════════════════════════
 
 function renderDeniedError() {
@@ -453,17 +487,12 @@ function renderPositionError(reason) {
 // ══════════════════════════════════════════════════════════════════
 //  UNIFIED ERROR PANEL RENDERER
 //
-//  showRetry — false only when browser doesn't support geolocation at all
+//  showRetry    — false only when browser has no geolocation support
+//  failCount    — read from sessionStorage on page load, survives iOS reload
 //
-//  Retry button behaviour (always labelled "↻ Retry location"):
-//    iOS     → window.location.reload()
-//              (iOS cannot re-prompt without a full page reload)
-//    Other   → startLocation()
-//              (Android/Desktop can re-ask permission in place)
-//
-//  "Continue anyway" button:
-//    Shown only when failCount >= 3 (after 3rd consecutive failure)
-//    Calls activateManual() — submits with LOCATION_FAILED flag
+//  Buttons shown:
+//    always (if showRetry):  "↻ Retry location"  → retryLocation()
+//    failCount >= 3 only:    "Continue anyway"    → activateManual()
 // ══════════════════════════════════════════════════════════════════
 
 function renderError(title, body, tips, showRetry) {
@@ -474,20 +503,14 @@ function renderError(title, body, tips, showRetry) {
     ? '<div class="loc-how"><div class="loc-how-title">How to enable</div>' + tips + '</div>'
     : '';
 
-  var retryHtml = '';
-  if (showRetry) {
-    // Label is always "Retry location" regardless of platform
-    // but iOS fires reload(), others fire startLocation()
-    var retryAction = IS_IOS ? 'window.location.reload()' : 'startLocation()';
-    retryHtml = '<button class="loc-btn loc-btn-retry" onclick="' + retryAction + '">↻ Retry location</button>';
-  }
+  var retryHtml = showRetry
+    ? '<button class="loc-btn loc-btn-retry" onclick="retryLocation()">↻ Retry location</button>'
+    : '';
 
-  // "Continue anyway" only appears from the 3rd failure onward
   var continueHtml = (failCount >= 3)
     ? '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>'
     : '';
 
-  // Only render btn-row if there's at least one button
   var btnRowHtml = (retryHtml || continueHtml)
     ? '<div class="btn-row">' + retryHtml + continueHtml + '</div>'
     : '';
@@ -718,6 +741,11 @@ function submitForm() {
 
 // ══════════════════════════════════════════════════════════════════
 //  INIT
+//
+//  On iOS, "Retry location" does a full page reload.
+//  sessionStorage preserves failCount across that reload.
+//  startLocation() runs fresh — Safari may re-prompt.
+//  If denied again, failCount increments and buttons update.
 // ══════════════════════════════════════════════════════════════════
 startLocation();
 </script>
