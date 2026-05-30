@@ -1,6 +1,3 @@
-bash
-
-cat > /home/claude/conference.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -275,9 +272,6 @@ cat > /home/claude/conference.html << 'HTMLEOF'
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════
-//  CONFIGURATION
-// ══════════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
 
 var CONF_LAT      = 41.6893212;
@@ -292,20 +286,6 @@ var RETRY_DELAY_MS = 2500;
 
 var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
-// ══════════════════════════════════════════════════════════════════
-//  STATE
-//  geoState:
-//    'detecting' — in progress
-//    'found'     — on-site
-//    'offsite'   — coordinates known, outside radius
-//    'denied'    — user denied permission (code 1)
-//    'failed'    — both GPS and WiFi exhausted
-//    'manual'    — user chose Continue anyway
-//
-//  failCount — persisted in sessionStorage so iOS reload preserves it
-//    1-2 → Retry only
-//    3+  → Retry + Continue anyway
-// ══════════════════════════════════════════════════════════════════
 var geoState = 'detecting';
 var userLat  = null;
 var userLng  = null;
@@ -323,31 +303,6 @@ function resetFailCount() {
   failCount = 0;
   try { sessionStorage.removeItem('xi_geo_fails'); } catch(e) {}
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  GEOLOCATION
-//
-//  Uses navigator.permissions.query first (where supported) to
-//  detect already-denied state before calling getCurrentPosition.
-//  This avoids the silent instant-denial on Android Chrome when
-//  permission was previously blocked.
-//
-//  Strategy sequence:
-//  1. enableHighAccuracy:true  (GPS)       — 10s timeout
-//  2. enableHighAccuracy:false (WiFi/cell) — 8s timeout
-//  Both fail → failCount++, renderError()
-//
-//  Denied (code 1) → failCount++, renderError()
-//
-//  Retry button — always labelled "↻ Retry location":
-//    iOS     → saveFailCount() then reload()
-//              Safari re-prompts after reload
-//    Other   → startLocation() directly
-//
-//  After 3+ failures → "Continue anyway" also appears
-//
-//  maximumAge:0 — NEVER use cached coords
-// ══════════════════════════════════════════════════════════════════
 
 function startLocation() {
   geoState = 'detecting';
@@ -369,24 +324,16 @@ function startLocation() {
     return;
   }
 
-  // Use Permissions API where available to check current state.
-  // - 'granted'  → go straight to position (no popup needed)
-  // - 'denied'   → count as failure immediately, show error
-  // - 'prompt'   → proceed normally, popup will appear
-  // Falls back to direct call if Permissions API not supported.
   if (navigator.permissions) {
     navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
       if (result.state === 'denied') {
-        // Already blocked — count as a failure and show error
         failCount++;
         saveFailCount();
         renderDeniedError();
       } else {
-        // 'granted' or 'prompt' — attempt position normally
         tryHighAccuracy();
       }
     }).catch(function() {
-      // Permissions API threw — fall back to direct attempt
       tryHighAccuracy();
     });
   } else {
@@ -452,14 +399,6 @@ function onGeoSuccess(pos) {
   setFormEnabled(true);
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  RETRY HANDLER
-//
-//  iOS:   saveFailCount() → reload()
-//         Safari may re-prompt after reload; failCount survives
-//  Other: startLocation() directly — browser re-asks in place
-// ══════════════════════════════════════════════════════════════════
-
 function retryLocation() {
   if (IS_IOS) {
     saveFailCount();
@@ -469,24 +408,23 @@ function retryLocation() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  ERROR RENDERERS
-// ══════════════════════════════════════════════════════════════════
-
 function renderDeniedError() {
   geoState = 'denied';
   setFormEnabled(false);
   showManualNotice(false);
 
-  var body, tips;
+  var tips;
   if (IS_IOS) {
-    body = 'Location is needed to verify your attendance. Enable it in iPhone Settings, then tap Retry location.';
-    tips = 'Settings → Privacy & Security → Location Services → Safari → <b>While Using</b>';
+    tips = '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow';
   } else {
-    body = 'Tap the lock icon in your address bar → Site settings → Location → Allow, then tap Retry location.';
-    tips = 'Address bar → lock/info icon → Site settings → Location → <b>Allow</b>';
+    tips = '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
   }
-  renderError('Location access denied', body, tips, true);
+  renderError(
+    'Location access denied',
+    'Location is needed to verify your attendance. Enable it in settings, then tap Retry location.',
+    tips,
+    true
+  );
 }
 
 function renderPositionError(reason) {
@@ -498,27 +436,16 @@ function renderPositionError(reason) {
   if (reason === 'timeout') {
     body = 'Location timed out on both GPS and network. Check that Location Services are on, then tap Retry location.';
     tips = IS_IOS
-      ? '• Settings → Privacy & Security → Location Services → ON<br>• Settings → Location Services → Safari → While Using'
-      : '• Enable Location in Android Settings<br>• Briefly turn on mobile data if you\'re only on WiFi';
+      ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
+      : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
   } else {
     body = 'Your device could not determine your location. Check Location Services settings, then tap Retry location.';
     tips = IS_IOS
-      ? '• Settings → Privacy & Security → Location Services → ON<br>• Make sure Safari has location permission'
-      : '• Enable Location in Android Settings<br>• Try mobile data if WiFi-only';
+      ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
+      : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
   }
   renderError('Location unavailable', body, tips, true);
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  UNIFIED ERROR PANEL RENDERER
-//
-//  showRetry  — false only when browser has no geolocation support
-//  failCount  — from sessionStorage, survives iOS reload
-//
-//  Buttons:
-//    always (if showRetry): "↻ Retry location" → retryLocation()
-//    failCount >= 3 only:   "Continue anyway"  → activateManual()
-// ══════════════════════════════════════════════════════════════════
 
 function renderError(title, body, tips, showRetry) {
   var p = document.getElementById('loc-panel');
@@ -545,10 +472,6 @@ function renderError(title, body, tips, showRetry) {
     '<div class="loc-err-body">'  + body  + '</div>' +
     tipsHtml + btnRowHtml;
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  PANEL RENDERERS — detecting / found / offsite
-// ══════════════════════════════════════════════════════════════════
 
 function renderDetecting(main, sub) {
   var p = document.getElementById('loc-panel');
@@ -579,11 +502,6 @@ function renderOffsite(main, sub) {
     (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  MANUAL OVERRIDE — activated by "Continue anyway" after 3+ fails
-//  Submits with locStatus=LOCATION_FAILED, empty lat/lng
-// ══════════════════════════════════════════════════════════════════
-
 function activateManual() {
   geoState = 'manual';
   userLat  = null;
@@ -607,29 +525,17 @@ function showManualNotice(show) {
   document.getElementById('manual-notice').style.display = show ? 'block' : 'none';
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  FORM ENABLE / DISABLE
-// ══════════════════════════════════════════════════════════════════
-
 function setFormEnabled(enabled) {
   document.getElementById('email-inp').disabled  = !enabled;
   document.getElementById('submit-btn').disabled = !enabled;
   document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  SEGMENT PICKER
-// ══════════════════════════════════════════════════════════════════
-
 function pick(el) {
   if (el.disabled) return;
   el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
   el.classList.add('active');
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  RATE LIMITING — per slot (day + action)
-// ══════════════════════════════════════════════════════════════════
 
 function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
 
@@ -646,10 +552,6 @@ function checkRateLimit(day, action) {
 function setRateLimit(day, action) {
   try { localStorage.setItem(rlKey(day, action), Date.now().toString()); } catch(e) {}
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  FETCH WITH RETRY
-// ══════════════════════════════════════════════════════════════════
 
 function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
@@ -668,10 +570,6 @@ function fetchWithRetry(url, left, onSuccess, onFail) {
       }
     });
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  RESPONSE HANDLER
-// ══════════════════════════════════════════════════════════════════
 
 function showMsg(text, type) {
   var el = document.getElementById('msg');
@@ -704,10 +602,6 @@ function handleResult(result, day, action) {
     showMsg('❌ Unexpected response. Please try again.', 'error');
   }
 }
-
-// ══════════════════════════════════════════════════════════════════
-//  SUBMIT
-// ══════════════════════════════════════════════════════════════════
 
 function submitForm() {
   var allowed = ['found', 'offsite', 'manual'];
@@ -759,16 +653,7 @@ function submitForm() {
   );
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  INIT
-//  sessionStorage preserves failCount across iOS reloads.
-//  navigator.permissions.query detects already-denied state
-//  before calling getCurrentPosition, enabling instant error
-//  display without waiting for a silent timeout.
-// ══════════════════════════════════════════════════════════════════
 startLocation();
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done"
