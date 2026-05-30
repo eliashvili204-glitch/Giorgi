@@ -10,7 +10,6 @@
 
   :root {
     --bg:           #EAEFF2;
-    --bg2:          #D5E1EA;
     --surface:      #FFFFFF;
     --border:       #B2C4D1;
     --border-focus: #1A365D;
@@ -24,254 +23,188 @@
     --selected-text:#FFFFFF;
     --warn:         #C0503A;
     --success:      #16A34A;
+    --amber:        #92400E;
+    --amber-bg:     #FFFBEB;
+    --amber-border: #FDE68A;
     --radius:       8px;
   }
 
   html, body {
-    min-height: 100vh;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
     font-family: 'DM Sans', -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
   .card {
-    width: 100%;
-    max-width: 400px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
+    width: 100%; max-width: 400px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
     box-shadow: 0 4px 16px rgba(26,54,93,0.08), 0 1px 3px rgba(0,0,0,0.04);
-    animation: up 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both;
   }
 
   @media (max-width: 440px) {
     body { align-items: flex-start; background: var(--surface); }
-    .card {
-      max-width: 100%; border-radius: 0;
-      border-left: none; border-right: none; border-top: none;
-      box-shadow: none; min-height: 100vh;
-    }
-    .card-body   { padding: 24px 20px 32px !important; }
-    .seg-btn     { padding: 11px 0 !important; font-size: 14px !important; }
+    .card { max-width: 100%; border-radius: 0; border-left: none; border-right: none; border-top: none; box-shadow: none; min-height: 100vh; }
+    .card-body { padding: 24px 20px 32px !important; }
+    .seg-btn { padding: 11px 0 !important; font-size: 14px !important; }
     .input-field { font-size: 16px !important; padding: 12px !important; }
-    .submit      { padding: 14px !important; font-size: 14px !important; }
+    .submit { padding: 14px !important; font-size: 14px !important; }
   }
 
-  @keyframes up {
+  @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
   /* ── Banner ── */
   .card-img {
-    width: 100%;
-    height: 148px;
+    width: 100%; height: 148px;
     background: linear-gradient(135deg, #1A365D 0%, #2a5298 50%, #1a3a5c 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    border-bottom: 1px solid var(--border); overflow: hidden; position: relative;
   }
+  .card-img::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); }
+  .card-img::after  { content:''; position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04); }
+  .banner-content   { position:relative; z-index:1; text-align:center; padding:0 20px; }
+  .banner-roman     { font-family:'Playfair Display',serif; font-size:13px; letter-spacing:0.35em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:6px; }
+  .banner-title     { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#FFF; letter-spacing:0.04em; line-height:1.2; margin-bottom:8px; }
+  .banner-divider   { width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 8px; }
+  .banner-sub       { font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:0.08em; text-transform:uppercase; }
 
-  /* Decorative geometric elements for banner */
-  .card-img::before {
-    content: '';
-    position: absolute;
-    top: -30px; right: -30px;
-    width: 160px; height: 160px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    pointer-events: none;
-  }
-  .card-img::after {
-    content: '';
-    position: absolute;
-    bottom: -40px; left: -20px;
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    pointer-events: none;
-  }
-
-  .banner-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 0 20px;
-  }
-
-  .banner-roman {
-    font-family: 'Playfair Display', serif;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 6px;
-  }
-
-  .banner-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #FFFFFF;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-    margin-bottom: 8px;
-  }
-
-  .banner-divider {
-    width: 40px;
-    height: 1px;
-    background: rgba(255,255,255,0.3);
-    margin: 0 auto 8px;
-  }
-
-  .banner-sub {
-    font-size: 11px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .card-body   { padding: 24px 28px 28px; background: var(--surface); }
+  .card-body   { padding: 24px 28px 28px; }
   .card-header { margin-bottom: 24px; }
-
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: #1A365D;
-    margin-bottom: 6px;
-    line-height: 1.2;
-  }
-
-  .card-desc { font-size: 12px; font-weight: 400; color: var(--text-soft); letter-spacing: 0.01em; line-height: 1.6; margin-top: 2px; }
+  .card-title  { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:#1A365D; margin-bottom:6px; line-height:1.2; }
+  .card-desc   { font-size:12px; color:var(--text-soft); line-height:1.6; }
 
   .field       { margin-bottom: 18px; }
-  .field-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 8px; }
+  .field-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
 
-  .segment { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .segment { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
   .seg-btn {
-    padding: 9px 0; background: var(--navy-soft); border: 1px solid var(--navy-border);
-    border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px;
-    font-weight: 500; color: var(--text-mid); cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, color 0.15s; letter-spacing: 0.01em;
+    padding:9px 0; background:var(--navy-soft); border:1px solid var(--navy-border);
+    border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:13px;
+    font-weight:500; color:var(--text-mid); cursor:pointer;
+    transition:border-color 0.15s, background 0.15s, color 0.15s;
   }
-  .seg-btn:hover:not(.active) { border-color: var(--border-focus); color: var(--navy); background: #dce8f0; }
-  .seg-btn.active { background: var(--selected-bg); border-color: var(--selected-bg); color: var(--selected-text); }
+  .seg-btn:hover:not(.active):not(:disabled) { border-color:var(--border-focus); color:var(--navy); background:#dce8f0; }
+  .seg-btn.active   { background:var(--selected-bg); border-color:var(--selected-bg); color:var(--selected-text); }
+  .seg-btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-  .sep { height: 1px; background: var(--border); margin: 4px 0 18px; }
+  .sep { height:1px; background:var(--border); margin:4px 0 18px; }
 
-  .input-wrap { position: relative; }
   .input-field {
-    width: 100%; padding: 10px 12px; background: var(--bg);
-    border: 1px solid var(--border); border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
-    color: var(--text); outline: none;
-    transition: border-color 0.2s, background 0.2s; letter-spacing: 0.01em;
+    width:100%; padding:10px 12px; background:var(--bg);
+    border:1px solid var(--border); border-radius:var(--radius);
+    font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); outline:none;
+    transition:border-color 0.2s, background 0.2s;
   }
-  .input-field::placeholder { color: var(--text-soft); }
-  .input-field:focus { border-color: var(--border-focus); background: var(--navy-soft); }
-  .input-field:disabled { opacity: 0.45; cursor: not-allowed; background: var(--bg); }
+  .input-field::placeholder { color:var(--text-soft); }
+  .input-field:focus    { border-color:var(--border-focus); background:var(--navy-soft); }
+  .input-field:disabled { opacity:0.45; cursor:not-allowed; }
 
-  /* ── Location status ── */
-  #locStatus {
-    margin-top: 10px;
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 400;
-    color: var(--text-soft); letter-spacing: 0.01em;
-    min-height: 20px;
+  /* ── Location panel ── */
+  .loc-panel {
+    margin-top:12px; border-radius:var(--radius);
+    padding:12px 14px; font-size:12px; line-height:1.6;
   }
-  #locStatus.found   { color: var(--success); }
-  #locStatus.offsite { color: var(--warn); }
-  #locStatus.denied  { color: var(--warn); }
+  /* detecting */
+  .loc-panel.detecting {
+    display:flex; align-items:center; gap:8px;
+    background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy);
+  }
+  /* found */
+  .loc-panel.found {
+    display:flex; align-items:center; gap:8px;
+    background:#F0FDF4; border:1px solid #86EFAC; color:var(--success);
+  }
+  /* offsite */
+  .loc-panel.offsite {
+    display:flex; align-items:center; gap:8px;
+    background:#FEF9EC; border:1px solid #F6D860; color:#7A5A00;
+  }
+  /* manual — location failed, form unlocked with warning */
+  .loc-panel.manual {
+    display:block;
+    background:#FFF8F6; border:1px solid #EDD5CE; color:var(--warn);
+  }
+  /* error — blocked, needs resolution */
+  .loc-panel.error {
+    display:block;
+    background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn);
+  }
 
-  .loc-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: currentColor; flex-shrink: 0;
-  }
-  .loc-text { flex: 1; }
-  .loc-retry {
-    font-size: 11px; font-weight: 600; color: var(--navy);
-    cursor: pointer; text-decoration: underline;
-    text-underline-offset: 2px; white-space: nowrap;
-  }
+  .loc-dot   { width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0; }
+  .loc-pulse { width:7px; height:7px; border-radius:50%; background:var(--navy); flex-shrink:0; animation:pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
 
-  /* ── Location blocked panel ── */
-  #locationBlock {
-    display: none;
-    background: #FFF8F6;
-    border: 1px solid #EDD5CE;
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-top: 12px;
+  .loc-main { font-weight:500; }
+  .loc-sub  { font-size:11px; opacity:0.8; margin-top:2px; }
+
+  .loc-err-title { font-weight:700; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px; }
+  .loc-err-body  { font-size:12px; line-height:1.7; margin-bottom:10px; }
+  .loc-how {
+    background:rgba(192,80,58,0.07); border-radius:6px;
+    padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.9; margin-bottom:10px;
   }
-  .loc-block-title {
-    font-size: 12px; font-weight: 700; color: var(--warn);
-    letter-spacing: 0.04em; text-transform: uppercase;
-    margin-bottom: 6px;
+  .loc-how-title { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
+  .loc-how-manual { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.7; margin-bottom:10px; }
+
+  .btn-row { display:flex; gap:8px; }
+  .loc-btn {
+    flex:1; padding:8px; border-radius:var(--radius);
+    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer;
+    transition:background 0.15s;
   }
-  .loc-block-desc {
-    font-size: 12px; font-weight: 400; color: #8B4035;
-    line-height: 1.6; margin-bottom: 12px;
+  .loc-btn-retry  { border:1px solid var(--warn); background:transparent; color:var(--warn); }
+  .loc-btn-retry:hover { background:rgba(192,80,58,0.07); }
+  .loc-btn-manual { border:1px solid var(--navy); background:var(--navy); color:#fff; }
+  .loc-btn-manual:hover { opacity:0.88; }
+
+  /* manual notice inside form */
+  .manual-notice {
+    display:none; margin-top:8px; padding:8px 10px;
+    background:var(--amber-bg); border:1px solid var(--amber-border);
+    border-radius:var(--radius); font-size:11px; color:var(--amber); line-height:1.6;
   }
 
   /* ── Submit ── */
   .submit {
-    width: 100%; padding: 12px; margin-top: 22px; background: var(--navy);
-    border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.06em;
-    text-transform: uppercase; cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    box-shadow: 0 4px 12px rgba(26,54,93,0.18);
+    width:100%; padding:12px; margin-top:22px; background:var(--navy);
+    border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif;
+    font-size:13px; font-weight:700; color:#fff; letter-spacing:0.06em;
+    text-transform:uppercase; cursor:pointer;
+    transition:opacity 0.15s, transform 0.1s;
+    box-shadow:0 4px 12px rgba(26,54,93,0.18);
   }
-  .submit:hover    { opacity: 0.88; }
-  .submit:active   { opacity: 0.75; transform: scale(0.98); }
-  .submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; background: var(--text-mid); box-shadow: none; }
+  .submit:hover    { opacity:0.88; }
+  .submit:active   { opacity:0.75; transform:scale(0.98); }
+  .submit:disabled { opacity:0.4; cursor:not-allowed; transform:none; background:var(--text-mid); box-shadow:none; }
 
   .msg {
-    margin-top: 14px; padding: 12px 14px; border-radius: var(--radius);
-    font-size: 12px; line-height: 1.6; font-weight: 500; display: none;
-    animation: up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+    margin-top:14px; padding:12px 14px; border-radius:var(--radius);
+    font-size:12px; line-height:1.6; font-weight:500; display:none;
+    animation:fadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
   }
-  .msg.success { display: block; background: #F0FDF4; border: 1px solid #86EFAC; color: var(--success); }
-  .msg.error   { display: block; background: #FEF2F2; border: 1px solid #FCA5A5; color: var(--warn); }
-  .msg.info    { display: block; background: var(--navy-soft); border: 1px solid var(--navy-border); color: var(--navy); }
-  .msg.warning { display: block; background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+  .msg.success { display:block; background:#F0FDF4; border:1px solid #86EFAC; color:var(--success); }
+  .msg.error   { display:block; background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn); }
+  .msg.info    { display:block; background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy); }
+  .msg.warning { display:block; background:var(--amber-bg); border:1px solid var(--amber-border); color:var(--amber); }
 
   .spinner {
-    display: inline-block; width: 13px; height: 13px;
-    border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff;
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-    vertical-align: middle; margin-right: 7px;
+    display:inline-block; width:13px; height:13px;
+    border:2px solid rgba(255,255,255,0.35); border-top-color:#fff;
+    border-radius:50%; animation:spin 0.7s linear infinite;
+    vertical-align:middle; margin-right:7px;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  /* ── Retry counter badge ── */
-  .retry-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-soft);
-    margin-top: 6px;
-    letter-spacing: 0.04em;
-  }
+  .retry-badge { display:inline-block; font-size:10px; font-weight:600; color:var(--text-soft); margin-top:6px; letter-spacing:0.04em; }
 </style>
 </head>
 <body>
-
 <div class="card">
 
-  <!-- ✅ გამოსწორება #1: ბანერი — base64 ნაცვლად CSS banner -->
   <div class="card-img">
     <div class="banner-content">
       <div class="banner-roman">XI · International</div>
@@ -307,30 +240,20 @@
 
     <div class="field" style="margin-bottom:0">
       <div class="field-label">Email</div>
-      <div class="input-wrap">
-        <input class="input-field" id="email-inp" type="email"
-               placeholder="yourname@example.com" disabled>
+      <input class="input-field" id="email-inp" type="email"
+             placeholder="yourname@example.com" autocomplete="email" disabled>
+
+      <div id="manual-notice" class="manual-notice">
+        ⚠️ Location could not be detected. Your attendance will be marked
+        <strong>LOCATION_FAILED</strong> in the system for manual review.
       </div>
 
-      <!-- Location status badge -->
-      <div id="locStatus">
-        <div class="loc-dot"></div>
-        <div class="loc-text" id="locText">Detecting location…</div>
-      </div>
-
-      <!-- Location blocked panel -->
-      <div id="locationBlock">
-        <div class="loc-block-title">Location access required</div>
-        <div class="loc-block-desc">
-          Location access is blocked in your browser settings.
-          Follow the steps below to enable it, then reload the page.
-        </div>
-        <div style="background:rgba(192,80,58,0.07); border-radius:6px; padding:12px; margin-bottom:4px;">
-          <div style="font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">How to enable</div>
-          <div style="font-size:11px; font-weight:400; color:#8B4035; line-height:1.9;">
-            <b>iPhone (Safari):</b> Settings → Safari → Location → Allow<br>
-            <b>Android (Chrome):</b> Settings → Site Settings → Location → Allow
-          </div>
+      <!-- Location status panel — single element, content swapped by JS -->
+      <div class="loc-panel detecting" id="loc-panel">
+        <div class="loc-pulse"></div>
+        <div>
+          <div class="loc-main">Detecting location…</div>
+          <div class="loc-sub">Please allow location access when prompted</div>
         </div>
       </div>
     </div>
@@ -342,286 +265,445 @@
 </div>
 
 <script>
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
+// ══════════════════════════════════════════════════════════════════
+//  CONFIGURATION
+// ══════════════════════════════════════════════════════════════════
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
 
-  var CONF_LAT = 41.6893212;
-  var CONF_LNG = 44.8192619;
-  var RADIUS_M = 150;
+var CONF_LAT       = 41.6893212;
+var CONF_LNG       = 44.8192619;
+var RADIUS_M       = 150;
 
-  var userLat = null, userLng = null;
-  var locationReady = false;
+var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;   // 7h per slot
+var RATE_KEY_PFX   = 'xi_conf_';
 
-  // ════════════════════════════════════════════
-  // ✅ გამოსწორება #2: Retry logic — concurrent
-  //    submit შეცდომისთვის ავტომატური retry
-  // ════════════════════════════════════════════
-  var MAX_RETRIES    = 3;
-  var RETRY_DELAY_MS = 2500;  // 2.5 წამი თითო retry-ს შემდეგ
+var MAX_RETRIES    = 3;
+var RETRY_DELAY_MS = 2500;
 
-  function fetchWithRetry(url, retriesLeft, onSuccess, onFail) {
-    var retryNum = MAX_RETRIES - retriesLeft + 1;
+// How long to wait before offering "manual override" fallback
+// (total: 10s high-accuracy + 0.6s pause + 8s low-accuracy = ~19s max)
+// After both strategies fail, user can tap "Continue anyway"
+var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
-    fetch(url)
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.text();
-      })
-      .then(function(result) {
-        onSuccess(result.trim());
-      })
-      .catch(function(err) {
-        if (retriesLeft > 1) {
-          // კვლავ ვცდით RETRY_DELAY_MS-ის შემდეგ
-          var retryInfo = document.getElementById('retry-info');
-          retryInfo.style.display = 'block';
-          retryInfo.textContent = 'Connection issue — retrying (' + retryNum + '/' + MAX_RETRIES + ')…';
+// ══════════════════════════════════════════════════════════════════
+//  STATE
+//  geoState values:
+//    'detecting'   — in progress
+//    'found'       — on-site, coordinates known
+//    'offsite'     — coordinates known, but outside radius
+//    'denied'      — user said No in browser popup (code 1)
+//    'failed'      — both GPS and WiFi strategies exhausted (code 2/3)
+//    'manual'      — user chose to proceed despite location failure
+// ══════════════════════════════════════════════════════════════════
+var geoState  = 'detecting';
+var userLat   = null;
+var userLng   = null;
+var failCount = 0;   // counts failed location attempts (denied or both strategies exhausted)
+                     // 0-1: show Retry only | 2: show Retry only | 3+: show Retry + Continue anyway
 
-          setTimeout(function() {
-            fetchWithRetry(url, retriesLeft - 1, onSuccess, onFail);
-          }, RETRY_DELAY_MS);
-        } else {
-          // ყველა retry ამოიწურა
-          document.getElementById('retry-info').style.display = 'none';
-          onFail();
-        }
-      });
+// ══════════════════════════════════════════════════════════════════
+//  GEOLOCATION
+//
+//  Strategy sequence:
+//  1. enableHighAccuracy:true  (GPS)         — 10s timeout
+//     Fails indoors, GPS off, no satellite
+//  2. enableHighAccuracy:false (WiFi/cell)   — 8s timeout
+//     Lower accuracy but works indoors
+//  3. Both failed → show error + "Continue anyway" button
+//     Submits with locStatus='LOCATION_FAILED', lat/lng empty
+//     → Sheet shows flag for manual review
+//
+//  Special cases:
+//  • code 1 (denied): no retry of position — show instructions
+//    - iOS denied: can't re-prompt → show Settings path + Reload
+//    - Android denied: can re-allow in browser bar → show Retry
+//  • maximumAge:0 — NEVER use cached coords (prevents stale/wrong city)
+// ══════════════════════════════════════════════════════════════════
+
+function startLocation() {
+  // iOS: after denial, calling getCurrentPosition fires code=1 instantly,
+  // no prompt ever shown again. Skip the 10s wait, count as another fail.
+  if (IS_IOS && geoState === 'denied') {
+    failCount++;
+    renderDenied();
+    return;
   }
 
-  // ════ Location ════
+  geoState = 'detecting';
+  userLat  = null;
+  userLng  = null;
 
-  function requestLocation() {
-    document.getElementById('locationBlock').style.display = 'none';
-    _setLoc('', 'Detecting location…', false);
-    document.getElementById('email-inp').disabled = true;
-    document.getElementById('submit-btn').disabled = true;
-    locationReady = false;
+  setFormEnabled(false);
+  showManualNotice(false);
+  renderDetecting('Detecting location…', 'Please allow location access when prompted');
 
-    if (!navigator.geolocation) {
-      _handleNoLocation('Location not supported by this browser');
-      return;
-    }
-
-    if (navigator.permissions) {
-      navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-        if (result.state === 'denied') {
-          onLocDenied();
-        } else {
-          _doGetPosition();
-        }
-      }).catch(function() {
-        _doGetPosition();
-      });
-    } else {
-      _doGetPosition();
-    }
+  if (!navigator.geolocation) {
+    geoState = 'failed';
+    failCount++;
+    renderFailed('not-supported');
+    return;
   }
 
-  function _doGetPosition() {
-    navigator.geolocation.getCurrentPosition(
-      onLocSuccess,
-      onLocError,
-      {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 60000
+  tryHighAccuracy();
+}
+
+function tryHighAccuracy() {
+  navigator.geolocation.getCurrentPosition(
+    onGeoSuccess,
+    function(err) {
+      if (err.code === 1) { geoState = 'denied'; failCount++; renderDenied(); return; }
+      // GPS failed (code 2 or 3) — fallback to WiFi/cell
+      renderDetecting('Retrying with network location…', 'GPS unavailable — trying alternate method');
+      setTimeout(tryLowAccuracy, 600);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+  );
+}
+
+function tryLowAccuracy() {
+  navigator.geolocation.getCurrentPosition(
+    onGeoSuccess,
+    function(err) {
+      if (err.code === 1) { geoState = 'denied'; failCount++; renderDenied(); return; }
+      // Both strategies exhausted — count as one full fail attempt
+      geoState = 'failed';
+      failCount++;
+      renderFailed(err.code === 3 ? 'timeout' : 'unavailable');
+    },
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
+  );
+}
+
+function onGeoSuccess(pos) {
+  userLat = pos.coords.latitude;
+  userLng = pos.coords.longitude;
+
+  var dLat  = (userLat - CONF_LAT) * 111000;
+  var dLng  = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
+  var distM = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
+  var acc   = Math.round(pos.coords.accuracy);
+
+  if (distM <= RADIUS_M) {
+    geoState = 'found';
+    renderFound('Location verified — on-site ✔',
+                'Accuracy ±' + acc + ' m · ' + distM + ' m from venue');
+  } else {
+    geoState = 'offsite';
+    renderOffsite('Location detected — off-site',
+                  distM.toLocaleString() + ' m from venue · accuracy ±' + acc + ' m');
+  }
+  setFormEnabled(true);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PANEL RENDERERS
+// ══════════════════════════════════════════════════════════════════
+
+function renderDetecting(main, sub) {
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel detecting';
+  p.innerHTML =
+    '<div class="loc-pulse"></div>' +
+    '<div>' +
+      '<div class="loc-main">' + main + '</div>' +
+      (sub ? '<div class="loc-sub">' + sub + '</div>' : '') +
+    '</div>';
+}
+
+function renderFound(main, sub) {
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel found';
+  p.innerHTML =
+    '<div class="loc-dot"></div>' +
+    '<div><div class="loc-main">' + main + '</div>' +
+    (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
+}
+
+function renderOffsite(main, sub) {
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel offsite';
+  p.innerHTML =
+    '<div class="loc-dot"></div>' +
+    '<div><div class="loc-main">' + main + '</div>' +
+    (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
+}
+
+// Denied — user explicitly said No
+function renderDenied() {
+  setFormEnabled(false);
+  showManualNotice(false);
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel error';
+
+  if (IS_IOS) {
+    // iOS: re-prompt impossible → Settings path + Reload + "Continue anyway"
+    p.innerHTML =
+      '<div class="loc-err-title">Location access denied</div>' +
+      '<div class="loc-err-body">Location is needed to verify your attendance. Enable it in iPhone Settings, then reload this page.</div>' +
+      '<div class="loc-how">' +
+        '<div class="loc-how-title">How to enable on iPhone</div>' +
+        'Settings → Privacy & Security → Location Services → Safari → <b>While Using</b>' +
+      '</div>' +
+      '<div class="btn-row">' +
+        '<button class="loc-btn loc-btn-retry"  onclick="window.location.reload()">↻ Reload page</button>' +
+        '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
+      '</div>';
+  } else {
+    // Android/Desktop: user can re-allow in browser bar → show Retry + "Continue anyway"
+    p.innerHTML =
+      '<div class="loc-err-title">Location access denied</div>' +
+      '<div class="loc-err-body">Tap the lock icon in your address bar → Site settings → Location → Allow, then tap Retry.</div>' +
+      '<div class="loc-how">' +
+        '<div class="loc-how-title">How to enable on Android</div>' +
+        'Address bar → lock/info icon → Site settings → Location → <b>Allow</b>' +
+      '</div>' +
+      '<div class="btn-row">' +
+        '<button class="loc-btn loc-btn-retry"  onclick="startLocation()">↻ Retry location</button>' +
+        '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
+      '</div>';
+  }
+}
+
+// Failed — both GPS and WiFi exhausted
+function renderFailed(reason) {
+  setFormEnabled(false);
+  showManualNotice(false);
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel error';
+
+  var body, tips;
+
+  if (reason === 'timeout') {
+    body = 'Location timed out on both GPS and network. Check that Location Services are on, then retry.';
+    tips = IS_IOS
+      ? '• Settings → Privacy & Security → Location Services → ON<br>• Settings → Location Services → Safari → While Using'
+      : '• Enable Location in Android Settings<br>• Briefly turn on mobile data if you\'re only on WiFi';
+  } else if (reason === 'not-supported') {
+    body = 'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).';
+    tips = null;
+  } else {
+    body = 'Your device could not determine your location. Check Location Services settings, then retry.';
+    tips = IS_IOS
+      ? '• Settings → Privacy & Security → Location Services → ON<br>• Make sure Safari has location permission'
+      : '• Enable Location in Android Settings<br>• Try mobile data if WiFi-only';
+  }
+
+  var tipsHtml = tips
+    ? '<div class="loc-how"><div class="loc-how-title">Tips</div>' + tips + '</div>'
+    : '';
+
+  var retryBtn = reason !== 'not-supported'
+    ? '<button class="loc-btn loc-btn-retry" onclick="startLocation()">↻ Retry location</button>'
+    : '';
+
+  p.innerHTML =
+    '<div class="loc-err-title">Location unavailable</div>' +
+    '<div class="loc-err-body">' + body + '</div>' +
+    tipsHtml +
+    '<div class="btn-row">' +
+      retryBtn +
+      '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>' +
+    '</div>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  MANUAL OVERRIDE
+//  When location truly cannot be obtained after all attempts,
+//  the user can still submit. The form sends locStatus=LOCATION_FAILED
+//  (and empty lat/lng). Apps Script records the flag in a dedicated
+//  column so you can manually verify attendance for those rows.
+// ══════════════════════════════════════════════════════════════════
+
+function activateManual() {
+  geoState = 'manual';
+  userLat  = null;
+  userLng  = null;
+
+  var p = document.getElementById('loc-panel');
+  p.className = 'loc-panel manual';
+  p.innerHTML =
+    '<div class="loc-err-title" style="color:var(--warn)">Submitting without location</div>' +
+    '<div class="loc-how-manual">' +
+      'Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag. ' +
+      'An organiser may follow up to verify your presence.' +
+    '</div>' +
+    '<button class="loc-btn loc-btn-retry" onclick="startLocation()" style="width:100%">↻ Try location again</button>';
+
+  showManualNotice(true);
+  setFormEnabled(true);
+}
+
+function showManualNotice(show) {
+  document.getElementById('manual-notice').style.display = show ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FORM ENABLE / DISABLE
+// ══════════════════════════════════════════════════════════════════
+
+function setFormEnabled(enabled) {
+  document.getElementById('email-inp').disabled  = !enabled;
+  document.getElementById('submit-btn').disabled = !enabled;
+  document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SEGMENT PICKER
+// ══════════════════════════════════════════════════════════════════
+
+function pick(el) {
+  if (el.disabled) return;
+  el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  RATE LIMITING — per slot (day + action), stored per device
+//  Prevents the same device submitting check-in twice within 7 hours
+//  Each of the 4 slots is tracked independently:
+//    xi_conf_d1_in / xi_conf_d1_out / xi_conf_d2_in / xi_conf_d2_out
+// ══════════════════════════════════════════════════════════════════
+
+function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
+
+function checkRateLimit(day, action) {
+  try {
+    var last = localStorage.getItem(rlKey(day, action));
+    if (!last) return null;
+    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
+    if (rem > 0) {
+      return Math.floor(rem / 3600000) + 'h ' + Math.floor((rem % 3600000) / 60000) + 'm';
+    }
+    return null;
+  } catch(e) { return null; }
+}
+
+function setRateLimit(day, action) {
+  try { localStorage.setItem(rlKey(day, action), Date.now().toString()); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FETCH WITH RETRY — absorbs Apps Script concurrent execution limits
+//  3 attempts, 2.5s apart — covers transient 429 / timeout spikes
+// ══════════════════════════════════════════════════════════════════
+
+function fetchWithRetry(url, left, onSuccess, onFail) {
+  var attempt = MAX_RETRIES - left + 1;
+  fetch(url)
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(function(t)  { onSuccess(t.trim()); })
+    .catch(function()  {
+      if (left > 1) {
+        var ri = document.getElementById('retry-info');
+        ri.style.display = 'block';
+        ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
+        setTimeout(function() { fetchWithRetry(url, left - 1, onSuccess, onFail); }, RETRY_DELAY_MS);
+      } else {
+        document.getElementById('retry-info').style.display = 'none';
+        onFail();
       }
-    );
-  }
-
-  function onLocSuccess(pos) {
-    userLat = pos.coords.latitude;
-    userLng = pos.coords.longitude;
-    locationReady = true;
-    document.getElementById('locationBlock').style.display = 'none';
-
-    var dLat = (userLat - CONF_LAT) * 111000;
-    var dLng = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
-    var dist = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
-
-    if (dist <= RADIUS_M) {
-      _setLoc('found', 'Location verified ✔', false);
-    } else {
-      _setLoc('offsite', 'Location (' + dist.toLocaleString() + ' m away)', false);
-    }
-
-    document.getElementById('email-inp').disabled = false;
-    document.getElementById('submit-btn').disabled = false;
-  }
-
-  function onLocError(err) {
-    if (err && err.code === 1) {
-      onLocDenied();
-    } else {
-      _handleNoLocation('Location unavailable — will be marked off-site');
-    }
-  }
-
-  function onLocDenied() {
-    userLat = null; userLng = null; locationReady = false;
-    _setLoc('denied', 'Location access blocked', false);
-    document.getElementById('locationBlock').style.display = 'block';
-    document.getElementById('email-inp').disabled = true;
-    document.getElementById('submit-btn').disabled = true;
-  }
-
-  function _handleNoLocation(msg) {
-    userLat = null; userLng = null;
-    locationReady = true;
-    _setLoc('offsite', msg, true);
-    document.getElementById('locationBlock').style.display = 'none';
-    document.getElementById('email-inp').disabled = false;
-    document.getElementById('submit-btn').disabled = false;
-  }
-
-  function _setLoc(state, text, showRetry) {
-    var badge = document.getElementById('locStatus');
-    badge.className = state;
-    document.getElementById('locText').textContent = text;
-
-    var existing = badge.querySelector('.loc-retry');
-    if (existing) existing.remove();
-
-    if (showRetry) {
-      var a = document.createElement('span');
-      a.className = 'loc-retry';
-      a.textContent = 'Retry';
-      a.onclick = requestLocation;
-      badge.appendChild(a);
-    }
-  }
-
-  // ════ Segment picker ════
-
-  function pick(el) {
-    el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) {
-      b.classList.remove('active');
     });
-    el.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  RESPONSE HANDLER
+// ══════════════════════════════════════════════════════════════════
+
+function showMsg(text, type) {
+  var el = document.getElementById('msg');
+  el.textContent = text;
+  el.className   = 'msg ' + type;
+}
+
+var RESULT_MAP = {
+  'SUCCESS':              { text: '✅ Attendance recorded successfully!',                    type: 'success' },
+  'SUCCESS_OFFSITE':      { text: '✅ Attendance recorded (off-site location noted).',        type: 'success' },
+  'SUCCESS_LOC_FAILED':   { text: '✅ Attendance recorded. Location flagged for review.',     type: 'success' },
+  'ALREADY_DONE':         { text: '⚠️ Already recorded for this slot.',                      type: 'info'    },
+  'NO_CHECKIN':           { text: '⚠️ You must check in before checking out.',                type: 'info'    },
+  'NOT_FOUND':            { text: '❌ Email not found. Use your registered email.',            type: 'error'   },
+  'INVALID_EMAIL':        { text: '❌ Invalid email address.',                                type: 'error'   }
+};
+
+function handleResult(result, day, action) {
+  document.getElementById('submit-btn').disabled  = false;
+  document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+  document.getElementById('retry-info').style.display = 'none';
+
+  var entry = RESULT_MAP[result];
+  if (entry) {
+    showMsg(entry.text, entry.type);
+    if (entry.type === 'success') setRateLimit(day, action);
+  } else if (result.indexOf('ERROR:') === 0) {
+    showMsg('❌ Server error: ' + result.replace('ERROR:', '').trim(), 'error');
+  } else {
+    showMsg('❌ Unexpected response. Please try again.', 'error');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SUBMIT
+// ══════════════════════════════════════════════════════════════════
+
+function submitForm() {
+  // Sanity-check state — should not be possible to reach here while detecting
+  var allowed = ['found', 'offsite', 'manual'];
+  if (allowed.indexOf(geoState) === -1) {
+    showMsg('Please wait for location detection to complete.', 'error');
+    return;
   }
 
-  // ════ Message ════
-
-  function showMsg(text, type) {
-    var el = document.getElementById('msg');
-    el.textContent = text;
-    el.className = 'msg ' + type;
+  var email = document.getElementById('email-inp').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showMsg('Please enter a valid email address.', 'error');
+    return;
   }
 
-  // ════ Response handler ════
+  var day    = document.querySelector('#seg-day .seg-btn.active').textContent.trim() === 'Day 1' ? 1 : 2;
+  var action = document.querySelector('#seg-action .seg-btn.active').textContent.trim() === 'Check-in' ? 'in' : 'out';
 
-  function handleResult(result) {
-    var btn = document.getElementById('submit-btn');
-    btn.disabled = false;
-    btn.innerHTML = 'Confirm Attendance';
-    document.getElementById('retry-info').style.display = 'none';
+  var wait = checkRateLimit(day, action);
+  if (wait) {
+    showMsg('⏳ Already submitted for this slot. Retry in ' + wait + '.', 'warning');
+    return;
+  }
 
-    var map = {
-      'SUCCESS':         { text: '✅ Attendance recorded successfully!',                type: 'success' },
-      'SUCCESS_OFFSITE': { text: '✅ Attendance recorded (off-site location noted).',   type: 'success' },
-      'ALREADY_DONE':    { text: '⚠️ Attendance already recorded for this slot.',       type: 'info'    },
-      'NO_CHECKIN':      { text: '⚠️ You must check in before checking out.',           type: 'info'    },
-      'NOT_FOUND':       { text: '❌ Email not found. Please use your registered email.', type: 'error' },
-      'INVALID_EMAIL':   { text: '❌ Invalid email address.',                             type: 'error' }
-    };
+  document.getElementById('submit-btn').disabled  = true;
+  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
+  showMsg('Submitting attendance…', 'info');
+  document.getElementById('retry-info').style.display = 'none';
 
-    if (map[result]) {
-      showMsg(map[result].text, map[result].type);
-      if (result === 'SUCCESS' || result === 'SUCCESS_OFFSITE') {
-        setRateLimit();
-      }
-    } else if (result.indexOf('ERROR:') === 0) {
-      showMsg('❌ Server error: ' + result.replace('ERROR:', ''), 'error');
-    } else {
-      showMsg('❌ Unexpected response. Please try again.', 'error');
+  // locStatus tells Apps Script exactly what happened with location:
+  //   onsite        → verified within RADIUS_M
+  //   offsite       → coordinates known but outside radius
+  //   LOCATION_FAILED → device could not obtain any coordinates
+  var locStatus = geoState === 'found' ? 'onsite'
+                : geoState === 'offsite' ? 'offsite'
+                : 'LOCATION_FAILED';
+
+  var url = APPS_SCRIPT_URL
+    + '?email='     + encodeURIComponent(email)
+    + '&day='       + day
+    + '&action='    + action
+    + '&lat='       + (userLat !== null ? userLat : '')
+    + '&lng='       + (userLng !== null ? userLng : '')
+    + '&locStatus=' + locStatus;
+
+  fetchWithRetry(
+    url, MAX_RETRIES,
+    function(result) { handleResult(result, day, action); },
+    function() {
+      document.getElementById('submit-btn').disabled  = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
     }
-  }
+  );
+}
 
-  // ════ Rate limiting: 7 საათი ════
-
-  var RATE_LIMIT_MS  = 7 * 60 * 60 * 1000;
-  var RATE_LIMIT_KEY = 'xi_conf_last_submit';
-
-  function checkRateLimit() {
-    try {
-      var last = localStorage.getItem(RATE_LIMIT_KEY);
-      if (!last) return null;
-      var elapsed = Date.now() - parseInt(last, 10);
-      if (elapsed < RATE_LIMIT_MS) {
-        var remaining = RATE_LIMIT_MS - elapsed;
-        var h = Math.floor(remaining / 3600000);
-        var m = Math.floor((remaining % 3600000) / 60000);
-        return h + 'h ' + m + 'm';
-      }
-      return null;
-    } catch(e) { return null; }
-  }
-
-  function setRateLimit() {
-    try {
-      localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
-    } catch(e) {}
-  }
-
-  // ════ Submit ════
-
-  function submitForm() {
-    if (!locationReady) {
-      showMsg('Please allow location access before submitting.', 'error');
-      return;
-    }
-
-    var email = document.getElementById('email-inp').value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showMsg('Please enter a valid email address.', 'error');
-      return;
-    }
-
-    var dayBtn = document.querySelector('#seg-day .seg-btn.active');
-    var actBtn = document.querySelector('#seg-action .seg-btn.active');
-    var day    = dayBtn.textContent.trim() === 'Day 1' ? 1 : 2;
-    var action = actBtn.textContent.trim() === 'Check-in' ? 'in' : 'out';
-
-    var wait = checkRateLimit();
-    if (wait) {
-      showMsg('⏳ Already submitted. You can submit again in ' + wait + '.', 'warning');
-      return;
-    }
-
-    var btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>Processing…';
-    showMsg('Submitting attendance…', 'info');
-    document.getElementById('retry-info').style.display = 'none';
-
-    var latParam = (userLat !== null) ? userLat : '';
-    var lngParam = (userLng !== null) ? userLng : '';
-
-    var url = APPS_SCRIPT_URL
-      + '?email='  + encodeURIComponent(email)
-      + '&day='    + day
-      + '&action=' + action
-      + '&lat='    + latParam
-      + '&lng='    + lngParam;
-
-    // ✅ გამოსწორება #3: fetchWithRetry — 30 concurrent user-ის შეცდომებს
-    //    ავტომატურად გაიმეორებს 3-ჯერ 2.5 წამის ინტერვალებით
-    fetchWithRetry(
-      url,
-      MAX_RETRIES,
-      function(result) {
-        handleResult(result);
-      },
-      function() {
-        var btn = document.getElementById('submit-btn');
-        btn.disabled = false;
-        btn.innerHTML = 'Confirm Attendance';
-        showMsg('❌ Connection error after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
-      }
-    );
-  }
-
-  // ════ Init ════
-  requestLocation();
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+startLocation();
 </script>
 </body>
 </html>
