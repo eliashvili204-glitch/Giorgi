@@ -10,7 +10,6 @@
 
   :root {
     --bg:           #EAEFF2;
-    --bg2:          #D5E1EA;
     --surface:      #FFFFFF;
     --border:       #B2C4D1;
     --border-focus: #1A365D;
@@ -117,61 +116,74 @@
   .input-field:focus    { border-color:var(--border-focus); background:var(--navy-soft); }
   .input-field:disabled { opacity:0.45; cursor:not-allowed; background:var(--bg); }
 
-  /* ── Location panel ── */
-  .loc-panel {
-    margin-top:12px; border-radius:var(--radius);
-    padding:12px 14px; font-size:12px; line-height:1.6;
+  /* ── Location status badge (compact, like doc #2) ── */
+  #locStatus {
+    margin-top: 10px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 400;
+    color: var(--text-soft); letter-spacing: 0.01em;
+    min-height: 20px;
   }
-  .loc-panel.detecting {
-    display:flex; align-items:center; gap:8px;
-    background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy);
-  }
-  .loc-panel.found {
-    display:flex; align-items:center; gap:8px;
-    background:#F0FDF4; border:1px solid #86EFAC; color:var(--success);
-  }
-  .loc-panel.offsite {
-    display:flex; align-items:center; gap:8px;
-    background:#FEF9EC; border:1px solid #F6D860; color:#7A5A00;
-  }
-  .loc-panel.manual {
-    display:block;
-    background:#FFF8F6; border:1px solid #EDD5CE; color:var(--warn);
-  }
-  .loc-panel.error {
-    display:block;
-    background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn);
-  }
+  #locStatus.found   { color: var(--success); }
+  #locStatus.offsite { color: #7A5A00; }
+  #locStatus.denied  { color: var(--warn); }
+  #locStatus.manual  { color: var(--amber); }
 
-  .loc-dot   { width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0; }
-  .loc-pulse { width:7px; height:7px; border-radius:50%; background:var(--navy); flex-shrink:0; animation:pulse 1.2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
-
-  .loc-main { font-weight:500; }
-  .loc-sub  { font-size:11px; opacity:0.8; margin-top:2px; }
-
-  .loc-err-title  { font-weight:700; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px; }
-  .loc-err-body   { font-size:12px; line-height:1.7; margin-bottom:10px; }
-  .loc-how        { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.9; margin-bottom:10px; }
-  .loc-how-title  { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
-  .loc-how-manual { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.7; margin-bottom:10px; }
-
-  .btn-row { display:flex; gap:8px; }
-  .loc-btn {
-    flex:1; padding:8px; border-radius:var(--radius);
-    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer;
-    transition:background 0.15s;
+  .loc-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; flex-shrink: 0;
   }
-  .loc-btn-retry  { border:1px solid var(--warn); background:transparent; color:var(--warn); }
-  .loc-btn-retry:hover  { background:rgba(192,80,58,0.07); }
-  .loc-btn-manual { border:1px solid var(--navy); background:var(--navy); color:#fff; }
-  .loc-btn-manual:hover { opacity:0.88; }
+  .loc-pulse {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--text-soft); flex-shrink: 0;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+  .loc-text { flex: 1; }
 
-  /* manual notice inside form */
+  /* ── Location blocked panel ── */
+  #locationBlock {
+    display: none;
+    background: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-top: 10px;
+  }
+  .loc-block-title {
+    font-size: 11px; font-weight: 700; color: var(--warn);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .loc-block-desc {
+    font-size: 11px; color: #8B4035; line-height: 1.65; margin-bottom: 10px;
+  }
+  .loc-how {
+    background: rgba(192,80,58,0.07); border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 10px;
+  }
+  .loc-how-title {
+    font-size: 10px; font-weight: 700; color: var(--warn);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
+  }
+  .loc-how-body {
+    font-size: 11px; color: #8B4035; line-height: 1.9;
+  }
+  .loc-continue-btn {
+    display: none;
+    width: 100%; padding: 9px;
+    background: var(--navy); border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+    color: #fff; cursor: pointer; letter-spacing: 0.04em;
+    transition: opacity 0.15s;
+  }
+  .loc-continue-btn:hover { opacity: 0.88; }
+
+  /* ── Manual notice ── */
   .manual-notice {
-    display:none; margin-top:8px; padding:8px 10px;
-    background:var(--amber-bg); border:1px solid var(--amber-border);
-    border-radius:var(--radius); font-size:11px; color:var(--amber); line-height:1.6;
+    display: none; margin-top: 8px; padding: 8px 10px;
+    background: var(--amber-bg); border: 1px solid var(--amber-border);
+    border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
   }
 
   /* ── Submit ── */
@@ -251,17 +263,34 @@
                placeholder="yourname@example.com" autocomplete="email" disabled>
       </div>
 
-      <div id="manual-notice" class="manual-notice">
-        ⚠️ Location could not be detected. Your attendance will be marked
-        <strong>LOCATION_FAILED</strong> in the system for manual review.
+      <!-- compact status badge -->
+      <div id="locStatus">
+        <div class="loc-pulse" id="loc-indicator"></div>
+        <div class="loc-text" id="locText">Detecting location…</div>
       </div>
 
-      <div class="loc-panel detecting" id="loc-panel">
-        <div class="loc-pulse"></div>
-        <div>
-          <div class="loc-main">Detecting location…</div>
-          <div class="loc-sub">Please allow location access when prompted</div>
+      <!-- manual override notice -->
+      <div id="manual-notice" class="manual-notice">
+        ⚠️ Location could not be verified. Attendance will be flagged <strong>LOCATION_FAILED</strong> for manual review.
+      </div>
+
+      <!-- blocked / error panel -->
+      <div id="locationBlock">
+        <div class="loc-block-title">Location access required</div>
+        <div class="loc-block-desc" id="loc-block-desc">
+          Location is needed to verify your attendance. Enable it in settings, then reload the page.
         </div>
+        <div class="loc-how">
+          <div class="loc-how-title">How to enable</div>
+          <div class="loc-how-body" id="loc-how-body">
+            <b>iPhone (Safari):</b> Settings → Safari → Location → Allow<br>
+            <b>Android (Chrome):</b> Settings → Site Settings → Location → Allow
+          </div>
+        </div>
+        <!-- shown only after 3+ page loads -->
+        <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
+          Continue anyway
+        </button>
       </div>
     </div>
 
@@ -272,70 +301,69 @@
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
-
 var CONF_LAT      = 41.6893212;
 var CONF_LNG      = 44.8192619;
 var RADIUS_M      = 150;
-
 var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
 var RATE_KEY_PFX  = 'xi_conf_';
-
 var MAX_RETRIES    = 3;
 var RETRY_DELAY_MS = 2500;
 
 var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
 
+// ══════════════════════════════════════════════════════════════
+//  PAGE-LOAD COUNTER (survives reload, resets on success)
+//  After 3+ loads with location blocked → show "Continue anyway"
+// ══════════════════════════════════════════════════════════════
+var PAGE_LOAD_KEY = 'xi_page_loads';
+var pageLoads = 0;
+try {
+  pageLoads = parseInt(sessionStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
+  pageLoads++;
+  sessionStorage.setItem(PAGE_LOAD_KEY, pageLoads);
+} catch(e) {}
+
+function resetPageLoads() {
+  pageLoads = 0;
+  try { sessionStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════
 var geoState = 'detecting';
 var userLat  = null;
 var userLng  = null;
 
-var failCount = 0;
-try {
-  var _stored = sessionStorage.getItem('xi_geo_fails');
-  if (_stored) failCount = parseInt(_stored, 10) || 0;
-} catch(e) {}
-
-function saveFailCount() {
-  try { sessionStorage.setItem('xi_geo_fails', failCount); } catch(e) {}
-}
-function resetFailCount() {
-  failCount = 0;
-  try { sessionStorage.removeItem('xi_geo_fails'); } catch(e) {}
-}
-
+// ══════════════════════════════════════════════════════════════
+//  GEOLOCATION
+// ══════════════════════════════════════════════════════════════
 function startLocation() {
   geoState = 'detecting';
   userLat  = null;
   userLng  = null;
-
   setFormEnabled(false);
-  showManualNotice(false);
-  renderDetecting('Detecting location…', 'Please allow location access when prompted');
+  hideManualNotice();
+  hideBlock();
+  setStatusDetecting('Detecting location…');
 
   if (!navigator.geolocation) {
-    failCount++;
-    saveFailCount();
-    renderError(
-      'Location not supported',
-      'Your browser does not support location. Please open this page in Safari (iPhone) or Chrome (Android).',
-      null, false
-    );
+    showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
     return;
   }
 
   if (navigator.permissions) {
     navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
       if (result.state === 'denied') {
-        failCount++;
-        saveFailCount();
-        renderDeniedError();
+        onLocDenied();
       } else {
         tryHighAccuracy();
       }
-    }).catch(function() {
-      tryHighAccuracy();
-    });
+    }).catch(tryHighAccuracy);
   } else {
     tryHighAccuracy();
   }
@@ -345,13 +373,8 @@ function tryHighAccuracy() {
   navigator.geolocation.getCurrentPosition(
     onGeoSuccess,
     function(err) {
-      if (err.code === 1) {
-        failCount++;
-        saveFailCount();
-        renderDeniedError();
-        return;
-      }
-      renderDetecting('Retrying with network location…', 'GPS unavailable — trying alternate method');
+      if (err.code === 1) { onLocDenied(); return; }
+      setStatusDetecting('Retrying with network location…');
       setTimeout(tryLowAccuracy, 600);
     },
     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -362,23 +385,19 @@ function tryLowAccuracy() {
   navigator.geolocation.getCurrentPosition(
     onGeoSuccess,
     function(err) {
-      if (err.code === 1) {
-        failCount++;
-        saveFailCount();
-        renderDeniedError();
-        return;
-      }
-      failCount++;
-      saveFailCount();
-      renderPositionError(err.code === 3 ? 'timeout' : 'unavailable');
+      if (err.code === 1) { onLocDenied(); return; }
+      // timeout or unavailable — show block with instructions
+      showBlock(
+        'Location could not be determined. Check that Location Services are enabled, then reload the page.',
+        true
+      );
     },
     { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
   );
 }
 
 function onGeoSuccess(pos) {
-  resetFailCount();
-
+  resetPageLoads();
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
 
@@ -387,158 +406,126 @@ function onGeoSuccess(pos) {
   var distM = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
   var acc   = Math.round(pos.coords.accuracy);
 
+  hideBlock();
+  hideManualNotice();
+
   if (distM <= RADIUS_M) {
     geoState = 'found';
-    renderFound('Location verified — on-site ✔',
-                'Accuracy ±' + acc + ' m · ' + distM + ' m from venue');
+    setStatusFound('Location verified ✔  ·  ±' + acc + ' m');
   } else {
     geoState = 'offsite';
-    renderOffsite('Location detected — off-site',
-                  distM.toLocaleString() + ' m from venue · accuracy ±' + acc + ' m');
+    setStatusOffsite('Off-site  ·  ' + distM.toLocaleString() + ' m from venue  ·  ±' + acc + ' m');
   }
   setFormEnabled(true);
 }
 
-function retryLocation() {
-  if (IS_IOS) {
-    saveFailCount();
-    window.location.reload();
-  } else {
-    startLocation();
-  }
-}
-
-function renderDeniedError() {
+function onLocDenied() {
   geoState = 'denied';
   setFormEnabled(false);
-  showManualNotice(false);
-
-  var tips;
-  if (IS_IOS) {
-    tips = '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow';
-  } else {
-    tips = '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
-  }
-  renderError(
-    'Location access denied',
-    'Location is needed to verify your attendance. Enable it in settings, then tap Retry location.',
-    tips,
+  setStatusDenied('Location access blocked');
+  showBlock(
+    'Location is needed to verify your attendance. Enable it in settings, then reload the page.',
     true
   );
 }
 
-function renderPositionError(reason) {
-  geoState = 'failed';
-  setFormEnabled(false);
-  showManualNotice(false);
-
-  var body, tips;
-  if (reason === 'timeout') {
-    body = 'Location timed out on both GPS and network. Check that Location Services are on, then tap Retry location.';
-    tips = IS_IOS
-      ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
-      : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
-  } else {
-    body = 'Your device could not determine your location. Check Location Services settings, then tap Retry location.';
-    tips = IS_IOS
-      ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
-      : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
-  }
-  renderError('Location unavailable', body, tips, true);
-}
-
-function renderError(title, body, tips, showRetry) {
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel error';
-
-  var tipsHtml = tips
-    ? '<div class="loc-how"><div class="loc-how-title">How to enable</div>' + tips + '</div>'
-    : '';
-
-  var retryHtml = showRetry
-    ? '<button class="loc-btn loc-btn-retry" onclick="retryLocation()">↻ Retry location</button>'
-    : '';
-
-  var continueHtml = (failCount >= 3)
-    ? '<button class="loc-btn loc-btn-manual" onclick="activateManual()">Continue anyway</button>'
-    : '';
-
-  var btnRowHtml = (retryHtml || continueHtml)
-    ? '<div class="btn-row">' + retryHtml + continueHtml + '</div>'
-    : '';
-
-  p.innerHTML =
-    '<div class="loc-err-title">' + title + '</div>' +
-    '<div class="loc-err-body">'  + body  + '</div>' +
-    tipsHtml + btnRowHtml;
-}
-
-function renderDetecting(main, sub) {
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel detecting';
-  p.innerHTML =
-    '<div class="loc-pulse"></div>' +
-    '<div>' +
-      '<div class="loc-main">' + main + '</div>' +
-      (sub ? '<div class="loc-sub">' + sub + '</div>' : '') +
-    '</div>';
-}
-
-function renderFound(main, sub) {
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel found';
-  p.innerHTML =
-    '<div class="loc-dot"></div>' +
-    '<div><div class="loc-main">' + main + '</div>' +
-    (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
-}
-
-function renderOffsite(main, sub) {
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel offsite';
-  p.innerHTML =
-    '<div class="loc-dot"></div>' +
-    '<div><div class="loc-main">' + main + '</div>' +
-    (sub ? '<div class="loc-sub">' + sub + '</div>' : '') + '</div>';
-}
-
+// ══════════════════════════════════════════════════════════════
+//  MANUAL OVERRIDE (after 3+ loads)
+// ══════════════════════════════════════════════════════════════
 function activateManual() {
   geoState = 'manual';
   userLat  = null;
   userLng  = null;
+  hideBlock();
+  showManualNotice();
 
-  var p = document.getElementById('loc-panel');
-  p.className = 'loc-panel manual';
-  p.innerHTML =
-    '<div class="loc-err-title" style="color:var(--warn)">Submitting without location</div>' +
-    '<div class="loc-how-manual">' +
-      'Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag. ' +
-      'An organiser may follow up to verify your presence.' +
-    '</div>' +
-    '<button class="loc-btn loc-btn-retry" onclick="startLocation()" style="width:100%">↻ Try location again</button>';
+  var ind = document.getElementById('loc-indicator');
+  ind.className = '';
+  ind.style.cssText = 'width:6px;height:6px;border-radius:50%;background:#92400E;flex-shrink:0;';
+  document.getElementById('locText').textContent = 'Continuing without location';
+  document.getElementById('locStatus').className = 'manual';
 
-  showManualNotice(true);
   setFormEnabled(true);
 }
 
-function showManualNotice(show) {
-  document.getElementById('manual-notice').style.display = show ? 'block' : 'none';
+// ══════════════════════════════════════════════════════════════
+//  STATUS BADGE HELPERS
+// ══════════════════════════════════════════════════════════════
+function setStatusDetecting(text) {
+  var ind = document.getElementById('loc-indicator');
+  ind.className = 'loc-pulse';
+  ind.style.cssText = '';
+  document.getElementById('locText').textContent = text;
+  document.getElementById('locStatus').className = '';
+}
+function setStatusFound(text) {
+  _setDot('found', text);
+}
+function setStatusOffsite(text) {
+  _setDot('offsite', text);
+}
+function setStatusDenied(text) {
+  _setDot('denied', text);
+}
+function _setDot(cls, text) {
+  var ind = document.getElementById('loc-indicator');
+  ind.className = 'loc-dot';
+  ind.style.cssText = '';
+  document.getElementById('locText').textContent = text;
+  document.getElementById('locStatus').className = cls;
 }
 
+// ══════════════════════════════════════════════════════════════
+//  BLOCK PANEL
+// ══════════════════════════════════════════════════════════════
+function showBlock(desc, showContinueIfEnough) {
+  document.getElementById('loc-block-desc').textContent = desc;
+  document.getElementById('locationBlock').style.display = 'block';
+
+  // "Continue anyway" only after 3+ page loads
+  var btn = document.getElementById('loc-continue-btn');
+  if (showContinueIfEnough && pageLoads >= 3) {
+    btn.style.display = 'block';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+function hideBlock() {
+  document.getElementById('locationBlock').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MANUAL NOTICE
+// ══════════════════════════════════════════════════════════════
+function showManualNotice() {
+  document.getElementById('manual-notice').style.display = 'block';
+}
+function hideManualNotice() {
+  document.getElementById('manual-notice').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FORM ENABLE / DISABLE
+// ══════════════════════════════════════════════════════════════
 function setFormEnabled(enabled) {
   document.getElementById('email-inp').disabled  = !enabled;
   document.getElementById('submit-btn').disabled = !enabled;
   document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
 }
 
+// ══════════════════════════════════════════════════════════════
+//  SEGMENT PICKER
+// ══════════════════════════════════════════════════════════════
 function pick(el) {
   if (el.disabled) return;
   el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
   el.classList.add('active');
 }
 
+// ══════════════════════════════════════════════════════════════
+//  RATE LIMITING — per slot
+// ══════════════════════════════════════════════════════════════
 function rlKey(day, action) { return RATE_KEY_PFX + 'd' + day + '_' + action; }
-
 function checkRateLimit(day, action) {
   try {
     var last = localStorage.getItem(rlKey(day, action));
@@ -548,11 +535,13 @@ function checkRateLimit(day, action) {
     return null;
   } catch(e) { return null; }
 }
-
 function setRateLimit(day, action) {
   try { localStorage.setItem(rlKey(day, action), Date.now().toString()); } catch(e) {}
 }
 
+// ══════════════════════════════════════════════════════════════
+//  FETCH WITH RETRY
+// ══════════════════════════════════════════════════════════════
 function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
   fetch(url)
@@ -571,6 +560,9 @@ function fetchWithRetry(url, left, onSuccess, onFail) {
     });
 }
 
+// ══════════════════════════════════════════════════════════════
+//  RESPONSE HANDLER
+// ══════════════════════════════════════════════════════════════
 function showMsg(text, type) {
   var el = document.getElementById('msg');
   el.textContent = text;
@@ -603,6 +595,9 @@ function handleResult(result, day, action) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+//  SUBMIT
+// ══════════════════════════════════════════════════════════════
 function submitForm() {
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
@@ -653,6 +648,9 @@ function submitForm() {
   );
 }
 
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
 startLocation();
 </script>
 </body>
