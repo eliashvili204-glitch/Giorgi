@@ -42,30 +42,66 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .now-sub{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.5;font-style:italic;}
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
 .speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
-.workshop-section{padding:14px 20px 0;}
-.workshop-card{background:var(--surface);border:1px solid var(--gold-border);border-radius:12px;padding:18px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.03);}
-.workshop-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
-.workshop-icon{font-size:14px;}
-.workshop-tag{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;}
-.workshop-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px;line-height:1.3;}
-.workshop-desc{font-size:11px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;}
-.workshop-registered{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;}
-.workshop-registered-icon{font-size:16px;}
-.workshop-registered-text{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
-.workshop-registered-email{font-size:10px;color:var(--text-faint);margin-top:1px;}
-.workshop-inp-row{display:flex;gap:8px;align-items:stretch;}
-.workshop-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;touch-action:auto;transition:border-color .2s;}
-.workshop-inp:focus{border-color:var(--gold-border);}
-.workshop-inp::placeholder{color:var(--text-faint);}
-.workshop-inp.err{border-color:var(--warn);}
-.workshop-btn{background:var(--navy);border:none;border-radius:8px;padding:10px 18px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.06em;transition:opacity .2s;-webkit-user-select:none;user-select:none;}
-.workshop-btn:active{opacity:.8;}
-.workshop-btn:disabled{opacity:.5;cursor:not-allowed;}
-.workshop-err{font-size:10px;color:var(--warn);margin-top:6px;display:none;}
-.workshop-err.show{display:block;}
-.workshop-migrating{font-size:11px;color:var(--text-faint);margin-top:8px;display:none;align-items:center;gap:6px;}
-.workshop-migrating.show{display:flex;}
-.workshop-migrating .spinner{width:12px;height:12px;border-width:1.5px;}
+
+/* ══ WORKSHOP ══ */
+.workshop-wrap{padding:20px 20px 0;}
+.workshop-container{display:flex;flex-direction:column;gap:16px;}
+.ws-header{text-align:center;padding:4px 0 8px;}
+.ws-header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 14px;margin-bottom:12px;}
+.ws-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
+.ws-badge-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
+.ws-header-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
+.ws-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.ws-cards{grid-template-columns:1fr;}}
+.ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+.ws-card:active{transform:scale(.97);}
+.ws-card.full{opacity:.55;pointer-events:none;}
+.ws-card-inner{position:relative;z-index:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 16px;transition:border-color .2s,background .2s;height:100%;display:flex;flex-direction:column;gap:10px;}
+.ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
+.ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
+.ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.ws-card-icon{font-size:18px;color:var(--navy);}
+.ws-card-tag{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 8px;border-radius:20px;}
+.ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
+.ws-card-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);line-height:1.3;}
+.ws-card-desc{font-size:11px;color:var(--text-dim);line-height:1.6;flex:1;}
+.ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.ws-seats{display:flex;flex-direction:column;gap:4px;}
+.ws-seats-bar-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.ws-seats-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy),#4A90D9);transition:width .6s ease;}
+.ws-seats-bar.warn{background:linear-gradient(90deg,#F59E0B,#FBBF24);}
+.ws-seats-bar.danger{background:linear-gradient(90deg,#EF4444,#F87171);}
+.ws-seats-text{font-size:10px;font-weight:700;color:var(--text-dim);}
+.ws-seats-text.warn{color:#B45309;}
+.ws-seats-text.danger{color:#DC2626;}
+.ws-select-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:var(--navy);border-radius:8px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;transition:opacity .15s;}
+.ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
+.ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
+@keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
+.ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
+.ws-form-selected-icon{font-size:20px;color:var(--navy);flex-shrink:0;}
+.ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
+.ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+.ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
+.ws-form-change:hover{background:rgba(26,54,93,0.1);}
+.ws-form-body{display:flex;gap:8px;padding:14px 16px;}
+.ws-form-inp{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--text);font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;touch-action:auto;transition:border-color .2s;}
+.ws-form-inp:focus{border-color:var(--navy-border);}
+.ws-form-inp::placeholder{color:var(--text-faint);}
+.ws-form-inp.err{border-color:#DC2626;}
+.ws-form-submit{background:var(--navy);border:none;border-radius:8px;padding:10px 20px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.06em;display:flex;align-items:center;gap:6px;transition:opacity .2s;flex-shrink:0;}
+.ws-form-submit:hover{opacity:.88;}
+.ws-form-submit:disabled{opacity:.5;cursor:not-allowed;}
+.ws-spinner{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.ws-form-err{padding:8px 16px 12px;font-size:11px;color:#DC2626;line-height:1.5;}
+.ws-success{background:var(--surface);border:1.5px solid rgba(22,163,74,0.4);border-radius:14px;padding:24px 20px;text-align:center;animation:wsSlideIn .4s cubic-bezier(.16,1,.3,1) both;}
+.ws-success-icon{width:44px;height:44px;border-radius:50%;background:rgba(22,163,74,0.12);border:1.5px solid rgba(22,163,74,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;color:#16A34A;margin:0 auto 12px;font-weight:700;}
+.ws-success-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:6px;}
+.ws-success-sub{font-size:12px;color:var(--text-dim);line-height:1.6;}
+.ws-success-seats{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;color:#16A34A;background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.3);padding:4px 12px;border-radius:20px;}
+
 .next-section{padding:12px 20px 0;}
 .next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
 .next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
@@ -144,22 +180,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fb-ta::placeholder{color:var(--text-faint);font-style:italic;}
 .fb-submit-wrap{padding:0 16px 16px;}
 .fb-submit{padding:12px;background:var(--gold);border:none;border-radius:8px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;width:100%;letter-spacing:.1em;text-transform:uppercase;}
-.countdown-wrap{padding:24px 20px 8px;}
-.countdown-card{background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.02);}
-.cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 12px;margin-bottom:18px;}
-.cd-event-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
-.cd-event-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
-.cd-heading{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text-dim);margin-bottom:22px;line-height:1.4;}
-.cd-heading span{color:var(--gold);font-weight:700;}
-.cd-blocks{display:flex;align-items:stretch;justify-content:center;gap:8px;}
-.cd-unit{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px 10px;min-width:62px;flex:1;max-width:72px;}
-.cd-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--text);line-height:1;}
-.cd-word{font-size:8px;font-weight:700;color:var(--text-faint);letter-spacing:.14em;text-transform:uppercase;margin-top:6px;}
-.cd-sep{font-family:'DM Serif Display',serif;font-size:30px;color:var(--border);align-self:center;margin-bottom:18px;line-height:1;}
-.cd-footer{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;}
-.cd-footer-line{flex:1;height:1px;background:var(--border);max-width:40px;}
-.cd-date{font-size:11px;color:var(--text-dim);letter-spacing:.04em;white-space:nowrap;}
-.cd-date strong{color:var(--gold);font-weight:700;}
 </style>
 </head>
 <body>
@@ -182,23 +202,57 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <button class="notif-banner-close" onclick="document.getElementById('notif-banner').style.display='none'">&#x2715;</button>
   </div>
 
-  <div id="countdown-section" class="countdown-wrap" style="display:none;">
-    <div class="countdown-card">
-      <div class="cd-event-badge"><div class="cd-event-dot"></div><span class="cd-event-text">SYSSA &mdash; A Nobel's Day</span></div>
-      <div class="cd-heading">Conference Registration<br><span>Opens In</span></div>
-      <div class="cd-blocks">
-        <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-word">Days</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-word">Hours</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-word">Min</div></div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-word">Sec</div></div>
+  <!-- WORKSHOP SECTION (replaces countdown) -->
+  <div id="workshop-section" class="workshop-wrap" style="display:none;">
+    <div class="workshop-container">
+      <div class="ws-header">
+        <div class="ws-header-badge"><span class="ws-badge-dot"></span><span class="ws-badge-text">Workshop Registration</span></div>
+        <div class="ws-header-title">Choose Your Workshop</div>
+        <div class="ws-header-sub">Select a workshop and register with your email. Limited seats available.</div>
       </div>
-      <div class="cd-footer">
-        <div class="cd-footer-line"></div>
-        <div class="cd-date"><strong>June 13, 2026</strong> &middot; 9:00 AM &middot; DTMU, Tbilisi</div>
-        <div class="cd-footer-line"></div>
+      <div class="ws-cards" id="ws-cards">
+        <div class="ws-card" id="ws-card-a" onclick="selectWorkshop('a')">
+          <div class="ws-card-inner">
+            <div class="ws-card-top"><div class="ws-card-icon">◈</div><div class="ws-card-tag" id="ws-tag-a">Available</div></div>
+            <div class="ws-card-title" id="ws-title-a">Workshop A</div>
+            <div class="ws-card-desc" id="ws-desc-a"></div>
+            <div class="ws-card-footer">
+              <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-a"></div></div><div class="ws-seats-text" id="ws-seats-text-a">Loading...</div></div>
+              <div class="ws-select-btn" id="ws-btn-a">Select ▸</div>
+            </div>
+          </div>
+        </div>
+        <div class="ws-card" id="ws-card-b" onclick="selectWorkshop('b')">
+          <div class="ws-card-inner">
+            <div class="ws-card-top"><div class="ws-card-icon">✦</div><div class="ws-card-tag" id="ws-tag-b">Available</div></div>
+            <div class="ws-card-title" id="ws-title-b">Workshop B</div>
+            <div class="ws-card-desc" id="ws-desc-b"></div>
+            <div class="ws-card-footer">
+              <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-b"></div></div><div class="ws-seats-text" id="ws-seats-text-b">Loading...</div></div>
+              <div class="ws-select-btn" id="ws-btn-b">Select ▸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ws-form-wrap" id="ws-form-wrap" style="display:none;">
+        <div class="ws-form-card">
+          <div class="ws-form-selected">
+            <span class="ws-form-selected-icon" id="ws-form-icon">◈</span>
+            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">Workshop A</div></div>
+            <button class="ws-form-change" onclick="changeWorkshop()">Change ✕</button>
+          </div>
+          <div class="ws-form-body">
+            <input class="ws-form-inp" id="ws-form-email" type="email" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')submitWorkshop()">
+            <button class="ws-form-submit" id="ws-form-submit" onclick="submitWorkshop()"><span id="ws-submit-text">Register Now</span><span id="ws-submit-spinner" style="display:none" class="ws-spinner"></span></button>
+          </div>
+          <div class="ws-form-err" id="ws-form-err" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="ws-success" id="ws-success" style="display:none;">
+        <div class="ws-success-icon">✓</div>
+        <div class="ws-success-title">You're registered!</div>
+        <div class="ws-success-sub" id="ws-success-sub"></div>
+        <div class="ws-success-seats" id="ws-success-seats"></div>
       </div>
     </div>
   </div>
@@ -210,37 +264,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="now-title" id="now-title"></div>
       <div class="now-sub" id="now-sub"></div>
       <div class="speaker-timer"><span style="font-size:9px;color:var(--text-faint)">&#9201;</span><span class="speaker-timer-val" id="aud-timer" style="margin-left:6px">00:00</span></div>
-    </div>
-  </div>
-
-  <div id="workshop-section" class="workshop-section" style="display:none;">
-    <div class="workshop-card">
-      <div class="workshop-top">
-        <span class="workshop-icon">&#10022;</span>
-        <span class="workshop-tag">Workshop Registration</span>
-      </div>
-      <div class="workshop-title">Register for the Workshop</div>
-      <div class="workshop-desc">Enter your email to register for the workshop.</div>
-      <div id="workshop-done" style="display:none;">
-        <div class="workshop-registered">
-          <span class="workshop-registered-icon">&#10003;</span>
-          <div>
-            <div class="workshop-registered-text">Registered!</div>
-            <div class="workshop-registered-email" id="workshop-done-email"></div>
-          </div>
-        </div>
-      </div>
-      <div id="workshop-form">
-        <div class="workshop-inp-row">
-          <input class="workshop-inp" id="workshop-email-inp" type="email" placeholder="your@email.com" maxlength="120" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')registerWorkshop()">
-          <button class="workshop-btn" id="workshop-btn" onclick="registerWorkshop()">Register</button>
-        </div>
-        <div class="workshop-err" id="workshop-err">Please enter a valid email address.</div>
-        <div class="workshop-migrating" id="workshop-migrating">
-          <div class="spinner"></div>
-          <span>Registering...</span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -321,7 +344,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 <script>
 const SB_URL  = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-const CONF_START = new Date('2026-06-13T05:00:00Z');
 
 const AGENDA = [
   {id:1,  time:"09:30\u201310:00", speaker:"Registration, Coffee Break",      title:"",session:"pre",isBreak:true},
@@ -361,8 +383,7 @@ let currentId = 3, speakerStartedAt = Date.now();
 let currentEpoch = 1;
 let audTimerInterval = null;
 let chatOpen = false, fbOpen = false, unread = 0;
-let aiEnabled = true, showCountdown = false, showWorkshop = false;
-let cdInterval = null;
+let aiEnabled = true, showWorkshop = false;
 let pageEnterTime = Date.now();
 let heartbeatInterval = null;
 let sessionTracked = false;
@@ -372,102 +393,260 @@ let sessionId = localStorage.getItem('syssa_sid') || ('p_' + Math.random().toStr
 if (!localStorage.getItem('syssa_sid')) localStorage.setItem('syssa_sid', sessionId);
 const isReturning = !!localStorage.getItem('syssa_sid');
 
+// ── WORKSHOP STATE ──
+const WORKSHOPS = {
+  a: {
+    title: 'Workshop A',
+    desc:  'Workshop A-ის აღწერა',
+    icon:  '◈',
+    limit: 50
+  },
+  b: {
+    title: 'Workshop B',
+    desc:  'Workshop B-ის აღწერა',
+    icon:  '✦',
+    limit: 50
+  }
+};
+let selectedWorkshop   = null;
+let workshopCounts     = { a: 0, b: 0 };
+let workshopRegistered = null;
+
 // ── EPOCH CHANGE ──
 function handleEpochChange(newEpoch) {
   if (newEpoch === currentEpoch) return;
   currentEpoch = newEpoch;
   localStorage.setItem('syssa_epoch', String(newEpoch));
   localStorage.removeItem('syssa_workshop_email');
-  participantEmail = null;
-  const wForm = document.getElementById('workshop-form');
-  const wDone = document.getElementById('workshop-done');
-  if (wForm) wForm.style.display = 'block';
-  if (wDone) wDone.style.display = 'none';
-  const wInp = document.getElementById('workshop-email-inp');
-  const wBtn = document.getElementById('workshop-btn');
-  if (wInp) { wInp.value = ''; wInp.disabled = false; wInp.classList.remove('err'); }
-  if (wBtn) wBtn.disabled = false;
-  document.getElementById('workshop-err').classList.remove('show');
+  localStorage.removeItem('syssa_workshop_key_' + currentEpoch);
+  participantEmail   = null;
+  workshopRegistered = null;
+  selectedWorkshop   = null;
+  workshopCounts     = { a: 0, b: 0 };
+
+  // reset workshop UI fully
+  const wsCards   = document.getElementById('ws-cards');
+  const wsForm    = document.getElementById('ws-form-wrap');
+  const wsSuccess = document.getElementById('ws-success');
+  if (wsCards)   { wsCards.style.display = 'grid'; }
+  if (wsForm)    { wsForm.style.display  = 'none'; }
+  if (wsSuccess) { wsSuccess.style.display = 'none'; }
+  ['a','b'].forEach(k => {
+    const c = document.getElementById('ws-card-' + k);
+    if (c) c.classList.remove('selected','full');
+  });
+  document.getElementById('ws-form-err') && (document.getElementById('ws-form-err').style.display = 'none');
+  const inp = document.getElementById('ws-form-email');
+  if (inp) { inp.value = ''; inp.classList.remove('err'); }
+
   chatHistory = [];
   document.getElementById('chat-msgs').innerHTML =
     '<div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>';
   sessionId = 'p_' + Math.random().toString(36).substr(2,9);
   localStorage.setItem('syssa_sid', sessionId);
   sessionTracked = false;
+  if (showWorkshop) initWorkshop();
   trackSession();
 }
 
-// ── WORKSHOP ──
+// ── WORKSHOP FUNCTIONS ──
 function applyWorkshopMode() {
   const sec = document.getElementById('workshop-section');
   if (!sec) return;
   sec.style.display = showWorkshop ? 'block' : 'none';
-  if (showWorkshop) {
-    const storedEmail = localStorage.getItem('syssa_workshop_email');
-    if (storedEmail) {
-      participantEmail = storedEmail;
-      document.getElementById('workshop-form').style.display = 'none';
-      document.getElementById('workshop-done').style.display = 'block';
-      document.getElementById('workshop-done-email').textContent = storedEmail;
-    }
-  }
+  if (showWorkshop) initWorkshop();
 }
 
-async function registerWorkshop() {
-  const inp   = document.getElementById('workshop-email-inp');
-  const btn   = document.getElementById('workshop-btn');
-  const err   = document.getElementById('workshop-err');
-  const mig   = document.getElementById('workshop-migrating');
-  const email = (inp.value || '').trim().toLowerCase();
+async function initWorkshop() {
+  Object.entries(WORKSHOPS).forEach(([key, w]) => {
+    const t = document.getElementById('ws-title-' + key);
+    const d = document.getElementById('ws-desc-'  + key);
+    if (t) t.textContent = w.title;
+    if (d) d.textContent = w.desc;
+  });
 
-  err.classList.remove('show');
+  await loadWorkshopCounts();
+
+  const storedKey   = localStorage.getItem('syssa_workshop_key_' + currentEpoch);
+  const storedEmail = localStorage.getItem('syssa_workshop_email');
+  if (storedKey && storedEmail) {
+    workshopRegistered = storedKey;
+    participantEmail   = storedEmail;
+    showWorkshopSuccess(storedKey, storedEmail);
+    return;
+  }
+  renderWorkshopCards();
+}
+
+async function loadWorkshopCounts() {
+  try {
+    const { data } = await sb.from('workshop_registrations')
+      .select('workshop_key').eq('reset_epoch', currentEpoch);
+    workshopCounts = { a: 0, b: 0 };
+    (data || []).forEach(r => {
+      if (r.workshop_key === 'a') workshopCounts.a++;
+      else if (r.workshop_key === 'b') workshopCounts.b++;
+    });
+  } catch(e) { console.warn('Workshop counts error:', e.message); }
+  updateSeatsUI();
+}
+
+function updateSeatsUI() {
+  ['a','b'].forEach(key => {
+    const w     = WORKSHOPS[key];
+    const count = workshopCounts[key];
+    const left  = Math.max(0, w.limit - count);
+    const pct   = Math.round((count / w.limit) * 100);
+    const isFull = left === 0;
+
+    const bar = document.getElementById('ws-bar-' + key);
+    if (bar) {
+      bar.style.width = pct + '%';
+      bar.className   = 'ws-seats-bar' + (pct >= 80 ? ' danger' : pct >= 60 ? ' warn' : '');
+    }
+    const txt = document.getElementById('ws-seats-text-' + key);
+    if (txt) {
+      txt.textContent = isFull
+        ? 'Fully booked'
+        : left + ' seat' + (left === 1 ? '' : 's') + ' remaining';
+      txt.className = 'ws-seats-text' + (isFull ? ' danger' : left <= 10 ? ' warn' : '');
+    }
+    const tag = document.getElementById('ws-tag-' + key);
+    if (tag) {
+      tag.textContent = isFull ? 'Full' : left <= 10 ? 'Almost Full' : 'Available';
+      tag.className   = 'ws-card-tag' + (isFull ? ' full-tag' : '');
+    }
+    const card = document.getElementById('ws-card-' + key);
+    if (card) card.classList.toggle('full', isFull);
+    const btn = document.getElementById('ws-btn-' + key);
+    if (btn) btn.textContent = isFull ? 'Full ✕' : 'Select ▸';
+  });
+}
+
+function selectWorkshop(key) {
+  const w = WORKSHOPS[key];
+  if (!w) return;
+  const left = Math.max(0, w.limit - workshopCounts[key]);
+  if (left === 0) return;
+
+  selectedWorkshop = key;
+  ['a','b'].forEach(k => {
+    const c = document.getElementById('ws-card-' + k);
+    if (c) c.classList.toggle('selected', k === key);
+  });
+
+  document.getElementById('ws-form-icon').textContent = w.icon;
+  document.getElementById('ws-form-name').textContent = w.title;
+
+  const fw = document.getElementById('ws-form-wrap');
+  fw.style.display = 'block';
+
+  const inp = document.getElementById('ws-form-email');
+  if (inp && participantEmail) inp.value = participantEmail;
+
+  setTimeout(() => fw.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  logEvent('workshop_selected', { workshop: key });
+}
+
+function changeWorkshop() {
+  selectedWorkshop = null;
+  document.getElementById('ws-form-wrap').style.display = 'none';
+  ['a','b'].forEach(k => {
+    const c = document.getElementById('ws-card-' + k);
+    if (c) c.classList.remove('selected');
+  });
+  document.getElementById('ws-form-err').style.display = 'none';
+  document.getElementById('ws-form-email').classList.remove('err');
+}
+
+async function submitWorkshop() {
+  if (!selectedWorkshop) return;
+  const inp     = document.getElementById('ws-form-email');
+  const btn     = document.getElementById('ws-form-submit');
+  const errEl   = document.getElementById('ws-form-err');
+  const spinner = document.getElementById('ws-submit-spinner');
+  const btnTxt  = document.getElementById('ws-submit-text');
+  const email   = (inp.value || '').trim().toLowerCase();
+
+  errEl.style.display = 'none';
   inp.classList.remove('err');
+
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     inp.classList.add('err');
-    err.textContent = 'Please enter a valid email address.';
-    err.classList.add('show');
+    errEl.textContent   = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    inp.focus();
     return;
   }
 
-  btn.disabled = true;
-  inp.disabled = true;
-  mig.classList.add('show');
+  btn.disabled = true; inp.disabled = true;
+  spinner.style.display = 'inline-block'; btnTxt.textContent = 'Registering...';
 
   try {
-    // 1. Workshop registration
+    // re-check seats live before inserting
+    await loadWorkshopCounts();
+    const w    = WORKSHOPS[selectedWorkshop];
+    const left = Math.max(0, w.limit - workshopCounts[selectedWorkshop]);
+    if (left === 0) {
+      errEl.textContent   = 'Sorry, this workshop is now full. Please choose the other one.';
+      errEl.style.display = 'block';
+      updateSeatsUI();
+      btn.disabled = false; inp.disabled = false;
+      spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
+      return;
+    }
+
     const { error: wErr } = await sb.from('workshop_registrations').insert({
-      email:       email,
-      session_id:  sessionId,
-      reset_epoch: currentEpoch
+      email,
+      session_id:    sessionId,
+      reset_epoch:   currentEpoch,
+      workshop_key:  selectedWorkshop,
+      workshop_name: w.title
     });
     if (wErr && wErr.code !== '23505') throw wErr;
 
-    // 2. Session-ზე email დაწერა
+    // keep session/messages/feedback email in sync (existing logic preserved)
     await sb.from('sessions').update({ participant_email: email }).eq('id', sessionId);
-
-    // 3. ყველა წინა message-ს email განახლება
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
-
-    // 4. ყველა წინა feedback-ს email განახლება
     await sb.from('feedback').update({ participant_email: email }).eq('session_id', sessionId);
 
-    participantEmail = email;
+    participantEmail   = email;
+    workshopRegistered = selectedWorkshop;
     localStorage.setItem('syssa_workshop_email', email);
+    localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
+    workshopCounts[selectedWorkshop]++;
 
-    document.getElementById('workshop-form').style.display = 'none';
-    document.getElementById('workshop-done').style.display = 'block';
-    document.getElementById('workshop-done-email').textContent = email;
+    showWorkshopSuccess(selectedWorkshop, email);
+    logEvent('workshop_registered', { workshop: selectedWorkshop });
 
   } catch(e) {
-    err.textContent = 'Registration failed. Please try again.';
-    err.classList.add('show');
+    errEl.textContent   = 'Registration failed. Please try again.';
+    errEl.style.display = 'block';
     inp.classList.add('err');
-    btn.disabled = false;
-    inp.disabled = false;
+    btn.disabled = false; inp.disabled = false;
   } finally {
-    mig.classList.remove('show');
+    spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
   }
 }
+
+function showWorkshopSuccess(key, email) {
+  const w    = WORKSHOPS[key];
+  const left = Math.max(0, w.limit - workshopCounts[key]);
+  const wsCards = document.getElementById('ws-cards');
+  const wsForm  = document.getElementById('ws-form-wrap');
+  if (wsCards) wsCards.style.display = 'none';
+  if (wsForm)  wsForm.style.display  = 'none';
+  const s = document.getElementById('ws-success');
+  s.style.display       = 'flex';
+  s.style.flexDirection = 'column';
+  s.style.alignItems    = 'center';
+  document.getElementById('ws-success-sub').textContent   = w.title + ' · ' + email;
+  document.getElementById('ws-success-seats').textContent = left > 0
+    ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining'
+    : 'Workshop is now full';
+}
+
+function renderWorkshopCards() { updateSeatsUI(); }
 
 // ── DEVICE DETECTION ──
 function getDeviceInfo() {
@@ -526,11 +705,11 @@ function logEvent(type, payload = {}) {
   if (!sb) return;
   const cur = AGENDA.find(a => a.id === currentId);
   sb.from('page_events').insert({
-    session_id:  sessionId,
-    event_type:  type,
-    speaker_id:  currentId,
+    session_id:   sessionId,
+    event_type:   type,
+    speaker_id:   currentId,
     speaker_name: cur ? cur.speaker : null,
-    reset_epoch: currentEpoch,
+    reset_epoch:  currentEpoch,
     payload
   }).then(()=>{}).catch(()=>{});
 }
@@ -573,26 +752,6 @@ function withTimeout(p, ms) {
   return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
 }
 
-// ── COUNTDOWN ──
-function tickCountdown() {
-  const diff = CONF_START.getTime() - Date.now();
-  if (diff <= 0) { showCountdown = false; applyCountdownMode(); return; }
-  const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000),
-        m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-  document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
-  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-  document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
-  document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
-}
-function applyCountdownMode() {
-  const on = showCountdown && CONF_START.getTime() > Date.now();
-  document.getElementById('countdown-section').style.display = on ? 'block' : 'none';
-  document.getElementById('now-section').style.display       = on ? 'none'  : 'block';
-  document.getElementById('next-section').style.display      = on ? 'none'  : 'block';
-  if (on) { if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); } }
-  else    { if (cdInterval)  { clearInterval(cdInterval); cdInterval = null; } }
-}
-
 function updateAIIcon() {
   const icon = document.getElementById('ai-icon');
   const sub  = document.getElementById('ai-status-sub');
@@ -632,6 +791,7 @@ window.addEventListener('load', async () => {
 
     if (storedEpoch !== serverEpoch) {
       localStorage.removeItem('syssa_workshop_email');
+      localStorage.removeItem('syssa_workshop_key_' + serverEpoch);
       sessionId = 'p_' + Math.random().toString(36).substr(2,9);
       localStorage.setItem('syssa_sid', sessionId);
       localStorage.setItem('syssa_epoch', String(serverEpoch));
@@ -640,15 +800,13 @@ window.addEventListener('load', async () => {
 
     currentId        = data.current_id;
     speakerStartedAt = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
-    if (data.ai_enabled     != null) aiEnabled    = Boolean(data.ai_enabled);
-    if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
-    if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
+    if (data.ai_enabled    != null) aiEnabled   = Boolean(data.ai_enabled);
+    if (data.show_workshop != null) showWorkshop = Boolean(data.show_workshop);
 
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
 
     updateAIIcon();
-    applyCountdownMode();
     applyWorkshopMode();
     startApp();
     showNotifBannerIfNeeded();
@@ -692,9 +850,8 @@ function startApp() {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
           if (f.current_epoch != null) handleEpochChange(f.current_epoch);
-          if (f.ai_enabled     != null) aiEnabled    = Boolean(f.ai_enabled);
-          if (f.show_countdown != null) { showCountdown = Boolean(f.show_countdown); applyCountdownMode(); }
-          if (f.show_workshop  != null) { showWorkshop  = Boolean(f.show_workshop);  applyWorkshopMode(); }
+          if (f.ai_enabled    != null) aiEnabled   = Boolean(f.ai_enabled);
+          if (f.show_workshop != null) { showWorkshop = Boolean(f.show_workshop); applyWorkshopMode(); }
           updateAIIcon();
         }
       } catch(e) { if (p.new && p.new.current_id) currentId = p.new.current_id; }
@@ -735,7 +892,6 @@ function render() {
   const cur   = AGENDA.find(a => a.id === currentId);
   const nxt   = getNext(currentId);
   const parts = cur ? cur.title.split('\n') : [];
-  const cdOn  = showCountdown && CONF_START.getTime() > Date.now();
 
   document.getElementById('now-speaker').textContent = cur ? cur.speaker : '\u2014';
   document.getElementById('now-title').textContent   = parts[0] || '';
@@ -767,7 +923,7 @@ function render() {
       const isNxt = nxt && item.id === nxt.id;
       const p2    = item.title ? item.title.split('\n') : [];
       const row = document.createElement('div');
-      row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
+      row.className = 'a-row' + (isCur ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
       const timeEl = document.createElement('div');
       timeEl.className = 'a-time';
       timeEl.textContent = item.time || '';
@@ -782,7 +938,7 @@ function render() {
       const nameSpan = document.createElement('span');
       nameSpan.textContent = item.speaker;
       nameRow.appendChild(nameSpan);
-      if (isCur && !cdOn) {
+      if (isCur) {
         const bl = document.createElement('span');
         bl.className = 'a-badge a-badge-live';
         bl.textContent = 'Speaking';
@@ -794,7 +950,7 @@ function render() {
         bt.textContent = '00:00';
         nameRow.appendChild(bt);
       }
-      if (isNxt && !cdOn) {
+      if (isNxt) {
         const bn = document.createElement('span');
         bn.className = 'a-badge a-badge-next';
         bn.textContent = 'Up next';
@@ -907,28 +1063,17 @@ const MAX_HISTORY = 6;
 function buildSystemPrompt() {
   const cur = AGENDA.find(a => a.id === currentId);
   const nxt = getNext(currentId);
-  const beforeConf = Date.now() < CONF_START.getTime();
-  let timeUntil = '';
-  if (beforeConf) {
-    const diff = CONF_START.getTime() - Date.now();
-    const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000);
-    timeUntil = `${d} day(s), ${h} hour(s), and ${m} minute(s)`;
-  }
   return `You are the official AI Assistant for the SYSSA XIII Scientific Session: A Nobel's Day conference at DTMU, Tbilisi. Help participants with agenda, organization, certificates, and any conference questions.
 
 Event name: "SYSSA XIII Scientific Session: A Nobel's Day" — also called "SYSSA" or "A Nobel's Day".
 
-CONFERENCE STATUS: ${beforeConf
-  ? `NOT STARTED. Begins June 13, 2026 at 09:00 AM Tbilisi time. Time remaining: approximately ${timeUntil}.`
-  : 'IN PROGRESS.'}
+CONFERENCE STATUS: IN PROGRESS.
 
-${beforeConf
-  ? 'If asked who is speaking or who is next, explain the conference has not started yet and share the time remaining.'
-  : `Live data:
+Live data:
 - Current speaker: ${cur ? cur.speaker : '—'}
 - Current topic: ${cur ? (cur.title.split('\n')[0] || '') : '—'}
 - Next speaker: ${nxt ? nxt.speaker : 'Conference Concluded'}
-- Next topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}`}
+- Next topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}
 
 Key FAQ:
 - Registration: June 13, 09:00 AM sharp.
