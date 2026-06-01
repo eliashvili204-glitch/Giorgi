@@ -322,7 +322,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 const SB_URL  = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 const CONF_START = new Date('2026-06-13T05:00:00Z');
-const PRESENCE_CHANNEL = 'presence_room';
 
 const AGENDA = [
   {id:1,  time:"09:30\u201310:00", speaker:"Registration, Coffee Break",      title:"",session:"pre",isBreak:true},
@@ -709,17 +708,6 @@ function startApp() {
     .subscribe(s => {
       document.getElementById('f-dot').classList.toggle('off', s !== 'SUBSCRIBED');
       document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
-    });
-
-  const presenceCh = sb.channel(PRESENCE_CHANNEL, {
-    config: { presence: { key: sessionId } }
-  });
-  presenceCh
-    .on('presence', { event: 'sync' }, () => {})
-    .subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        await presenceCh.track({ session_id: sessionId, online_at: new Date().toISOString() });
-      }
     });
 
   subscribeReplies();
