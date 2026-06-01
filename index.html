@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SYSSA — A Nobel's Day</title>
+<title>Infection at the Crossroads — June 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
@@ -24,8 +24,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 @keyframes spin{to{transform:rotate(360deg)}}
 #error-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;}
 #error-screen p{color:var(--warn);font-size:13px;max-width:360px;line-height:1.7;}
-
-/* ── APP ── */
 #app{display:none;flex-direction:column;min-height:100vh;padding-bottom:84px;}
 
 /* ── LOGOS ── */
@@ -35,12 +33,10 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .logo-text{font-size:8px;color:var(--text-dim)!important;line-height:1.4;letter-spacing:.03em;}
 .syssa-logo{background:none;border:1px solid var(--border);border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--text)!important;}
 .gold-circle{border-color:var(--gold-border)!important;color:var(--gold)!important;background:var(--gold-soft)!important;font-size:7px;}
-
-/* ── PAGE TITLE ── */
 .page-title{text-align:center;padding:24px 20px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
 .page-title h1{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--navy);letter-spacing:.03em;line-height:1.4;}
 
-/* ── NOW CARD ── */
+/* ── NOW SPEAKING ── */
 .now-section{padding:20px 20px 0;}
 .now-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.02);transition:outline .2s;}
 .now-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -72,39 +68,70 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .cd-date strong{color:var(--gold);font-weight:700;}
 
 /* ── WORKSHOP ── */
-.workshop-section{padding:14px 20px 0;}
-.workshop-card{background:var(--surface);border:1px solid var(--gold-border);border-radius:12px;padding:18px 20px;box-shadow:0 4px 16px rgba(0,0,0,0.03);}
-.workshop-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
-.workshop-icon{font-size:14px;}
-.workshop-tag{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;}
-.workshop-title{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);margin-bottom:4px;line-height:1.3;}
-.workshop-desc{font-size:11px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;}
-.workshop-registered{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;}
-.workshop-registered-icon{font-size:16px;}
-.workshop-registered-text{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
-.workshop-registered-email{font-size:10px;color:var(--text-faint);margin-top:1px;}
-.workshop-inp-row{display:flex;gap:8px;align-items:stretch;}
-.workshop-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text);font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;touch-action:auto;transition:border-color .2s;}
-.workshop-inp:focus{border-color:var(--gold-border);}
-.workshop-inp::placeholder{color:var(--text-faint);}
-.workshop-inp.err{border-color:var(--warn);}
-.workshop-btn{background:var(--navy);border:none;border-radius:8px;padding:10px 18px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.06em;transition:opacity .2s;-webkit-user-select:none;user-select:none;}
-.workshop-btn:active{opacity:.8;}
-.workshop-btn:disabled{opacity:.5;cursor:not-allowed;}
-.workshop-err{font-size:10px;color:var(--warn);margin-top:6px;display:none;}
-.workshop-err.show{display:block;}
-.workshop-migrating{font-size:11px;color:var(--text-faint);margin-top:8px;display:none;align-items:center;gap:6px;}
-.workshop-migrating.show{display:flex;}
-.workshop-migrating .spinner{width:12px;height:12px;border-width:1.5px;}
+.workshop-wrap{padding:20px 20px 0;}
+.workshop-container{display:flex;flex-direction:column;gap:16px;}
+.ws-header{text-align:center;padding:4px 0 8px;}
+.ws-header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 14px;margin-bottom:12px;}
+.ws-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
+.ws-badge-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
+.ws-header-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
+.ws-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.ws-cards{grid-template-columns:1fr;}}
+.ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+.ws-card:active{transform:scale(.97);}
+.ws-card.full{opacity:.55;pointer-events:none;}
+.ws-card-inner{position:relative;z-index:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 16px;transition:border-color .2s,background .2s;height:100%;display:flex;flex-direction:column;gap:10px;}
+.ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
+.ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
+.ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.ws-card-icon{font-size:18px;color:var(--navy);}
+.ws-card-tag{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 8px;border-radius:20px;}
+.ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
+.ws-card-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);line-height:1.3;}
+.ws-card-desc{font-size:11px;color:var(--text-dim);line-height:1.6;flex:1;}
+.ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.ws-seats{display:flex;flex-direction:column;gap:4px;}
+.ws-seats-bar-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.ws-seats-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy),#4A90D9);transition:width .6s ease;}
+.ws-seats-bar.warn{background:linear-gradient(90deg,#F59E0B,#FBBF24);}
+.ws-seats-bar.danger{background:linear-gradient(90deg,#EF4444,#F87171);}
+.ws-seats-text{font-size:10px;font-weight:700;color:var(--text-dim);}
+.ws-seats-text.warn{color:#B45309;}
+.ws-seats-text.danger{color:#DC2626;}
+.ws-select-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:var(--navy);border-radius:8px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;transition:opacity .15s;}
+.ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
+.ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
+@keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
+.ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
+.ws-form-selected-icon{font-size:20px;color:var(--navy);flex-shrink:0;}
+.ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
+.ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+.ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
+.ws-form-change:hover{background:rgba(26,54,93,0.1);}
+.ws-form-body{display:flex;gap:8px;padding:14px 16px;}
+.ws-form-inp{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--text);font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;touch-action:auto;transition:border-color .2s;}
+.ws-form-inp:focus{border-color:var(--navy-border);}
+.ws-form-inp::placeholder{color:var(--text-faint);}
+.ws-form-inp.err{border-color:#DC2626;}
+.ws-form-submit{background:var(--navy);border:none;border-radius:8px;padding:10px 20px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;letter-spacing:.06em;display:flex;align-items:center;gap:6px;transition:opacity .2s;flex-shrink:0;}
+.ws-form-submit:hover{opacity:.88;}
+.ws-form-submit:disabled{opacity:.5;cursor:not-allowed;}
+.ws-spinner{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.ws-form-err{padding:8px 16px 12px;font-size:11px;color:#DC2626;line-height:1.5;}
+.ws-success{background:var(--surface);border:1.5px solid rgba(22,163,74,0.4);border-radius:14px;padding:24px 20px;text-align:center;animation:wsSlideIn .4s cubic-bezier(.16,1,.3,1) both;}
+.ws-success-icon{width:44px;height:44px;border-radius:50%;background:rgba(22,163,74,0.12);border:1.5px solid rgba(22,163,74,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;color:#16A34A;margin:0 auto 12px;}
+.ws-success-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:6px;}
+.ws-success-sub{font-size:12px;color:var(--text-dim);line-height:1.6;}
+.ws-success-seats{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;color:#16A34A;background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.3);padding:4px 12px;border-radius:20px;}
 
-/* ── NEXT ── */
+/* ── NEXT / AGENDA ── */
 .next-section{padding:12px 20px 0;}
 .next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
 .next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
 .next-name{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);}
 .next-title{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-
-/* ── AGENDA ── */
 .agenda-section{padding:24px 20px 0;}
 .agenda-section h3{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;}
 .a-session-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;padding:14px 0 6px;border-top:1px solid var(--border);margin-top:10px;}
@@ -122,8 +149,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
 .a-badge-live{background:#16A34A;color:#fff;}
 .a-badge-next{background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
-
-/* ── FOOTER ── */
 .footer{padding:18px 20px;text-align:center;border-top:1px solid var(--border);margin-top:28px;}
 .footer-status{font-size:10px;color:var(--text-faint);display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.04em;}
 .f-dot{width:5px;height:5px;border-radius:50%;background:#16A34A;}
@@ -135,7 +160,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .notif-banner-btn{background:var(--navy);border:none;border-radius:5px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;}
 .notif-banner-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;padding:0 2px;line-height:1;}
 
-/* ── FABs ── */
+/* ── FAB / FLOAT PANELS ── */
 .fixed-panels{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:flex-end;pointer-events:none;z-index:9999;padding:0 16px 16px;}
 .chat-widget{pointer-events:all;}
 .feedback-widget{pointer-events:all;margin-left:auto;}
@@ -144,8 +169,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .fab-chat{background:var(--surface);border-color:var(--navy-border);}
 .fab-fb{background:var(--surface);border-color:var(--gold-border);}
 .fab-badge{position:absolute;top:-4px;right:-4px;width:17px;height:17px;background:var(--warn);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;border:1.5px solid var(--bg);}
-
-/* ── FLOAT PANELS ── */
 .float-panel{position:fixed;bottom:80px;width:calc(100vw - 32px);max-width:340px;background:rgba(255,255,255,0.98);border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;max-height:62vh;backdrop-filter:blur(12px);z-index:9998;opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1);}
 .float-panel.open{opacity:1;transform:translateY(0);pointer-events:all;}
 .chat-panel{left:16px;}
@@ -159,8 +182,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .panel-title{font-size:13px;font-weight:700;color:var(--text);}
 .panel-sub{font-size:10px;color:var(--text-faint);margin-top:1px;}
 .panel-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;line-height:1;padding:2px 4px;}
-
-/* ── CHAT ── */
 .chat-msgs{overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:80px;}
 .chat-msgs::-webkit-scrollbar{width:3px;}
 .chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -177,8 +198,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .chat-inp:focus{border-color:var(--navy-border);}
 .chat-inp::placeholder{color:var(--text-faint);}
 .chat-send-btn{background:var(--navy);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;color:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
-
-/* ── FEEDBACK ── */
 .fb-body{display:flex;flex-direction:column;}
 .fb-info-block{padding:16px 16px 0;display:flex;flex-direction:column;gap:6px;}
 .fb-info-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px;}
@@ -200,15 +219,12 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 <div id="app">
   <div class="logos">
     <div class="logo-circle">DTMU</div><div class="logo-sep"></div>
-    <div><div class="logo-text" style="font-weight:700;font-size:10px">CAUCASUS</div><div class="logo-text">MEDICAL CENTRE</div></div>
-    <div class="logo-sep"></div><div class="logo-circle" style="font-size:8px">QUAL</div>
+    <div><div class="logo-text" style="font-weight:700;font-size:10px">MARGOT</div><div class="logo-text">OLD TBILISI</div></div>
+    <div class="logo-sep"></div><div class="logo-circle" style="font-size:7px;line-height:1.3">INFECT<br>2026</div>
     <div class="logo-sep"></div><div class="syssa-logo">S|Y|S|S|A</div>
-    <div class="logo-sep"></div><div class="logo-circle gold-circle">NOBEL</div>
+    <div class="logo-sep"></div><div class="logo-circle gold-circle">XI</div>
   </div>
-
-  <div class="page-title">
-    <h1>STUDENTS' AND YOUNG SCIENTISTS'<br>XIII SCIENTIFIC SESSION: A NOBEL'S DAY</h1>
-  </div>
+  <div class="page-title"><h1>XI INTERNATIONAL CONFERENCE<br>"INFECTION AT THE CROSSROADS"</h1></div>
 
   <div id="notif-banner" class="notif-banner" style="display:none">
     <div class="notif-banner-text">Enable notifications to be alerted when the organizer replies to you</div>
@@ -216,13 +232,10 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <button class="notif-banner-close" onclick="document.getElementById('notif-banner').style.display='none'">&#x2715;</button>
   </div>
 
-  <!-- COUNTDOWN — Supabase-ში show_countdown=true გააქტიურდება -->
+  <!-- COUNTDOWN -->
   <div id="countdown-section" class="countdown-wrap" style="display:none;">
     <div class="countdown-card">
-      <div class="cd-event-badge">
-        <div class="cd-event-dot"></div>
-        <span class="cd-event-text">SYSSA &mdash; A Nobel's Day</span>
-      </div>
+      <div class="cd-event-badge"><div class="cd-event-dot"></div><span class="cd-event-text">Infection at the Crossroads &mdash; June 2026</span></div>
       <div class="cd-heading">Conference Registration<br><span>Opens In</span></div>
       <div class="cd-blocks">
         <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-word">Days</div></div>
@@ -235,8 +248,66 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       </div>
       <div class="cd-footer">
         <div class="cd-footer-line"></div>
-        <div class="cd-date"><strong>June 13, 2026</strong> &middot; 9:00 AM &middot; DTMU, Tbilisi</div>
+        <div class="cd-date"><strong>June 13–14, 2026</strong> &middot; 9:00 AM &middot; Margot Old Tbilisi</div>
         <div class="cd-footer-line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP -->
+  <div id="workshop-section" class="workshop-wrap" style="display:none;">
+    <div class="workshop-container">
+      <div class="ws-header">
+        <div class="ws-header-badge"><span class="ws-badge-dot"></span><span class="ws-badge-text">Workshop Registration</span></div>
+        <div class="ws-header-title">Choose Your Workshop</div>
+        <div class="ws-header-sub">Select a workshop and register with your email. Limited seats available.</div>
+      </div>
+      <div class="ws-cards" id="ws-cards">
+        <div class="ws-card" id="ws-card-a" onclick="selectWorkshop('a')">
+          <div class="ws-card-inner">
+            <div class="ws-card-top"><div class="ws-card-icon">&#9670;</div><div class="ws-card-tag" id="ws-tag-a">Available</div></div>
+            <div class="ws-card-title" id="ws-title-a">Workshop A</div>
+            <div class="ws-card-desc" id="ws-desc-a"></div>
+            <div class="ws-card-footer">
+              <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-a"></div></div><div class="ws-seats-text" id="ws-seats-text-a">Loading...</div></div>
+              <div class="ws-select-btn" id="ws-btn-a">Select &#9658;</div>
+            </div>
+          </div>
+        </div>
+        <div class="ws-card" id="ws-card-b" onclick="selectWorkshop('b')">
+          <div class="ws-card-inner">
+            <div class="ws-card-top"><div class="ws-card-icon">&#10022;</div><div class="ws-card-tag" id="ws-tag-b">Available</div></div>
+            <div class="ws-card-title" id="ws-title-b">Workshop B</div>
+            <div class="ws-card-desc" id="ws-desc-b"></div>
+            <div class="ws-card-footer">
+              <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-b"></div></div><div class="ws-seats-text" id="ws-seats-text-b">Loading...</div></div>
+              <div class="ws-select-btn" id="ws-btn-b">Select &#9658;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ws-form-wrap" id="ws-form-wrap" style="display:none;">
+        <div class="ws-form-card">
+          <div class="ws-form-selected">
+            <span class="ws-form-selected-icon" id="ws-form-icon">&#9670;</span>
+            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">Workshop A</div></div>
+            <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
+          </div>
+          <div class="ws-form-body">
+            <input class="ws-form-inp" id="ws-form-email" type="email" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')submitWorkshop()">
+            <button class="ws-form-submit" id="ws-form-submit" onclick="submitWorkshop()">
+              <span id="ws-submit-text">Register Now</span>
+              <span id="ws-submit-spinner" style="display:none" class="ws-spinner"></span>
+            </button>
+          </div>
+          <div class="ws-form-err" id="ws-form-err" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="ws-success" id="ws-success" style="display:none;">
+        <div class="ws-success-icon">&#10003;</div>
+        <div class="ws-success-title">You're registered!</div>
+        <div class="ws-success-sub" id="ws-success-sub"></div>
+        <div class="ws-success-seats" id="ws-success-seats"></div>
       </div>
     </div>
   </div>
@@ -248,44 +319,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="now-speaker" id="now-speaker">&mdash;</div>
       <div class="now-title" id="now-title"></div>
       <div class="now-sub" id="now-sub"></div>
-      <div class="speaker-timer">
-        <span style="font-size:9px;color:var(--text-faint)">&#9201;</span>
-        <span class="speaker-timer-val" id="aud-timer" style="margin-left:6px">00:00</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- WORKSHOP — Supabase-ში show_workshop=true გააქტიურდება -->
-  <div id="workshop-section" class="workshop-section" style="display:none;">
-    <div class="workshop-card">
-      <div class="workshop-top">
-        <span class="workshop-icon">&#10022;</span>
-        <span class="workshop-tag">Workshop Registration</span>
-      </div>
-      <div class="workshop-title">Register for the Workshop</div>
-      <div class="workshop-desc">Enter your email to register for the workshop.</div>
-      <div id="workshop-done" style="display:none;">
-        <div class="workshop-registered">
-          <span class="workshop-registered-icon">&#10003;</span>
-          <div>
-            <div class="workshop-registered-text">Registered!</div>
-            <div class="workshop-registered-email" id="workshop-done-email"></div>
-          </div>
-        </div>
-      </div>
-      <div id="workshop-form">
-        <div class="workshop-inp-row">
-          <input class="workshop-inp" id="workshop-email-inp" type="email"
-            placeholder="your@email.com" maxlength="120"
-            autocomplete="email" inputmode="email"
-            onkeydown="if(event.key==='Enter')registerWorkshop()">
-          <button class="workshop-btn" id="workshop-btn" onclick="registerWorkshop()">Register</button>
-        </div>
-        <div class="workshop-err" id="workshop-err">Please enter a valid email address.</div>
-        <div class="workshop-migrating" id="workshop-migrating">
-          <div class="spinner"></div><span>Registering...</span>
-        </div>
-      </div>
+      <div class="speaker-timer"><span style="font-size:9px;color:var(--text-faint)">&#9201;</span><span class="speaker-timer-val" id="aud-timer" style="margin-left:6px">00:00</span></div>
     </div>
   </div>
 
@@ -304,15 +338,10 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <div id="agenda-list"></div>
   </div>
 
-  <div class="footer">
-    <div class="footer-status">
-      <div class="f-dot" id="f-dot"></div>
-      <span id="f-label">Live</span>
-    </div>
-  </div>
+  <div class="footer"><div class="footer-status"><div class="f-dot" id="f-dot"></div><span id="f-label">Live</span></div></div>
 </div>
 
-<!-- FABs -->
+<!-- FAB BUTTONS -->
 <div class="fixed-panels">
   <div class="chat-widget">
     <button class="fab fab-chat" onclick="toggleChat()" title="AI Assistant">
@@ -332,10 +361,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="panel-header">
     <div class="panel-header-left">
       <div class="panel-icon ai-on" id="ai-icon">&#10022;</div>
-      <div>
-        <div class="panel-title">AI Assistant</div>
-        <div class="panel-sub" id="ai-status-sub">Powered by AI &middot; Ask anything</div>
-      </div>
+      <div><div class="panel-title">AI Assistant</div><div class="panel-sub" id="ai-status-sub">Powered by AI &middot; Ask anything</div></div>
     </div>
     <button class="panel-close" onclick="toggleChat()">&#x2715;</button>
   </div>
@@ -343,8 +369,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>
   </div>
   <div class="chat-inp-row">
-    <input class="chat-inp" id="chat-inp" placeholder="Ask a question..." maxlength="300"
-      onkeydown="if(event.key==='Enter')sendChat()">
+    <input class="chat-inp" id="chat-inp" placeholder="Ask a question..." maxlength="300" onkeydown="if(event.key==='Enter')sendChat()">
     <button class="chat-send-btn" onclick="sendChat()">&#10148;</button>
   </div>
 </div>
@@ -354,10 +379,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <div class="panel-header">
     <div class="panel-header-left">
       <div class="panel-icon panel-icon-fb">&#9672;</div>
-      <div>
-        <div class="panel-title">Help Us Improve</div>
-        <div class="panel-sub">Share your thoughts</div>
-      </div>
+      <div><div class="panel-title">Help Us Improve</div><div class="panel-sub">Share your thoughts</div></div>
     </div>
     <button class="panel-close" onclick="toggleFb()">&#x2715;</button>
   </div>
@@ -367,67 +389,86 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
         <div class="fb-info-label">Your Voice Matters</div>
         <div class="fb-info">Please share your honest feedback on any topic &mdash; the good, the bad, and everything in between!</div>
       </div>
-      <div class="fb-ta-wrap">
-        <textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea>
-      </div>
-      <div class="fb-submit-wrap">
-        <button class="fb-submit" onclick="sendFeedback()">Send Feedback</button>
-      </div>
+      <div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div>
+      <div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div>
     </div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  CONFIG
-// ══════════════════════════════════════════════════
-const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+// ════════════════════════════════════════════
+const SB_URL     = 'https://wxhaukichoycniioakbo.supabase.co';
+const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+const CONF_START = new Date('2026-06-13T05:00:00Z'); // UTC 05:00 = Tbilisi 09:00
 
-// Tbilisi 09:00 = UTC 05:00
-const CONF_START = new Date('2026-06-13T05:00:00Z');
+const WORKSHOPS = {
+  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: '◈', limit: 50 },
+  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: '✦', limit: 50 }
+};
 
-// ══════════════════════════════════════════════════
-//  AGENDA
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  AGENDA — ✅ FIXED: session keys match render() SECS
+// ════════════════════════════════════════════
 const AGENDA = [
-  {id:1,  time:"09:30\u201310:00", speaker:"Registration, Coffee Break",      title:"",session:"pre",isBreak:true},
-  {id:2,  time:"10:00\u201310:30", speaker:"Opening Ceremony",                title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze \u00b7 Nino Tabagari, MD, PhD",session:"opening",isBreak:true},
-  {id:3,  time:"10:30\u201310:45", speaker:"Giorgi Aladashvili, MD",          title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",session:"opening"},
-  {id:4,  time:"10:45\u201311:00", speaker:"Nino Giorgadze",                  title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",session:"opening"},
-  {id:5,  time:"11:00\u201311:15", speaker:"Anano Verdzadze",                 title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",session:"students"},
-  {id:6,  time:"11:15\u201311:30", speaker:"Nana Megrelidze, M.D.",           title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",session:"students"},
-  {id:7,  time:"11:30\u201311:45", speaker:"Vasil Petriashvili",              title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",session:"students"},
-  {id:8,  time:"11:45\u201312:00", speaker:"Ketevan Tchitchinadze, MS.",      title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},
-  {id:9,  time:"12:00\u201312:15", speaker:"Anna Bechvaya, MS.",              title:"Produodopa Easier Way to Live with Parkinson\u2019s\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",session:"students"},
-  {id:10, time:"12:15\u201312:30", speaker:"Vera Savidi, MS.",                title:"Transthyretin Amyloid Cardiomyopathy \u2014 A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",session:"students"},
-  {id:11, time:"12:30\u201312:45", speaker:"Taha Kassim, MS.",                title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",session:"students"},
-  {id:12, time:"12:45\u201313:00", speaker:"Syeda Fatima Zehra",              title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",session:"students"},
-  {id:13, time:"13:00\u201314:00", speaker:"Lunch Break",                     title:"",session:"break",isBreak:true},
-  {id:14, time:"14:00\u2013",      speaker:"Tamar Kacharava",                 title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",session:"phd"},
-  {id:15, time:"",                 speaker:"Nino Khutsishvili",               title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze",session:"phd"},
-  {id:16, time:"",                 speaker:"Tamar Gaprindashvili",            title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze \u00b7 Zurab Pagava",session:"phd"},
-  {id:17, time:"",                 speaker:"Vakhtang Gurabanidze",            title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor",session:"phd"},
-  {id:18, time:"",                 speaker:"Aleksandre Ramishvili",           title:"Geomagnetic Storms on Heart Rate Variability and EEG \u03b1 Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia \u00b7 Prof. Levan Tvildiani",session:"phd"},
-  {id:19, time:"",                 speaker:"Elene Sherozia",                  title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari \u00b7 Prof. Maia Gotua",session:"phd"},
-  {id:20, time:"",                 speaker:"Mariam Kacheishvili",             title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari \u00b7 Prof. Alexi Baidoshvili",session:"phd"},
-  {id:21, time:"",                 speaker:"David Makaridze",                 title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili",session:"phd"},
-  {id:22, time:"",                 speaker:"Tamta Darsalia",                  title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.",session:"phd"},
-  {id:23, time:"",                 speaker:"Tinatin Giuashvili",              title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD",session:"phd"},
-  {id:24, time:"",                 speaker:"Ana Bedoshvili",                  title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili \u00b7 N. Tatishvili \u00b7 A. Guzzetta \u00b7 R.N. Boyd",session:"phd"},
-  {id:25, time:"",                 speaker:"Ana Khoperia",                    title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.",session:"phd"},
-  {id:26, time:"",                 speaker:"Mariam Gugushvili",               title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD",session:"phd"},
-  {id:27, time:"",                 speaker:"Nino Zavrashvili",                title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari",session:"phd"},
-  {id:28, time:"",                 speaker:"Ana Kvernadze, MD, Ph.D.",        title:"Rare and Complex Epilepsies \u2013 Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD",session:"phd"},
-  {id:29, time:"17:00",            speaker:"Closing Ceremony",                title:"",session:"closing",isBreak:true}
+  // ── DAY 1 — Saturday, 13 June 2026 ──
+  {id:1,  time:"09:00\u201310:00", speaker:"Registration & Welcome",                title:"",                                              session:"day1_pre"},
+  {id:2,  time:"10:00\u201310:30", speaker:"Opening Ceremony",                      title:"Opening Ceremony & Welcome Remarks",             session:"day1_open"},
+  // Keynote
+  {id:3,  time:"10:30\u201311:00", speaker:"[Keynote Speaker Name]",                title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_keynote"},
+  // Session I
+  {id:4,  time:"11:00\u201311:15", speaker:"[Presenter 1]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
+  {id:5,  time:"11:15\u201311:30", speaker:"[Presenter 2]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
+  {id:6,  time:"11:30\u201311:45", speaker:"[Presenter 3]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
+  {id:7,  time:"11:45\u201312:00", speaker:"[Presenter 4]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
+  {id:8,  time:"12:00\u201312:15", speaker:"[Presenter 5]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
+  {id:9,  time:"12:15\u201312:45", speaker:"Coffee Break",                          title:"",                                              session:"day1_break1", isBreak:true},
+  // Poster Pitches
+  {id:10, time:"12:45\u201312:50", speaker:"[Poster Presenter 1]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  {id:11, time:"12:50\u201312:55", speaker:"[Poster Presenter 2]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  {id:12, time:"12:55\u201313:00", speaker:"[Poster Presenter 3]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  {id:13, time:"13:00\u201313:05", speaker:"[Poster Presenter 4]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  {id:14, time:"13:05\u201313:10", speaker:"[Poster Presenter 5]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  {id:15, time:"13:10\u201313:15", speaker:"[Poster Presenter 6]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
+  // Session II
+  {id:16, time:"13:15\u201313:30", speaker:"[Presenter 6]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:17, time:"13:30\u201313:45", speaker:"[Presenter 7]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:18, time:"13:45\u201314:00", speaker:"[Presenter 8]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:19, time:"14:00\u201314:15", speaker:"[Presenter 9]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:20, time:"14:15\u201314:30", speaker:"[Presenter 10]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:21, time:"14:30\u201314:45", speaker:"[Presenter 11]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:22, time:"14:45\u201315:00", speaker:"[Presenter 12]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
+  {id:23, time:"15:00\u201316:00", speaker:"Lunch Break \u2014 Poster Display Open",title:"",                                              session:"day1_lunch",  isBreak:true},
+  // Session II cont.
+  {id:24, time:"16:00\u201316:15", speaker:"[Presenter 13]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
+  {id:25, time:"16:15\u201316:30", speaker:"[Presenter 14]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
+  {id:26, time:"16:30\u201316:45", speaker:"[Presenter 15]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
+  {id:27, time:"16:45\u201317:00", speaker:"Closing Day 1",                         title:"",                                              session:"day1_close"},
+
+  // ── DAY 2 — Sunday, 14 June 2026 ──
+  {id:28, time:"10:00\u201310:15", speaker:"Welcome Back & Day 2 Overview",         title:"",                                              session:"day2_open"},
+  // Session III
+  {id:29, time:"10:15\u201310:30", speaker:"[Presenter 16]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
+  {id:30, time:"10:30\u201310:45", speaker:"[Presenter 17]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
+  {id:31, time:"10:45\u201311:00", speaker:"[Presenter 18]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
+  {id:32, time:"11:00\u201311:15", speaker:"[Presenter 19]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
+  {id:33, time:"11:15\u201311:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
+  {id:34, time:"11:30\u201312:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
+  // Panel Discussion
+  {id:35, time:"12:00\u201312:30", speaker:"Panel Discussion",                      title:"[Theme / Title \u2014 TBC]",                     session:"day2_panel"},
+  // Workshops
+  {id:36, time:"12:00\u201312:30", speaker:"Workshop A",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
+  {id:37, time:"12:00\u201312:30", speaker:"Workshop B",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
+  // Closing
+  {id:38, time:"12:30\u201312:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close"}
 ];
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  STATE
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 let sb = null;
-let currentId = 3;
-let speakerStartedAt = Date.now();
+let currentId = 3, speakerStartedAt = Date.now();
 let currentEpoch = 1;
 let audTimerInterval = null;
 let chatOpen = false, fbOpen = false, unread = 0;
@@ -440,72 +481,78 @@ let participantEmail = null;
 let chatHistory = [];
 const MAX_HISTORY = 6;
 
-// sessionId — isReturning-ის გამოსასწორებლად: ჯერ ვამოწმებთ, მერე ვქმნით
+let selectedWorkshop = null;
+let workshopCounts   = { a: 0, b: 0 };
+let workshopRegistered = null;
+
 const _existingSid = localStorage.getItem('syssa_sid');
 const isReturning  = !!_existingSid;
-let sessionId      = _existingSid || ('p_' + Math.random().toString(36).substr(2, 9));
+let sessionId = _existingSid || ('p_' + Math.random().toString(36).substr(2, 9));
 if (!_existingSid) localStorage.setItem('syssa_sid', sessionId);
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  HELPERS
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function getNext(id) {
   const ci = AGENDA.findIndex(a => a.id === id);
-  for (let i = ci + 1; i < AGENDA.length; i++) {
-    if (!AGENDA[i].isBreak) return AGENDA[i];
-  }
+  for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak) return AGENDA[i];
   return null;
 }
-
 function withTimeout(p, ms) {
   return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
 }
 
-// ══════════════════════════════════════════════════
-//  EPOCH — reset on new day/session
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  EPOCH CHANGE
+// ════════════════════════════════════════════
 function handleEpochChange(newEpoch) {
   if (newEpoch === currentEpoch) return;
+  const oldEpoch = currentEpoch;
   currentEpoch = newEpoch;
   localStorage.setItem('syssa_epoch', String(newEpoch));
   localStorage.removeItem('syssa_workshop_email');
-  participantEmail = null;
-
-  // workshop UI reset
-  const wForm = document.getElementById('workshop-form');
-  const wDone = document.getElementById('workshop-done');
-  const wInp  = document.getElementById('workshop-email-inp');
-  const wBtn  = document.getElementById('workshop-btn');
-  if (wForm) wForm.style.display = 'block';
-  if (wDone) wDone.style.display = 'none';
-  if (wInp)  { wInp.value = ''; wInp.disabled = false; wInp.classList.remove('err'); }
-  if (wBtn)  wBtn.disabled = false;
-  const wErr = document.getElementById('workshop-err');
-  if (wErr) wErr.classList.remove('show');
-
-  // chat reset
+  localStorage.removeItem('syssa_workshop_key_' + oldEpoch);
+  participantEmail   = null;
+  workshopRegistered = null;
+  selectedWorkshop   = null;
+  workshopCounts     = { a: 0, b: 0 };
+  resetWorkshopUI();
   chatHistory = [];
   document.getElementById('chat-msgs').innerHTML =
     '<div class="chat-empty-msg">Hey! Ask me about the agenda, certificates, speakers, or anything else</div>';
-
-  // new session
   sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
   localStorage.setItem('syssa_sid', sessionId);
   sessionTracked = false;
   trackSession();
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  TOP SLOT
+// ════════════════════════════════════════════
+function applyTopSlot() {
+  const cdActive = showCountdown && CONF_START.getTime() > Date.now();
+  const wsActive = showWorkshop && !cdActive;
+
+  document.getElementById('countdown-section').style.display = cdActive ? 'block' : 'none';
+  document.getElementById('workshop-section').style.display  = wsActive ? 'block' : 'none';
+  document.getElementById('now-section').style.display  = cdActive ? 'none' : 'block';
+  document.getElementById('next-section').style.display = cdActive ? 'none' : 'block';
+
+  if (cdActive) {
+    if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); }
+  } else {
+    if (cdInterval) { clearInterval(cdInterval); cdInterval = null; }
+  }
+
+  if (wsActive) initWorkshop();
+}
+
+// ════════════════════════════════════════════
 //  COUNTDOWN
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function tickCountdown() {
   const diff = CONF_START.getTime() - Date.now();
-  if (diff <= 0) {
-    // დრო გავიდა — countdown გამოვრთოთ, now/next გამოვაჩინოთ
-    showCountdown = false;
-    applyCountdownMode();
-    return;
-  }
+  if (diff <= 0) { showCountdown = false; applyTopSlot(); return; }
   const d = Math.floor(diff / 86400000);
   const h = Math.floor((diff % 86400000) / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
@@ -516,61 +563,127 @@ function tickCountdown() {
   document.getElementById('cd-secs').textContent  = String(s).padStart(2, '0');
 }
 
-function applyCountdownMode() {
-  // countdown-ი მხოლოდ მაშინ ჩანს, თუ Supabase-ში true და დრო ჯერ კიდევ სამომავლოა
-  const on = showCountdown && CONF_START.getTime() > Date.now();
-  document.getElementById('countdown-section').style.display = on ? 'block' : 'none';
-  document.getElementById('now-section').style.display       = on ? 'none'  : 'block';
-  document.getElementById('next-section').style.display      = on ? 'none'  : 'block';
-  if (on) {
-    if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); }
-  } else {
-    if (cdInterval) { clearInterval(cdInterval); cdInterval = null; }
-  }
-}
-
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  WORKSHOP
-// ══════════════════════════════════════════════════
-function applyWorkshopMode() {
-  const sec = document.getElementById('workshop-section');
-  if (!sec) return;
-  sec.style.display = showWorkshop ? 'block' : 'none';
-  if (showWorkshop) {
-    const stored = localStorage.getItem('syssa_workshop_email');
-    if (stored) {
-      participantEmail = stored;
-      document.getElementById('workshop-form').style.display = 'none';
-      document.getElementById('workshop-done').style.display = 'block';
-      document.getElementById('workshop-done-email').textContent = stored;
-    }
+// ════════════════════════════════════════════
+async function initWorkshop() {
+  Object.entries(WORKSHOPS).forEach(([key, w]) => {
+    const t = document.getElementById('ws-title-' + key);
+    const d = document.getElementById('ws-desc-'  + key);
+    if (t) t.textContent = w.title;
+    if (d) d.textContent = w.desc;
+  });
+  await loadWorkshopCounts();
+
+  const storedKey   = localStorage.getItem('syssa_workshop_key_' + currentEpoch);
+  const storedEmail = localStorage.getItem('syssa_workshop_email');
+  if (storedKey && storedEmail) {
+    workshopRegistered = storedKey;
+    participantEmail   = storedEmail;
+    showWorkshopSuccess(storedKey, storedEmail);
+    return;
   }
+  updateSeatsUI();
 }
 
-async function registerWorkshop() {
-  const inp   = document.getElementById('workshop-email-inp');
-  const btn   = document.getElementById('workshop-btn');
-  const err   = document.getElementById('workshop-err');
-  const mig   = document.getElementById('workshop-migrating');
-  const email = (inp.value || '').trim().toLowerCase();
+async function loadWorkshopCounts() {
+  try {
+    const { data } = await sb.from('workshop_registrations')
+      .select('workshop_key').eq('reset_epoch', currentEpoch);
+    workshopCounts = { a: 0, b: 0 };
+    (data || []).forEach(r => {
+      if (r.workshop_key === 'a') workshopCounts.a++;
+      else if (r.workshop_key === 'b') workshopCounts.b++;
+    });
+  } catch(e) { console.warn('Workshop counts error:', e.message); }
+}
 
-  err.classList.remove('show');
+function updateSeatsUI() {
+  ['a', 'b'].forEach(key => {
+    const w      = WORKSHOPS[key];
+    const count  = workshopCounts[key];
+    const left   = Math.max(0, w.limit - count);
+    const pct    = Math.round((count / w.limit) * 100);
+    const isFull = left === 0;
+    const bar = document.getElementById('ws-bar-' + key);
+    if (bar) { bar.style.width = pct + '%'; bar.className = 'ws-seats-bar' + (pct >= 80 ? ' danger' : pct >= 60 ? ' warn' : ''); }
+    const txt = document.getElementById('ws-seats-text-' + key);
+    if (txt) { txt.textContent = isFull ? 'Fully booked' : left + ' seat' + (left === 1 ? '' : 's') + ' remaining'; txt.className = 'ws-seats-text' + (isFull ? ' danger' : left <= 10 ? ' warn' : ''); }
+    const tag = document.getElementById('ws-tag-' + key);
+    if (tag) { tag.textContent = isFull ? 'Full' : left <= 10 ? 'Almost Full' : 'Available'; tag.className = 'ws-card-tag' + (isFull ? ' full-tag' : ''); }
+    const card = document.getElementById('ws-card-' + key);
+    if (card) card.classList.toggle('full', isFull);
+    const btn = document.getElementById('ws-btn-' + key);
+    if (btn) btn.textContent = isFull ? 'Full \u2715' : 'Select \u25b8';
+  });
+}
+
+function selectWorkshop(key) {
+  const w = WORKSHOPS[key];
+  if (!w) return;
+  if (Math.max(0, w.limit - workshopCounts[key]) === 0) return;
+  selectedWorkshop = key;
+  ['a', 'b'].forEach(k => {
+    const c = document.getElementById('ws-card-' + k);
+    if (c) c.classList.toggle('selected', k === key);
+  });
+  document.getElementById('ws-form-icon').textContent = w.icon;
+  document.getElementById('ws-form-name').textContent = w.title;
+  const fw = document.getElementById('ws-form-wrap');
+  fw.style.display = 'block';
+  const inp = document.getElementById('ws-form-email');
+  if (inp && participantEmail) inp.value = participantEmail;
+  setTimeout(() => fw.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  logEvent('workshop_selected', { workshop: key });
+}
+
+function changeWorkshop() {
+  selectedWorkshop = null;
+  document.getElementById('ws-form-wrap').style.display = 'none';
+  ['a', 'b'].forEach(k => { const c = document.getElementById('ws-card-' + k); if (c) c.classList.remove('selected'); });
+  document.getElementById('ws-form-err').style.display = 'none';
+  document.getElementById('ws-form-email').classList.remove('err');
+}
+
+async function submitWorkshop() {
+  if (!selectedWorkshop) return;
+  const inp     = document.getElementById('ws-form-email');
+  const btn     = document.getElementById('ws-form-submit');
+  const errEl   = document.getElementById('ws-form-err');
+  const spinner = document.getElementById('ws-submit-spinner');
+  const btnTxt  = document.getElementById('ws-submit-text');
+  const email   = (inp.value || '').trim().toLowerCase();
+
+  errEl.style.display = 'none';
   inp.classList.remove('err');
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     inp.classList.add('err');
-    err.textContent = 'Please enter a valid email address.';
-    err.classList.add('show');
+    errEl.textContent   = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    inp.focus();
     return;
   }
 
-  btn.disabled = true;
-  inp.disabled = true;
-  mig.classList.add('show');
+  btn.disabled = true; inp.disabled = true;
+  spinner.style.display = 'inline-block'; btnTxt.textContent = 'Registering...';
 
   try {
+    await loadWorkshopCounts();
+    const w    = WORKSHOPS[selectedWorkshop];
+    const left = Math.max(0, w.limit - workshopCounts[selectedWorkshop]);
+    if (left === 0) {
+      errEl.textContent   = 'Sorry, this workshop is now full. Please choose the other one.';
+      errEl.style.display = 'block';
+      updateSeatsUI();
+      btn.disabled = false; inp.disabled = false;
+      spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
+      return;
+    }
+
     const { error: wErr } = await sb.from('workshop_registrations').insert({
-      email, session_id: sessionId, reset_epoch: currentEpoch
+      email, session_id: sessionId, reset_epoch: currentEpoch,
+      workshop_key: selectedWorkshop, workshop_name: w.title
     });
     if (wErr && wErr.code !== '23505') throw wErr;
 
@@ -578,28 +691,58 @@ async function registerWorkshop() {
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
     await sb.from('feedback').update({ participant_email: email }).eq('session_id', sessionId);
 
-    participantEmail = email;
+    participantEmail   = email;
+    workshopRegistered = selectedWorkshop;
     localStorage.setItem('syssa_workshop_email', email);
-
-    document.getElementById('workshop-form').style.display = 'none';
-    document.getElementById('workshop-done').style.display = 'block';
-    document.getElementById('workshop-done-email').textContent = email;
-    logEvent('workshop_registered');
+    localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
+    workshopCounts[selectedWorkshop]++;
+    showWorkshopSuccess(selectedWorkshop, email);
+    logEvent('workshop_registered', { workshop: selectedWorkshop });
 
   } catch(e) {
-    err.textContent = 'Registration failed. Please try again.';
-    err.classList.add('show');
+    errEl.textContent   = 'Registration failed. Please try again.';
+    errEl.style.display = 'block';
     inp.classList.add('err');
-    btn.disabled = false;
-    inp.disabled = false;
+    btn.disabled = false; inp.disabled = false;
   } finally {
-    mig.classList.remove('show');
+    spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
   }
 }
 
-// ══════════════════════════════════════════════════
+function showWorkshopSuccess(key, email) {
+  const w    = WORKSHOPS[key];
+  const left = Math.max(0, w.limit - workshopCounts[key]);
+  document.getElementById('ws-cards').style.display    = 'none';
+  document.getElementById('ws-form-wrap').style.display = 'none';
+  const s = document.getElementById('ws-success');
+  s.style.display = 'flex'; s.style.flexDirection = 'column'; s.style.alignItems = 'center';
+  document.getElementById('ws-success-sub').textContent   = w.title + ' \u00b7 ' + email;
+  document.getElementById('ws-success-seats').textContent = left > 0
+    ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+}
+
+function resetWorkshopUI() {
+  const wsCards   = document.getElementById('ws-cards');
+  const wsForm    = document.getElementById('ws-form-wrap');
+  const wsSuccess = document.getElementById('ws-success');
+  if (wsCards)   wsCards.style.display   = 'grid';
+  if (wsForm)    wsForm.style.display    = 'none';
+  if (wsSuccess) wsSuccess.style.display = 'none';
+  ['a', 'b'].forEach(k => {
+    const c = document.getElementById('ws-card-' + k);
+    if (c) c.classList.remove('selected', 'full');
+  });
+  const errEl = document.getElementById('ws-form-err');
+  if (errEl) errEl.style.display = 'none';
+  const inp = document.getElementById('ws-form-email');
+  if (inp) { inp.value = ''; inp.classList.remove('err'); inp.disabled = false; }
+  const btn = document.getElementById('ws-form-submit');
+  if (btn) btn.disabled = false;
+}
+
+// ════════════════════════════════════════════
 //  DEVICE / GEO
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function getDeviceInfo() {
   const ua = navigator.userAgent;
   let device = 'desktop';
@@ -619,7 +762,6 @@ function getDeviceInfo() {
   else if (/linux/i.test(ua))       os = 'Linux';
   return { device_type: device, browser, os, screen_width: screen.width, screen_height: screen.height };
 }
-
 async function getGeo() {
   try {
     const r = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(4000) });
@@ -629,9 +771,9 @@ async function getGeo() {
   } catch(e) { return {}; }
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  ANALYTICS
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 async function trackSession() {
   if (!sb || sessionTracked) return;
   sessionTracked = true;
@@ -642,8 +784,7 @@ async function trackSession() {
   localStorage.setItem(visitKey, String(visitCount));
   const upsertData = {
     id: sessionId, last_seen: new Date().toISOString(),
-    visit_count: visitCount, reset_epoch: currentEpoch,
-    ...dev, ...geo
+    visit_count: visitCount, reset_epoch: currentEpoch, ...dev, ...geo
   };
   if (participantEmail) upsertData.participant_email = participantEmail;
   try { await sb.from('sessions').upsert(upsertData, { onConflict: 'id' }); } catch(e) {}
@@ -674,12 +815,9 @@ function startHeartbeat() {
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden)
-    logEvent('page_hidden', { time_on_page_sec: Math.floor((Date.now() - pageEnterTime) / 1000) });
-  else
-    logEvent('page_visible');
+  if (document.hidden) logEvent('page_hidden', { time_on_page_sec: Math.floor((Date.now() - pageEnterTime) / 1000) });
+  else logEvent('page_visible');
 });
-
 window.addEventListener('beforeunload', () => {
   const elapsed = Math.floor((Date.now() - pageEnterTime) / 1000);
   if (navigator.sendBeacon && sb) {
@@ -691,15 +829,14 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  NOTIFICATIONS
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function requestNotifPermission() {
   if (!('Notification' in window)) return;
   Notification.requestPermission().then(p => {
     document.getElementById('notif-banner').style.display = 'none';
-    if (p === 'granted')
-      new Notification('Notifications enabled', { body: 'You will be notified when organizers reply.' });
+    if (p === 'granted') new Notification('Notifications enabled', { body: 'You will be notified when organizers reply.' });
   });
 }
 function showNotifBannerIfNeeded() {
@@ -711,9 +848,9 @@ function sendPushIfNeeded(text) {
     new Notification('Reply from Organizer', { body: text, tag: 'organizer-reply' });
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  AI ICON
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function updateAIIcon() {
   const icon = document.getElementById('ai-icon');
   const sub  = document.getElementById('ai-status-sub');
@@ -721,13 +858,12 @@ function updateAIIcon() {
   if (sub)  sub.textContent = aiEnabled ? 'Powered by AI \u00b7 Ask anything' : 'Currently offline';
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  INIT
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 window.addEventListener('load', async () => {
   try {
     sb = supabase.createClient(SB_URL, SB_KEY);
-
     const { data, error } = await withTimeout(
       sb.from('live_state')
         .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch')
@@ -738,9 +874,9 @@ window.addEventListener('load', async () => {
 
     const serverEpoch = data.current_epoch ?? 1;
     const storedEpoch = parseInt(localStorage.getItem('syssa_epoch') || '0');
-
     if (storedEpoch !== serverEpoch) {
       localStorage.removeItem('syssa_workshop_email');
+      localStorage.removeItem('syssa_workshop_key_' + storedEpoch);
       sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem('syssa_sid', sessionId);
       localStorage.setItem('syssa_epoch', String(serverEpoch));
@@ -757,9 +893,7 @@ window.addEventListener('load', async () => {
     if (storedEmail) participantEmail = storedEmail;
 
     updateAIIcon();
-    applyCountdownMode();   // countdown & now/next visibility
-    applyWorkshopMode();    // workshop card visibility
-
+    applyTopSlot();
     startApp();
     showNotifBannerIfNeeded();
     trackSession();
@@ -771,9 +905,9 @@ window.addEventListener('load', async () => {
   }
 });
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  REALTIME
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function subscribeReplies() {
   sb.channel('replies_' + sessionId)
     .on('postgres_changes', {
@@ -785,8 +919,7 @@ function subscribeReplies() {
         sendPushIfNeeded(p.new.text);
         unread++;
         const b = document.getElementById('fab-badge');
-        b.style.display = 'flex';
-        b.textContent   = unread;
+        b.style.display = 'flex'; b.textContent = unread;
       }
     }).subscribe();
 }
@@ -804,17 +937,14 @@ function startApp() {
         if (f) {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
-          if (f.current_epoch != null)  handleEpochChange(f.current_epoch);
-          if (f.ai_enabled    != null)  { aiEnabled    = Boolean(f.ai_enabled);    updateAIIcon(); }
-          if (f.show_countdown != null) { showCountdown = Boolean(f.show_countdown); applyCountdownMode(); }
-          if (f.show_workshop  != null) { showWorkshop  = Boolean(f.show_workshop);  applyWorkshopMode(); }
+          if (f.current_epoch  != null) handleEpochChange(f.current_epoch);
+          if (f.ai_enabled     != null) { aiEnabled    = Boolean(f.ai_enabled); updateAIIcon(); }
+          if (f.show_countdown != null) showCountdown = Boolean(f.show_countdown);
+          if (f.show_workshop  != null) showWorkshop  = Boolean(f.show_workshop);
+          applyTopSlot();
         }
-      } catch(e) {
-        if (p.new && p.new.current_id) currentId = p.new.current_id;
-      }
-      render();
-      startAudTimer();
-      // flash border on now-card
+      } catch(e) { if (p.new && p.new.current_id) currentId = p.new.current_id; }
+      render(); startAudTimer();
       const nc = document.getElementById('now-card');
       if (nc && nc.offsetParent !== null) {
         nc.style.outline = '2px solid var(--live)';
@@ -832,25 +962,25 @@ function startApp() {
   loadChatHistory();
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  SPEAKER TIMER
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function startAudTimer() {
   if (audTimerInterval) clearInterval(audTimerInterval);
   audTimerInterval = setInterval(() => {
-    const e    = Math.floor((Date.now() - speakerStartedAt) / 1000);
-    const val  = String(Math.floor(e / 60)).padStart(2, '0') + ':' + String(e % 60).padStart(2, '0');
+    const e   = Math.floor((Date.now() - speakerStartedAt) / 1000);
+    const val = String(Math.floor(e / 60)).padStart(2, '0') + ':' + String(e % 60).padStart(2, '0');
     const over = e >= 900;
-    const el   = document.getElementById('aud-timer');
+    const el = document.getElementById('aud-timer');
     if (el) { el.textContent = val; el.style.color = over ? 'var(--warn)' : 'var(--navy)'; }
     const ae = document.getElementById('aud-agenda-timer');
     if (ae) { ae.textContent = val; ae.style.color = over ? 'var(--warn)' : '#fff'; }
   }, 1000);
 }
 
-// ══════════════════════════════════════════════════
-//  RENDER
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  RENDER — ✅ FIXED: SECS keys match AGENDA session fields
+// ════════════════════════════════════════════
 function render() {
   const cur   = AGENDA.find(a => a.id === currentId);
   const nxt   = getNext(currentId);
@@ -863,13 +993,24 @@ function render() {
   document.getElementById('next-name').textContent   = nxt ? nxt.speaker : 'Program Concluded';
   document.getElementById('next-title').textContent  = nxt ? (nxt.title.split('\n')[0] || '') : '';
 
+  // ✅ FIXED: keys now match AGENDA session values
   const SECS = [
-    { key: 'pre',      label: '' },
-    { key: 'opening',  label: 'Opening Session (10:00\u201311:00)' },
-    { key: 'students', label: "Students\u2019 Session (11:00\u201313:00)" },
-    { key: 'break',    label: '' },
-    { key: 'phd',      label: 'PhD Session (14:00\u201317:00)' },
-    { key: 'closing',  label: '' }
+    { key: 'day1_pre',     label: '' },
+    { key: 'day1_open',    label: 'Opening Ceremony' },
+    { key: 'day1_keynote', label: 'Keynote Address' },
+    { key: 'day1_s1',      label: 'Oral Presentations \u2014 Session I' },
+    { key: 'day1_break1',  label: '' },
+    { key: 'day1_poster',  label: 'Poster Pitches (5 min each)' },
+    { key: 'day1_s2',      label: 'Oral Presentations \u2014 Session II' },
+    { key: 'day1_lunch',   label: '' },
+    { key: 'day1_s2b',     label: '' },
+    { key: 'day1_close',   label: '' },
+    { key: 'day2_open',    label: 'Day 2 \u2014 Sunday, 14 June 2026' },
+    { key: 'day2_s3',      label: 'Oral Presentations \u2014 Session III' },
+    { key: 'day2_break',   label: '' },
+    { key: 'day2_panel',   label: 'Panel Discussion & Workshops' },
+    { key: 'day2_ws',      label: '' },
+    { key: 'day2_close',   label: '' },
   ];
 
   const frag = document.createDocumentFragment();
@@ -878,135 +1019,71 @@ function render() {
     if (!items.length) return;
     if (sec.label) {
       const hd = document.createElement('div');
-      hd.className   = 'a-session-title';
-      hd.textContent = sec.label;
+      hd.className = 'a-session-title'; hd.textContent = sec.label;
       frag.appendChild(hd);
     }
     items.forEach(item => {
       const isCur = item.id === currentId;
       const isNxt = nxt && item.id === nxt.id;
       const p2    = item.title ? item.title.split('\n') : [];
-
-      const row = document.createElement('div');
-      // "Speaking" badge-ი countdown-ის დროს არ ჩანს
-      row.className = 'a-row'
-        + ((isCur && !cdOn) ? ' a-live' : '')
-        + (item.isBreak ? ' a-break' : '');
-
-      const timeEl = document.createElement('div');
-      timeEl.className   = 'a-time';
-      timeEl.textContent = item.time || '';
-      row.appendChild(timeEl);
-
-      const divl = document.createElement('div');
-      divl.className = 'a-divl';
-      row.appendChild(divl);
-
-      const info    = document.createElement('div');
-      info.className = 'a-info';
-
-      const nameRow  = document.createElement('div');
-      nameRow.className = 'a-name';
-      const nameSpan = document.createElement('span');
-      nameSpan.textContent = item.speaker;
-      nameRow.appendChild(nameSpan);
-
+      const row   = document.createElement('div');
+      row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
+      const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time || ''; row.appendChild(timeEl);
+      const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
+      const info = document.createElement('div'); info.className = 'a-info';
+      const nameRow = document.createElement('div'); nameRow.className = 'a-name';
+      const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
       if (isCur && !cdOn) {
-        const bl = document.createElement('span');
-        bl.className   = 'a-badge a-badge-live';
-        bl.textContent = 'Speaking';
-        nameRow.appendChild(bl);
-
-        const bt = document.createElement('span');
-        bt.className   = 'a-badge a-badge-live';
-        bt.id          = 'aud-agenda-timer';
-        bt.style.cssText = 'min-width:40px;text-align:center;color:#fff!important;';
-        bt.textContent = '00:00';
-        nameRow.appendChild(bt);
+        const bl = document.createElement('span'); bl.className = 'a-badge a-badge-live'; bl.textContent = 'Speaking'; nameRow.appendChild(bl);
+        const bt = document.createElement('span'); bt.className = 'a-badge a-badge-live'; bt.id = 'aud-agenda-timer'; bt.style.cssText = 'min-width:40px;text-align:center;color:#fff!important;'; bt.textContent = '00:00'; nameRow.appendChild(bt);
       }
-
-      if (isNxt && !cdOn) {
-        const bn = document.createElement('span');
-        bn.className   = 'a-badge a-badge-next';
-        bn.textContent = 'Up next';
-        nameRow.appendChild(bn);
-      }
-
+      if (isNxt && !cdOn) { const bn = document.createElement('span'); bn.className = 'a-badge a-badge-next'; bn.textContent = 'Up next'; nameRow.appendChild(bn); }
       info.appendChild(nameRow);
-      if (p2[0]) {
-        const s1 = document.createElement('div');
-        s1.className   = 'a-sub';
-        s1.textContent = p2[0];
-        info.appendChild(s1);
-      }
-      if (p2[1]) {
-        const s2 = document.createElement('div');
-        s2.className   = 'a-sub-sup';
-        s2.textContent = p2[1];
-        info.appendChild(s2);
-      }
-      row.appendChild(info);
-      frag.appendChild(row);
+      if (p2[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.textContent = p2[0]; info.appendChild(s1); }
+      if (p2[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2[1]; info.appendChild(s2); }
+      row.appendChild(info); frag.appendChild(row);
     });
   });
 
   const list = document.getElementById('agenda-list');
-  list.innerHTML = '';
-  list.appendChild(frag);
-  setTimeout(() => {
-    const live = list.querySelector('.a-row.a-live');
-    if (live) live.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 200);
+  list.innerHTML = ''; list.appendChild(frag);
+  setTimeout(() => { const live = list.querySelector('.a-row.a-live'); if (live) live.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 200);
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  PANEL TOGGLES
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function toggleChat() {
   chatOpen = !chatOpen;
   document.getElementById('chat-panel').classList.toggle('open', chatOpen);
   if (chatOpen) {
-    updateAIIcon();
-    unread = 0;
+    updateAIIcon(); unread = 0;
     document.getElementById('fab-badge').style.display = 'none';
-    setTimeout(() => {
-      const w = document.getElementById('chat-msgs');
-      w.scrollTop = w.scrollHeight;
-    }, 60);
+    setTimeout(() => { const w = document.getElementById('chat-msgs'); w.scrollTop = w.scrollHeight; }, 60);
     logEvent('chat_open');
     if (sb) sb.from('sessions').update({ chat_opened: true }).eq('id', sessionId).then(() => {}).catch(() => {});
   }
   if (fbOpen) { fbOpen = false; document.getElementById('fb-panel').classList.remove('open'); }
 }
-
 function toggleFb() {
   fbOpen = !fbOpen;
   document.getElementById('fb-panel').classList.toggle('open', fbOpen);
   if (chatOpen) { chatOpen = false; document.getElementById('chat-panel').classList.remove('open'); }
 }
 
-// ══════════════════════════════════════════════════
-//  CHAT BUBBLES
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  CHAT
+// ════════════════════════════════════════════
 function appendBubble(author, text, type) {
   const wrap = document.getElementById('chat-msgs');
   const emp  = wrap.querySelector('.chat-empty-msg');
   if (emp) emp.remove();
-  const d = document.createElement('div');
-  d.className = 'bubble ' + type;
-  const a = document.createElement('div');
-  a.className   = 'bubble-author';
-  a.textContent = author;
-  const t = document.createElement('div');
-  t.className   = 'bubble-text';
-  t.textContent = text;
-  d.appendChild(a);
-  d.appendChild(t);
-  wrap.appendChild(d);
-  wrap.scrollTop = wrap.scrollHeight;
+  const d = document.createElement('div'); d.className = 'bubble ' + type;
+  const a = document.createElement('div'); a.className = 'bubble-author'; a.textContent = author;
+  const t = document.createElement('div'); t.className = 'bubble-text'; t.textContent = text;
+  d.appendChild(a); d.appendChild(t); wrap.appendChild(d); wrap.scrollTop = wrap.scrollHeight;
   saveChatHistory();
 }
-
 function saveChatHistory() {
   try {
     const data = Array.from(document.querySelectorAll('#chat-msgs .bubble')).map(b => ({
@@ -1017,52 +1094,33 @@ function saveChatHistory() {
     localStorage.setItem('syssa_chat_' + sessionId, JSON.stringify(data));
   } catch(e) {}
 }
-
 function loadChatHistory() {
   try {
     const raw = localStorage.getItem('syssa_chat_' + sessionId);
     if (!raw) return;
     const items = JSON.parse(raw);
     if (!Array.isArray(items) || !items.length) return;
-    // UI restore — chatHistory array-ს ვტვირთავთ AI კონტექსტისთვისაც
     document.getElementById('chat-msgs').innerHTML = '';
     items.forEach(b => {
       appendBubble(b.author, b.text, b.type);
-      // AI history-ში ვამატებთ (UI bubble-ებიდან)
-      if (b.type === 'them') chatHistory.push({ role: 'user',      content: b.text });
-      if (b.type === 'org' && b.author === 'AI Assistant')
-        chatHistory.push({ role: 'assistant', content: b.text });
+      if (b.type === 'them') chatHistory.push({ role: 'user', content: b.text });
+      if (b.type === 'org' && b.author === 'AI Assistant') chatHistory.push({ role: 'assistant', content: b.text });
     });
-    // ზომა შევზღუდოთ
-    if (chatHistory.length > MAX_HISTORY)
-      chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+    if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
   } catch(e) {}
 }
-
 function appendTyping() {
   const wrap = document.getElementById('chat-msgs');
-  const d = document.createElement('div');
-  d.className = 'bubble org';
-  d.id = 'typing-indicator';
-  const a = document.createElement('div');
-  a.className   = 'bubble-author';
-  a.textContent = 'AI Assistant';
-  const dots = document.createElement('span');
-  dots.style.cssText = 'opacity:.5;letter-spacing:3px';
-  dots.textContent = '\u25cf\u25cf\u25cf';
-  d.appendChild(a);
-  d.appendChild(dots);
-  wrap.appendChild(d);
-  wrap.scrollTop = wrap.scrollHeight;
+  const d = document.createElement('div'); d.className = 'bubble org'; d.id = 'typing-indicator';
+  const a = document.createElement('div'); a.className = 'bubble-author'; a.textContent = 'AI Assistant';
+  const dots = document.createElement('span'); dots.style.cssText = 'opacity:.5;letter-spacing:3px'; dots.textContent = '\u25cf\u25cf\u25cf';
+  d.appendChild(a); d.appendChild(dots); wrap.appendChild(d); wrap.scrollTop = wrap.scrollHeight;
 }
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
-}
+function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
 
-// ══════════════════════════════════════════════════
-//  AI — SYSTEM PROMPT
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
+//  AI
+// ════════════════════════════════════════════
 function buildSystemPrompt() {
   const cur = AGENDA.find(a => a.id === currentId);
   const nxt = getNext(currentId);
@@ -1070,14 +1128,12 @@ function buildSystemPrompt() {
   let timeUntil = '';
   if (beforeConf) {
     const diff = CONF_START.getTime() - Date.now();
-    const d = Math.floor(diff / 86400000);
-    const h = Math.floor((diff % 86400000) / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
+    const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000);
     timeUntil = `${d} day(s), ${h} hour(s), and ${m} minute(s)`;
   }
-  return `You are the official AI Assistant for the SYSSA XIII Scientific Session: A Nobel's Day conference at DTMU, Tbilisi. Help participants with agenda, organization, certificates, and any conference questions.
+  return `You are the official AI Assistant for the XI International Conference "Infection at the Crossroads" at Margot Old Tbilisi. Help participants with agenda, organization, certificates, and any conference questions.
 
-Event name: "SYSSA XIII Scientific Session: A Nobel's Day" — also called "SYSSA" or "A Nobel's Day".
+Event name: "XI International Conference — Infection at the Crossroads" — June 13–14, 2026, Margot Old Tbilisi, Georgia.
 
 CONFERENCE STATUS: ${beforeConf
     ? `NOT STARTED. Begins June 13, 2026 at 09:00 AM Tbilisi time. Time remaining: approximately ${timeUntil}.`
@@ -1085,56 +1141,37 @@ CONFERENCE STATUS: ${beforeConf
 
 ${beforeConf
     ? 'If asked who is speaking or who is next, explain the conference has not started yet and share the time remaining.'
-    : `Live data:
-- Current speaker: ${cur ? cur.speaker : '—'}
-- Current topic: ${cur ? (cur.title.split('\n')[0] || '') : '—'}
-- Next speaker: ${nxt ? nxt.speaker : 'Conference Concluded'}
-- Next topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}`}
+    : `Live data:\n- Current speaker: ${cur ? cur.speaker : '—'}\n- Current topic: ${cur ? (cur.title.split('\n')[0] || '') : '—'}\n- Next speaker: ${nxt ? nxt.speaker : 'Conference Concluded'}\n- Next topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}`}
 
 Key FAQ:
 - Registration: June 13, 09:00 AM sharp.
 - Certificates: emailed within 24h after QR check-out on day 2. Both QR check-in and check-out on both days are mandatory.
-- Coffee Break: 09:30. Lunch: 13:00–14:00.
+- Coffee Break: 12:15–12:45 (Day 1), 11:30–12:00 (Day 2). Lunch: 15:00–16:00 (Day 1).
 - WiFi/room issues: direct to on-site organizing team.
 - Platform created by Giorgi Eliashvili.
-
-SYSSA Board: Mariam Chubinidze (President), Elene Imnaishvili (VP), Giorgi Eliashvili (IT), Lika Khalvashi (Secretary), Sameer Khan (Information), Aravind Unnikrishnan (Treasurer), Giorgi Riabinkin (Research), Aleksandra Nadiradze / Aleksandre Ramishvili (PhD Reps).
+- Working language: English.
 
 Rules: Reply directly, no filler phrases. No markdown bold or headers. Max 1–2 sentences. Max 1–2 emojis. CRITICAL: reply in the exact same language as the user — Georgian question = Georgian answer, English = English.`;
 }
 
-// ══════════════════════════════════════════════════
-//  AI — CALL
-// ══════════════════════════════════════════════════
 async function getAIReply(userMessage) {
   chatHistory.push({ role: 'user', content: userMessage });
-  if (chatHistory.length > MAX_HISTORY)
-    chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
-
+  if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const resp = await fetch(SB_URL + '/functions/v1/claude-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001', max_tokens: 300, temperature: 0.3,
-          system: buildSystemPrompt(), messages: chatHistory
-        })
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 300, temperature: 0.3, system: buildSystemPrompt(), messages: chatHistory })
       });
       if (resp.status === 429) { await new Promise(r => setTimeout(r, attempt * 2000)); continue; }
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error('Proxy error ' + resp.status + ': ' + (err.error?.message || 'unknown'));
-      }
+      if (!resp.ok) { const err = await resp.json().catch(() => ({})); throw new Error('Proxy error ' + resp.status + ': ' + (err.error?.message || 'unknown')); }
       const data  = await resp.json();
       const reply = data.content?.[0]?.text;
       if (!reply) throw new Error('Empty response');
-
       chatHistory.push({ role: 'assistant', content: reply });
-      if (chatHistory.length > MAX_HISTORY)
-        chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+      if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
       return reply;
-
     } catch(e) {
       if (attempt === 3) { chatHistory.pop(); throw e; }
       await new Promise(r => setTimeout(r, attempt * 1500));
@@ -1142,39 +1179,28 @@ async function getAIReply(userMessage) {
   }
 }
 
-// ══════════════════════════════════════════════════
-//  SEND CHAT
-// ══════════════════════════════════════════════════
 async function sendChat() {
   const inp  = document.getElementById('chat-inp');
   const text = inp.value.trim();
   if (!text) return;
-  inp.value    = '';
-  inp.disabled = true;
+  inp.value = ''; inp.disabled = true;
   appendBubble('You', text, 'them');
-
-  // bubble limit — UI-ში მაქს 10
   const wrap = document.getElementById('chat-msgs');
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
 
-  // შევინახოთ Supabase-ში
   const msgData = { session_id: sessionId, sender: 'participant', text, reset_epoch: currentEpoch };
   if (participantEmail) msgData.participant_email = participantEmail;
   if (sb) sb.from('messages').insert(msgData).then(() => {}).catch(() => {});
-
   logEvent('message_sent', { text_length: text.length });
   if (sb) {
     sb.rpc('increment_chat_count', { sid: sessionId }).then(() => {}).catch(() => {
       sb.from('sessions').select('chat_msg_count').eq('id', sessionId).single().then(({ data: s }) => {
-        if (s) sb.from('sessions')
-          .update({ chat_msg_count: (s.chat_msg_count || 0) + 1, chat_opened: true })
-          .eq('id', sessionId).then(() => {}).catch(() => {});
+        if (s) sb.from('sessions').update({ chat_msg_count: (s.chat_msg_count || 0) + 1, chat_opened: true }).eq('id', sessionId).then(() => {}).catch(() => {});
       }).catch(() => {});
     });
   }
 
-  // AI სტატუსი გადავამოწმოთ realtime-ად
   try {
     const { data: st } = await sb.from('live_state').select('ai_enabled').eq('id', 1).single();
     if (st && st.ai_enabled != null) { aiEnabled = Boolean(st.ai_enabled); updateAIIcon(); }
@@ -1182,41 +1208,33 @@ async function sendChat() {
 
   if (!aiEnabled) {
     appendBubble('AI Assistant', 'The AI assistant is currently offline. Please ask an organizer on-site.', 'org');
-    inp.disabled = false;
-    return;
+    inp.disabled = false; return;
   }
 
   appendTyping();
   try {
     const reply = await getAIReply(text);
     removeTyping();
-    if (sb) sb.from('messages').insert({
-      session_id: sessionId, sender: 'ai', text: reply, reset_epoch: currentEpoch
-    }).then(() => {}).catch(() => {});
+    if (sb) sb.from('messages').insert({ session_id: sessionId, sender: 'ai', text: reply, reset_epoch: currentEpoch }).then(() => {}).catch(() => {});
     appendBubble('AI Assistant', reply, 'org');
   } catch(e) {
     removeTyping();
     appendBubble('AI Assistant', 'Connection error. Please try again.', 'org');
   }
-  inp.disabled = false;
-  inp.focus();
+  inp.disabled = false; inp.focus();
 }
 
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 //  FEEDBACK
-// ══════════════════════════════════════════════════
+// ════════════════════════════════════════════
 function resetFeedbackForm() {
   const inner = document.getElementById('fb-inner');
   if (!inner) return;
   inner.innerHTML =
-    '<div class="fb-body">' +
-    '<div class="fb-info-block">' +
-    '<div class="fb-info-label">Your Voice Matters</div>' +
-    '<div class="fb-info">Please share your honest feedback on any topic &mdash; the good, the bad, and everything in between!</div>' +
-    '</div>' +
+    '<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div>' +
+    '<div class="fb-info">Please share your honest feedback on any topic &mdash; the good, the bad, and everything in between!</div></div>' +
     '<div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div>' +
-    '<div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div>' +
-    '</div>';
+    '<div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>';
 }
 
 async function sendFeedback() {
@@ -1225,28 +1243,22 @@ async function sendFeedback() {
   if (!text) return;
   const cur = AGENDA.find(a => a.id === currentId);
   try {
-    const fbData = {
-      text, speaker: cur ? cur.speaker : '—',
-      session_id: sessionId, reset_epoch: currentEpoch
-    };
+    const fbData = { text, speaker: cur ? cur.speaker : '\u2014', session_id: sessionId, reset_epoch: currentEpoch };
     if (participantEmail) fbData.participant_email = participantEmail;
     await sb.from('feedback').insert(fbData);
   } catch(e) {}
-
   logEvent('feedback_sent', { text_length: text.length });
   if (sb) {
     const upd = { feedback_sent: true };
     if (participantEmail) upd.participant_email = participantEmail;
     sb.from('sessions').update(upd).eq('id', sessionId).then(() => {}).catch(() => {});
   }
-
   const inner = document.getElementById('fb-inner');
   inner.innerHTML =
     '<div style="padding:32px 16px;text-align:center;">' +
     '<div style="font-size:22px;margin-bottom:10px;color:var(--navy)">&#10003;</div>' +
     '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div>' +
-    '<div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div>' +
-    '</div>';
+    '<div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
   setTimeout(resetFeedbackForm, 3000);
 }
 </script>
