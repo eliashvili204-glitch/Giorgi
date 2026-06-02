@@ -71,8 +71,6 @@
   .card-img {
     width: 100%; height: 148px;
     background: linear-gradient(135deg, #1A365D 0%, #2a5298 50%, #1a3a5c 100%);
-    background-size: cover;
-    background-position: center;
     display: flex; align-items: center; justify-content: center;
     border-bottom: 1px solid var(--border); overflow: hidden; position: relative;
   }
@@ -129,89 +127,45 @@
   #locStatus.denied  { color: var(--warn); }
   #locStatus.manual  { color: var(--amber); }
 
-  .loc-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: currentColor; flex-shrink: 0;
-  }
-  .loc-pulse {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--text-soft); flex-shrink: 0;
-    animation: pulse 1.2s ease-in-out infinite;
-  }
+  .loc-dot   { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+  .loc-pulse { width:6px; height:6px; border-radius:50%; background:var(--text-soft); flex-shrink:0; animation:pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .loc-text { flex: 1; }
 
   #locationBlock {
     display: none;
-    background: #FEF2F2;
-    border: 1px solid #FCA5A5;
-    border-radius: var(--radius);
-    padding: 14px;
-    margin-top: 10px;
+    background: #FEF2F2; border: 1px solid #FCA5A5;
+    border-radius: var(--radius); padding: 14px; margin-top: 10px;
   }
-  .loc-block-title {
-    font-size: 11px; font-weight: 700; color: var(--warn);
-    letter-spacing: 0.06em; text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .loc-block-desc {
-    font-size: 11px; color: #8B4035; line-height: 1.65; margin-bottom: 10px;
-  }
-  .loc-how {
-    background: rgba(192,80,58,0.07); border-radius: 6px;
-    padding: 10px 12px; margin-bottom: 10px;
-  }
-  .loc-how-title {
-    font-size: 10px; font-weight: 700; color: var(--warn);
-    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px;
-  }
-  .loc-how-body {
-    font-size: 11px; color: #8B4035; line-height: 1.9;
-  }
+  .loc-block-title { font-size:11px; font-weight:700; color:var(--warn); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:6px; }
+  .loc-block-desc  { font-size:11px; color:#8B4035; line-height:1.65; margin-bottom:10px; }
+  .loc-how         { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; margin-bottom:10px; }
+  .loc-how-title   { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
+  .loc-how-body    { font-size:11px; color:#8B4035; line-height:1.9; }
   .loc-continue-btn {
-    display: none;
-    width: 100%; padding: 9px;
-    background: var(--navy); border: none; border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
-    color: #fff; cursor: pointer; letter-spacing: 0.04em;
-    transition: opacity 0.15s;
+    display:none; width:100%; padding:9px;
+    background:var(--navy); border:none; border-radius:var(--radius);
+    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
+    color:#fff; cursor:pointer; letter-spacing:0.04em; transition:opacity 0.15s;
   }
-  .loc-continue-btn:hover { opacity: 0.88; }
+  .loc-continue-btn:hover { opacity:0.88; }
 
-  .manual-notice {
-    display: none; margin-top: 8px; padding: 8px 10px;
-    background: var(--amber-bg); border: 1px solid var(--amber-border);
-    border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
+  #manual-notice {
+    display:none; margin-top:8px; padding:8px 10px;
+    background:var(--amber-bg); border:1px solid var(--amber-border);
+    border-radius:var(--radius); font-size:11px; color:var(--amber); line-height:1.6;
   }
 
-  /* ── Rate limit countdown box ── */
   #rateLimitBox {
-    display: none;
-    margin-top: 16px;
-    padding: 14px 16px;
-    background: #FFF8F0;
-    border: 1px solid #FBBF60;
-    border-radius: var(--radius);
-    animation: up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+    display:none; margin-top:16px; padding:14px 16px;
+    background:#FFF8F0; border:1px solid #FBBF60;
+    border-radius:var(--radius);
+    animation:up 0.3s cubic-bezier(0.16,1,0.3,1) both;
   }
-  .rl-title {
-    font-size: 11px; font-weight: 700; color: #92400E;
-    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;
-  }
-  .rl-reason {
-    font-size: 11px; color: #92400E; margin-bottom: 10px; line-height: 1.6;
-  }
-  .rl-countdown {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px; font-weight: 700; color: #92400E;
-    letter-spacing: 0.04em; text-align: center;
-    padding: 8px 0 4px;
-  }
-  .rl-countdown-label {
-    font-size: 10px; font-weight: 500; color: #B45309;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    text-align: center; margin-top: 2px;
-  }
+  .rl-title          { font-size:11px; font-weight:700; color:#92400E; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; }
+  .rl-reason         { font-size:11px; color:#92400E; margin-bottom:10px; line-height:1.6; }
+  .rl-countdown      { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#92400E; letter-spacing:0.04em; text-align:center; padding:8px 0 4px; }
+  .rl-countdown-label{ font-size:10px; font-weight:500; color:#B45309; letter-spacing:0.1em; text-transform:uppercase; text-align:center; margin-top:2px; }
 
   .submit {
     width:100%; padding:12px; margin-top:22px; background:var(--navy);
@@ -235,12 +189,7 @@
   .msg.info    { display:block; background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy); }
   .msg.warning { display:block; background:var(--amber-bg); border:1px solid var(--amber-border); color:var(--amber); }
 
-  .spinner {
-    display:inline-block; width:13px; height:13px;
-    border:2px solid rgba(255,255,255,0.35); border-top-color:#fff;
-    border-radius:50%; animation:spin 0.7s linear infinite;
-    vertical-align:middle; margin-right:7px;
-  }
+  .spinner { display:inline-block; width:13px; height:13px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; margin-right:7px; }
   @keyframes spin { to { transform:rotate(360deg); } }
 
   .retry-badge { display:inline-block; font-size:10px; font-weight:600; color:var(--text-soft); margin-top:6px; letter-spacing:0.04em; }
@@ -291,10 +240,10 @@
 
       <div id="locStatus">
         <div class="loc-pulse" id="loc-indicator"></div>
-        <div class="loc-text" id="locText">Detecting location…</div>
+        <div class="loc-text"  id="locText">Detecting location…</div>
       </div>
 
-      <div id="manual-notice" class="manual-notice">
+      <div id="manual-notice">
         ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
       </div>
 
@@ -320,11 +269,10 @@
       </div>
     </div>
 
-    <!-- Rate limit countdown box -->
     <div id="rateLimitBox">
-      <div class="rl-title" id="rl-title">Registration Limit Reached</div>
-      <div class="rl-reason" id="rl-reason"></div>
-      <div class="rl-countdown" id="rl-countdown">00:00:00</div>
+      <div class="rl-title"          id="rl-title">Registration Limit Reached</div>
+      <div class="rl-reason"         id="rl-reason"></div>
+      <div class="rl-countdown"      id="rl-countdown">00:00:00</div>
       <div class="rl-countdown-label">remaining until next registration</div>
     </div>
 
@@ -339,31 +287,27 @@
 //  CONFIG
 // ══════════════════════════════════════════════════════════════
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
-var CONF_LAT        = 41.6893212;
-var CONF_LNG        = 44.8192619;
-var RADIUS_M        = 300;
-var RATE_LIMIT_MS   = 7 * 60 * 60 * 1000; // 7 hours in ms
-var DEVICE_RL_KEY   = 'xi_device_last_submit';  // device-level key (email-independent)
-var EMAIL_RL_PFX    = 'xi_email_';               // email-level key prefix (legacy, server handles this now)
+var RATE_LIMIT_MS   = 7 * 60 * 60 * 1000;
+var DEVICE_RL_KEY   = 'xi_device_last_submit';
+var PAGE_LOAD_KEY   = 'xi_page_loads';
 var MAX_RETRIES     = 3;
 var RETRY_DELAY_MS  = 2500;
-
-var IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+var IS_IOS          = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════
 //  PAGE-LOAD COUNTER
+//  ✅ localStorage — tab დახურვაზე არ reset-დება
 // ══════════════════════════════════════════════════════════════
-var PAGE_LOAD_KEY = 'xi_page_loads';
 var pageLoads = 0;
 try {
-  pageLoads = parseInt(sessionStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
+  pageLoads = parseInt(localStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
   pageLoads++;
-  sessionStorage.setItem(PAGE_LOAD_KEY, pageLoads);
+  localStorage.setItem(PAGE_LOAD_KEY, pageLoads);
 } catch(e) {}
 
 function resetPageLoads() {
   pageLoads = 0;
-  try { sessionStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
+  try { localStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -375,10 +319,24 @@ var userLng  = null;
 var countdownInterval = null;
 
 // ══════════════════════════════════════════════════════════════
-//  RATE LIMIT HELPERS
+//  DEVICE RATE LIMIT
 // ══════════════════════════════════════════════════════════════
+function getDeviceRateRemaining() {
+  try {
+    var last = localStorage.getItem(DEVICE_RL_KEY);
+    if (!last) return 0;
+    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
+    return rem > 0 ? rem : 0;
+  } catch(e) { return 0; }
+}
 
-// Format milliseconds → "Xh Ym Zs"
+function setDeviceRateLimit() {
+  try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  COUNTDOWN
+// ══════════════════════════════════════════════════════════════
 function formatMs(ms) {
   if (ms <= 0) return '00:00:00';
   var totalSec = Math.floor(ms / 1000);
@@ -389,20 +347,6 @@ function formatMs(ms) {
 }
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-// Device rate limit — email-independent, stored as timestamp
-function getDeviceRateRemaining() {
-  try {
-    var last = localStorage.getItem(DEVICE_RL_KEY);
-    if (!last) return 0;
-    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
-    return rem > 0 ? rem : 0;
-  } catch(e) { return 0; }
-}
-function setDeviceRateLimit() {
-  try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
-}
-
-// Start live countdown in the UI
 function startCountdown(remainingMs, reason, title) {
   if (countdownInterval) clearInterval(countdownInterval);
 
@@ -420,7 +364,10 @@ function startCountdown(remainingMs, reason, title) {
       clearInterval(countdownInterval);
       document.getElementById('rl-countdown').textContent = '00:00:00';
       box.style.display = 'none';
-      document.getElementById('submit-btn').disabled = false;
+      // submit ხელახლა enable-დება მხოლოდ თუ geolocation მზადაა
+      if (geoState === 'found' || geoState === 'offsite' || geoState === 'manual') {
+        document.getElementById('submit-btn').disabled = false;
+      }
       showMsg('You can now register again.', 'info');
       return;
     }
@@ -442,20 +389,20 @@ function startLocation() {
   geoState = 'detecting';
   userLat  = null;
   userLng  = null;
-  setFormEnabled(false);
+  setInputsEnabled(false);
+  document.getElementById('submit-btn').disabled = true;
   hideManualNotice();
   hideBlock();
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
-  // Check device rate limit immediately on load
+  // device rate limit countdown — UI მიზნებისთვის
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
       'This device has already submitted a registration. Please wait before trying again.',
       'Device Limit Active'
     );
-    // still detect location in background but keep form disabled
   }
 
   if (!navigator.geolocation) {
@@ -490,10 +437,7 @@ function tryLowAccuracy() {
     onGeoSuccess,
     function(err) {
       if (err.code === 1) { onLocDenied(); return; }
-      showBlock(
-        'Location could not be determined. Check that Location Services are enabled, then reload the page.',
-        true
-      );
+      showBlock('Location could not be determined. Check that Location Services are enabled, then reload the page.', true);
     },
     { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
   );
@@ -503,6 +447,10 @@ function onGeoSuccess(pos) {
   resetPageLoads();
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
+
+  var CONF_LAT = 41.6893212;
+  var CONF_LNG = 44.8192619;
+  var RADIUS_M = 300;
 
   var dLat  = (userLat - CONF_LAT) * 111000;
   var dLng  = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
@@ -520,20 +468,19 @@ function onGeoSuccess(pos) {
     setStatusOffsite('Off-site  ·  ' + distM.toLocaleString() + ' m from venue  ·  ±' + acc + ' m');
   }
 
-  // Only enable form if device rate limit is not active
+  setInputsEnabled(true);
+  // submit enable მხოლოდ თუ device rate limit არ არის
   if (getDeviceRateRemaining() <= 0) {
-    setFormEnabled(true);
+    document.getElementById('submit-btn').disabled = false;
   }
 }
 
 function onLocDenied() {
   geoState = 'denied';
-  setFormEnabled(false);
+  setInputsEnabled(false);
+  document.getElementById('submit-btn').disabled = true;
   setStatusDenied('Location access blocked');
-  showBlock(
-    'Location access is blocked. Follow the steps below to enable it, then reload the page.',
-    true
-  );
+  showBlock('Location access is blocked. Follow the steps below to enable it, then reload the page.', true);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -553,11 +500,14 @@ function activateManual() {
   document.getElementById('locText').textContent = 'Continuing without location';
   document.getElementById('locStatus').className = 'manual';
 
-  if (getDeviceRateRemaining() <= 0) setFormEnabled(true);
+  setInputsEnabled(true);
+  if (getDeviceRateRemaining() <= 0) {
+    document.getElementById('submit-btn').disabled = false;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
-//  STATUS BADGE HELPERS
+//  STATUS HELPERS
 // ══════════════════════════════════════════════════════════════
 function setStatusDetecting(text) {
   var ind = document.getElementById('loc-indicator');
@@ -578,42 +528,29 @@ function _setDot(cls, text) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  BLOCK PANEL
+//  INPUTS ENABLE / DISABLE (email + segment ღილაკები)
+//  submit ღილაკი ცალკე კონტროლდება — geolocation + rate limit
 // ══════════════════════════════════════════════════════════════
-function showBlock(desc, showContinueIfEnough) {
-  document.getElementById('loc-block-desc').textContent = desc;
-  document.getElementById('locationBlock').style.display = 'block';
-
-  var howBody = document.getElementById('loc-how-body');
-  if (IS_IOS) {
-    howBody.innerHTML = '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow';
-  } else {
-    howBody.innerHTML = '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
-  }
-
-  var btn = document.getElementById('loc-continue-btn');
-  btn.style.display = (showContinueIfEnough && pageLoads >= 3) ? 'block' : 'none';
-}
-function hideBlock() {
-  document.getElementById('locationBlock').style.display = 'none';
-}
-
-function showManualNotice() { document.getElementById('manual-notice').style.display = 'block'; }
-function hideManualNotice() { document.getElementById('manual-notice').style.display = 'none'; }
-
-// ══════════════════════════════════════════════════════════════
-//  FORM ENABLE / DISABLE
-// ══════════════════════════════════════════════════════════════
-function setFormEnabled(enabled) {
+function setInputsEnabled(enabled) {
   document.getElementById('email-inp').disabled = !enabled;
-  // Submit button only enabled if also no rate limit
-  if (enabled && getDeviceRateRemaining() > 0) {
-    document.getElementById('submit-btn').disabled = true;
-  } else {
-    document.getElementById('submit-btn').disabled = !enabled;
-  }
   document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
 }
+
+// ══════════════════════════════════════════════════════════════
+//  BLOCK PANEL
+// ══════════════════════════════════════════════════════════════
+function showBlock(desc, showContinue) {
+  document.getElementById('loc-block-desc').textContent = desc;
+  document.getElementById('locationBlock').style.display = 'block';
+  document.getElementById('loc-how-body').innerHTML = IS_IOS
+    ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
+    : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
+  document.getElementById('loc-continue-btn').style.display =
+    (showContinue && pageLoads >= 3) ? 'block' : 'none';
+}
+function hideBlock() { document.getElementById('locationBlock').style.display = 'none'; }
+function showManualNotice() { document.getElementById('manual-notice').style.display = 'block'; }
+function hideManualNotice() { document.getElementById('manual-notice').style.display = 'none'; }
 
 // ══════════════════════════════════════════════════════════════
 //  SEGMENT PICKER
@@ -625,18 +562,23 @@ function pick(el) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  FETCH WITH RETRY
+//  FETCH WITH RETRY — მხოლოდ network error-ზე, არა 4xx-ზე
 // ══════════════════════════════════════════════════════════════
 function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
   fetch(url)
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-    .then(function(t) { onSuccess(t.trim()); })
+    .then(function(r) {
+      if (r.status >= 400 && r.status < 500) {
+        return r.text().then(function(t) { onSuccess(t.trim()); });
+      }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text().then(function(t) { onSuccess(t.trim()); });
+    })
     .catch(function() {
       if (left > 1) {
         var ri = document.getElementById('retry-info');
         ri.style.display = 'block';
-        ri.textContent = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
+        ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
         setTimeout(function() { fetchWithRetry(url, left - 1, onSuccess, onFail); }, RETRY_DELAY_MS);
       } else {
         document.getElementById('retry-info').style.display = 'none';
@@ -646,7 +588,7 @@ function fetchWithRetry(url, left, onSuccess, onFail) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  RESPONSE HANDLER
+//  MSG
 // ══════════════════════════════════════════════════════════════
 function showMsg(text, type) {
   var el = document.getElementById('msg');
@@ -654,16 +596,17 @@ function showMsg(text, type) {
   el.className   = 'msg ' + type;
 }
 
-function handleResult(result, day, action) {
+// ══════════════════════════════════════════════════════════════
+//  RESULT HANDLER
+// ══════════════════════════════════════════════════════════════
+function handleResult(result) {
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
 
-  // Server-side email rate limit response: "RATE_LIMITED:milliseconds"
+  // Server-side email rate limit
   if (result.indexOf('RATE_LIMITED:') === 0) {
     var remMs = parseInt(result.split(':')[1], 10);
-    document.getElementById('submit-btn').disabled = true;
-    startCountdown(
-      remMs,
+    startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
     );
@@ -684,14 +627,14 @@ function handleResult(result, day, action) {
   if (entry) {
     showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      // Set device-level rate limit on successful submission
+      // device rate limit მხოლოდ წარმატებული ჩაწერის შემდეგ
       setDeviceRateLimit();
-      startCountdown(
-        RATE_LIMIT_MS,
+      startCountdown(RATE_LIMIT_MS,
         'Registration successful. This device cannot register again for 7 hours.',
         'Device Limit Active'
       );
     } else {
+      // წარუმატებელი — submit ხელახლა enable
       document.getElementById('submit-btn').disabled = false;
     }
   } else if (result.indexOf('ERROR:') === 0) {
@@ -713,11 +656,10 @@ function submitForm() {
     return;
   }
 
-  // Double-check device rate limit at submit time
+  // double-check device rate limit
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
-    startCountdown(
-      devRem,
+    startCountdown(devRem,
       'This device has already submitted a registration. Please wait before trying again.',
       'Device Limit Active'
     );
@@ -753,7 +695,7 @@ function submitForm() {
 
   fetchWithRetry(
     url, MAX_RETRIES,
-    function(result) { handleResult(result, day, action); },
+    function(result) { handleResult(result); },
     function() {
       document.getElementById('submit-btn').disabled  = false;
       document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
