@@ -3,186 +3,213 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SYSSA — Organizer Dashboard</title>
+<title>Infection at the Crossroads — Organizer Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
+:root{
+  --bg:#EAEFF2;--bg2:#D5E1EA;--surface:#FFFFFF;--border:#B2C4D1;
+  --text:#0A1B29;--text-dim:#33475B;--text-faint:#607386;--text-soft:#33475B;
+  --gold:#1A365D;--gold-soft:#E6EDF5;--gold-border:#94A9C2;
+  --navy:#1A365D;--navy-soft:#E6EDF5;--navy-border:#94A9C2;
+  --live:#16A34A;--warn:#DC2626;
+  --teal:#16A34A;--teal-soft:rgba(22,163,74,.1);--teal-border:rgba(22,163,74,.4);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0f2035;font-family:'Lato',sans-serif;color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
 
 #loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;}
-#loading p{font-size:13px;color:rgba(255,255,255,.5);}
-.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.1);border-top-color:#4dd9a0;border-radius:50%;animation:spin .8s linear infinite;}
+#loading p{font-size:12px;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;}
+.spinner{width:28px;height:28px;border:1.5px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .9s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 #error-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;}
-#error-screen p{color:#f87171;font-size:14px;max-width:400px;line-height:1.6;}
-
+#error-screen p{color:var(--warn);font-size:13px;max-width:360px;line-height:1.7;}
 #app{display:none;flex-direction:column;min-height:100vh;}
 
-.top-bar{background:#122840;border-bottom:1px solid rgba(255,255,255,0.1);padding:12px 20px;display:flex;align-items:center;gap:12px;}
-.top-bar-title{flex:1;font-size:13px;font-weight:700;color:#e8c96a;}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#4dd9a0;animation:pulse 1.5s infinite;flex-shrink:0;}
-.status-dot.offline{background:#f87171;animation:none;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.status-label{font-size:11px;color:rgba(255,255,255,.5);}
-.notif-btn{background:rgba(255,255,255,.08);border:none;border-radius:20px;padding:5px 10px;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;position:relative;display:none;align-items:center;gap:4px;}
-.notif-count{background:#f87171;border-radius:20px;font-size:9px;font-weight:700;padding:1px 5px;}
+/* ── TOP BAR ── */
+.top-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.logos{display:flex;align-items:center;gap:10px;}
+.logo-circle{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:var(--text-dim);background:transparent;text-align:center;line-height:1.2;flex-shrink:0;letter-spacing:.02em;}
+.logo-sep{width:1px;height:18px;background:var(--border);flex-shrink:0;}
+.syssa-logo{background:none;border:1px solid var(--border);border-radius:3px;padding:2px 7px;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--text);}
+.bar-title{font-family:'DM Serif Display',serif;font-size:14px;color:var(--navy);flex:1;white-space:nowrap;}
+.status-row{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.f-dot{width:6px;height:6px;border-radius:50%;background:var(--live);animation:pulse 2s infinite;flex-shrink:0;}
+.f-dot.off{background:var(--warn);animation:none;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.status-label{font-size:11px;color:var(--text-faint);}
+.notif-btn{background:var(--warn);border:none;border-radius:20px;padding:4px 10px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;display:none;align-items:center;gap:5px;}
+.badge-count{font-size:9px;font-weight:700;}
 
+/* ── LAYOUT ── */
 .layout{display:grid;grid-template-columns:1fr 300px;flex:1;min-height:0;}
-@media(max-width:700px){.layout{grid-template-columns:1fr;}}
+@media(max-width:800px){.layout{grid-template-columns:1fr;}}
 
+/* ── AGENDA PANEL ── */
 .agenda-panel{padding:20px;overflow-y:auto;max-height:calc(100vh - 54px);}
-.section-title{text-align:center;padding:14px 0 8px;font-size:12px;font-weight:700;color:#e8c96a;letter-spacing:.05em;border-top:1px solid rgba(255,255,255,.12);margin-top:8px;}
+.section-title{text-align:left;padding:14px 0 8px;font-size:10px;font-weight:700;color:var(--navy);letter-spacing:.1em;text-transform:uppercase;border-top:1px solid var(--border);margin-top:12px;display:flex;flex-direction:column;gap:2px;}
 .section-title:first-child{border-top:none;margin-top:0;}
-.item{display:flex;gap:0;margin-bottom:3px;border-left:3px solid transparent;border-radius:0 6px 6px 0;cursor:pointer;transition:background .15s,border-color .15s;}
-.item:hover:not(.break){background:rgba(255,255,255,.06);}
-.item.live{border-left-color:#4dd9a0;background:rgba(29,158,117,.18);}
-.item.break{cursor:default;opacity:.6;}
-.t-col{min-width:84px;padding:9px 10px 9px 0;font-size:11px;font-weight:700;color:#e8c96a;flex-shrink:0;line-height:1.35;}
-.divline{width:1px;background:rgba(255,255,255,.2);flex-shrink:0;margin:6px 0;}
-.i-col{flex:1;padding:9px 0 9px 12px;}
-.i-name{font-size:12.5px;font-weight:700;color:#fff;line-height:1.35;}
-.item.live .i-name{color:#4dd9a0;}
-.i-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;line-height:1.4;}
-.item.live .i-sub{color:rgba(77,217,160,.75);}
-.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:7px;vertical-align:middle;}
-.badge-live{background:#4dd9a0;color:#0a3d2a;}
-.badge-next{background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);}
+.section-sub{font-size:10px;font-weight:400;color:var(--text-faint);text-transform:none;letter-spacing:.02em;}
+.item{display:flex;gap:0;margin-bottom:2px;border-left:2px solid transparent;border-radius:0 8px 8px 0;cursor:pointer;transition:background .15s,border-color .15s;padding:2px 0;}
+.item:hover:not(.break){background:rgba(26,54,93,.06);}
+.item.live{border-left-color:var(--live);background:rgba(22,163,74,.08);}
+.item.break{cursor:default;opacity:.55;}
+.t-col{min-width:80px;padding:10px 10px 10px 0;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;line-height:1.3;}
+.divline{width:1px;background:var(--border);flex-shrink:0;margin:6px 0;}
+.i-col{flex:1;padding:10px 0 10px 12px;}
+.i-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.item.live .i-name span:first-child{color:var(--live);}
+.i-sub{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.4;}
+.i-sub2{font-size:10px;color:var(--text-faint);margin-top:2px;font-style:italic;}
+.badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
+.badge-live{background:var(--live);color:#fff;}
+.badge-next{background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
+.badge-timer{background:rgba(22,163,74,.12);color:var(--live);border:1px solid rgba(22,163,74,.3);min-width:44px;text-align:center;font-variant-numeric:tabular-nums;}
 
-.side-panel{background:#122840;border-left:1px solid rgba(255,255,255,.1);padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 54px);}
-.now-card{background:rgba(29,158,117,.18);border:1.5px solid #4dd9a0;border-radius:10px;padding:14px;}
-.now-label{font-size:10px;color:#4dd9a0;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
-.now-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:3px;line-height:1.3;}
-.now-talk{font-size:11px;color:rgba(77,217,160,.8);line-height:1.4;}
-.next-card{background:rgba(255,255,255,.06);border-radius:8px;padding:12px;}
-.next-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
-.next-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.85);}
-.next-talk{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+/* ── SIDE PANEL ── */
+.side-panel{background:var(--surface);border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 54px);}
+
+.now-card{background:linear-gradient(160deg,rgba(22,163,74,.08),var(--surface));border:1px solid var(--teal-border);border-radius:12px;padding:16px;}
+.now-top{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 2s infinite;}
+.live-tag{font-size:9px;font-weight:700;color:var(--live);text-transform:uppercase;letter-spacing:.14em;}
+.now-speaker{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--text);line-height:1.3;margin-bottom:4px;}
+.now-talk{font-size:11px;color:var(--navy);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+.next-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.next-name{font-size:14px;font-weight:700;color:var(--text);}
+.next-talk{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+.timer-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;text-align:center;}
+.timer-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.timer-val{font-size:28px;font-weight:700;color:var(--navy);letter-spacing:.06em;font-variant-numeric:tabular-nums;font-family:'DM Serif Display',serif;}
+.timer-val.warn{color:var(--warn);}
+
 .ctrl-btns{display:flex;flex-direction:column;gap:8px;}
-.btn{padding:11px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;border:none;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s;}
-.btn-next{background:#4dd9a0;color:#0a3d2a;}
-.btn-next:hover{background:#3dc990;}
-.btn-next:active{transform:scale(.98);}
-.btn-prev{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);}
-.btn-prev:hover{background:rgba(255,255,255,.14);}
-.audience-link{background:rgba(232,201,106,.08);border:1px solid rgba(232,201,106,.3);border-radius:8px;padding:12px;}
-.audience-link p{font-size:11px;color:#e8c96a;margin-bottom:6px;font-weight:700;}
-.link-box{font-size:10px;color:rgba(255,255,255,.5);background:rgba(0,0,0,.25);border-radius:5px;padding:6px 8px;word-break:break-all;cursor:pointer;border:1px solid rgba(255,255,255,.1);}
-.link-box:hover{border-color:rgba(255,255,255,.3);}
-.copy-hint{font-size:10px;color:rgba(255,255,255,.3);margin-top:4px;text-align:center;}
-.btn-sml{padding:6px 10px;font-size:11px;font-weight:700;border-radius:5px;cursor:pointer;border:none;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);margin-top:5px;width:100%;}
-.btn-sml:hover{background:rgba(255,255,255,.14);}
-.btn-email{background:rgba(77,130,217,.18);border:1px solid rgba(77,130,217,.4);color:#7ab3f5;}
-.btn-ai-toggle{background:rgba(77,217,160,.15);border:1px solid rgba(77,217,160,.4);color:#4dd9a0;font-weight:700;}
-.btn-ai-toggle.off{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4);color:#f87171;}
-.btn-countdown-toggle{background:rgba(232,201,106,.12);border:1px solid rgba(232,201,106,.35);color:#e8c96a;font-weight:700;}
-.btn-countdown-toggle.off{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.4);}
-.btn-email:hover{background:rgba(77,130,217,.28);}
-.ctrl-toggles{display:flex;flex-direction:column;gap:8px;}
-.timer-box{background:rgba(0,0,0,.25);border-radius:8px;padding:10px 12px;text-align:center;}
-.timer-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
-.timer-val{font-size:26px;font-weight:700;color:#e8c96a;letter-spacing:.04em;font-variant-numeric:tabular-nums;}
-.timer-val.warn{color:#f87171;}
+.btn{padding:10px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s,background .15s;letter-spacing:.04em;}
+.btn-next{background:var(--navy);color:#fff;}
+.btn-next:hover{opacity:.88;}
+.btn-prev{background:transparent;color:var(--navy);border:1px solid var(--navy-border);}
+.btn-prev:hover{background:var(--navy-soft);}
 
-/* ── INBOX PANEL ── */
-.inbox-section{border-top:1px solid rgba(255,255,255,.1);padding-top:14px;flex-shrink:0;}
-.inbox-title{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.ctrl-toggles{display:flex;flex-direction:column;gap:8px;}
+.btn-sml{padding:7px 12px;font-size:11px;font-weight:700;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);width:100%;letter-spacing:.04em;transition:background .15s;}
+.btn-sml:hover{background:var(--bg2);}
+.btn-ai-toggle.on{background:rgba(22,163,74,.08);border-color:var(--teal-border);color:var(--live);}
+.btn-ai-toggle.off{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.3);color:var(--warn);}
+.btn-countdown-toggle.on{background:var(--navy-soft);border-color:var(--navy-border);color:var(--navy);}
+.btn-countdown-toggle.off{background:var(--bg);border-color:var(--border);color:var(--text-faint);}
+
+/* ── INBOX ── */
+.inbox-section{border-top:1px solid var(--border);padding-top:14px;}
+.inbox-title{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
 .inbox-tabs{display:flex;gap:6px;margin-bottom:10px;}
-.inbox-tab{flex:1;padding:5px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:none;color:rgba(255,255,255,.4);font-size:10px;font-weight:700;cursor:pointer;text-align:center;}
-.inbox-tab.active{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25);}
+.inbox-tab{flex:1;padding:6px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--text-faint);font-size:10px;font-weight:700;cursor:pointer;text-align:center;transition:background .15s;}
+.inbox-tab.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .inbox-list{display:flex;flex-direction:column;gap:6px;}
-.inbox-empty{font-size:11px;color:rgba(255,255,255,.25);text-align:center;padding:16px;}
+.inbox-empty{font-size:11px;color:var(--text-faint);text-align:center;padding:16px;}
 
 /* Chat threads */
-.chat-thread{background:rgba(255,255,255,.05);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.06);}
-.chat-thread.has-new{border-color:rgba(77,217,160,.35);}
-.chat-thread-header{padding:8px 10px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:8px;}
-.chat-thread-header:hover{background:rgba(255,255,255,.08);}
+.chat-thread{background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.chat-thread.has-new{border-color:var(--teal-border);}
+.chat-thread-header{padding:10px 12px;background:var(--surface);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:8px;border-bottom:1px solid transparent;}
+.chat-thread-header:hover{background:var(--bg2);}
 .chat-thread-meta{flex:1;min-width:0;}
-.chat-thread-label{font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;}
-.chat-thread-num{font-size:10px;font-weight:700;color:#e8c96a;}
-.chat-thread-preview{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-thread-label{font-size:11px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;}
+.chat-thread-num{font-size:10px;font-weight:700;color:var(--navy);}
+.chat-thread-preview{font-size:10px;color:var(--text-faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .chat-thread-badges{display:flex;align-items:center;gap:5px;flex-shrink:0;}
-.unread-badge{background:#f87171;color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;}
-.chevron{font-size:10px;color:rgba(255,255,255,.3);transition:transform .2s;}
+.unread-badge{background:var(--warn);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;}
+.chevron{font-size:10px;color:var(--text-faint);transition:transform .2s;}
 .chevron.open{transform:rotate(180deg);}
-.chat-thread-msgs{padding:8px 10px;display:none;flex-direction:column;gap:6px;border-top:1px solid rgba(255,255,255,.07);max-height:280px;overflow-y:auto;}
+.chat-thread-msgs{padding:10px 12px;display:none;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;border-top:1px solid var(--border);}
 .chat-thread-msgs.open{display:flex;}
-.thread-msg{font-size:11px;line-height:1.45;padding:5px 8px;border-radius:6px;}
-.thread-msg.p{background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);}
-.thread-msg.p::before{content:"Participant: ";color:rgba(255,255,255,.35);font-size:10px;}
-.thread-msg.o{background:rgba(77,217,160,.12);color:#4dd9a0;}
-.thread-msg.o::before{content:"Organizer";color:rgba(77,217,160,.6);font-size:10px;display:block;font-weight:700;margin-bottom:2px;}
-.thread-msg.a{background:rgba(122,179,245,.1);color:#7ab3f5;border-left:2px solid rgba(122,179,245,.35);}
-.thread-msg.a::before{content:"AI";color:rgba(122,179,245,.6);font-size:10px;display:block;font-weight:700;margin-bottom:2px;}
+.thread-msg{font-size:11px;line-height:1.5;padding:7px 10px;border-radius:8px;}
+.thread-msg.p{background:var(--surface);color:var(--text);border:1px solid var(--border);}
+.thread-msg.p::before{content:"Participant: ";color:var(--text-faint);font-size:9px;font-weight:700;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;}
+.thread-msg.o{background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);}
+.thread-msg.o::before{content:"You";color:var(--navy);font-size:9px;font-weight:700;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;}
+.thread-msg.a{background:rgba(22,163,74,.07);color:#14532d;border:1px solid rgba(22,163,74,.25);}
+.thread-msg.a::before{content:"AI";color:var(--live);font-size:9px;font-weight:700;display:block;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em;}
 .reply-row{display:flex;gap:6px;margin-top:6px;}
-.reply-inp{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:6px 8px;font-size:11px;color:#fff;font-family:'Lato',sans-serif;outline:none;}
-.reply-inp::placeholder{color:rgba(255,255,255,.25);}
-.reply-inp:focus{border-color:rgba(77,217,160,.4);}
-.reply-btn{background:#4dd9a0;border:none;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:700;color:#0a3d2a;cursor:pointer;}
+.reply-inp{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:11px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.reply-inp::placeholder{color:var(--text-faint);}
+.reply-inp:focus{border-color:var(--navy-border);}
+.reply-btn{background:var(--navy);border:none;border-radius:7px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;}
 
 /* Feedback */
-.fb-item{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:11px 12px;}
-.fb-item-num{font-size:8px;font-weight:700;color:rgba(201,168,76,.6);text-transform:uppercase;letter-spacing:.14em;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
-.fb-item-num::before{content:'';display:inline-block;width:12px;height:1px;background:rgba(201,168,76,.3);}
-.fb-item-text{font-size:11px;color:rgba(255,255,255,.8);line-height:1.6;font-weight:300;}
-.fb-item-time{font-size:9px;color:rgba(255,255,255,.2);margin-top:5px;letter-spacing:.03em;}
-.fb-download-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:12px;padding:9px 14px;background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.08));border:1px solid rgba(201,168,76,.35);border-radius:8px;color:#e8c96a;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:background .2s,border-color .2s,transform .1s;font-family:'Lato',sans-serif;}
-.fb-download-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,.28),rgba(201,168,76,.14));border-color:rgba(201,168,76,.6);}
-.fb-download-btn:active{transform:scale(.97);}
-.fb-download-btn svg{flex-shrink:0;}
+.fb-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.fb-item-num{font-size:8px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;}
+.fb-item-text{font-size:11px;color:var(--text);line-height:1.6;}
+.fb-item-time{font-size:9px;color:var(--text-faint);margin-top:5px;}
+.fb-download-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:12px;padding:9px 14px;background:var(--navy);border:none;border-radius:8px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:opacity .15s;font-family:'DM Sans',sans-serif;}
+.fb-download-btn:hover{opacity:.88;}
 </style>
 </head>
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <p>Connecting to Supabase...</p>
-</div>
-
-<div id="error-screen">
-  <p>❌ Could not connect to Supabase.<br>Check your internet connection and make sure the SQL schema is running.</p>
-</div>
+<div id="loading"><div class="spinner"></div><p>Connecting...</p></div>
+<div id="error-screen"><p>Connection failed.<br>Check your internet and Supabase schema.</p></div>
 
 <div id="app">
   <div class="top-bar">
-    <span class="status-dot" id="status-dot"></span>
-    <span class="top-bar-title">SYSSA Nobel's Day — Organizer Dashboard</span>
-    <button class="notif-btn" onclick="switchTab('chat')" id="notif-btn">
-      💬 New messages: <span class="notif-count" id="notif-count">0</span>
-    </button>
-    <span class="status-label" id="status-label">Connecting...</span>
+    <div class="logos">
+      <div class="logo-circle">DTMU</div>
+      <div class="logo-sep"></div>
+      <div style="font-size:7px;color:var(--text-dim);line-height:1.4"><div style="font-weight:700;font-size:8px">MARGOT</div>OLD TBILISI</div>
+      <div class="logo-sep"></div>
+      <div class="logo-circle" style="font-size:6px;line-height:1.3">INFECT<br>2026</div>
+      <div class="logo-sep"></div>
+      <div class="syssa-logo">S|Y|S|S|A</div>
+    </div>
+    <div class="bar-title">Organizer Dashboard</div>
+    <div class="status-row">
+      <button class="notif-btn" onclick="switchTab('chat')" id="notif-btn">
+        💬 <span id="notif-count">0</span> new
+      </button>
+      <div class="f-dot" id="status-dot"></div>
+      <span class="status-label" id="status-label">Connecting...</span>
+    </div>
   </div>
+
   <div class="layout">
+    <!-- AGENDA -->
     <div class="agenda-panel" id="agenda-panel"></div>
+
+    <!-- SIDE PANEL -->
     <div class="side-panel">
       <div class="now-card">
-        <div class="now-label"><span class="status-dot" style="width:6px;height:6px"></span>Now Speaking</div>
-        <div class="now-name" id="side-now-name">—</div>
+        <div class="now-top"><div class="live-dot"></div><div class="live-tag">Now Speaking</div></div>
+        <div class="now-speaker" id="side-now-name">—</div>
         <div class="now-talk" id="side-now-talk"></div>
       </div>
+
       <div class="next-card">
         <div class="next-label">▶ Up next</div>
         <div class="next-name" id="side-next-name">—</div>
         <div class="next-talk" id="side-next-talk"></div>
       </div>
+
       <div class="timer-box">
-        <div class="timer-label">⏱ Speaker Timer</div>
+        <div class="timer-label">Speaker Timer</div>
         <div class="timer-val" id="timer-val">00:00</div>
       </div>
+
       <div class="ctrl-btns">
-        <button class="btn btn-prev" onclick="movePrev()">← Previous Speaker</button>
+        <button class="btn btn-prev" onclick="movePrev()">← Previous</button>
         <button class="btn btn-next" onclick="moveNext()">Next Speaker →</button>
       </div>
+
       <div class="ctrl-toggles">
-        <button class="btn-sml btn-ai-toggle" id="ai-toggle-btn" onclick="toggleAI()">🤖 AI: ON</button>
+        <button class="btn-sml btn-ai-toggle on" id="ai-toggle-btn" onclick="toggleAI()">🤖 AI: ON</button>
         <button class="btn-sml btn-countdown-toggle off" id="countdown-toggle-btn" onclick="toggleCountdown()">⏳ Countdown: OFF</button>
       </div>
 
       <!-- INBOX -->
       <div class="inbox-section">
-        <div class="inbox-title">📥 Inbox</div>
+        <div class="inbox-title">Inbox</div>
         <div class="inbox-tabs">
           <button class="inbox-tab active" id="tab-chat" onclick="switchTab('chat')">💬 Questions</button>
           <button class="inbox-tab" id="tab-fb" onclick="switchTab('fb')">📝 Feedback</button>
@@ -190,8 +217,7 @@ body{background:#0f2035;font-family:'Lato',sans-serif;color:#fff;min-height:100v
         <div class="inbox-list" id="chat-list"><div class="inbox-empty">No questions yet</div></div>
         <div class="inbox-list" id="fb-list" style="display:none"><div class="inbox-empty">No feedback yet</div></div>
         <button class="fb-download-btn" id="fb-download-btn" onclick="downloadFeedbackPDF()" style="display:none">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7M4 6l2.5 2.5L9 6" stroke="#e8c96a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1.5 10.5h10" stroke="#e8c96a" stroke-width="1.5" stroke-linecap="round"/></svg>
-          Download PDF
+          ↓ Download PDF
         </button>
       </div>
     </div>
@@ -203,35 +229,44 @@ const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
 const AGENDA = [
-  {id:1,  time:"09:30–10:00", speaker:"Registration, Coffee Break",          title:"",                                                                                                                   session:"pre",    isBreak:true},
-  {id:2,  time:"10:00–10:30", speaker:"Opening Ceremony",                     title:"Chairmen: Georgi Riabinkin, Mariam Chubinidze\nWelcome: Sophio Aspanidze · Nino Tabagari, MD, PhD",              session:"opening",isBreak:true},
-  {id:3,  time:"10:30–10:45", speaker:"Giorgi Aladashvili, MD",               title:"Pioneering Science: The 2024 Nobel Prizes in Medicine and Beyond",                                                session:"opening"},
-  {id:4,  time:"10:45–11:00", speaker:"Nino Giorgadze",                       title:"Medical Professionalism and Research Ethics: Stereotype Requirements and Beyond",                                  session:"opening"},
-  {id:5,  time:"11:00–11:15", speaker:"Anano Verdzadze",                      title:"Problems of Bone Mineral Density in the Pediatric Population of Adjara Region\nSupervisor: Neriman Tsintsadze, MD, Ph.D.",          session:"students"},
-  {id:6,  time:"11:15–11:30", speaker:"Nana Megrelidze, M.D.",                title:"Subarachnoid Hemorrhage Mimicking STEMI\nSupervisor: Magda Litzkendorf, M.D., Helios Klinikum Erfurt",          session:"students"},
-  {id:7,  time:"11:30–11:45", speaker:"Vasil Petriashvili",                   title:"Treatment of Hypertrophic Cardiomyopathy with Severe Refractory Symptoms\nCo-author: Elene Shioshvili",          session:"students"},
-  {id:8,  time:"11:45–12:00", speaker:"Ketevan Tchitchinadze, MS.",           title:"Biodegradable Heart Stents Revolutionizing Coronary Care\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",          session:"students"},
-  {id:9,  time:"12:00–12:15", speaker:"Anna Bechvaya, MS.",                   title:"Produodopa Easier Way to Live with Parkinson's\nSupervisor: Eka Chkhartishvili, M.D., Ph.D.",                   session:"students"},
-  {id:10, time:"12:15–12:30", speaker:"Vera Savidi, MS.",                     title:"Transthyretin Amyloid Cardiomyopathy — A Silent Killer\nSupervisor: Guram Sanadiradze, M.D., Ph.D.",            session:"students"},
-  {id:11, time:"12:30–12:45", speaker:"Taha Kassim, MS.",                     title:"Rare Case of Syphilis: The Tullio Phenomenon Disclosure\nSupervisor: Tamar Chachibaia, M.D., PhD",              session:"students"},
-  {id:12, time:"12:45–13:00", speaker:"Syeda Fatima Zehra",                   title:"Therapeutic Potential Mesenchymal Exosomes in Pulmonary Fibrosis\nSupervisor: Ana Tchania, MD",                  session:"students"},
-  {id:13, time:"13:00–14:00", speaker:"Lunch Break",                          title:"",                                                                                                                   session:"break",  isBreak:true},
-  {id:14, time:"14:00–",      speaker:"Tamar Kacharava",                      title:"Fetal Programming: ADHD-like Symptoms in Early Childhood\nSupervisor: Dr. Ketevan Nemsadze, Ph.D., Prof.",       session:"phd"},
-  {id:15, time:"",            speaker:"Nino Khutsishvili",                    title:"Intradermal Glucocorticosteroid Microinjections and Topical Minoxidil in Female Androgenetic Alopecia\nSupervisor: Prof. Nino Lortkipanidze", session:"phd"},
-  {id:16, time:"",            speaker:"Tamar Gaprindashvili",                 title:"Blood Pressure Response to Sub Maximal Exercise and Left Ventricular Hypertrophy\nSupervisors: Prof. Rusudan Agladze · Zurab Pagava", session:"phd"},
-  {id:17, time:"",            speaker:"Vakhtang Gurabanidze",                 title:"Inflammatory Markers and Visceral Adipose Tissue in Development of Preeclampsia\nSupervisor: Tinatin Gagua, Associate Professor", session:"phd"},
-  {id:18, time:"",            speaker:"Aleksandre Ramishvili",                title:"Geomagnetic Storms on Heart Rate Variability and EEG α Frontal Asymmetry in Healthy Males\nSupervisors: Ketevan Janashia · Prof. Levan Tvildiani", session:"phd"},
-  {id:19, time:"",            speaker:"Elene Sherozia",                       title:"Diagnosis and Management of Progressive Fibrosing Interstitial Lung Diseases in Georgia\nSupervisors: Prof. Nino Tabagari · Prof. Maia Gotua", session:"phd"},
-  {id:20, time:"",            speaker:"Mariam Kacheishvili",                  title:"Optimizing Medical Education: The Integration and Impact of Whole Slide Imaging\nSupervisors: Prof. Nino Tabagari · Prof. Alexi Baidoshvili", session:"phd"},
-  {id:21, time:"",            speaker:"David Makaridze",                      title:"Diagnostic Accuracy of Aneurysmal Bone Cyst (ABC): Immunohistochemical Aspects\nSupervisor: Liana Gogiashvili", session:"phd"},
-  {id:22, time:"",            speaker:"Tamta Darsalia",                       title:"Preoperative Frailty and Postoperative Disorders in Geriatric Patients in Georgia\nSupervisor: Tamar Macharadze MD, Ph.D.", session:"phd"},
-  {id:23, time:"",            speaker:"Tinatin Giuashvili",                   title:"Early Detection of Cerebral Palsy Risk and Neurodevelopmental Outcome\nSupervisor: Prof. Nana Tatishvili PhD, MD", session:"phd"},
-  {id:24, time:"",            speaker:"Ana Bedoshvili",                       title:"Cerebral Visual Impairment (CVI) on Neurodevelopmental Outcome in Children at High Risk of Cerebral Palsy\nSupervisors: S. Tatishvili · N. Tatishvili · A. Guzzetta · R.N. Boyd", session:"phd"},
-  {id:25, time:"",            speaker:"Ana Khoperia",                         title:"Liquid-Based Cytology vs Routine Cytology Smears for Intraepithelial Lesion Detection\nSupervisor: Archil Sharashenidze, MD, Ph.D.", session:"phd"},
-  {id:26, time:"",            speaker:"Mariam Gugushvili",                    title:"Energy Homeostasis in Adolescence with Polycystic Ovary Syndrome\nSupervisor: Prof. B. Tkeshelashvili Ph.D. MD", session:"phd"},
-  {id:27, time:"",            speaker:"Nino Zavrashvili",                     title:"Calectin-3 and Glycoalbumin as Candidate Markers of Evaluation Type II\nSupervisor: Prof. Sergo Tabagari", session:"phd"},
-  {id:28, time:"",            speaker:"Ana Kvernadze, MD, Ph.D.",             title:"Rare and Complex Epilepsies – Correlation Between Aetiology and Outcome\nSupervisor: Prof. Nana Tatishvili Ph.D. MD", session:"phd"},
-  {id:29, time:"17:00",       speaker:"Closing",                              title:"",                                                                                                                   session:"closing",isBreak:true},
+  {id:1,  time:"09:00–10:00", speaker:"Registration & Welcome",                title:"",                                              session:"day1_pre",    isBreak:true},
+  {id:2,  time:"10:00–10:30", speaker:"Opening Ceremony",                      title:"Opening Ceremony & Welcome Remarks",             session:"day1_open",   isBreak:true},
+  {id:3,  time:"10:30–11:00", speaker:"[Keynote Speaker Name]",                title:"[Institution / Abstract Title — TBC]",           session:"day1_keynote"},
+  {id:4,  time:"11:00–11:15", speaker:"[Presenter 1]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
+  {id:5,  time:"11:15–11:30", speaker:"[Presenter 2]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
+  {id:6,  time:"11:30–11:45", speaker:"[Presenter 3]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
+  {id:7,  time:"11:45–12:00", speaker:"[Presenter 4]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
+  {id:8,  time:"12:00–12:15", speaker:"[Presenter 5]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
+  {id:9,  time:"12:15–12:45", speaker:"Coffee Break",                          title:"",                                              session:"day1_break1", isBreak:true},
+  {id:10, time:"12:45–12:50", speaker:"[Poster Presenter 1]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:11, time:"12:50–12:55", speaker:"[Poster Presenter 2]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:12, time:"12:55–13:00", speaker:"[Poster Presenter 3]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:13, time:"13:00–13:05", speaker:"[Poster Presenter 4]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:14, time:"13:05–13:10", speaker:"[Poster Presenter 5]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:15, time:"13:10–13:15", speaker:"[Poster Presenter 6]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
+  {id:16, time:"13:15–13:30", speaker:"[Presenter 6]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:17, time:"13:30–13:45", speaker:"[Presenter 7]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:18, time:"13:45–14:00", speaker:"[Presenter 8]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:19, time:"14:00–14:15", speaker:"[Presenter 9]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:20, time:"14:15–14:30", speaker:"[Presenter 10]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:21, time:"14:30–14:45", speaker:"[Presenter 11]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:22, time:"14:45–15:00", speaker:"[Presenter 12]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
+  {id:23, time:"15:00–16:00", speaker:"Lunch Break — Poster Display Open",     title:"",                                              session:"day1_lunch",  isBreak:true},
+  {id:24, time:"16:00–16:15", speaker:"[Presenter 13]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
+  {id:25, time:"16:15–16:30", speaker:"[Presenter 14]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
+  {id:26, time:"16:30–16:45", speaker:"[Presenter 15]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
+  {id:27, time:"16:45–17:00", speaker:"Closing Day 1",                         title:"",                                              session:"day1_close",  isBreak:true},
+  {id:28, time:"10:00–10:15", speaker:"Welcome Back & Day 2 Overview",         title:"",                                              session:"day2_open",   isBreak:true},
+  {id:29, time:"10:15–10:30", speaker:"[Presenter 16]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
+  {id:30, time:"10:30–10:45", speaker:"[Presenter 17]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
+  {id:31, time:"10:45–11:00", speaker:"[Presenter 18]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
+  {id:32, time:"11:00–11:15", speaker:"[Presenter 19]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
+  {id:33, time:"11:15–11:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
+  {id:34, time:"11:30–12:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
+  {id:35, time:"12:00–12:30", speaker:"Panel Discussion",                      title:"[Theme / Title — TBC]",                         session:"day2_panel"},
+  {id:36, time:"12:00–12:30", speaker:"Workshop A",                            title:"[Title — TBC]",                                 session:"day2_ws"},
+  {id:37, time:"12:00–12:30", speaker:"Workshop B",                            title:"[Title — TBC]",                                 session:"day2_ws"},
+  {id:38, time:"12:30–12:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close",  isBreak:true},
 ];
 
 let sb = null;
@@ -239,17 +274,14 @@ let currentId = 3;
 let channel = null;
 let timerStart = Date.now();
 let timerInterval = null;
-
-// threads: { sessionId: { num, msgs:[{sender,text,id,read}] } }
 let threads = {};
-let threadOrder = []; // ordered list of session IDs as they arrived
-let threadCounter = 0; // next chat number
-
+let threadOrder = [];
+let threadCounter = 0;
 let feedbacks = [];
 let newMsgCount = 0;
 let activeTab = 'chat';
-let aiEnabled = true; // AI on/off state, synced via Supabase
-let showCountdown = false; // Countdown on/off, synced via Supabase — OFF = ჩვეულებრივი ვიუ, ON = countdown audience-ზე
+let aiEnabled = true;
+let showCountdown = false;
 
 window.addEventListener('load', async () => {
   try {
@@ -258,22 +290,16 @@ window.addEventListener('load', async () => {
     if (error) throw error;
     currentId = data.current_id;
 
-    // Load existing messages from DB
     const { data: existingMsgs } = await sb.from('messages').select('*').order('created_at', { ascending: true });
     if (existingMsgs) {
       existingMsgs.forEach(m => {
         const sid = m.session_id;
-        if (!threads[sid]) {
-          threadCounter++;
-          threads[sid] = { num: threadCounter, msgs: [] };
-          threadOrder.push(sid);
-        }
+        if (!threads[sid]) { threadCounter++; threads[sid] = { num: threadCounter, msgs: [] }; threadOrder.push(sid); }
         const sType = m.sender === 'participant' ? 'p' : m.sender === 'ai' ? 'a' : 'o';
         threads[sid].msgs.push({ sender: sType, text: m.text, id: m.id, read: true });
       });
     }
 
-    // Load existing feedback from DB
     const { data: existingFb } = await sb.from('feedback').select('*').order('created_at', { ascending: false });
     if (existingFb) feedbacks = existingFb;
 
@@ -289,81 +315,43 @@ function startApp() {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
 
-  // Live state realtime
   channel = sb.channel('live_state_changes')
     .on('postgres_changes', { event:'UPDATE', schema:'public', table:'live_state' }, payload => {
       currentId = payload.new.current_id;
       render();
-      // Sync AI state if changed externally
       if (payload.new.ai_enabled !== undefined && payload.new.ai_enabled !== aiEnabled) {
         aiEnabled = payload.new.ai_enabled;
-        const btn = document.getElementById('ai-toggle-btn');
-        if (btn) {
-          btn.textContent = aiEnabled ? '🤖 AI: ON' : '🤖 AI: OFF';
-          btn.classList.toggle('off', !aiEnabled);
-        }
+        updateAIBtn();
       }
-      // Sync countdown state if changed externally
       if (payload.new.show_countdown !== undefined) {
         showCountdown = Boolean(payload.new.show_countdown);
-        const btn2 = document.getElementById('countdown-toggle-btn');
-        if (btn2) {
-          btn2.textContent = showCountdown ? '⏳ Countdown: ON' : '⏳ Countdown: OFF';
-          btn2.classList.toggle('off', !showCountdown);
-        }
+        updateCountdownBtn();
       }
     })
     .subscribe(status => {
       const dot = document.getElementById('status-dot');
       const lbl = document.getElementById('status-label');
-      if (status === 'SUBSCRIBED') {
-        dot.classList.remove('offline');
-        lbl.textContent = 'Real-time active';
-      } else {
-        dot.classList.add('offline');
-        lbl.textContent = 'Connecting...';
-      }
+      if (status === 'SUBSCRIBED') { dot.classList.remove('off'); lbl.textContent = 'Live'; }
+      else { dot.classList.add('off'); lbl.textContent = 'Connecting...'; }
     });
 
-  // ALL incoming messages (participant + ai + organizer)
   sb.channel('incoming_messages')
     .on('postgres_changes', { event:'INSERT', schema:'public', table:'messages' }, payload => {
       const sid = payload.new.session_id;
-      const rawSender = payload.new.sender; // 'participant' | 'ai' | 'organizer'
+      const rawSender = payload.new.sender;
       const sType = rawSender === 'participant' ? 'p' : rawSender === 'ai' ? 'a' : 'o';
       const isNew = !threads[sid];
-
-      if (isNew) {
-        threadCounter++;
-        threads[sid] = { num: threadCounter, msgs: [] };
-        threadOrder.push(sid);
-      }
-
-      // Skip duplicate if organizer just sent this (already in DOM)
+      if (isNew) { threadCounter++; threads[sid] = { num: threadCounter, msgs: [] }; threadOrder.push(sid); }
       if (sType === 'o') {
         const already = threads[sid].msgs.some(m => m.sender === 'o' && m.text === payload.new.text && !m.id);
-        if (already) {
-          // Just stamp the id so future checks work
-          const m = threads[sid].msgs.find(m => m.sender === 'o' && m.text === payload.new.text && !m.id);
-          if (m) m.id = payload.new.id;
-          return;
-        }
+        if (already) { const m = threads[sid].msgs.find(m => m.sender === 'o' && m.text === payload.new.text && !m.id); if (m) m.id = payload.new.id; return; }
       }
-
       const isUnread = sType === 'p';
       const msgObj = { sender: sType, text: payload.new.text, id: payload.new.id, read: !isUnread };
       threads[sid].msgs.push(msgObj);
-
       const msgsEl = document.getElementById('msgs-' + sid);
       const isOpen = msgsEl && msgsEl.classList.contains('open');
-
-      if (isNew) {
-        // New thread needs full render
-        renderChatList();
-        return;
-      }
-
-      // Update DOM directly
+      if (isNew) { renderChatList(); return; }
       if (isOpen) {
         if (isUnread) msgObj.read = true;
         const replyRow = msgsEl.querySelector('.reply-row');
@@ -372,35 +360,23 @@ function startApp() {
         msgDiv.textContent = payload.new.text;
         msgsEl.insertBefore(msgDiv, replyRow);
         msgsEl.scrollTop = msgsEl.scrollHeight;
-      } else if (sType === 'p' || sType === 'a') {
-        // Badge for participant messages; AI messages just highlight thread so organizer sees the reply
+      } else if (sType === 'p') {
         const threadEl = document.getElementById('thread-' + sid);
         if (threadEl) {
-          if (sType === 'p') {
-            threadEl.classList.add('has-new');
-            let badge = threadEl.querySelector('.unread-badge');
-            const unreadCount = threads[sid].msgs.filter(m => m.sender === 'p' && !m.read).length;
-            if (!badge) {
-              badge = document.createElement('span');
-              badge.className = 'unread-badge';
-              threadEl.querySelector('.chat-thread-badges').prepend(badge);
-            }
-            badge.textContent = unreadCount + ' new';
-          }
-          // For AI messages: update header preview so organizer sees the AI reply without opening thread
+          threadEl.classList.add('has-new');
+          let badge = threadEl.querySelector('.unread-badge');
+          const unreadCount = threads[sid].msgs.filter(m => m.sender === 'p' && !m.read).length;
+          if (!badge) { badge = document.createElement('span'); badge.className = 'unread-badge'; threadEl.querySelector('.chat-thread-badges').prepend(badge); }
+          badge.textContent = unreadCount + ' new';
         }
       }
-
-      // Update preview text for all types (participant, ai, organizer)
       const preview = document.querySelector('#thread-' + sid + ' .chat-thread-preview');
       const t = payload.new.text;
       if (preview) preview.textContent = t.length > 35 ? t.substr(0, 35) + '…' : t;
-
       if (isUnread) { newMsgCount++; updateNotifBadge(); }
     })
     .subscribe();
 
-  // Incoming feedback
   sb.channel('incoming_feedback')
     .on('postgres_changes', { event:'INSERT', schema:'public', table:'feedback' }, payload => {
       feedbacks.unshift(payload.new);
@@ -419,18 +395,11 @@ function startApp() {
 function updateNotifBadge() {
   const btn = document.getElementById('notif-btn');
   const cnt = document.getElementById('notif-count');
-  // Count truly unread participant messages
   let unread = 0;
-  Object.values(threads).forEach(t => {
-    t.msgs.forEach(m => { if (m.sender === 'p' && !m.read) unread++; });
-  });
+  Object.values(threads).forEach(t => { t.msgs.forEach(m => { if (m.sender === 'p' && !m.read) unread++; }); });
   newMsgCount = unread;
-  if (unread > 0) {
-    btn.style.display = 'flex';
-    cnt.textContent = unread;
-  } else {
-    btn.style.display = 'none';
-  }
+  if (unread > 0) { btn.style.display = 'flex'; cnt.textContent = unread; }
+  else { btn.style.display = 'none'; }
 }
 
 function switchTab(tab) {
@@ -445,21 +414,11 @@ function switchTab(tab) {
 
 function renderChatList() {
   const list = document.getElementById('chat-list');
-  if (!threadOrder.length) {
-    list.innerHTML = '<div class="inbox-empty">No questions yet</div>';
-    return;
-  }
-  // Remember which threads are open
+  if (!threadOrder.length) { list.innerHTML = '<div class="inbox-empty">No questions yet</div>'; return; }
   const openSet = new Set();
-  threadOrder.forEach(sid => {
-    const el = document.getElementById('msgs-' + sid);
-    if (el && el.classList.contains('open')) openSet.add(sid);
-  });
-
+  threadOrder.forEach(sid => { const el = document.getElementById('msgs-' + sid); if (el && el.classList.contains('open')) openSet.add(sid); });
   list.innerHTML = '';
-  // Sort by thread number (stable order, no jumping around)
   const sorted = [...threadOrder].sort((a, b) => threads[a].num - threads[b].num);
-
   sorted.forEach(sid => {
     const t = threads[sid];
     const msgs = t.msgs;
@@ -467,17 +426,13 @@ function renderChatList() {
     const unreadCount = msgs.filter(m => m.sender === 'p' && !m.read).length;
     const preview = lastMsg ? (lastMsg.text.length > 35 ? lastMsg.text.substr(0,35)+'…' : lastMsg.text) : '';
     const isOpen = openSet.has(sid);
-
     const div = document.createElement('div');
     div.className = 'chat-thread' + (unreadCount > 0 ? ' has-new' : '');
     div.id = 'thread-' + sid;
-
     div.innerHTML = `
       <div class="chat-thread-header" onclick="toggleThread('${sid}')">
         <div class="chat-thread-meta">
-          <div class="chat-thread-label">
-            <span class="chat-thread-num">Chat ${t.num}</span>
-          </div>
+          <div class="chat-thread-label"><span class="chat-thread-num">Chat ${t.num}</span></div>
           <div class="chat-thread-preview">${preview}</div>
         </div>
         <div class="chat-thread-badges">
@@ -493,15 +448,7 @@ function renderChatList() {
         </div>
       </div>`;
     list.appendChild(div);
-
-    // If it was open, mark messages as read
-    if (isOpen) {
-      threads[sid].msgs.forEach(m => m.read = true);
-      setTimeout(() => {
-        const msgsEl2 = document.getElementById('msgs-' + sid);
-        if (msgsEl2) msgsEl2.scrollTop = msgsEl2.scrollHeight;
-      }, 50);
-    }
+    if (isOpen) { threads[sid].msgs.forEach(m => m.read = true); setTimeout(() => { const e = document.getElementById('msgs-'+sid); if(e) e.scrollTop=e.scrollHeight; }, 50); }
   });
   updateNotifBadge();
 }
@@ -511,13 +458,10 @@ function toggleThread(sid) {
   if (!msgsEl) return;
   const chevron = document.querySelector('#thread-' + sid + ' .chevron');
   const isOpen = msgsEl.classList.contains('open');
-
   if (isOpen) {
-    // Close
     msgsEl.classList.remove('open');
     if (chevron) chevron.classList.remove('open');
   } else {
-    // Open — re-render messages from state so nothing is missed
     const replyRow = msgsEl.querySelector('.reply-row');
     Array.from(msgsEl.querySelectorAll('.thread-msg')).forEach(el => el.remove());
     threads[sid].msgs.forEach(m => {
@@ -526,17 +470,12 @@ function toggleThread(sid) {
       msgDiv.textContent = m.text;
       msgsEl.insertBefore(msgDiv, replyRow);
     });
-
     msgsEl.classList.add('open');
     if (chevron) chevron.classList.add('open');
     threads[sid].msgs.forEach(m => m.read = true);
     updateNotifBadge();
     const threadEl = document.getElementById('thread-' + sid);
-    if (threadEl) {
-      threadEl.classList.remove('has-new');
-      const badge = threadEl.querySelector('.unread-badge');
-      if (badge) badge.remove();
-    }
+    if (threadEl) { threadEl.classList.remove('has-new'); const badge = threadEl.querySelector('.unread-badge'); if (badge) badge.remove(); }
     setTimeout(() => { msgsEl.scrollTop = msgsEl.scrollHeight; }, 30);
   }
 }
@@ -548,21 +487,15 @@ async function sendReply(sid) {
   inp.value = '';
   const msgObj = { sender:'o', text, read: true };
   threads[sid].msgs.push(msgObj);
-
-  // Auto-disable AI when organizer manually replies
   if (aiEnabled) {
     aiEnabled = false;
-    const btn = document.getElementById('ai-toggle-btn');
-    if (btn) { btn.textContent = '🤖 AI: OFF'; btn.classList.add('off'); }
+    updateAIBtn();
     try {
       const { error } = await sb.from('live_state').update({ ai_enabled: false }).eq('id', 1);
       if (error) await sb.from('live_state').upsert({ id: 1, ai_enabled: false });
     } catch(e) { console.error('AI auto-off failed:', e); }
   }
-
   await sb.from('messages').insert({ session_id: sid, sender: 'organizer', text });
-
-  // Add message to DOM directly without full re-render
   const msgsEl = document.getElementById('msgs-' + sid);
   if (msgsEl) {
     const replyRow = msgsEl.querySelector('.reply-row');
@@ -572,13 +505,8 @@ async function sendReply(sid) {
     msgsEl.insertBefore(msgDiv, replyRow);
     msgsEl.scrollTop = msgsEl.scrollHeight;
   }
-
-  // Update preview text
   const threadEl = document.getElementById('thread-' + sid);
-  if (threadEl) {
-    const preview = threadEl.querySelector('.chat-thread-preview');
-    if (preview) preview.textContent = text.length > 35 ? text.substr(0,35)+'…' : text;
-  }
+  if (threadEl) { const preview = threadEl.querySelector('.chat-thread-preview'); if (preview) preview.textContent = text.length > 35 ? text.substr(0,35)+'…' : text; }
 }
 
 function renderFbList() {
@@ -591,55 +519,55 @@ function renderFbList() {
     div.className = 'fb-item';
     const num = feedbacks.length - i;
     const t = fb.created_at ? new Date(fb.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) : '';
-    div.innerHTML = `
-      <div class="fb-item-num">Feedback #${num}</div>
-      <div class="fb-item-text">${fb.text}</div>
-      ${t ? `<div class="fb-item-time">${t}</div>` : ''}`;
+    div.innerHTML = `<div class="fb-item-num">Feedback #${num}</div><div class="fb-item-text">${fb.text}</div>${t ? `<div class="fb-item-time">${t}</div>` : ''}`;
     list.appendChild(div);
   });
   if(dlBtn) dlBtn.style.display='flex';
 }
 
+const SECS = [
+  { key:'day1_pre',    label:'' },
+  { key:'day1_open',   label:'Opening Ceremony' },
+  { key:'day1_keynote',label:'Keynote Address' },
+  { key:'day1_s1',     label:'Oral Presentations — Session I' },
+  { key:'day1_break1', label:'' },
+  { key:'day1_poster', label:'Poster Pitches (5 min each)' },
+  { key:'day1_s2',     label:'Oral Presentations — Session II' },
+  { key:'day1_lunch',  label:'' },
+  { key:'day1_s2b',    label:'' },
+  { key:'day1_close',  label:'' },
+  { key:'day2_open',   label:'Day 2 — Sunday, 14 June 2026' },
+  { key:'day2_s3',     label:'Oral Presentations — Session III' },
+  { key:'day2_break',  label:'' },
+  { key:'day2_panel',  label:'Panel Discussion & Workshops' },
+  { key:'day2_ws',     label:'' },
+  { key:'day2_close',  label:'' },
+];
+
 function getNextPresenter(fromId) {
   const ci = AGENDA.findIndex(a => a.id === fromId);
-  for (let i = ci + 1; i < AGENDA.length; i++) {
-    if (!AGENDA[i].isBreak) return AGENDA[i];
-  }
+  for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak) return AGENDA[i];
   return null;
 }
 function getPrevPresenter(fromId) {
   const ci = AGENDA.findIndex(a => a.id === fromId);
-  for (let i = ci - 1; i >= 0; i--) {
-    if (!AGENDA[i].isBreak) return AGENDA[i];
-  }
+  for (let i = ci - 1; i >= 0; i--) if (!AGENDA[i].isBreak) return AGENDA[i];
   return null;
 }
 
 function render() {
   const cur = AGENDA.find(a => a.id === currentId);
   const nxt = getNextPresenter(currentId);
-
   document.getElementById('side-now-name').textContent = cur ? cur.speaker : '—';
   document.getElementById('side-now-talk').textContent = cur ? (cur.title.split('\n')[0] || '') : '';
   document.getElementById('side-next-name').textContent = nxt ? nxt.speaker : 'Program Concluded';
   document.getElementById('side-next-talk').textContent = nxt ? (nxt.title.split('\n')[0] || '') : '';
 
-  const SECTIONS = [
-    { key:'pre',      label:'' },
-    { key:'opening',  label:'Opening Session (10:00–11:00)' },
-    { key:'students', label:"Students' Session (11:00–13:00)" },
-    { key:'break',    label:'' },
-    { key:'phd',      label:'PhD Session (14:00–17:00)\nChairman: Giorgi Aladashvili, MD · Ana Pruidze' },
-    { key:'closing',  label:'' },
-  ];
   let html = '';
-  SECTIONS.forEach(sec => {
+  SECS.forEach(sec => {
     const items = AGENDA.filter(a => a.session === sec.key);
     if (!items.length) return;
-    if (sec.label) {
-      const lines = sec.label.split('\n');
-      html += `<div class="section-title">${lines[0]}${lines[1] ? `<br><span style="font-size:10px;font-weight:400;color:rgba(255,255,255,.4)">${lines[1]}</span>` : ''}</div>`;
-    }
+    if (sec.label) html += `<div class="section-title">${sec.label}</div>`;
     items.forEach(item => {
       const isCur = item.id === currentId;
       const isNxt = nxt && item.id === nxt.id;
@@ -648,22 +576,19 @@ function render() {
         <div class="t-col">${item.time||''}</div>
         <div class="divline"></div>
         <div class="i-col">
-          <div class="i-name">${item.speaker}
-            ${isCur?'<span class="badge badge-live">● LIVE</span><span class="badge badge-live" id="agenda-timer" style="background:rgba(29,158,117,.3);color:#4dd9a0;min-width:44px;text-align:center">00:00</span>':''}
-            ${isNxt?'<span class="badge badge-next">▶ Next</span>':''}
+          <div class="i-name">
+            <span>${item.speaker}</span>
+            ${isCur?`<span class="badge badge-live">Speaking</span><span class="badge badge-timer" id="agenda-timer">00:00</span>`:''}
+            ${isNxt?`<span class="badge badge-next">Up next</span>`:''}
           </div>
-          ${subs[0]?`<div class="i-sub"><b style="color:rgba(255,255,255,${isCur?'.85':'.65'})">${subs[0]}</b></div>`:''}
-          ${subs[1]?`<div class="i-sub">${subs[1]}</div>`:''}
+          ${subs[0]?`<div class="i-sub">${subs[0]}</div>`:''}
+          ${subs[1]?`<div class="i-sub2">${subs[1]}</div>`:''}
         </div>
       </div>`;
     });
   });
   document.getElementById('agenda-panel').innerHTML = html;
-
-  setTimeout(() => {
-    const live = document.querySelector('.item.live');
-    if (live) live.scrollIntoView({ behavior:'smooth', block:'center' });
-  }, 100);
+  setTimeout(() => { const live = document.querySelector('.item.live'); if (live) live.scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
 }
 
 function startTimer() {
@@ -675,50 +600,45 @@ function startTimer() {
     const s = elapsed % 60;
     const val = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     const el = document.getElementById('timer-val');
-    el.textContent = val;
-    el.className = 'timer-val' + (elapsed >= 900 ? ' warn' : '');
-    const agendaEl = document.getElementById('agenda-timer');
-    if (agendaEl) { agendaEl.textContent = val; agendaEl.style.color = elapsed >= 900 ? '#f87171' : '#4dd9a0'; }
+    if (el) { el.textContent = val; el.className = 'timer-val' + (elapsed >= 900 ? ' warn' : ''); }
+    const ae = document.getElementById('agenda-timer');
+    if (ae) { ae.textContent = val; }
   }, 1000);
+}
+
+function updateAIBtn() {
+  const btn = document.getElementById('ai-toggle-btn');
+  if (!btn) return;
+  btn.textContent = aiEnabled ? '🤖 AI: ON' : '🤖 AI: OFF';
+  btn.className = 'btn-sml btn-ai-toggle ' + (aiEnabled ? 'on' : 'off');
+}
+
+function updateCountdownBtn() {
+  const btn = document.getElementById('countdown-toggle-btn');
+  if (!btn) return;
+  btn.textContent = showCountdown ? '⏳ Countdown: ON' : '⏳ Countdown: OFF';
+  btn.className = 'btn-sml btn-countdown-toggle ' + (showCountdown ? 'on' : 'off');
 }
 
 async function toggleAI() {
   aiEnabled = !aiEnabled;
-  const btn = document.getElementById('ai-toggle-btn');
-  btn.textContent = aiEnabled ? '🤖 AI: ON' : '🤖 AI: OFF';
-  btn.classList.toggle('off', !aiEnabled);
-  // Save to Supabase — try update first, upsert as fallback
+  updateAIBtn();
   try {
     const { error } = await sb.from('live_state').update({ ai_enabled: aiEnabled }).eq('id', 1);
-    if (error) {
-      console.error('AI toggle update error:', error);
-      // Try upsert if update failed (e.g. column exists but row issue)
-      await sb.from('live_state').upsert({ id: 1, ai_enabled: aiEnabled });
-    }
+    if (error) await sb.from('live_state').upsert({ id: 1, ai_enabled: aiEnabled });
   } catch(e) { console.error('AI toggle failed:', e); }
 }
 
 async function loadAIState() {
   try {
     const { data } = await sb.from('live_state').select('ai_enabled').eq('id', 1).single();
-    if (data && data.ai_enabled !== null && data.ai_enabled !== undefined) {
-      aiEnabled = data.ai_enabled;
-      const btn = document.getElementById('ai-toggle-btn');
-      if (btn) {
-        btn.textContent = aiEnabled ? '🤖 AI: ON' : '🤖 AI: OFF';
-        btn.classList.toggle('off', !aiEnabled);
-      }
-    }
-  } catch(e) { /* column may not exist yet, default to ON */ }
+    if (data && data.ai_enabled !== null && data.ai_enabled !== undefined) { aiEnabled = data.ai_enabled; updateAIBtn(); }
+  } catch(e) {}
 }
 
 async function toggleCountdown() {
   showCountdown = !showCountdown;
-  const btn = document.getElementById('countdown-toggle-btn');
-  if (btn) {
-    btn.textContent = showCountdown ? '⏳ Countdown: ON' : '⏳ Countdown: OFF';
-    btn.classList.toggle('off', !showCountdown);
-  }
+  updateCountdownBtn();
   try {
     const { error } = await sb.from('live_state').update({ show_countdown: showCountdown }).eq('id', 1);
     if (error) await sb.from('live_state').upsert({ id: 1, show_countdown: showCountdown });
@@ -728,17 +648,9 @@ async function toggleCountdown() {
 async function loadCountdownState() {
   try {
     const { data } = await sb.from('live_state').select('show_countdown').eq('id', 1).single();
-    if (data && data.show_countdown !== null && data.show_countdown !== undefined) {
-      showCountdown = Boolean(data.show_countdown);
-      const btn = document.getElementById('countdown-toggle-btn');
-      if (btn) {
-        btn.textContent = showCountdown ? '⏳ Countdown: ON' : '⏳ Countdown: OFF';
-        btn.classList.toggle('off', !showCountdown);
-      }
-    }
-  } catch(e) { /* column may not exist yet, default OFF */ }
+    if (data && data.show_countdown !== null && data.show_countdown !== undefined) { showCountdown = Boolean(data.show_countdown); updateCountdownBtn(); }
+  } catch(e) {}
 }
-
 
 async function setLive(id) {
   currentId = id;
@@ -752,408 +664,119 @@ function movePrev() { const prv = getPrevPresenter(currentId); if (prv) setLive(
 async function downloadFeedbackPDF() {
   if (!feedbacks.length) return;
   const { jsPDF } = window.jspdf;
-
-  // ════════════════════════════════════════════════
-  //  CONSTANTS  — 300 DPI for crisp, print-quality output
-  // ════════════════════════════════════════════════
-  const DPI   = 300;
-  const MM    = DPI / 25.4;   // px per mm ≈ 11.811
-  const W_MM  = 210;
-  const H_MM  = 297;
-  const MG    = 14;           // page margin mm
-
+  const DPI = 300; const MM = DPI / 25.4; const W_MM = 210; const H_MM = 297; const MG = 14;
   function px(mm) { return Math.round(mm * MM); }
-
-  // ── Palette — exact match to organizer dashboard
-  const BG        = '#0f2035';   // dashboard body background
-  const SURFACE   = '#122840';   // dashboard top-bar / side-panel
-  const CARD_BG   = '#0d1e2e';   // slightly deeper card bg
-  const CARD_BD   = '#1a3a55';   // card border — visible but subtle
-  const GOLD      = '#e8c96a';   // dashboard gold (#e8c96a)
-  const GOLD_DIM  = '#b89a3e';   // dimmed gold for secondary labels
-  const CREAM     = '#f0ece2';   // main text — bright warm white
-  const MUTED     = '#6b8faa';   // muted blue-grey for meta
-  const HAIRLINE  = '#1e3a52';   // separator lines
-  const TEAL      = '#4dd9a0';   // dashboard teal — brand accent
-  const TEAL_DIM  = '#2a8f65';   // darker teal for subtle accents
-
-  // ── Font stack: Noto Sans Georgian covers Georgian script perfectly
-  function f(weight, sizeMM) {
-    return `${weight} ${px(sizeMM)}px "Noto Sans Georgian", "Noto Sans", "DejaVu Sans", "Segoe UI", Arial, sans-serif`;
-  }
-
-  // ── Rounded rect path helper
+  const BG='#EAEFF2';const SURFACE='#FFFFFF';const NAVY='#1A365D';const NAVY_DIM='#2C4E7A';
+  const TEXT='#0A1B29';const MUTED='#607386';const BORDER='#B2C4D1';const HAIRLINE='#D5E1EA';
+  const GREEN='#16A34A';
+  function f(weight, sizeMM) { return `${weight} ${px(sizeMM)}px "DM Sans", "Noto Sans Georgian", Arial, sans-serif`; }
   function rr(ctx, x, y, w, h, r) {
-    r = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.arcTo(x + w, y,     x + w, y + r,     r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
-    ctx.lineTo(x + r, y + h);
-    ctx.arcTo(x,     y + h, x,       y + h - r, r);
-    ctx.lineTo(x, y + r);
-    ctx.arcTo(x,     y,     x + r,   y,         r);
-    ctx.closePath();
+    r = Math.min(r, w/2, h/2);
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+    ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r); ctx.lineTo(x+r,y+h);
+    ctx.arcTo(x,y+h,x,y+h-r,r); ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
   }
-
-  // ── Word-wrap — handles Georgian (no spaces = single token) correctly
   function wrapText(ctx, text, maxW) {
     if (!text || !text.trim()) return [''];
-    // Split on spaces; Georgian words stay intact
-    const words = text.split(/\s+/).filter(Boolean);
-    const lines = [];
-    let line = '';
-    for (const w of words) {
-      const test = line ? line + ' ' + w : w;
-      if (line && ctx.measureText(test).width > maxW) {
-        lines.push(line);
-        line = w;
-      } else {
-        line = test;
-      }
-    }
+    const words = text.split(/\s+/).filter(Boolean); const lines = []; let line = '';
+    for (const w of words) { const test = line ? line+' '+w : w; if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = w; } else { line = test; } }
     if (line) lines.push(line);
     return lines.length ? lines : [''];
   }
-
-  // ════════════════════════════════════════════════
-  //  FONT LOADING — Noto Sans Georgian for Georgian script support
-  // ════════════════════════════════════════════════
   async function loadFonts() {
-    // Noto Sans Georgian — full Georgian Unicode coverage
-    const defs = [
-      {
-        family: 'Noto Sans Georgian',
-        weight: '400',
-        url: 'https://fonts.gstatic.com/s/notosansgeorgian/v28/PlIaFke5O6RzLfvNNVSitxkr76PRHBC4Ytycd9pj9NBhMp1dHoVEHBJNHSzk.woff2'
-      },
-      {
-        family: 'Noto Sans Georgian',
-        weight: '700',
-        url: 'https://fonts.gstatic.com/s/notosansgeorgian/v28/PlIaFke5O6RzLfvNNVSitxkr76PRHBC4Ytycd9pj9NBhMp1dHoVEHBJNHSzk.woff2'
-      },
-    ];
-    await Promise.all(defs.map(async d => {
-      try {
-        const ff = new FontFace(d.family, `url(${d.url})`, { weight: d.weight, display: 'swap' });
-        document.fonts.add(await ff.load());
-      } catch (_) {}
-    }));
+    try {
+      const ff = new FontFace('Noto Sans Georgian','url(https://fonts.gstatic.com/s/notosansgeorgian/v28/PlIaFke5O6RzLfvNNVSitxkr76PRHBC4Ytycd9pj9NBhMp1dHoVEHBJNHSzk.woff2)',{weight:'400'});
+      document.fonts.add(await ff.load());
+    } catch(_) {}
     await document.fonts.ready;
   }
-
-  // ════════════════════════════════════════════════
-  //  CARD MEASUREMENT
-  // ════════════════════════════════════════════════
-  const TEXT_SIZE_MM = 3.6;
-  const LINE_H_MM    = 5.6;
-  const PAD_TOP_MM   = 6.5;
-  const PAD_BOT_MM   = 6.5;
-  const META_H_MM    = 5.5;
-  const INNER_MG_MM  = 6.5;
-  const ACCENT_W_MM  = 1.8;
-
+  const TEXT_SIZE_MM=3.6;const LINE_H_MM=5.6;const PAD_TOP_MM=6;const PAD_BOT_MM=6;const META_H_MM=5;const INNER_MG_MM=6;const ACCENT_W_MM=1.8;
   function cardHeight(measCtx, fb) {
-    const maxW = px(W_MM - MG * 2 - ACCENT_W_MM - INNER_MG_MM - 4);
+    const maxW = px(W_MM-MG*2-ACCENT_W_MM-INNER_MG_MM-4);
     measCtx.font = f('400', TEXT_SIZE_MM);
     const lines = wrapText(measCtx, fb.text || '', maxW);
-    return PAD_TOP_MM + META_H_MM + lines.length * LINE_H_MM + PAD_BOT_MM;
+    return PAD_TOP_MM+META_H_MM+lines.length*LINE_H_MM+PAD_BOT_MM;
   }
-
-  // ════════════════════════════════════════════════
-  //  PAGE RENDERER
-  // ════════════════════════════════════════════════
   function renderPage(items, isFirst, pageNum, totalPages, genDate) {
-    const cW = px(W_MM);
-    const cH = px(H_MM);
-    const mg = px(MG);
-
-    const cv = document.createElement('canvas');
-    cv.width = cW; cv.height = cH;
-    const ctx = cv.getContext('2d');
-    ctx.textBaseline = 'alphabetic';
-
-    // ── Full background
-    ctx.fillStyle = BG;
-    ctx.fillRect(0, 0, cW, cH);
-
+    const cW=px(W_MM);const cH=px(H_MM);const mg=px(MG);
+    const cv=document.createElement('canvas'); cv.width=cW; cv.height=cH;
+    const ctx=cv.getContext('2d'); ctx.textBaseline='alphabetic';
+    ctx.fillStyle=BG; ctx.fillRect(0,0,cW,cH);
     if (isFirst) {
-      // ── HEADER ZONE  (0 – 48mm)
-      const HH = px(48);
-
-      // Header surface
-      ctx.fillStyle = SURFACE;
-      ctx.fillRect(0, 0, cW, HH);
-
-      // Left teal accent bar
-      const accentGrad = ctx.createLinearGradient(0, 0, 0, HH);
-      accentGrad.addColorStop(0, TEAL);
-      accentGrad.addColorStop(1, TEAL_DIM);
-      ctx.fillStyle = accentGrad;
-      ctx.fillRect(0, 0, px(1.5), HH);
-
-      // Gold bottom rule
-      ctx.strokeStyle = GOLD;
-      ctx.lineWidth = px(0.4);
-      ctx.beginPath(); ctx.moveTo(0, HH); ctx.lineTo(cW, HH); ctx.stroke();
-
-      // Subtle gold inner rule just above bottom
-      ctx.strokeStyle = GOLD + '33';
-      ctx.lineWidth = px(0.2);
-      ctx.beginPath(); ctx.moveTo(0, HH - px(0.6)); ctx.lineTo(cW, HH - px(0.6)); ctx.stroke();
-
-      // "S Y S S A" wordmark — spaced, teal
-      ctx.fillStyle = TEAL;
-      ctx.font = f('700', 2.6);
-      ctx.letterSpacing = px(3.5) + 'px';
-      ctx.fillText('S Y S S A', mg + px(0.5), px(11.5));
-      ctx.letterSpacing = '0px';
-
-      // thin gold underline rule after wordmark
-      ctx.strokeStyle = GOLD_DIM;
-      ctx.lineWidth = px(0.25);
-      ctx.beginPath(); ctx.moveTo(mg, px(14)); ctx.lineTo(mg + px(32), px(14)); ctx.stroke();
-
-      // Main title — large, cream
-      ctx.fillStyle = CREAM;
-      ctx.font = f('700', 7.0);
-      ctx.fillText("Nobel's Day — Feedback Report", mg, px(26));
-
-      // Subtitle
-      ctx.fillStyle = MUTED;
-      ctx.font = f('400', 2.9);
-      ctx.fillText('SYSSA XIII Scientific Session  ·  DTMU / Caucasus Medical Centre', mg, px(34));
-
-      // ── Right column
-      ctx.textAlign = 'right';
-
-      // Response count pill
-      const countText = `${feedbacks.length} responses`;
-      ctx.font = f('700', 3.0);
-      const ctW = ctx.measureText(countText).width + px(5);
-      const ctX = cW - mg - ctW;
-      const ctY = px(15);
-      const ctHt = px(5.5);
-      rr(ctx, ctX, ctY, ctW, ctHt, px(1.8));
-      ctx.fillStyle = GOLD + '25';
-      ctx.fill();
-      ctx.strokeStyle = GOLD + '60';
-      ctx.lineWidth = px(0.25);
-      ctx.stroke();
-      ctx.fillStyle = GOLD;
-      ctx.fillText(countText, cW - mg - px(2.5), ctY + px(4));
-
-      // Date / time
-      ctx.fillStyle = MUTED;
-      ctx.font = f('400', 2.6);
-      ctx.fillText(genDate, cW - mg, px(29));
-      ctx.textAlign = 'left';
-
+      const HH=px(46); ctx.fillStyle=SURFACE; ctx.fillRect(0,0,cW,HH);
+      ctx.fillStyle=NAVY; ctx.fillRect(0,0,px(1.5),HH);
+      ctx.strokeStyle=BORDER; ctx.lineWidth=px(0.4); ctx.beginPath(); ctx.moveTo(0,HH); ctx.lineTo(cW,HH); ctx.stroke();
+      ctx.fillStyle=NAVY; ctx.font=f('700',2.4); ctx.letterSpacing=px(3)+'px';
+      ctx.fillText('S Y S S A',mg,px(11)); ctx.letterSpacing='0px';
+      ctx.strokeStyle=NAVY_DIM; ctx.lineWidth=px(0.25); ctx.beginPath(); ctx.moveTo(mg,px(13.5)); ctx.lineTo(mg+px(28),px(13.5)); ctx.stroke();
+      ctx.fillStyle=TEXT; ctx.font=f('700',6.5); ctx.fillText('Infection at the Crossroads — Feedback Report',mg,px(25.5));
+      ctx.fillStyle=MUTED; ctx.font=f('400',2.8); ctx.fillText('XI International Conference  ·  June 13–14, 2026  ·  Margot Old Tbilisi',mg,px(33));
+      ctx.textAlign='right';
+      const countText=`${feedbacks.length} responses`;
+      ctx.font=f('700',2.8);
+      const ctW=ctx.measureText(countText).width+px(5);const ctX=cW-mg-ctW;const ctY=px(16);const ctHt=px(5);
+      rr(ctx,ctX,ctY,ctW,ctHt,px(1.5)); ctx.fillStyle=HAIRLINE; ctx.fill();
+      ctx.strokeStyle=BORDER; ctx.lineWidth=px(0.25); ctx.stroke();
+      ctx.fillStyle=NAVY; ctx.fillText(countText,cW-mg-px(2.5),ctY+px(3.8));
+      ctx.fillStyle=MUTED; ctx.font=f('400',2.5); ctx.fillText(genDate,cW-mg,px(28.5));
+      ctx.textAlign='left';
     } else {
-      // ── CONTINUATION HEADER  (0 – 13mm)
-      const HH = px(13);
-      ctx.fillStyle = SURFACE;
-      ctx.fillRect(0, 0, cW, HH);
-      ctx.fillStyle = TEAL;
-      ctx.fillRect(0, 0, px(1.5), HH);
-      ctx.strokeStyle = GOLD;
-      ctx.lineWidth = px(0.35);
-      ctx.beginPath(); ctx.moveTo(0, HH); ctx.lineTo(cW, HH); ctx.stroke();
-
-      ctx.fillStyle = MUTED;
-      ctx.font = f('400', 2.5);
-      ctx.fillText("SYSSA — Nobel's Day Feedback Report", mg, px(8.5));
-
-      ctx.fillStyle = GOLD_DIM;
-      ctx.font = f('700', 2.5);
-      ctx.textAlign = 'right';
-      ctx.fillText(`Page ${pageNum} / ${totalPages}`, cW - mg, px(8.5));
-      ctx.textAlign = 'left';
+      const HH=px(13); ctx.fillStyle=SURFACE; ctx.fillRect(0,0,cW,HH);
+      ctx.fillStyle=NAVY; ctx.fillRect(0,0,px(1.5),HH);
+      ctx.strokeStyle=BORDER; ctx.lineWidth=px(0.3); ctx.beginPath(); ctx.moveTo(0,HH); ctx.lineTo(cW,HH); ctx.stroke();
+      ctx.fillStyle=MUTED; ctx.font=f('400',2.4); ctx.fillText('Infection at the Crossroads — Feedback',mg,px(8.5));
+      ctx.fillStyle=NAVY; ctx.font=f('700',2.4); ctx.textAlign='right'; ctx.fillText(`Page ${pageNum} / ${totalPages}`,cW-mg,px(8.5)); ctx.textAlign='left';
     }
-
-    // ── FOOTER  (283 – 297mm)
-    const FY = px(282);
-    ctx.fillStyle = SURFACE;
-    ctx.fillRect(0, FY, cW, cH - FY);
-
-    // Footer top rule — gold
-    ctx.strokeStyle = GOLD + '55';
-    ctx.lineWidth = px(0.3);
-    ctx.beginPath(); ctx.moveTo(0, FY); ctx.lineTo(cW, FY); ctx.stroke();
-
-    // Footer inner separator
-    ctx.strokeStyle = HAIRLINE;
-    ctx.lineWidth = px(0.2);
-    ctx.beginPath(); ctx.moveTo(mg, FY + px(0.5)); ctx.lineTo(cW - mg, FY + px(0.5)); ctx.stroke();
-
-    ctx.fillStyle = MUTED;
-    ctx.font = f('400', 2.4);
-    ctx.fillText("SYSSA Nobel's Day  ·  Confidential Organizer Report", mg, px(290.5));
-
-    ctx.fillStyle = GOLD;
-    ctx.font = f('700', 2.4);
-    ctx.textAlign = 'right';
-    ctx.fillText('syssa.ge', cW - mg, px(290.5));
-    ctx.textAlign = 'left';
-
-    ctx.fillStyle = TEAL + '88';
-    ctx.font = f('700', 2.4);
-    ctx.textAlign = 'center';
-    ctx.fillText(`${pageNum} / ${totalPages}`, cW / 2, px(290.5));
-    ctx.textAlign = 'left';
-
-    // ════════════════════════════════════════════════
-    //  CARDS
-    // ════════════════════════════════════════════════
-    const maxInnerW = px(W_MM - MG * 2 - ACCENT_W_MM - INNER_MG_MM - 4);
-    const ACCENT_W  = px(ACCENT_W_MM);
-
-    items.forEach(({ fb, num, yMM }) => {
-      const fbText = (fb.text || '').trim();
-      const fbTime = fb.created_at
-        ? new Date(fb.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
-        : '';
-
-      ctx.font = f('400', TEXT_SIZE_MM);
-      const lines = wrapText(ctx, fbText, maxInnerW);
-      const cH_mm = PAD_TOP_MM + META_H_MM + lines.length * LINE_H_MM + PAD_BOT_MM;
-
-      const cX   = mg;
-      const cY   = px(yMM);
-      const cW2  = px(W_MM - MG * 2);
-      const cHpx = px(cH_mm);
-      const R    = px(2.8);
-
-      // ── Card shadow (subtle depth)
-      ctx.save();
-      ctx.shadowColor    = 'rgba(0,0,0,0.6)';
-      ctx.shadowBlur     = px(3.5);
-      ctx.shadowOffsetY  = px(1.0);
-      ctx.fillStyle      = CARD_BG;
-      rr(ctx, cX, cY, cW2, cHpx, R);
-      ctx.fill();
-      ctx.restore();
-
-      // ── Card border
-      ctx.strokeStyle = CARD_BD;
-      ctx.lineWidth   = px(0.25);
-      rr(ctx, cX, cY, cW2, cHpx, R);
-      ctx.stroke();
-
-      // ── Gold accent bar — left edge, gradient for richness
-      ctx.save();
-      rr(ctx, cX, cY, cW2, cHpx, R);
-      ctx.clip();
-      const barGrad = ctx.createLinearGradient(0, cY, 0, cY + cHpx);
-      barGrad.addColorStop(0, GOLD);
-      barGrad.addColorStop(1, GOLD_DIM);
-      ctx.fillStyle = barGrad;
-      ctx.fillRect(cX, cY, ACCENT_W, cHpx);
-      ctx.restore();
-
-      // ── Content X positions
-      const IX  = cX + ACCENT_W + px(INNER_MG_MM - 1.2);  // text left edge
-      const IXR = cX + cW2 - px(4);                        // right edge for text
-
-      // Label row baseline — sits within top padding
-      const labelBaseline = cY + px(PAD_TOP_MM * 0.7) + px(3.2);
-
-      // "#N" — bold gold
-      ctx.fillStyle = GOLD;
-      ctx.font = f('700', 3.2);
-      ctx.letterSpacing = px(0.4) + 'px';
-      ctx.fillText(`#${num}`, IX, labelBaseline);
-      ctx.letterSpacing = '0px';
-
-      // "FEEDBACK" label — lighter, spaced caps
-      const numTextW = ctx.measureText(`#${num}`).width + px(2.2);
-      ctx.fillStyle = GOLD_DIM;
-      ctx.font = f('700', 2.4);
-      ctx.letterSpacing = px(0.9) + 'px';
-      ctx.fillText('FEEDBACK', IX + numTextW, labelBaseline - px(0.4));
-      ctx.letterSpacing = '0px';
-
-      // Timestamp — right-aligned, muted
-      if (fbTime) {
-        ctx.fillStyle = MUTED;
-        ctx.font = f('400', 2.5);
-        ctx.textAlign = 'right';
-        ctx.fillText(fbTime, IXR, labelBaseline);
-        ctx.textAlign = 'left';
-      }
-
-      // ── Hairline separator
-      const sepY = cY + px(PAD_TOP_MM + META_H_MM);
-      ctx.strokeStyle = HAIRLINE;
-      ctx.lineWidth   = px(0.22);
-      ctx.beginPath();
-      ctx.moveTo(IX, sepY);
-      ctx.lineTo(IXR + px(2), sepY);
-      ctx.stroke();
-
-      // ── Body text — warm cream, left-aligned, proper line height
-      ctx.fillStyle = CREAM;
-      ctx.font = f('400', TEXT_SIZE_MM);
-      const textStartY = sepY + px(LINE_H_MM * 0.85);
-      lines.forEach((ln, li) => {
-        ctx.fillText(ln, IX, textStartY + li * px(LINE_H_MM));
-      });
+    const FY=px(282); ctx.fillStyle=SURFACE; ctx.fillRect(0,FY,cW,cH-FY);
+    ctx.strokeStyle=BORDER; ctx.lineWidth=px(0.3); ctx.beginPath(); ctx.moveTo(0,FY); ctx.lineTo(cW,FY); ctx.stroke();
+    ctx.fillStyle=MUTED; ctx.font=f('400',2.3); ctx.fillText('XI International Conference "Infection at the Crossroads"  ·  Organizer Report',mg,px(290.5));
+    ctx.fillStyle=GREEN; ctx.font=f('700',2.3); ctx.textAlign='right'; ctx.fillText('syssa.ge',cW-mg,px(290.5));
+    ctx.fillStyle=NAVY; ctx.textAlign='center'; ctx.fillText(`${pageNum} / ${totalPages}`,cW/2,px(290.5)); ctx.textAlign='left';
+    const maxInnerW=px(W_MM-MG*2-ACCENT_W_MM-INNER_MG_MM-4);const ACCENT_W=px(ACCENT_W_MM);
+    items.forEach(({fb,num,yMM}) => {
+      const fbText=(fb.text||'').trim();
+      const fbTime=fb.created_at?new Date(fb.created_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+      ctx.font=f('400',TEXT_SIZE_MM); const lines=wrapText(ctx,fbText,maxInnerW);
+      const cH_mm=PAD_TOP_MM+META_H_MM+lines.length*LINE_H_MM+PAD_BOT_MM;
+      const cX=mg;const cY=px(yMM);const cW2=px(W_MM-MG*2);const cHpx=px(cH_mm);const R=px(2.5);
+      ctx.fillStyle=SURFACE; rr(ctx,cX,cY,cW2,cHpx,R); ctx.fill();
+      ctx.strokeStyle=BORDER; ctx.lineWidth=px(0.25); rr(ctx,cX,cY,cW2,cHpx,R); ctx.stroke();
+      ctx.save(); rr(ctx,cX,cY,cW2,cHpx,R); ctx.clip();
+      ctx.fillStyle=NAVY; ctx.fillRect(cX,cY,ACCENT_W,cHpx); ctx.restore();
+      const IX=cX+ACCENT_W+px(INNER_MG_MM-1);const IXR=cX+cW2-px(4);
+      const labelBaseline=cY+px(PAD_TOP_MM*0.7)+px(3);
+      ctx.fillStyle=NAVY; ctx.font=f('700',3); ctx.letterSpacing=px(0.3)+'px'; ctx.fillText(`#${num}`,IX,labelBaseline); ctx.letterSpacing='0px';
+      const numTextW=ctx.measureText(`#${num}`).width+px(2);
+      ctx.fillStyle=MUTED; ctx.font=f('700',2.3); ctx.letterSpacing=px(0.7)+'px'; ctx.fillText('FEEDBACK',IX+numTextW,labelBaseline-px(0.3)); ctx.letterSpacing='0px';
+      if (fbTime) { ctx.fillStyle=MUTED; ctx.font=f('400',2.3); ctx.textAlign='right'; ctx.fillText(fbTime,IXR,labelBaseline); ctx.textAlign='left'; }
+      const sepY=cY+px(PAD_TOP_MM+META_H_MM);
+      ctx.strokeStyle=HAIRLINE; ctx.lineWidth=px(0.22); ctx.beginPath(); ctx.moveTo(IX,sepY); ctx.lineTo(IXR+px(2),sepY); ctx.stroke();
+      ctx.fillStyle=TEXT; ctx.font=f('400',TEXT_SIZE_MM);
+      const textStartY=sepY+px(LINE_H_MM*0.85);
+      lines.forEach((ln,li) => { ctx.fillText(ln,IX,textStartY+li*px(LINE_H_MM)); });
     });
-
-    // PNG — lossless
     return cv.toDataURL('image/png');
   }
-
-  // ════════════════════════════════════════════════
-  //  MAIN
-  // ════════════════════════════════════════════════
   await loadFonts();
-
-  const now = new Date();
-  const genDate =
-    now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) +
-    '  ' +
-    now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
-  // ── Measurement canvas for pagination
-  const measCv = document.createElement('canvas');
-  measCv.width = px(W_MM); measCv.height = 10;
-  const measCtx = measCv.getContext('2d');
-
-  const FIRST_BODY_MM = 54;    // first page: after header
-  const CONT_BODY_MM  = 19;    // continuation pages
-  const FOOTER_LIM_MM = 278;   // stop before footer
-  const GAP_MM        = 4.0;   // gap between cards
-
-  const pages = [[]];
-  let curPage = 0;
-  let yMM = FIRST_BODY_MM;
-
-  feedbacks.forEach((fb, i) => {
-    const num = feedbacks.length - i;
-    const h   = cardHeight(measCtx, fb);
-    if (yMM + h > FOOTER_LIM_MM) {
-      pages.push([]);
-      curPage++;
-      yMM = CONT_BODY_MM;
-    }
-    pages[curPage].push({ fb, num, yMM });
-    yMM += h + GAP_MM;
+  const now=new Date();
+  const genDate=now.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+'  '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const measCv=document.createElement('canvas'); measCv.width=px(W_MM); measCv.height=10;
+  const measCtx=measCv.getContext('2d');
+  const FIRST_BODY_MM=52;const CONT_BODY_MM=19;const FOOTER_LIM_MM=278;const GAP_MM=4;
+  const pages=[[]];let curPage=0;let yMM=FIRST_BODY_MM;
+  feedbacks.forEach((fb,i) => {
+    const num=feedbacks.length-i;const h=cardHeight(measCtx,fb);
+    if (yMM+h>FOOTER_LIM_MM) { pages.push([]); curPage++; yMM=CONT_BODY_MM; }
+    pages[curPage].push({fb,num,yMM}); yMM+=h+GAP_MM;
   });
-
-  const totalPages = pages.length;
-
-  // ── Build PDF
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  pages.forEach((items, pi) => {
-    if (pi > 0) doc.addPage();
-    const img = renderPage(items, pi === 0, pi + 1, totalPages, genDate);
-    doc.addImage(img, 'PNG', 0, 0, W_MM, H_MM);
+  const totalPages=pages.length;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  pages.forEach((items,pi) => {
+    if (pi>0) doc.addPage();
+    const img=renderPage(items,pi===0,pi+1,totalPages,genDate);
+    doc.addImage(img,'PNG',0,0,W_MM,H_MM);
   });
-
-  doc.save(`SYSSA_Feedback_${now.toISOString().slice(0, 10)}.pdf`);
+  doc.save(`InfectionConf_Feedback_${now.toISOString().slice(0,10)}.pdf`);
 }
 </script>
 </body>
