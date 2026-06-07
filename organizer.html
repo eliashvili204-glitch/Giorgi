@@ -273,6 +273,7 @@ let sb = null;
 let currentId = 3;
 let channel = null;
 let timerStart = Date.now();
+let speakerStartedAt = Date.now();
 let timerInterval = null;
 let threads = {};
 let threadOrder = [];
@@ -286,9 +287,10 @@ let showCountdown = false;
 window.addEventListener('load', async () => {
   try {
     sb = supabase.createClient(SB_URL, SB_KEY);
-    const { data, error } = await sb.from('live_state').select('current_id').eq('id', 1).single();
+    const { data, error } = await sb.from('live_state').select('current_id,speaker_started_at').eq('id', 1).single();
     if (error) throw error;
     currentId = data.current_id;
+    if (data.speaker_started_at) speakerStartedAt = new Date(data.speaker_started_at).getTime();
 
     const { data: existingMsgs } = await sb.from('messages').select('*').order('created_at', { ascending: true });
     if (existingMsgs) {
@@ -318,6 +320,7 @@ function startApp() {
   channel = sb.channel('live_state_changes')
     .on('postgres_changes', { event:'UPDATE', schema:'public', table:'live_state' }, payload => {
       currentId = payload.new.current_id;
+      if (payload.new.speaker_started_at) speakerStartedAt = new Date(payload.new.speaker_started_at).getTime();
       render();
       if (payload.new.ai_enabled !== undefined && payload.new.ai_enabled !== aiEnabled) {
         aiEnabled = payload.new.ai_enabled;
@@ -387,7 +390,7 @@ function startApp() {
   render();
   renderChatList();
   renderFbList();
-  startTimer();
+  startTimer(false);
   loadAIState();
   loadCountdownState();
 }
@@ -410,7 +413,7 @@ function switchTab(tab) {
   document.getElementById('fb-list').style.display = tab === 'fb' ? 'flex' : 'none';
   const dlBtn = document.getElementById('fb-download-btn');
   if (dlBtn) dlBtn.style.display = (tab === 'fb' && feedbacks.length) ? 'flex' : 'none';
-}
+} 
 
 function renderChatList() {
   const list = document.getElementById('chat-list');
@@ -522,7 +525,7 @@ function renderFbList() {
     div.innerHTML = `<div class="fb-item-num">Feedback #${num}</div><div class="fb-item-text">${fb.text}</div>${t ? `<div class="fb-item-time">${t}</div>` : ''}`;
     list.appendChild(div);
   });
-  if(dlBtn) dlBtn.style.display='flex';
+  if(dlBtn) dlBtn.style.display = (activeTab === 'fb') ? 'flex' : 'none';
 }
 
 const SECS = [
@@ -544,6 +547,14 @@ const SECS = [
   { key:'day2_close',  label:'' },
 ];
 
+function getNextAny(fromId) {
+  const ci = AGENDA.findIndex(a => a.id === fromId);
+  return ci < AGENDA.length - 1 ? AGENDA[ci + 1] : null;
+}
+function getPrevAny(fromId) {
+  const ci = AGENDA.findIndex(a => a.id === fromId);
+  return ci > 0 ? AGENDA[ci - 1] : null;
+}
 function getNextPresenter(fromId) {
   const ci = AGENDA.findIndex(a => a.id === fromId);
   for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak) return AGENDA[i];
@@ -591,11 +602,11 @@ function render() {
   setTimeout(() => { const live = document.querySelector('.item.live'); if (live) live.scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
 }
 
-function startTimer() {
-  timerStart = Date.now();
+function startTimer(resetToNow) {
+  if (resetToNow) speakerStartedAt = Date.now();
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
-    const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+    const elapsed = Math.floor((Date.now() - speakerStartedAt) / 1000);
     const m = Math.floor(elapsed / 60);
     const s = elapsed % 60;
     const val = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
@@ -655,11 +666,11 @@ async function loadCountdownState() {
 async function setLive(id) {
   currentId = id;
   render();
-  startTimer();
+  startTimer(true);
   await sb.from('live_state').update({ current_id: id, speaker_started_at: new Date().toISOString() }).eq('id', 1);
 }
-function moveNext() { const nxt = getNextPresenter(currentId); if (nxt) setLive(nxt.id); }
-function movePrev() { const prv = getPrevPresenter(currentId); if (prv) setLive(prv.id); }
+function moveNext() { const nxt = getNextAny(currentId); if (nxt) setLive(nxt.id); }
+function movePrev() { const prv = getPrevAny(currentId); if (prv) setLive(prv.id); }
 
 async function downloadFeedbackPDF() {
   if (!feedbacks.length) return;
