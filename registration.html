@@ -316,14 +316,12 @@ function resetPageLoads() {
 var geoState    = 'detecting';
 var userLat     = null;
 var userLng     = null;
-var lastUrl     = null;   // ბოლო გაგზავნილი URL — lock retry-სთვის
+var lastUrl     = null;
 var isSubmitting = false;
 var countdownInterval = null;
 
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
-//  ✅ მხოლოდ SUCCESS-ის შემდეგ იწერება — setDeviceRateLimit()
-//     ეძახება handleResult-ში, submitForm-ში არა
 // ══════════════════════════════════════════════════════════════
 function getDeviceRateRemaining() {
   try {
@@ -562,7 +560,7 @@ function pick(el) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  FETCH WITH RETRY — network error-ზე, არა 4xx-ზე
+//  FETCH WITH RETRY
 // ══════════════════════════════════════════════════════════════
 function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
@@ -588,7 +586,7 @@ function fetchWithRetry(url, left, onSuccess, onFail) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  LOCK TIMEOUT RETRY — ჩუმად, მომხმარებელი ვერ ხვდება
+//  LOCK TIMEOUT RETRY
 // ══════════════════════════════════════════════════════════════
 function retryAfterLockTimeout() {
   if (!lastUrl) return;
@@ -622,23 +620,20 @@ function showMsg(text, type) {
 
 // ══════════════════════════════════════════════════════════════
 //  RESULT HANDLER
-//  ✅ setDeviceRateLimit() მხოლოდ SUCCESS-ზე — Sheet-ში ჩაწერის
-//     დადასტურების შემდეგ
 // ══════════════════════════════════════════════════════════════
 function handleResult(result) {
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
 
-  // ✅ lock timeout → ჩუმად ხელახლა ცდა, rate limit არ ეწერება
   if (result === 'ERROR:lock_timeout') {
     retryAfterLockTimeout();
     return;
   }
 
-  // Server-side email rate limit
   if (result.indexOf('RATE_LIMITED:') === 0) {
     var remMs = parseInt(result.split(':')[1], 10);
     isSubmitting = false;
+    // ❌ setDeviceRateLimit() არ ეძახება — ეს მეილის ლიმიტია, მოწყობილობის არა
     startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
@@ -662,7 +657,6 @@ function handleResult(result) {
   if (entry) {
     showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      // ✅ მხოლოდ აქ — Sheet-ში ჩაწერის დადასტურების შემდეგ
       setDeviceRateLimit();
       startCountdown(RATE_LIMIT_MS,
         'Registration successful. This device cannot register again for 7 hours.',
@@ -682,10 +676,11 @@ function handleResult(result) {
 
 // ══════════════════════════════════════════════════════════════
 //  SUBMIT
-//  ✅ setDeviceRateLimit() წაშლილია აქედან
-//  ✅ lastUrl ინახება lock retry-სთვის
+//  ✅ FIX: isSubmitting guard დამატებულია პირველ ხაზად
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
+  if (isSubmitting) return;  // ✅ double-submit protection
+
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
     showMsg('Please wait for location detection to complete.', 'error');
@@ -721,7 +716,6 @@ function submitForm() {
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
-  // ✅ lastUrl-ში ვინახავთ lock retry-სთვის
   lastUrl = APPS_SCRIPT_URL
     + '?email='     + encodeURIComponent(email)
     + '&day='       + day
