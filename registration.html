@@ -564,12 +564,8 @@ function pick(el) {
 // ══════════════════════════════════════════════════════════════
 function fetchWithRetry(url, left, onSuccess, onFail) {
   var attempt = MAX_RETRIES - left + 1;
-  fetch(url)
+  fetch(url, { redirect: 'follow' })  // ✅ redirect follow
     .then(function(r) {
-      if (r.status >= 400 && r.status < 500) {
-        return r.text().then(function(t) { onSuccess(t.trim()); });
-      }
-      if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text().then(function(t) { onSuccess(t.trim()); });
     })
     .catch(function() {
@@ -600,10 +596,12 @@ function retryAfterLockTimeout() {
       function(result) { handleResult(result); },
       function() {
         isSubmitting = false;
-        document.getElementById('submit-btn').disabled  = false;
-        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
         document.getElementById('retry-info').style.display = 'none';
         showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
+        setTimeout(function() {
+          document.getElementById('submit-btn').disabled  = false;
+          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+        }, 3000);
       }
     );
   }, LOCK_RETRY_DELAY_MS);
@@ -729,9 +727,13 @@ function submitForm() {
     function(result) { handleResult(result); },
     function() {
       isSubmitting = false;
-      document.getElementById('submit-btn').disabled  = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
       showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
+      // ✅ 3 წამი delayed — race condition: პირველი request-ის response გვიან ჩამოსვლის შემთხვევაში
+      // button disabled რჩება და double-submit ვერ მოხდება
+      setTimeout(function() {
+        document.getElementById('submit-btn').disabled  = false;
+        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      }, 3000);
     }
   );
 }
