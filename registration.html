@@ -318,6 +318,7 @@ var userLat     = null;
 var userLng     = null;
 var lastUrl     = null;
 var isSubmitting = false;
+var currentRequestId = 0;  // ✅ თითოეული request-ის უნიკალური ID
 var countdownInterval = null;
 
 // ══════════════════════════════════════════════════════════════
@@ -593,7 +594,10 @@ function retryAfterLockTimeout() {
   setTimeout(function() {
     fetchWithRetry(
       lastUrl, MAX_RETRIES,
-      function(result) { handleResult(result); },
+      function(result) {
+      if (requestId !== currentRequestId) return;  // ✅ მოძველებული response — იგნორირება
+      handleResult(result);
+    },
       function() {
         isSubmitting = false;
         document.getElementById('retry-info').style.display = 'none';
@@ -709,6 +713,7 @@ function submitForm() {
   hideRateLimitBox();
   document.getElementById('retry-info').style.display = 'none';
   isSubmitting = true;
+  var requestId = ++currentRequestId;  // ✅ ეს request-ის ID
 
   var locStatus = geoState === 'found'   ? 'onsite'
                 : geoState === 'offsite' ? 'offsite'
