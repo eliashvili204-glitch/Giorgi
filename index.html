@@ -49,6 +49,11 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
 .speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
 
+/* ── BADGE TIMER (organizer-style) ── */
+.badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;font-variant-numeric:tabular-nums;}
+.badge-timer{background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);min-width:48px;text-align:center;}
+.badge-timer.over{background:rgba(220,38,38,.08);color:var(--warn);border-color:rgba(220,38,38,.3);}
+
 /* ── COUNTDOWN ── */
 .countdown-wrap{padding:24px 20px 8px;}
 .countdown-card{background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.02);}
@@ -146,9 +151,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-row.a-live .a-name{color:#16A34A;}
 .a-sub{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .a-sub-sup{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
-.a-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;}
-.a-badge-live{background:#16A34A;color:#fff;}
-.a-badge-next{background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
+.a-badge-next{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
 .footer{padding:18px 20px;text-align:center;border-top:1px solid var(--border);margin-top:28px;}
 .footer-status{font-size:10px;color:var(--text-faint);display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.04em;}
 .f-dot{width:5px;height:5px;border-radius:50%;background:#16A34A;}
@@ -401,37 +404,29 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 // ════════════════════════════════════════════
 const SB_URL     = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-const CONF_START = new Date('2026-06-13T05:00:00Z'); // UTC 05:00 = Tbilisi 09:00
+const CONF_START = new Date('2026-06-13T05:00:00Z');
 
 const WORKSHOPS = {
   a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: '◈', limit: 50 },
   b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: '✦', limit: 50 }
 };
 
-// ════════════════════════════════════════════
-//  AGENDA — ✅ FIXED: session keys match render() SECS
-// ════════════════════════════════════════════
 const AGENDA = [
-  // ── DAY 1 — Saturday, 13 June 2026 ──
   {id:1,  time:"09:00\u201310:00", speaker:"Registration & Welcome",                title:"",                                              session:"day1_pre"},
   {id:2,  time:"10:00\u201310:30", speaker:"Opening Ceremony",                      title:"Opening Ceremony & Welcome Remarks",             session:"day1_open"},
-  // Keynote
   {id:3,  time:"10:30\u201311:00", speaker:"[Keynote Speaker Name]",                title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_keynote"},
-  // Session I
   {id:4,  time:"11:00\u201311:15", speaker:"[Presenter 1]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
   {id:5,  time:"11:15\u201311:30", speaker:"[Presenter 2]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
   {id:6,  time:"11:30\u201311:45", speaker:"[Presenter 3]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
   {id:7,  time:"11:45\u201312:00", speaker:"[Presenter 4]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
   {id:8,  time:"12:00\u201312:15", speaker:"[Presenter 5]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
   {id:9,  time:"12:15\u201312:45", speaker:"Coffee Break",                          title:"",                                              session:"day1_break1", isBreak:true},
-  // Poster Pitches
   {id:10, time:"12:45\u201312:50", speaker:"[Poster Presenter 1]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
   {id:11, time:"12:50\u201312:55", speaker:"[Poster Presenter 2]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
   {id:12, time:"12:55\u201313:00", speaker:"[Poster Presenter 3]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
   {id:13, time:"13:00\u201313:05", speaker:"[Poster Presenter 4]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
   {id:14, time:"13:05\u201313:10", speaker:"[Poster Presenter 5]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
   {id:15, time:"13:10\u201313:15", speaker:"[Poster Presenter 6]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  // Session II
   {id:16, time:"13:15\u201313:30", speaker:"[Presenter 6]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
   {id:17, time:"13:30\u201313:45", speaker:"[Presenter 7]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
   {id:18, time:"13:45\u201314:00", speaker:"[Presenter 8]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
@@ -440,27 +435,20 @@ const AGENDA = [
   {id:21, time:"14:30\u201314:45", speaker:"[Presenter 11]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
   {id:22, time:"14:45\u201315:00", speaker:"[Presenter 12]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
   {id:23, time:"15:00\u201316:00", speaker:"Lunch Break \u2014 Poster Display Open",title:"",                                              session:"day1_lunch",  isBreak:true},
-  // Session II cont.
   {id:24, time:"16:00\u201316:15", speaker:"[Presenter 13]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
   {id:25, time:"16:15\u201316:30", speaker:"[Presenter 14]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
   {id:26, time:"16:30\u201316:45", speaker:"[Presenter 15]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
   {id:27, time:"16:45\u201317:00", speaker:"Closing Day 1",                         title:"",                                              session:"day1_close"},
-
-  // ── DAY 2 — Sunday, 14 June 2026 ──
   {id:28, time:"10:00\u201310:15", speaker:"Welcome Back & Day 2 Overview",         title:"",                                              session:"day2_open"},
-  // Session III
   {id:29, time:"10:15\u201310:30", speaker:"[Presenter 16]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:30, time:"10:30\u201310:45", speaker:"[Presenter 17]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:31, time:"10:45\u201311:00", speaker:"[Presenter 18]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:32, time:"11:00\u201311:15", speaker:"[Presenter 19]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:33, time:"11:15\u201311:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:34, time:"11:30\u201312:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
-  // Panel Discussion
   {id:35, time:"12:00\u201312:30", speaker:"Panel Discussion",                      title:"[Theme / Title \u2014 TBC]",                     session:"day2_panel"},
-  // Workshops
   {id:36, time:"12:00\u201312:30", speaker:"Workshop A",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
   {id:37, time:"12:00\u201312:30", speaker:"Workshop B",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
-  // Closing
   {id:38, time:"12:30\u201312:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close"}
 ];
 
@@ -500,6 +488,17 @@ function getNext(id) {
 }
 function withTimeout(p, ms) {
   return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
+}
+
+// Organizer-style duration parser
+function parseDurationMins(timeStr) {
+  if (!timeStr) return null;
+  const m = timeStr.match(/(\d{2}):(\d{2})[\u2013\-](\d{2}):(\d{2})/);
+  if (!m) return null;
+  const start = parseInt(m[1]) * 60 + parseInt(m[2]);
+  const end   = parseInt(m[3]) * 60 + parseInt(m[4]);
+  const diff  = end - start;
+  return diff > 0 ? diff : diff + 24 * 60;
 }
 
 // ════════════════════════════════════════════
@@ -963,23 +962,32 @@ function startApp() {
 }
 
 // ════════════════════════════════════════════
-//  SPEAKER TIMER
+//  SPEAKER TIMER — organizer-style slot duration
 // ════════════════════════════════════════════
 function startAudTimer() {
   if (audTimerInterval) clearInterval(audTimerInterval);
   audTimerInterval = setInterval(() => {
-    const e   = Math.floor((Date.now() - speakerStartedAt) / 1000);
-    const val = String(Math.floor(e / 60)).padStart(2, '0') + ':' + String(e % 60).padStart(2, '0');
-    const over = e >= 900;
+    const cur = AGENDA.find(a => a.id === currentId);
+    const durationMins = cur ? parseDurationMins(cur.time) : null;
+    const elapsed = Math.floor((Date.now() - speakerStartedAt) / 1000);
+    const val = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0');
+    const isOver = durationMins !== null && elapsed >= durationMins * 60;
+
+    // Top card timer
     const el = document.getElementById('aud-timer');
-    if (el) { el.textContent = val; el.style.color = over ? 'var(--warn)' : 'var(--navy)'; }
+    if (el) { el.textContent = val; el.style.color = isOver ? 'var(--warn)' : 'var(--navy)'; }
+
+    // Agenda badge timer
     const ae = document.getElementById('aud-agenda-timer');
-    if (ae) { ae.textContent = val; ae.style.color = over ? 'var(--warn)' : '#fff'; }
+    if (ae) {
+      ae.textContent = val;
+      ae.className = 'badge badge-timer' + (isOver ? ' over' : '');
+    }
   }, 1000);
 }
 
 // ════════════════════════════════════════════
-//  RENDER — ✅ FIXED: SECS keys match AGENDA session fields
+//  RENDER
 // ════════════════════════════════════════════
 function render() {
   const cur   = AGENDA.find(a => a.id === currentId);
@@ -993,7 +1001,6 @@ function render() {
   document.getElementById('next-name').textContent   = nxt ? nxt.speaker : 'Program Concluded';
   document.getElementById('next-title').textContent  = nxt ? (nxt.title.split('\n')[0] || '') : '';
 
-  // ✅ FIXED: keys now match AGENDA session values
   const SECS = [
     { key: 'day1_pre',     label: '' },
     { key: 'day1_open',    label: 'Opening Ceremony' },
@@ -1033,11 +1040,16 @@ function render() {
       const info = document.createElement('div'); info.className = 'a-info';
       const nameRow = document.createElement('div'); nameRow.className = 'a-name';
       const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
+      // Timer badge only (no "Speaking" label badge)
       if (isCur && !cdOn) {
-        const bl = document.createElement('span'); bl.className = 'a-badge a-badge-live'; bl.textContent = 'Speaking'; nameRow.appendChild(bl);
-        const bt = document.createElement('span'); bt.className = 'a-badge a-badge-live'; bt.id = 'aud-agenda-timer'; bt.style.cssText = 'min-width:40px;text-align:center;color:#fff!important;'; bt.textContent = '00:00'; nameRow.appendChild(bt);
+        const bt = document.createElement('span');
+        bt.className = 'badge badge-timer';
+        bt.id = 'aud-agenda-timer';
+        bt.style.cssText = 'min-width:48px;text-align:center;';
+        bt.textContent = '00:00';
+        nameRow.appendChild(bt);
       }
-      if (isNxt && !cdOn) { const bn = document.createElement('span'); bn.className = 'a-badge a-badge-next'; bn.textContent = 'Up next'; nameRow.appendChild(bn); }
+      if (isNxt && !cdOn) { const bn = document.createElement('span'); bn.className = 'a-badge-next'; bn.textContent = 'Up next'; nameRow.appendChild(bn); }
       info.appendChild(nameRow);
       if (p2[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.textContent = p2[0]; info.appendChild(s1); }
       if (p2[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2[1]; info.appendChild(s2); }
