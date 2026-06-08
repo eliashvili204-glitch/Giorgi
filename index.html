@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/conf.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -81,36 +84,54 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-badge-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
 .ws-header-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.3;}
 .ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
-.ws-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-@media(max-width:500px){.ws-cards{grid-template-columns:1fr;}}
+
+/* ── WORKSHOP CARDS — always side by side ── */
+.ws-cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
 .ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
 .ws-card:active{transform:scale(.97);}
 .ws-card.full{opacity:.55;pointer-events:none;}
-.ws-card-inner{position:relative;z-index:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 16px;transition:border-color .2s,background .2s;height:100%;display:flex;flex-direction:column;gap:10px;}
+.ws-card-inner{
+  position:relative;z-index:1;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:14px 12px;
+  transition:border-color .2s,background .2s;
+  height:100%;display:flex;flex-direction:column;gap:8px;
+}
 .ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
 .ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
-.ws-card-icon{font-size:18px;color:var(--navy);}
-.ws-card-tag{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 8px;border-radius:20px;}
+.ws-card-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--navy-soft);border:1px solid var(--navy-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 6px;border-radius:20px;}
 .ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
-.ws-card-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);line-height:1.3;}
-.ws-card-desc{font-size:11px;color:var(--text-dim);line-height:1.6;flex:1;}
-.ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+.ws-card-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);line-height:1.3;}
+.ws-card-desc{font-size:10px;color:var(--text-dim);line-height:1.6;flex:1;}
+.ws-card-footer{display:flex;flex-direction:column;gap:7px;margin-top:2px;}
 .ws-seats{display:flex;flex-direction:column;gap:4px;}
-.ws-seats-bar-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.ws-seats-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .ws-seats-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy),#4A90D9);transition:width .6s ease;}
 .ws-seats-bar.warn{background:linear-gradient(90deg,#F59E0B,#FBBF24);}
 .ws-seats-bar.danger{background:linear-gradient(90deg,#EF4444,#F87171);}
-.ws-seats-text{font-size:10px;font-weight:700;color:var(--text-dim);}
+.ws-seats-text{font-size:9px;font-weight:700;color:var(--text-dim);}
 .ws-seats-text.warn{color:#B45309;}
 .ws-seats-text.danger{color:#DC2626;}
-.ws-select-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:var(--navy);border-radius:8px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;transition:opacity .15s;}
+.ws-select-btn{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;background:var(--navy);border-radius:8px;font-size:10px;font-weight:700;color:#fff;letter-spacing:.04em;transition:opacity .15s;}
 .ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
 .ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
 @keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
-.ws-form-selected-icon{font-size:20px;color:var(--navy);flex-shrink:0;}
+.ws-form-selected-icon{font-size:18px;color:var(--navy);flex-shrink:0;}
 .ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
 .ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
 .ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
@@ -268,23 +289,29 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="ws-cards" id="ws-cards">
         <div class="ws-card" id="ws-card-a" onclick="selectWorkshop('a')">
           <div class="ws-card-inner">
-            <div class="ws-card-top"><div class="ws-card-icon">&#9670;</div><div class="ws-card-tag" id="ws-tag-a">Available</div></div>
+            <div class="ws-card-top">
+              <div class="ws-card-icon" id="ws-icon-a">&#9632;</div>
+              <div class="ws-card-tag" id="ws-tag-a">Available</div>
+            </div>
             <div class="ws-card-title" id="ws-title-a">Workshop A</div>
             <div class="ws-card-desc" id="ws-desc-a"></div>
             <div class="ws-card-footer">
               <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-a"></div></div><div class="ws-seats-text" id="ws-seats-text-a">Loading...</div></div>
-              <div class="ws-select-btn" id="ws-btn-a">Select &#9658;</div>
+              <div class="ws-select-btn" id="ws-btn-a">Select &rsaquo;</div>
             </div>
           </div>
         </div>
         <div class="ws-card" id="ws-card-b" onclick="selectWorkshop('b')">
           <div class="ws-card-inner">
-            <div class="ws-card-top"><div class="ws-card-icon">&#10022;</div><div class="ws-card-tag" id="ws-tag-b">Available</div></div>
+            <div class="ws-card-top">
+              <div class="ws-card-icon" id="ws-icon-b">&#9675;</div>
+              <div class="ws-card-tag" id="ws-tag-b">Available</div>
+            </div>
             <div class="ws-card-title" id="ws-title-b">Workshop B</div>
             <div class="ws-card-desc" id="ws-desc-b"></div>
             <div class="ws-card-footer">
               <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-b"></div></div><div class="ws-seats-text" id="ws-seats-text-b">Loading...</div></div>
-              <div class="ws-select-btn" id="ws-btn-b">Select &#9658;</div>
+              <div class="ws-select-btn" id="ws-btn-b">Select &rsaquo;</div>
             </div>
           </div>
         </div>
@@ -292,7 +319,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="ws-form-wrap" id="ws-form-wrap" style="display:none;">
         <div class="ws-form-card">
           <div class="ws-form-selected">
-            <span class="ws-form-selected-icon" id="ws-form-icon">&#9670;</span>
+            <span class="ws-form-selected-icon" id="ws-form-icon">&#9632;</span>
             <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">Workshop A</div></div>
             <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
           </div>
@@ -407,8 +434,8 @@ const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const CONF_START = new Date('2026-06-13T05:00:00Z');
 
 const WORKSHOPS = {
-  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: '◈', limit: 50 },
-  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: '✦', limit: 50 }
+  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: '&#9632;', limit: 30 },
+  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: '&#9675;', limit: 30 }
 };
 
 const AGENDA = [
@@ -490,7 +517,6 @@ function withTimeout(p, ms) {
   return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
 }
 
-// Organizer-style duration parser
 function parseDurationMins(timeStr) {
   if (!timeStr) return null;
   const m = timeStr.match(/(\d{2}):(\d{2})[\u2013\-](\d{2}):(\d{2})/);
@@ -613,7 +639,7 @@ function updateSeatsUI() {
     const card = document.getElementById('ws-card-' + key);
     if (card) card.classList.toggle('full', isFull);
     const btn = document.getElementById('ws-btn-' + key);
-    if (btn) btn.textContent = isFull ? 'Full \u2715' : 'Select \u25b8';
+    if (btn) btn.textContent = isFull ? 'Full \u2715' : 'Select \u203a';
   });
 }
 
@@ -626,7 +652,8 @@ function selectWorkshop(key) {
     const c = document.getElementById('ws-card-' + k);
     if (c) c.classList.toggle('selected', k === key);
   });
-  document.getElementById('ws-form-icon').textContent = w.icon;
+  const iconEl = document.getElementById('ws-form-icon');
+  if (iconEl) iconEl.innerHTML = w.icon;
   document.getElementById('ws-form-name').textContent = w.title;
   const fw = document.getElementById('ws-form-wrap');
   fw.style.display = 'block';
@@ -962,7 +989,7 @@ function startApp() {
 }
 
 // ════════════════════════════════════════════
-//  SPEAKER TIMER — organizer-style slot duration
+//  SPEAKER TIMER
 // ════════════════════════════════════════════
 function startAudTimer() {
   if (audTimerInterval) clearInterval(audTimerInterval);
@@ -973,11 +1000,9 @@ function startAudTimer() {
     const val = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0');
     const isOver = durationMins !== null && elapsed >= durationMins * 60;
 
-    // Top card timer
     const el = document.getElementById('aud-timer');
     if (el) { el.textContent = val; el.style.color = isOver ? 'var(--warn)' : 'var(--navy)'; }
 
-    // Agenda badge timer
     const ae = document.getElementById('aud-agenda-timer');
     if (ae) {
       ae.textContent = val;
@@ -1040,7 +1065,6 @@ function render() {
       const info = document.createElement('div'); info.className = 'a-info';
       const nameRow = document.createElement('div'); nameRow.className = 'a-name';
       const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
-      // Timer badge only (no "Speaking" label badge)
       if (isCur && !cdOn) {
         const bt = document.createElement('span');
         bt.className = 'badge badge-timer';
@@ -1276,3 +1300,5 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
