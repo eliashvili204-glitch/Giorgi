@@ -110,7 +110,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   width:32px;height:32px;border-radius:8px;
   background:var(--navy-soft);border:1px solid var(--navy-border);
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;flex-shrink:0;
+  font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;
 }
 .ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 6px;border-radius:20px;}
 .ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
@@ -131,7 +131,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 @keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
-.ws-form-selected-icon{font-size:18px;color:var(--navy);flex-shrink:0;}
+.ws-form-selected-icon{font-size:14px;font-weight:700;color:var(--navy);flex-shrink:0;}
 .ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
 .ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
 .ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
@@ -290,7 +290,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
         <div class="ws-card" id="ws-card-a" onclick="selectWorkshop('a')">
           <div class="ws-card-inner">
             <div class="ws-card-top">
-              <div class="ws-card-icon" id="ws-icon-a">&#9632;</div>
+              <div class="ws-card-icon" id="ws-icon-a">A</div>
               <div class="ws-card-tag" id="ws-tag-a">Available</div>
             </div>
             <div class="ws-card-title" id="ws-title-a">Workshop A</div>
@@ -304,7 +304,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
         <div class="ws-card" id="ws-card-b" onclick="selectWorkshop('b')">
           <div class="ws-card-inner">
             <div class="ws-card-top">
-              <div class="ws-card-icon" id="ws-icon-b">&#9675;</div>
+              <div class="ws-card-icon" id="ws-icon-b">B</div>
               <div class="ws-card-tag" id="ws-tag-b">Available</div>
             </div>
             <div class="ws-card-title" id="ws-title-b">Workshop B</div>
@@ -319,7 +319,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="ws-form-wrap" id="ws-form-wrap" style="display:none;">
         <div class="ws-form-card">
           <div class="ws-form-selected">
-            <span class="ws-form-selected-icon" id="ws-form-icon">&#9632;</span>
+            <span class="ws-form-selected-icon" id="ws-form-icon">A</span>
             <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">Workshop A</div></div>
             <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
           </div>
@@ -433,9 +433,12 @@ const SB_URL     = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 const CONF_START = new Date('2026-06-13T05:00:00Z');
 
+// ── Apps Script Web App URL — Deploy შემდეგ შეცვალე ──
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
 const WORKSHOPS = {
-  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: '&#9632;', limit: 30 },
-  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: '&#9675;', limit: 30 }
+  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: 'A', limit: 30 },
+  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: 'B', limit: 30 }
 };
 
 const AGENDA = [
@@ -595,8 +598,10 @@ async function initWorkshop() {
   Object.entries(WORKSHOPS).forEach(([key, w]) => {
     const t = document.getElementById('ws-title-' + key);
     const d = document.getElementById('ws-desc-'  + key);
+    const i = document.getElementById('ws-icon-'  + key);
     if (t) t.textContent = w.title;
     if (d) d.textContent = w.desc;
+    if (i) i.textContent = w.icon;
   });
   await loadWorkshopCounts();
 
@@ -653,7 +658,7 @@ function selectWorkshop(key) {
     if (c) c.classList.toggle('selected', k === key);
   });
   const iconEl = document.getElementById('ws-form-icon');
-  if (iconEl) iconEl.innerHTML = w.icon;
+  if (iconEl) iconEl.textContent = w.icon;
   document.getElementById('ws-form-name').textContent = w.title;
   const fw = document.getElementById('ws-form-wrap');
   fw.style.display = 'block';
@@ -692,7 +697,34 @@ async function submitWorkshop() {
   }
 
   btn.disabled = true; inp.disabled = true;
-  spinner.style.display = 'inline-block'; btnTxt.textContent = 'Registering...';
+  spinner.style.display = 'inline-block'; btnTxt.textContent = 'Checking...';
+
+  // ── Whitelist check via Apps Script ──
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+    try {
+      const checkResp = await fetch(
+        APPS_SCRIPT_URL + '?action=check&email=' + encodeURIComponent(email),
+        { signal: AbortSignal.timeout(6000) }
+      ).catch(() => null);
+
+      if (checkResp && checkResp.ok) {
+        const checkData = await checkResp.json().catch(() => ({}));
+        if (!checkData.authorized) {
+          errEl.textContent   = 'Your email is not on the participants list.';
+          errEl.style.display = 'block';
+          inp.classList.add('err');
+          btn.disabled = false; inp.disabled = false;
+          spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
+          return;
+        }
+      }
+      // if fetch fails entirely, proceed — don't block registration
+    } catch(e) {
+      console.warn('Whitelist check failed, proceeding:', e.message);
+    }
+  }
+
+  btnTxt.textContent = 'Registering...';
 
   try {
     await loadWorkshopCounts();
@@ -711,7 +743,10 @@ async function submitWorkshop() {
       email, session_id: sessionId, reset_epoch: currentEpoch,
       workshop_key: selectedWorkshop, workshop_name: w.title
     });
-    if (wErr && wErr.code !== '23505') throw wErr;
+
+    // ── FIX: only increment count if it was a NEW registration (not a duplicate) ──
+    const isDuplicate = wErr?.code === '23505';
+    if (wErr && !isDuplicate) throw wErr;
 
     await sb.from('sessions').update({ participant_email: email }).eq('id', sessionId);
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
@@ -721,7 +756,19 @@ async function submitWorkshop() {
     workshopRegistered = selectedWorkshop;
     localStorage.setItem('syssa_workshop_email', email);
     localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
-    workshopCounts[selectedWorkshop]++;
+
+    // ── FIX: only increment local count for new registrations ──
+    if (!isDuplicate) workshopCounts[selectedWorkshop]++;
+
+    // ── Google Sheets-ში ჩაწერა (fire-and-forget) ──
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, workshop: w.title })
+      }).catch(() => {}); // Sheets error-ი registration-ს არ შეაჩერებს
+    }
+
     showWorkshopSuccess(selectedWorkshop, email);
     logEvent('workshop_registered', { workshop: selectedWorkshop });
 
