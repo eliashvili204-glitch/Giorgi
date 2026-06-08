@@ -1031,6 +1031,13 @@ function startApp() {
     });
 
   subscribeReplies();
+sb.channel('workshop_ch')
+  .on('postgres_changes', {
+    event: '*', schema: 'public', table: 'workshop_registrations'
+  }, async () => {
+    await loadWorkshopCounts();
+    updateSeatsUI();
+  }).subscribe();
   render();
   startAudTimer();
   loadChatHistory();
