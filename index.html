@@ -1054,17 +1054,6 @@ sb.channel('workshop_ch')
   }).subscribe((status) => {
     console.log('workshop_ch status:', status);
   });
-}, async () => {
-    await loadWorkshopCounts();
-    updateSeatsUI();
-    const s = document.getElementById('ws-success');
-    if (s && s.style.display !== 'none' && workshopRegistered) {
-      const w = WORKSHOPS[workshopRegistered];
-      const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
-      document.getElementById('ws-success-seats').textContent = left > 0
-        ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
-    }
-  }).subscribe();
   render();
   startAudTimer();
   loadChatHistory();
