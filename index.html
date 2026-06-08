@@ -759,7 +759,7 @@ async function submitWorkshop() {
     localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
 
     // ── FIX: only increment local count for new registrations ──
-    if (!isDuplicate) workshopCounts[selectedWorkshop]++;
+    await loadWorkshopCounts();
 
     // ── Google Sheets-ში ჩაწერა (fire-and-forget) ──
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
@@ -784,17 +784,18 @@ fetch(SB_URL + '/functions/v1/sheets-proxy', {
 }
 
 function showWorkshopSuccess(key, email) {
-  const w    = WORKSHOPS[key];
-  const left = Math.max(0, w.limit - workshopCounts[key]);
-  document.getElementById('ws-cards').style.display    = 'none';
+  const w = WORKSHOPS[key];
+  document.getElementById('ws-cards').style.display     = 'none';
   document.getElementById('ws-form-wrap').style.display = 'none';
   const s = document.getElementById('ws-success');
   s.style.display = 'flex'; s.style.flexDirection = 'column'; s.style.alignItems = 'center';
-  document.getElementById('ws-success-sub').textContent   = w.title + ' \u00b7 ' + email;
-  document.getElementById('ws-success-seats').textContent = left > 0
-    ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+  document.getElementById('ws-success-sub').textContent = w.title + ' \u00b7 ' + email;
+  loadWorkshopCounts().then(() => {
+    const left = Math.max(0, w.limit - workshopCounts[key]);
+    document.getElementById('ws-success-seats').textContent = left > 0
+      ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+  });
 }
-
 function resetWorkshopUI() {
   const wsCards   = document.getElementById('ws-cards');
   const wsForm    = document.getElementById('ws-form-wrap');
