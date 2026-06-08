@@ -700,10 +700,14 @@ async function submitWorkshop() {
   if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
     try {
       const checkResp = await fetch(
-        APPS_SCRIPT_URL + '?action=check&email=' + encodeURIComponent(email),
-        { signal: AbortSignal.timeout(6000) }
+        SB_URL + '/functions/v1/sheets-proxy',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
+          body: JSON.stringify({ email })
+        }
       ).catch(() => null);
-
+      
       if (checkResp && checkResp.ok) {
         const checkData = await checkResp.json().catch(() => ({}));
         if (!checkData.authorized) {
@@ -759,11 +763,11 @@ async function submitWorkshop() {
 
     // ── Google Sheets-ში ჩაწერა (fire-and-forget) ──
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      fetch(APPS_SCRIPT_URL, {
+fetch(SB_URL + '/functions/v1/sheets-proxy', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
         body: JSON.stringify({ email, workshop: w.title })
-      }).catch(() => {}); // Sheets error-ი registration-ს არ შეაჩერებს
+      }).catch(() => {});
     }
 
     showWorkshopSuccess(selectedWorkshop, email);
