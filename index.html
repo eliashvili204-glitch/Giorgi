@@ -1039,10 +1039,8 @@ function startApp() {
 sb.channel('workshop_ch')
   .on('postgres_changes', {
     event: '*', schema: 'public', table: 'workshop_registrations'
-  }, async (payload) => {
-    console.log('workshop_ch triggered:', payload);
+  }, async () => {
     await loadWorkshopCounts();
-    console.log('counts after reload:', workshopCounts);
     updateSeatsUI();
     const s = document.getElementById('ws-success');
     if (s && s.style.display !== 'none' && workshopRegistered) {
@@ -1051,9 +1049,19 @@ sb.channel('workshop_ch')
       document.getElementById('ws-success-seats').textContent = left > 0
         ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
     }
-  }).subscribe((status) => {
-    console.log('workshop_ch status:', status);
-  });
+  }).subscribe();
+
+setInterval(async () => {
+  await loadWorkshopCounts();
+  updateSeatsUI();
+  const s = document.getElementById('ws-success');
+  if (s && s.style.display !== 'none' && workshopRegistered) {
+    const w = WORKSHOPS[workshopRegistered];
+    const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
+    document.getElementById('ws-success-seats').textContent = left > 0
+      ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+  }
+}, 10000);
   render();
   startAudTimer();
   loadChatHistory();
