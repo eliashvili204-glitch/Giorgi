@@ -82,11 +82,13 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-header-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.3;}
 .ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
 
-/* ── WORKSHOP CARDS — always side by side ── */
+/* ── SINGLE FEATURED WORKSHOP CARD ── */
 .ws-cards{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+  grid-template-columns:1fr;
+  max-width:480px;
+  margin:0 auto;
+  width:100%;
 }
 .ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
 .ws-card:active{transform:scale(.97);}
@@ -96,24 +98,48 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   background:var(--surface);
   border:1.5px solid var(--border);
   border-radius:14px;
-  padding:14px 12px;
+  padding:20px 18px;
   transition:border-color .2s,background .2s;
-  height:100%;display:flex;flex-direction:column;gap:8px;
+  height:100%;display:flex;flex-direction:column;gap:12px;
 }
 .ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
-.ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
 .ws-card-icon{
-  width:32px;height:32px;border-radius:8px;
-  background:var(--navy-soft);border:1px solid var(--navy-border);
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);
+  border:1px solid var(--navy-border);
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;
+  font-size:9px;font-weight:800;color:var(--navy);
+  letter-spacing:.04em;flex-shrink:0;
 }
 .ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 6px;border-radius:20px;}
 .ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
-.ws-card-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);line-height:1.3;}
-.ws-card-desc{font-size:10px;color:var(--text-dim);line-height:1.6;flex:1;}
-.ws-card-footer{display:flex;flex-direction:column;gap:7px;margin-top:2px;}
+.ws-card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.2;}
+
+/* Presenter block */
+.ws-card-presenter{
+  display:flex;flex-direction:column;gap:2px;
+  padding:10px 12px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+}
+.ws-presenter-name{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
+.ws-presenter-inst{font-size:10px;color:var(--text-faint);font-style:italic;}
+
+/* Requirements block */
+.ws-requirements{display:flex;flex-direction:column;gap:6px;}
+.ws-req-label{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;}
+.ws-req-items{display:flex;gap:8px;flex-wrap:wrap;}
+.ws-req-item{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;color:var(--text-dim);
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:20px;padding:5px 12px;
+}
+
+.ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
 .ws-seats{display:flex;flex-direction:column;gap:4px;}
 .ws-seats-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .ws-seats-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy),#4A90D9);transition:width .6s ease;}
@@ -122,13 +148,19 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-seats-text{font-size:9px;font-weight:700;color:var(--text-dim);}
 .ws-seats-text.warn{color:#B45309;}
 .ws-seats-text.danger{color:#DC2626;}
-.ws-select-btn{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;background:var(--navy);border-radius:8px;font-size:10px;font-weight:700;color:#fff;letter-spacing:.04em;transition:opacity .15s;}
+.ws-select-btn{
+  display:flex;align-items:center;justify-content:center;
+  padding:11px 14px;background:var(--navy);border-radius:10px;
+  font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;
+  transition:opacity .15s;width:100%;
+}
 .ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
+
 .ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
 @keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
-.ws-form-selected-icon{font-size:14px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.ws-form-selected-icon{font-size:10px;font-weight:800;color:var(--navy);flex-shrink:0;letter-spacing:.04em;}
 .ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
 .ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
 .ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
@@ -280,35 +312,31 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <div class="workshop-container">
       <div class="ws-header">
         <div class="ws-header-badge"><span class="ws-badge-dot"></span><span class="ws-badge-text">Workshop Registration</span></div>
-        <div class="ws-header-title">Choose Your Workshop</div>
-        <div class="ws-header-sub">Select a workshop and register with your email. Limited seats available.</div>
+        <div class="ws-header-title">Register for the Workshop</div>
+        <div class="ws-header-sub">Limited seats available &mdash; register with your email below.</div>
       </div>
       <div class="ws-cards" id="ws-cards">
         <div class="ws-card" id="ws-card-a" onclick="selectWorkshop('a')">
           <div class="ws-card-inner">
             <div class="ws-card-top">
-              <div class="ws-card-icon" id="ws-icon-a">A</div>
+              <div class="ws-card-icon" id="ws-icon-a">AI</div>
               <div class="ws-card-tag" id="ws-tag-a">Available</div>
             </div>
-            <div class="ws-card-title" id="ws-title-a">Workshop A</div>
-            <div class="ws-card-desc" id="ws-desc-a"></div>
+            <div class="ws-card-title" id="ws-title-a">AI Literacy</div>
+            <div class="ws-card-presenter">
+              <span class="ws-presenter-name">Mariam Katcheishvili, M.D., Ph.Dc.</span>
+
+            </div>
+            <div class="ws-requirements">
+              <div class="ws-req-label">Requirements</div>
+              <div class="ws-req-items">
+                <span class="ws-req-item">Laptop</span>
+                <span class="ws-req-item">Sunglasses</span>
+              </div>
+            </div>
             <div class="ws-card-footer">
               <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-a"></div></div><div class="ws-seats-text" id="ws-seats-text-a">Loading...</div></div>
-              <div class="ws-select-btn" id="ws-btn-a">Select &rsaquo;</div>
-            </div>
-          </div>
-        </div>
-        <div class="ws-card" id="ws-card-b" onclick="selectWorkshop('b')">
-          <div class="ws-card-inner">
-            <div class="ws-card-top">
-              <div class="ws-card-icon" id="ws-icon-b">B</div>
-              <div class="ws-card-tag" id="ws-tag-b">Available</div>
-            </div>
-            <div class="ws-card-title" id="ws-title-b">Workshop B</div>
-            <div class="ws-card-desc" id="ws-desc-b"></div>
-            <div class="ws-card-footer">
-              <div class="ws-seats"><div class="ws-seats-bar-wrap"><div class="ws-seats-bar" id="ws-bar-b"></div></div><div class="ws-seats-text" id="ws-seats-text-b">Loading...</div></div>
-              <div class="ws-select-btn" id="ws-btn-b">Select &rsaquo;</div>
+              <div class="ws-select-btn" id="ws-btn-a">Register for Workshop &rsaquo;</div>
             </div>
           </div>
         </div>
@@ -316,8 +344,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="ws-form-wrap" id="ws-form-wrap" style="display:none;">
         <div class="ws-form-card">
           <div class="ws-form-selected">
-            <span class="ws-form-selected-icon" id="ws-form-icon">A</span>
-            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">Workshop A</div></div>
+            <span class="ws-form-selected-icon" id="ws-form-icon">AI</span>
+            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">AI Literacy</div></div>
             <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
           </div>
           <div class="ws-form-body">
@@ -430,12 +458,10 @@ const SB_URL     = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 const CONF_START = new Date('2026-06-13T05:00:00Z');
 
-// ── Apps Script Web App URL — Deploy შემდეგ შეცვალე ──
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
 
 const WORKSHOPS = {
-  a: { title: 'Workshop A', desc: 'Workshop A-ის აღწერა', icon: 'A', limit: 30 },
-  b: { title: 'Workshop B', desc: 'Workshop B-ის აღწერა', icon: 'B', limit: 30 }
+  a: { title: 'AI Literacy', desc: 'Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia', icon: 'AI', limit: 30 }
 };
 
 const AGENDA = [
@@ -474,8 +500,7 @@ const AGENDA = [
   {id:33, time:"11:15\u201311:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
   {id:34, time:"11:30\u201312:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
   {id:35, time:"12:00\u201312:30", speaker:"Panel Discussion",                      title:"[Theme / Title \u2014 TBC]",                     session:"day2_panel"},
-  {id:36, time:"12:00\u201312:30", speaker:"Workshop A",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
-  {id:37, time:"12:00\u201312:30", speaker:"Workshop B",                            title:"[Title \u2014 TBC]",                             session:"day2_ws"},
+  {id:36, time:"12:00\u201312:30", speaker:"Workshop — AI Literacy",                title:"Mariam Katcheishvili, M.D., Ph.Dc., DTMU",      session:"day2_ws"},
   {id:38, time:"12:30\u201312:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close"}
 ];
 
@@ -497,7 +522,7 @@ let chatHistory = [];
 const MAX_HISTORY = 6;
 
 let selectedWorkshop = null;
-let workshopCounts   = { a: 0, b: 0 };
+let workshopCounts   = { a: 0 };
 let workshopRegistered = null;
 
 const _existingSid = localStorage.getItem('syssa_sid');
@@ -516,7 +541,6 @@ function getNext(id) {
 function withTimeout(p, ms) {
   return Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error('timeout')), ms))]);
 }
-
 function parseDurationMins(timeStr) {
   if (!timeStr) return null;
   const m = timeStr.match(/(\d{2}):(\d{2})[\u2013\-](\d{2}):(\d{2})/);
@@ -540,7 +564,7 @@ function handleEpochChange(newEpoch) {
   participantEmail   = null;
   workshopRegistered = null;
   selectedWorkshop   = null;
-  workshopCounts     = { a: 0, b: 0 };
+  workshopCounts     = { a: 0 };
   resetWorkshopUI();
   chatHistory = [];
   document.getElementById('chat-msgs').innerHTML =
@@ -570,9 +594,9 @@ function applyTopSlot() {
   }
 
   if (wsActive) {
-  if (!workshopRegistered) initWorkshop();
-  else showWorkshopSuccess(workshopRegistered, participantEmail);
-}
+    if (!workshopRegistered) initWorkshop();
+    else showWorkshopSuccess(workshopRegistered, participantEmail);
+  }
 }
 
 // ════════════════════════════════════════════
@@ -595,16 +619,7 @@ function tickCountdown() {
 //  WORKSHOP
 // ════════════════════════════════════════════
 async function initWorkshop() {
-  Object.entries(WORKSHOPS).forEach(([key, w]) => {
-    const t = document.getElementById('ws-title-' + key);
-    const d = document.getElementById('ws-desc-'  + key);
-    const i = document.getElementById('ws-icon-'  + key);
-    if (t) t.textContent = w.title;
-    if (d) d.textContent = w.desc;
-    if (i) i.textContent = w.icon;
-  });
   await loadWorkshopCounts();
-
   const storedKey   = localStorage.getItem('syssa_workshop_key_' + currentEpoch);
   const storedEmail = localStorage.getItem('syssa_workshop_email');
   if (storedKey && storedEmail) {
@@ -620,17 +635,14 @@ async function loadWorkshopCounts() {
   try {
     const { data } = await sb.from('workshop_registrations')
       .select('workshop_key').eq('reset_epoch', currentEpoch);
-    const fresh = { a: 0, b: 0 };
-    (data || []).forEach(r => {
-      if (r.workshop_key === 'a') fresh.a++;
-      else if (r.workshop_key === 'b') fresh.b++;
-    });
+    const fresh = { a: 0 };
+    (data || []).forEach(r => { if (r.workshop_key === 'a') fresh.a++; });
     workshopCounts = fresh;
   } catch(e) { console.warn('Workshop counts error:', e.message); }
 }
-  
+
 function updateSeatsUI() {
-  ['a', 'b'].forEach(key => {
+  ['a'].forEach(key => {
     const w      = WORKSHOPS[key];
     const count  = workshopCounts[key];
     const left   = Math.max(0, w.limit - count);
@@ -645,7 +657,7 @@ function updateSeatsUI() {
     const card = document.getElementById('ws-card-' + key);
     if (card) card.classList.toggle('full', isFull);
     const btn = document.getElementById('ws-btn-' + key);
-    if (btn) btn.textContent = isFull ? 'Full \u2715' : 'Select \u203a';
+    if (btn) btn.textContent = isFull ? 'Fully Booked \u2715' : 'Register for Workshop \u203a';
   });
 }
 
@@ -654,7 +666,7 @@ function selectWorkshop(key) {
   if (!w) return;
   if (Math.max(0, w.limit - workshopCounts[key]) === 0) return;
   selectedWorkshop = key;
-  ['a', 'b'].forEach(k => {
+  ['a'].forEach(k => {
     const c = document.getElementById('ws-card-' + k);
     if (c) c.classList.toggle('selected', k === key);
   });
@@ -672,7 +684,7 @@ function selectWorkshop(key) {
 function changeWorkshop() {
   selectedWorkshop = null;
   document.getElementById('ws-form-wrap').style.display = 'none';
-  ['a', 'b'].forEach(k => { const c = document.getElementById('ws-card-' + k); if (c) c.classList.remove('selected'); });
+  ['a'].forEach(k => { const c = document.getElementById('ws-card-' + k); if (c) c.classList.remove('selected'); });
   document.getElementById('ws-form-err').style.display = 'none';
   document.getElementById('ws-form-email').classList.remove('err');
 }
@@ -700,7 +712,6 @@ async function submitWorkshop() {
   btn.disabled = true; inp.disabled = true;
   spinner.style.display = 'inline-block'; btnTxt.textContent = 'Checking...';
 
-  // ── Whitelist check via Apps Script ──
   if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
     try {
       const checkResp = await fetch(
@@ -711,7 +722,6 @@ async function submitWorkshop() {
           body: JSON.stringify({ email })
         }
       ).catch(() => null);
-      
       if (checkResp && checkResp.ok) {
         const checkData = await checkResp.json().catch(() => ({}));
         if (!checkData.authorized) {
@@ -723,10 +733,7 @@ async function submitWorkshop() {
           return;
         }
       }
-      // if fetch fails entirely, proceed — don't block registration
-    } catch(e) {
-      console.warn('Whitelist check failed, proceeding:', e.message);
-    }
+    } catch(e) { console.warn('Whitelist check failed, proceeding:', e.message); }
   }
 
   btnTxt.textContent = 'Registering...';
@@ -736,7 +743,7 @@ async function submitWorkshop() {
     const w    = WORKSHOPS[selectedWorkshop];
     const left = Math.max(0, w.limit - workshopCounts[selectedWorkshop]);
     if (left === 0) {
-      errEl.textContent   = 'Sorry, this workshop is now full. Please choose the other one.';
+      errEl.textContent   = 'Sorry, this workshop is now full.';
       errEl.style.display = 'block';
       updateSeatsUI();
       btn.disabled = false; inp.disabled = false;
@@ -749,7 +756,6 @@ async function submitWorkshop() {
       workshop_key: selectedWorkshop, workshop_name: w.title
     });
 
-    // ── FIX: only increment count if it was a NEW registration (not a duplicate) ──
     const isDuplicate = wErr?.code === '23505';
     if (wErr && !isDuplicate) throw wErr;
 
@@ -762,12 +768,10 @@ async function submitWorkshop() {
     localStorage.setItem('syssa_workshop_email', email);
     localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
 
-    // ── FIX: only increment local count for new registrations ──
     await loadWorkshopCounts();
 
-    // ── Google Sheets-ში ჩაწერა (fire-and-forget) ──
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-fetch(SB_URL + '/functions/v1/sheets-proxy', {
+      fetch(SB_URL + '/functions/v1/sheets-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
         body: JSON.stringify({ email, workshop: w.title })
@@ -800,6 +804,7 @@ function showWorkshopSuccess(key, email) {
       ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
   });
 }
+
 function resetWorkshopUI() {
   const wsCards   = document.getElementById('ws-cards');
   const wsForm    = document.getElementById('ws-form-wrap');
@@ -807,7 +812,7 @@ function resetWorkshopUI() {
   if (wsCards)   wsCards.style.display   = 'grid';
   if (wsForm)    wsForm.style.display    = 'none';
   if (wsSuccess) wsSuccess.style.display = 'none';
-  ['a', 'b'].forEach(k => {
+  ['a'].forEach(k => {
     const c = document.getElementById('ws-card-' + k);
     if (c) c.classList.remove('selected', 'full');
   });
@@ -1036,10 +1041,23 @@ function startApp() {
     });
 
   subscribeReplies();
-sb.channel('workshop_ch')
-  .on('postgres_changes', {
-    event: '*', schema: 'public', table: 'workshop_registrations'
-  }, async () => {
+
+  sb.channel('workshop_ch')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'workshop_registrations'
+    }, async () => {
+      await loadWorkshopCounts();
+      updateSeatsUI();
+      const s = document.getElementById('ws-success');
+      if (s && s.style.display !== 'none' && workshopRegistered) {
+        const w = WORKSHOPS[workshopRegistered];
+        const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
+        document.getElementById('ws-success-seats').textContent = left > 0
+          ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+      }
+    }).subscribe();
+
+  setInterval(async () => {
     await loadWorkshopCounts();
     updateSeatsUI();
     const s = document.getElementById('ws-success');
@@ -1049,19 +1067,8 @@ sb.channel('workshop_ch')
       document.getElementById('ws-success-seats').textContent = left > 0
         ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
     }
-  }).subscribe();
+  }, 10000);
 
-setInterval(async () => {
-  await loadWorkshopCounts();
-  updateSeatsUI();
-  const s = document.getElementById('ws-success');
-  if (s && s.style.display !== 'none' && workshopRegistered) {
-    const w = WORKSHOPS[workshopRegistered];
-    const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
-    document.getElementById('ws-success-seats').textContent = left > 0
-      ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
-  }
-}, 10000);
   render();
   startAudTimer();
   loadChatHistory();
@@ -1119,7 +1126,7 @@ function render() {
     { key: 'day2_open',    label: 'Day 2 \u2014 Sunday, 14 June 2026' },
     { key: 'day2_s3',      label: 'Oral Presentations \u2014 Session III' },
     { key: 'day2_break',   label: '' },
-    { key: 'day2_panel',   label: 'Panel Discussion & Workshops' },
+    { key: 'day2_panel',   label: 'Panel Discussion & Workshop' },
     { key: 'day2_ws',      label: '' },
     { key: 'day2_close',   label: '' },
   ];
@@ -1265,6 +1272,7 @@ Key FAQ:
 - WiFi/room issues: direct to on-site organizing team.
 - Platform created by Giorgi Eliashvili.
 - Working language: English.
+- Workshop: "AI Literacy" by Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia. Requirements: laptop and sunglasses. 30 seats available.
 
 Rules: Reply directly, no filler phrases. No markdown bold or headers. Max 1–2 sentences. Max 1–2 emojis. CRITICAL: reply in the exact same language as the user — Georgian question = Georgian answer, English = English.`;
 }
@@ -1379,5 +1387,3 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done"
