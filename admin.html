@@ -1,6 +1,3 @@
-bash
-
-cat > /home/claude/dashboard.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,9 +22,11 @@ cat > /home/claude/dashboard.html << 'HTMLEOF'
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;}
+
 .shell{display:flex;min-height:100vh;}
 .sidebar{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;}
 .main{flex:1;overflow:auto;}
+
 .sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
 .sb-logo-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--text);letter-spacing:.03em;}
 .sb-logo-sub{font-size:10px;color:var(--text-faint);margin-top:2px;letter-spacing:.06em;text-transform:uppercase;}
@@ -69,7 +68,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .content{padding:20px 16px;display:none;}
 .content.active{display:block;}
 
-/* ══ STAT GRID ══ */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
 .stat-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
@@ -118,49 +116,77 @@ tbody td:first-child{color:var(--text);}
 .td-badge-mobile{background:rgba(56,139,253,.15);color:var(--navy);}
 .td-badge-desktop{background:rgba(63,185,80,.15);color:var(--green);}
 .td-badge-tablet{background:var(--gold-soft);color:var(--gold);}
+.td-badge-chat{background:var(--navy-soft);color:var(--navy);}
+.td-badge-fb{background:var(--gold-soft);color:var(--gold);}
 
-/* ══ SESSION CARDS ══ */
-.session-cards{display:flex;flex-direction:column;gap:10px;}
-.sess-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
-.sess-card:hover{border-color:var(--border2);}
+.activity-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:10px;color:var(--text-faint);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.activity-btn:hover{border-color:var(--navy-border);color:var(--navy);}
 
-.sess-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
-.sess-header:hover{background:rgba(255,255,255,.02);}
-.sess-avatar{width:36px;height:36px;border-radius:50%;background:var(--navy-soft);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;}
-.sess-identity{flex:1;min-width:0;}
-.sess-email{font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sess-meta-row{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
-.sess-meta-item{font-size:10px;color:var(--text-faint);display:flex;align-items:center;gap:3px;}
-.sess-meta-sep{color:var(--border2);font-size:10px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px);transition:transform .2s;}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;}
+.modal-header-left{display:flex;flex-direction:column;gap:4px;}
+.modal-title{font-size:14px;font-weight:700;color:var(--text);}
+.modal-sub{font-size:11px;color:var(--text-faint);}
+.modal-email-tag{display:inline-block;background:rgba(56,139,253,.12);border:1px solid var(--navy-border);color:var(--navy);font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-top:2px;}
+.modal-close{background:none;border:none;color:var(--text-faint);font-size:18px;cursor:pointer;line-height:1;padding:2px 4px;flex-shrink:0;}
+.modal-body{overflow-y:auto;padding:16px 20px;flex:1;}
+.modal-body::-webkit-scrollbar{width:4px;}
+.modal-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-.sess-stats{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.sess-stat-pill{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.sess-stat-pill:hover{border-color:var(--border2);}
-.sess-stat-pill.has-data{cursor:pointer;}
-.sess-stat-pill.has-data:hover{border-color:var(--navy-border);background:var(--navy-soft);}
-.sess-stat-pill.active-pill{border-color:var(--navy-border);background:var(--navy-soft);}
-.sess-stat-count{font-size:13px;font-weight:700;color:var(--text);}
-.sess-stat-label{font-size:10px;color:var(--text-faint);}
-.sess-stat-icon{font-size:12px;}
+.activity-section-title{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px;display:flex;align-items:center;gap:8px;}
+.activity-section-title::before{content:'';flex:none;width:16px;height:1px;background:var(--border);}
+.activity-section-title:first-child{margin-top:0;}
+.activity-timeline{display:flex;flex-direction:column;gap:0;}
+.activity-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);position:relative;}
+.activity-item:last-child{border-bottom:none;}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.activity-dot-chat{background:var(--navy);}
+.activity-dot-ai{background:var(--purple);}
+.activity-dot-fb{background:var(--gold);}
+.activity-dot-visit{background:var(--green);}
+.activity-dot-workshop{background:var(--green);}
+.activity-content{flex:1;min-width:0;}
+.activity-type{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px;}
+.activity-type-chat{color:var(--navy);}
+.activity-type-ai{color:var(--purple);}
+.activity-type-fb{color:var(--gold);}
+.activity-type-visit{color:var(--green);}
+.activity-type-workshop{color:var(--green);}
+.activity-text{font-size:12px;color:var(--text);line-height:1.5;word-break:break-word;}
+.activity-time{font-size:10px;color:var(--text-faint);flex-shrink:0;margin-top:4px;}
+.activity-empty{text-align:center;padding:24px;font-size:12px;color:var(--text-faint);}
+.activity-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.activity-stat-chip{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 14px;display:flex;flex-direction:column;gap:2px;flex:1;min-width:80px;}
+.activity-stat-chip-val{font-size:18px;font-weight:700;color:var(--text);}
+.activity-stat-chip-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;}
 
-.sess-chevron{font-size:11px;color:var(--text-faint);transition:transform .2s;flex-shrink:0;margin-left:4px;}
-.sess-chevron.open{transform:rotate(180deg);}
-
-.sess-body{display:none;border-top:1px solid var(--border);}
-.sess-body.open{display:block;}
-
-/* ── Tab bar inside session card ── */
-.sess-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--bg3);}
-.sess-tab{flex:1;padding:10px 8px;font-size:11px;font-weight:700;color:var(--text-faint);text-align:center;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.04em;text-transform:uppercase;}
-.sess-tab:hover{color:var(--text-dim);}
-.sess-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
-.sess-tab-content{display:none;padding:16px;}
-.sess-tab-content.active{display:block;}
-
-/* ── Chat bubbles in session ── */
-.mini-messages{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;padding-bottom:4px;}
-.mini-messages::-webkit-scrollbar{width:3px;}
-.mini-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+/* ══ CHAT CONVERSATIONS ══ */
+.conv-list{display:flex;flex-direction:column;gap:12px;}
+.conv-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;}
+.conv-card:hover{border-color:var(--border2);}
+.conv-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none;}
+.conv-header:hover{background:var(--bg3);}
+.conv-header-left{display:flex;align-items:center;gap:10px;min-width:0;}
+.conv-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy-soft);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.conv-identity{min-width:0;}
+.conv-email{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.conv-sid{font-size:10px;color:var(--text-faint);font-family:monospace;}
+.conv-meta{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.conv-msg-count{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);}
+.conv-ai-toggle{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-size:10px;font-weight:700;transition:all .15s;white-space:nowrap;}
+.conv-ai-toggle.ai-on{border-color:var(--green);color:var(--green);background:var(--green-soft);}
+.conv-ai-toggle.ai-off{border-color:var(--red);color:var(--red);background:var(--red-soft);}
+.conv-ai-toggle.ai-global{border-color:var(--border);color:var(--text-faint);background:var(--bg3);}
+.conv-chevron{font-size:10px;color:var(--text-faint);transition:transform .2s;flex-shrink:0;}
+.conv-chevron.open{transform:rotate(180deg);}
+.conv-body{display:none;border-top:1px solid var(--border);}
+.conv-body.open{display:flex;flex-direction:column;}
+.conv-messages{padding:14px 16px;display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;}
+.conv-messages::-webkit-scrollbar{width:3px;}
+.conv-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 .msg-bubble{display:flex;flex-direction:column;gap:3px;max-width:85%;}
 .msg-bubble.participant{align-self:flex-start;}
 .msg-bubble.ai{align-self:flex-end;}
@@ -176,59 +202,36 @@ tbody td:first-child{color:var(--text);}
 .msg-sender-participant{color:var(--navy);}
 .msg-sender-ai{color:var(--purple);}
 .msg-sender-organizer{color:var(--green);}
+.conv-reply-area{padding:12px 16px;border-top:1px solid var(--border);background:var(--bg3);display:flex;gap:8px;align-items:flex-end;}
+.conv-reply-inp{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:40px;max-height:120px;line-height:1.5;transition:border-color .15s;}
+.conv-reply-inp:focus{border-color:var(--navy-border);}
+.conv-reply-inp::placeholder{color:var(--text-faint);}
+.conv-reply-btn{background:var(--navy);border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;transition:opacity .15s;flex-shrink:0;}
+.conv-reply-btn:hover{opacity:.85;}
+.conv-reply-btn:disabled{opacity:.4;cursor:not-allowed;}
+.conv-reply-status{font-size:10px;padding:4px 0;color:var(--green);}
 
-/* inline reply */
-.sess-reply-area{display:flex;gap:8px;align-items:flex-end;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.sess-reply-inp{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:38px;max-height:100px;line-height:1.5;transition:border-color .15s;}
-.sess-reply-inp:focus{border-color:var(--navy-border);}
-.sess-reply-inp::placeholder{color:var(--text-faint);}
-.sess-reply-btn{background:var(--navy);border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;transition:opacity .15s;flex-shrink:0;white-space:nowrap;}
-.sess-reply-btn:hover{opacity:.85;}
-.sess-reply-btn:disabled{opacity:.4;cursor:not-allowed;}
-.sess-reply-status{font-size:10px;margin-top:6px;}
-.status-ok{color:var(--green);}
-.status-err{color:var(--red);}
-
-/* ── Feedback in session ── */
-.mini-feed{display:flex;flex-direction:column;gap:8px;}
-.mini-fb-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
-.mini-fb-text{font-size:13px;color:var(--text);line-height:1.6;}
-.mini-fb-meta{font-size:10px;color:var(--text-faint);margin-top:5px;}
-
-/* ── Visit info in session ── */
-.visit-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.visit-info-item{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
-.visit-info-label{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
-.visit-info-val{font-size:13px;font-weight:600;color:var(--text);}
-
-.ai-toggle-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;}
-.toggle-sw{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
-.toggle-sw input{opacity:0;width:0;height:0;position:absolute;}
-.toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.2s;}
-.toggle-track::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--text-dim);border-radius:50%;transition:.2s;}
-.toggle-sw input:checked + .toggle-track{background:var(--green);}
-.toggle-sw input:checked + .toggle-track::before{transform:translateX(18px);background:#fff;}
-.toggle-label{font-size:12px;color:var(--text-dim);}
-
-/* ══ FEEDBACK FEED ══ */
+/* ══ EXISTING FEED / Q / SPEAKER STYLES ══ */
 .feed{display:flex;flex-direction:column;gap:8px;}
 .feed-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;transition:border-color .15s;}
 .feed-item:hover{border-color:var(--border2);}
 .feed-item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
-.feed-sender{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.feed-sender{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+.feed-sender.participant{color:var(--navy);}
+.feed-sender.feedback{color:var(--gold);}
+.feed-sender.organizer{color:var(--green);}
 .feed-email-tag{display:inline-block;background:rgba(56,139,253,0.12);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;margin-left:6px;letter-spacing:.02em;vertical-align:middle;}
 .feed-text{font-size:13px;color:var(--text);line-height:1.6;}
 .feed-meta{font-size:10px;color:var(--text-faint);margin-top:4px;}
 .feed-time{font-size:10px;color:var(--text-faint);white-space:nowrap;flex-shrink:0;}
 
-/* ══ QUESTIONS ══ */
 .q-list{display:flex;flex-direction:column;gap:6px;}
-.q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;}
+.q-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;transition:border-color .15s;}
+.q-item:hover{border-color:var(--border2);}
 .q-rank{font-size:9px;font-weight:700;color:var(--text-faint);min-width:20px;}
 .q-text{flex:1;font-size:13px;color:var(--text);line-height:1.5;}
 .q-count{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;}
 
-/* ══ SPEAKER BARS ══ */
 .speaker-bars{display:flex;flex-direction:column;gap:8px;}
 .speaker-bar-row{display:flex;align-items:center;gap:10px;}
 .speaker-bar-name{font-size:11px;color:var(--text-dim);min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -236,12 +239,6 @@ tbody td:first-child{color:var(--text);}
 .speaker-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--purple));transition:width .6s ease;}
 .speaker-bar-count{font-size:10px;color:var(--text-faint);min-width:28px;text-align:right;}
 
-/* ══ WORKSHOP ══ */
-.workshop-reg-banner{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
-.workshop-reg-count{font-size:13px;font-weight:700;color:var(--gold);}
-.workshop-reg-label{font-size:11px;color:var(--text-dim);}
-
-/* ══ LIVE CONTROL ══ */
 .speaker-now-card{background:var(--bg2);border:1px solid var(--navy-border);border-radius:var(--radius);overflow:hidden;}
 .snc-row{display:flex;align-items:stretch;}
 .snc-block{flex:1;padding:20px 22px;}
@@ -257,6 +254,7 @@ tbody td:first-child{color:var(--text);}
 .snc-next-btn{background:var(--navy);color:#fff;}
 .snc-next-btn:hover{opacity:.85;}
 .snc-idx{font-size:12px;color:var(--text-faint);font-variant-numeric:tabular-nums;}
+
 .control-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
 .control-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
 .control-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
@@ -267,29 +265,46 @@ tbody td:first-child{color:var(--text);}
 .ctrl-btn:disabled{opacity:.4;cursor:not-allowed;}
 .ctrl-btn-primary{background:var(--navy);color:#fff;}
 .ctrl-btn-danger{background:var(--red);color:#fff;}
+.ctrl-btn-gold{background:var(--gold);color:#000;}
 .ctrl-toggle{display:flex;align-items:center;gap:12px;margin-top:10px;}
-.toggle-label-ctrl{font-size:13px;color:var(--text);}
+.toggle-sw{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.2s;}
+.toggle-track::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--text-dim);border-radius:50%;transition:.2s;}
+.toggle-sw input:checked + .toggle-track{background:var(--green);}
+.toggle-sw input:checked + .toggle-track::before{transform:translateX(18px);background:#fff;}
+.toggle-label{font-size:13px;color:var(--text);}
 .ctrl-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
+
 .reset-card{background:var(--bg2);border:1px solid rgba(248,81,73,.3);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
 .reset-card-title{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
 .reset-card-desc{font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.6;}
 .reset-confirm{display:none;margin-top:10px;padding:12px;background:var(--bg3);border-radius:6px;border:1px solid rgba(248,81,73,.3);}
 .reset-confirm.visible{display:block;}
 .reset-confirm-text{font-size:12px;color:var(--text);margin-bottom:10px;}
+
 .reply-textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;resize:none;min-height:80px;margin-top:8px;line-height:1.6;transition:border-color .15s;}
 .reply-textarea:focus{border-color:var(--navy-border);}
 
-/* ══ UTILS ══ */
+.workshop-reg-banner{display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;margin-bottom:14px;}
+.workshop-reg-count{font-size:13px;font-weight:700;color:var(--gold);}
+.workshop-reg-label{font-size:11px;color:var(--text-dim);}
+
 .loading-state{display:flex;align-items:center;justify-content:center;padding:32px;color:var(--text-faint);font-size:12px;gap:8px;}
 .spinner{width:16px;height:16px;border:1.5px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-state{text-align:center;padding:28px;font-size:12px;color:var(--text-faint);}
 .error-state{text-align:center;padding:28px;font-size:12px;color:var(--red);}
+
 .pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
 .pill-green{background:var(--green-soft);color:var(--green);}
 .pill-navy{background:var(--navy-soft);color:var(--navy);}
+.pill-red{background:var(--red-soft);color:var(--red);}
 .status-msg{font-size:11px;padding:4px 0;}
+.status-ok{color:var(--green);}
+.status-err{color:var(--red);}
 .status-info{color:var(--text-faint);}
+
 @keyframes flash-row{0%{background:rgba(56,139,253,.18)}100%{background:transparent}}
 .row-flash{animation:flash-row 1.5s ease-out;}
 
@@ -312,13 +327,30 @@ tbody td:first-child{color:var(--text);}
   .snc-now{border-right:none;border-bottom:1px solid var(--border);}
   .snc-name{font-size:18px;}
   .snc-name-next{font-size:15px;}
-  .sess-stats{gap:6px;}
-  .sess-stat-pill{padding:4px 8px;}
-  .visit-info-grid{grid-template-columns:1fr;}
+  .modal-box{max-height:92vh;}
+  .conv-ai-toggle span:last-child{display:none;}
 }
 </style>
 </head>
 <body>
+
+<!-- ══ ACTIVITY MODAL ══ -->
+<div class="modal-overlay" id="activity-modal" onclick="closeActivityModal(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-title" id="modal-title">Session Activity</div>
+        <div class="modal-email-tag" id="modal-email-tag" style="display:none"></div>
+        <div class="modal-sub" id="modal-sub">Loading...</div>
+      </div>
+      <button class="modal-close" onclick="closeActivityModalDirect()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="loading-state"><div class="spinner"></div>Loading activity...</div>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
   <aside class="sidebar">
     <div class="sb-logo">
@@ -330,6 +362,7 @@ tbody td:first-child{color:var(--text);}
       <button class="sb-item active" onclick="showPage('overview',this)"><span class="sb-item-icon">◈</span>Overview</button>
       <button class="sb-item" onclick="showPage('sessions',this)"><span class="sb-item-icon">◉</span>Sessions</button>
       <div class="sb-section">Activity</div>
+      <button class="sb-item" onclick="showPage('chat',this)"><span class="sb-item-icon">◎</span>Chat & AI</button>
       <button class="sb-item" onclick="showPage('feedback',this)"><span class="sb-item-icon">◇</span>Feedback</button>
       <button class="sb-item" onclick="showPage('questions',this)"><span class="sb-item-icon">◈</span>Top Questions</button>
       <button class="sb-item" onclick="showPage('workshop',this)"><span class="sb-item-icon">✦</span>Workshop</button>
@@ -444,7 +477,31 @@ tbody td:first-child{color:var(--text);}
         <div class="sec-title">All Sessions</div>
         <div class="sec-count" id="sessions-count"></div>
       </div>
-      <div class="session-cards" id="session-cards">
+      <div class="table-card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Visitor</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
+                <th>Device</th><th>Browser</th><th>OS</th><th>Country</th><th>City</th>
+                <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th><th>Activity</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-table">
+              <tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHAT ══ -->
+    <div class="content" id="page-chat">
+      <div class="sec-header">
+        <div class="sec-title">Chat Conversations</div>
+        <div class="sec-count" id="chat-count"></div>
+      </div>
+      <div class="conv-list" id="conv-list">
         <div class="loading-state"><div class="spinner"></div>Loading...</div>
       </div>
     </div>
@@ -531,7 +588,7 @@ tbody td:first-child{color:var(--text);}
               <input type="checkbox" id="ctrl-ai-toggle" onchange="setAI()">
               <span class="toggle-track"></span>
             </label>
-            <span class="toggle-label-ctrl" id="ctrl-ai-label">Loading...</span>
+            <span class="toggle-label" id="ctrl-ai-label">Loading...</span>
           </div>
 
           <div style="margin-top:14px;" class="control-label">Countdown Mode</div>
@@ -540,7 +597,7 @@ tbody td:first-child{color:var(--text);}
               <input type="checkbox" id="ctrl-cd-toggle" onchange="setCountdown()">
               <span class="toggle-track"></span>
             </label>
-            <span class="toggle-label-ctrl" id="ctrl-cd-label">Loading...</span>
+            <span class="toggle-label" id="ctrl-cd-label">Loading...</span>
           </div>
 
           <div style="margin-top:14px;" class="control-label">Workshop Registration</div>
@@ -549,7 +606,7 @@ tbody td:first-child{color:var(--text);}
               <input type="checkbox" id="ctrl-ws-toggle" onchange="setWorkshop()">
               <span class="toggle-track"></span>
             </label>
-            <span class="toggle-label-ctrl" id="ctrl-ws-label">Loading...</span>
+            <span class="toggle-label" id="ctrl-ws-label">Loading...</span>
           </div>
           <div style="margin-top:6px;font-size:10px;color:var(--text-faint)">Participant-ებს workshop registration card-ს უჩვენებს</div>
         </div>
@@ -581,17 +638,19 @@ tbody td:first-child{color:var(--text);}
         <div class="control-label" style="margin-top:12px;">Message</div>
         <textarea id="ctrl-reply-text" class="reply-textarea" placeholder="Type a reply..."></textarea>
         <div class="ctrl-row">
-          <button class="ctrl-btn ctrl-btn-primary" onclick="sendReply()">Send Reply</button>
+          <button class="ctrl-btn ctrl-btn-gold" onclick="sendReply()">Send Reply</button>
           <span class="status-msg" id="ctrl-reply-status"></span>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <nav class="mob-nav" id="mob-nav">
   <button class="mob-nav-item active" onclick="showPage('overview',this,'mob')"><span class="mob-icon">◈</span>Overview</button>
   <button class="mob-nav-item" onclick="showPage('sessions',this,'mob')"><span class="mob-icon">◉</span>Sessions</button>
+  <button class="mob-nav-item" onclick="showPage('chat',this,'mob')"><span class="mob-icon">◎</span>Chat</button>
   <button class="mob-nav-item" onclick="showPage('feedback',this,'mob')"><span class="mob-icon">◇</span>Feedback</button>
   <button class="mob-nav-item" onclick="showPage('workshop',this,'mob')"><span class="mob-icon">✦</span>Workshop</button>
   <button class="mob-nav-item" onclick="showPage('control',this,'mob')"><span class="mob-icon">◆</span>Control</button>
@@ -633,6 +692,7 @@ const AGENDA = [
   {id:29, speaker:"Closing Ceremony",             isBreak:true}
 ];
 
+// ════ STATE ════
 let sb = null;
 let charts = {};
 let currentEpoch = 1;
@@ -640,12 +700,10 @@ let liveEpoch = 1;
 let presenceChannel = null;
 let realtimeChannel = null;
 let emailMap = {};
+// per-session AI override cache: sessionId → null|true|false
 let aiOverrideMap = {};
-// Track which session cards are expanded and which sub-tab is active
-let expandedSessions = new Set();
-let activeTabMap = {}; // sid → 'chat'|'feedback'|'visits'
-// Cache loaded data per session to avoid redundant fetches
-let sessDataCache = {}; // sid → {msgs, feedbacks, visits, loaded}
+// expanded conversation tracking
+let expandedConvs = new Set();
 
 // ════ INIT ════
 window.addEventListener('load', async () => {
@@ -664,7 +722,7 @@ window.addEventListener('load', async () => {
 
 function tickClock() {
   document.getElementById('topbar-time').textContent =
-    new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
 }
 
 // ════ EMAIL MAP ════
@@ -677,74 +735,121 @@ async function loadEmailMap() {
     });
     const { data: sData } = await sb.from('sessions').select('id, participant_email, ai_override');
     (sData || []).forEach(s => {
-      if (s.id && s.participant_email && !emailMap[s.id])
+      if (s.id && s.participant_email && !emailMap[s.id]) {
         emailMap[s.id] = s.participant_email.toLowerCase().trim();
-      if (s.id) aiOverrideMap[s.id] = s.ai_override;
+      }
+      if (s.id) aiOverrideMap[s.id] = s.ai_override; // null | true | false
     });
-  } catch(e) { console.warn('loadEmailMap:', e.message); }
+  } catch(e) {
+    console.warn('loadEmailMap error:', e.message);
+  }
 }
 
 function subscribeRealtimeEmails() {
   if (realtimeChannel) sb.removeChannel(realtimeChannel);
   realtimeChannel = sb.channel('admin_email_sync')
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'workshop_registrations'}, payload => {
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'workshop_registrations' }, payload => {
       const r = payload.new;
       if (r && r.session_id && r.email) {
-        emailMap[r.session_id] = r.email.toLowerCase().trim();
-        refreshReplySel();
+        const email = r.email.toLowerCase().trim();
+        const wasUnknown = !emailMap[r.session_id];
+        emailMap[r.session_id] = email;
+        refreshCurrentPageAfterEmailUpdate(r.session_id, email, wasUnknown);
       }
     })
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions'}, payload => {
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'sessions' }, payload => {
       const s = payload.new;
       if (s && s.id) {
-        if (s.participant_email && !emailMap[s.id])
+        if (s.participant_email && !emailMap[s.id]) {
           emailMap[s.id] = s.participant_email.toLowerCase().trim();
+          refreshCurrentPageAfterEmailUpdate(s.id, emailMap[s.id], true);
+        }
+        // sync ai_override changes
         aiOverrideMap[s.id] = s.ai_override;
       }
     })
     .subscribe();
 }
 
+function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
+  const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
+  refreshReplySel();
+  if (!wasUnknown) return;
+  if (activePage === 'sessions') {
+    const row = document.querySelector(`tr[data-sid="${CSS.escape(sessionId)}"]`);
+    if (row) {
+      const visitorCell = row.querySelector('td:first-child');
+      if (visitorCell) {
+        visitorCell.innerHTML = `<span class="td-email">${escHtml(email)}</span>`;
+        row.classList.add('row-flash');
+        setTimeout(() => row.classList.remove('row-flash'), 1600);
+      }
+    } else {
+      loadSessions();
+    }
+  }
+  if (activePage === 'chat') loadChat();
+  if (activePage === 'feedback') {
+    document.querySelectorAll(`[data-sid="${CSS.escape(sessionId)}"]`).forEach(el => {
+      el.innerHTML = escHtml(email);
+    });
+  }
+}
+
 function refreshReplySel() {
   const sel = document.getElementById('ctrl-reply-sel');
   if (!sel) return;
   const cur = sel.value;
-  Array.from(sel.options).forEach(opt => {
-    if (!opt.value) return;
+  const opts = Array.from(sel.options).filter(o => o.value && o.value !== '');
+  opts.forEach(opt => {
     const sid = opt.value;
-    if (emailMap[sid]) opt.textContent = emailMap[sid] + (opt.textContent.endsWith(' ✉') ? ' ✉' : '');
+    if (emailMap[sid]) {
+      const hasMark = opt.textContent.endsWith(' ✉');
+      opt.textContent = emailMap[sid] + (hasMark ? ' ✉' : '');
+    }
   });
   if (cur) sel.value = cur;
+}
+
+function getSessionLabel(sessionId) {
+  if (!sessionId) return '—';
+  if (emailMap[sessionId]) return emailMap[sessionId];
+  return sessionId.substring(0, 14) + '…';
 }
 
 // ════ EPOCH ════
 async function loadEpochState() {
   try {
-    const { data, error } = await sb.from('live_state').select('current_epoch').eq('id',1).single();
+    const { data, error } = await sb.from('live_state').select('current_epoch').eq('id', 1).single();
     if (error) throw error;
-    liveEpoch = data?.current_epoch ?? 1;
+    liveEpoch    = data?.current_epoch ?? 1;
     currentEpoch = liveEpoch;
     renderEpochBar();
-  } catch(e) { liveEpoch=1; currentEpoch=1; renderEpochBar(); }
+  } catch(e) {
+    liveEpoch = 1; currentEpoch = 1;
+    renderEpochBar();
+  }
 }
 
 function renderEpochBar() {
   const container = document.getElementById('epoch-btns');
   let html = '';
   for (let i = 1; i <= liveEpoch; i++) {
-    html += `<button class="epoch-btn${i===currentEpoch?' active':''}${i===liveEpoch?' live-epoch':''}" onclick="switchEpoch(${i})">Session ${i}</button>`;
+    const isLive   = i === liveEpoch;
+    const isActive = i === currentEpoch;
+    html += `<button class="epoch-btn${isActive?' active':''}${isLive?' live-epoch':''}" onclick="switchEpoch(${i})">Session ${i}</button>`;
   }
   container.innerHTML = html;
 }
 
 async function switchEpoch(epoch) {
   currentEpoch = epoch;
-  sessDataCache = {};
   renderEpochBar();
   await loadEmailMap();
   await loadAll();
-  const activePage = document.querySelector('.content.active')?.id?.replace('page-','');
+  const activePage = document.querySelector('.content.active')?.id?.replace('page-', '');
   if (activePage === 'sessions')  loadSessions();
+  if (activePage === 'chat')      loadChat();
   if (activePage === 'feedback')  loadFeedback();
   if (activePage === 'questions') loadQuestions();
   if (activePage === 'workshop')  loadWorkshop();
@@ -756,31 +861,34 @@ function showResetConfirm() {
   document.getElementById('reset-status').textContent = '';
   document.getElementById('reset-confirm').classList.add('visible');
 }
-function hideResetConfirm() { document.getElementById('reset-confirm').classList.remove('visible'); }
+function hideResetConfirm() {
+  document.getElementById('reset-confirm').classList.remove('visible');
+}
 async function doReset() {
-  const btn = document.getElementById('reset-confirm-btn');
+  const btn    = document.getElementById('reset-confirm-btn');
   const status = document.getElementById('reset-status');
   btn.disabled = true; btn.textContent = 'Processing...';
-  status.className = 'status-msg status-info'; status.textContent = 'Saving...';
+  status.className = 'status-msg status-info'; status.textContent = 'Saving new epoch...';
   try {
     const newEpoch = liveEpoch + 1;
-    const { error } = await sb.from('live_state').update({ current_epoch: newEpoch }).eq('id',1);
+    const { error } = await sb.from('live_state').update({ current_epoch: newEpoch }).eq('id', 1);
     if (error) throw error;
     liveEpoch = newEpoch; currentEpoch = newEpoch;
-    sessDataCache = {};
     renderEpochBar();
     hideResetConfirm();
     await loadAll();
     await loadControl();
   } catch(e) {
     status.className = 'status-msg status-err';
-    status.textContent = '✗ ' + e.message;
-  } finally { btn.disabled = false; btn.textContent = 'დადასტურება'; }
+    status.textContent = '✗ Error: ' + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'დადასტურება';
+  }
 }
 
 // ════ NAVIGATION ════
 const PAGE_TITLES = {
-  overview:'Overview', sessions:'Sessions',
+  overview:'Overview', sessions:'Sessions', chat:'Chat & AI',
   feedback:'Feedback', questions:'Top Questions',
   workshop:'Workshop Registrations', control:'Live Control'
 };
@@ -792,16 +900,17 @@ function showPage(id, btn, source) {
   document.getElementById('page-' + id).classList.add('active');
   document.getElementById('topbar-title').textContent = PAGE_TITLES[id] || id;
   if (btn) btn.classList.add('active');
-  const sel = source === 'mob' ? '.sb-item' : '.mob-nav-item';
-  document.querySelectorAll(sel).forEach(el => {
-    if (el.getAttribute('onclick')?.includes("'"+id+"'")) el.classList.add('active');
+  const otherSelector = source === 'mob' ? '.sb-item' : '.mob-nav-item';
+  document.querySelectorAll(otherSelector).forEach(el => {
+    if (el.getAttribute('onclick')?.includes("'" + id + "'")) el.classList.add('active');
   });
   if (id === 'sessions')  loadSessions();
+  if (id === 'chat')      loadChat();
   if (id === 'feedback')  loadFeedback();
   if (id === 'questions') loadQuestions();
   if (id === 'workshop')  loadWorkshop();
   if (id === 'control')   loadControl();
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
 // ════ LOAD ALL ════
@@ -823,462 +932,529 @@ async function loadOverviewStats() {
     const ep = currentEpoch;
     const [sessRes, msgRes, fbRes, wsRes] = await Promise.all([
       sb.from('sessions').select('id, visit_count, chat_opened, feedback_sent, total_time_sec, participant_email, ai_override').eq('reset_epoch', ep),
-      sb.from('messages').select('id',{count:'exact',head:true}).eq('sender','participant').eq('reset_epoch',ep),
-      sb.from('feedback').select('id',{count:'exact',head:true}).eq('reset_epoch',ep),
-      sb.from('workshop_registrations').select('id',{count:'exact',head:true})
+      sb.from('messages').select('id', { count: 'exact', head: true }).eq('sender', 'participant').eq('reset_epoch', ep),
+      sb.from('feedback').select('id', { count: 'exact', head: true }).eq('reset_epoch', ep),
+      sb.from('workshop_registrations').select('id', { count: 'exact', head: true })
     ]);
-    const sessions = sessRes.data || [];
-    const totalVisits = sessions.reduce((a,s) => a+(s.visit_count||1), 0);
-    const totalSec    = sessions.reduce((a,s) => a+(s.total_time_sec||0), 0);
-    const avgSec      = sessions.length ? totalSec/sessions.length : 0;
+    const sessions    = sessRes.data || [];
+    const totalVisits = sessions.reduce((a, s) => a + (s.visit_count || 1), 0);
+    const totalSec    = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
+    const avgSec      = sessions.length ? totalSec / sessions.length : 0;
+
     document.getElementById('s-sessions').textContent  = sessions.length;
     document.getElementById('s-visits').textContent    = totalVisits;
     document.getElementById('s-msgs').textContent      = msgRes.count ?? 0;
     document.getElementById('s-fb').textContent        = fbRes.count  ?? 0;
-    document.getElementById('s-time').textContent      = avgSec > 0 ? (avgSec/60).toFixed(1) : '—';
+    document.getElementById('s-time').textContent      = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
     document.getElementById('s-workshop').textContent  = wsRes.count  ?? 0;
+
+    // Update ai override cache
     sessions.forEach(s => { aiOverrideMap[s.id] = s.ai_override; });
 
-    // populate ctrl reply sel
     const sel = document.getElementById('ctrl-reply-sel');
     const cur = sel.value;
     sel.innerHTML = '<option value="">— choose a session —</option>';
     sessions.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.id;
+      const opt   = document.createElement('option');
+      opt.value   = s.id;
       const email = emailMap[s.id] || s.participant_email;
-      opt.textContent = (email || s.id.substring(0,16)+'…') + (s.chat_opened?' ✉':'');
+      const label = email ? email : (s.id.substring(0, 16) + '…');
+      opt.textContent = label + (s.chat_opened ? ' ✉' : '');
       sel.appendChild(opt);
     });
     if (cur) sel.value = cur;
-  } catch(e) { console.warn('Stats error:', e.message); }
+  } catch(e) {
+    console.warn('Stats error:', e.message);
+  }
 }
 
-// ════ DEVICE TIME ════
+// ════ DEVICE TIME BREAKDOWN ════
 async function loadDeviceTimeBreakdown() {
   const container = document.getElementById('device-time-grid');
   try {
-    const { data, error } = await sb.from('sessions').select('device_type, total_time_sec, visit_count').eq('reset_epoch', currentEpoch);
+    const { data, error } = await sb.from('sessions')
+      .select('device_type, total_time_sec, visit_count').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-    const groups = { mobile:[], desktop:[], tablet:[] };
-    (data||[]).forEach(s => {
-      const dt = (s.device_type||'desktop').toLowerCase();
-      if (groups[dt]) groups[dt].push(s); else groups.desktop.push(s);
+    const groups = { mobile: [], desktop: [], tablet: [] };
+    (data || []).forEach(s => {
+      const dt = (s.device_type || 'desktop').toLowerCase();
+      if (groups[dt]) groups[dt].push(s); else groups['desktop'].push(s);
     });
-    const meta = {
-      mobile:  {label:'Mobile',  icon:'📱', color:'var(--navy)'},
-      desktop: {label:'Desktop', icon:'🖥️',  color:'var(--green)'},
-      tablet:  {label:'Tablet',  icon:'📋', color:'var(--gold)'},
+    const deviceMeta = {
+      mobile:  { label:'Mobile',  icon:'📱', color:'var(--navy)' },
+      desktop: { label:'Desktop', icon:'🖥️',  color:'var(--green)' },
+      tablet:  { label:'Tablet',  icon:'📋', color:'var(--gold)' },
     };
-    const fmtMin = sec => sec>0 ? (sec/60).toFixed(1)+' min' : '—';
+    const fmtMin = sec => sec > 0 ? (sec / 60).toFixed(1) + ' min' : '—';
     container.innerHTML = Object.entries(groups).map(([type, sessions]) => {
-      const m = meta[type];
-      if (!sessions.length) return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${m.icon}</span><span class="dtc-title" style="color:${m.color}">${m.label}</span></div><div style="font-size:12px;color:var(--text-faint);text-align:center;padding:10px 0">No data</div></div>`;
-      const totalSec = sessions.reduce((a,s)=>a+(s.total_time_sec||0),0);
-      const avgSec   = totalSec/sessions.length;
-      const maxSec   = Math.max(...sessions.map(s=>s.total_time_sec||0));
-      const posArr   = sessions.filter(s=>s.total_time_sec>0).map(s=>s.total_time_sec);
+      const meta  = deviceMeta[type];
+      const count = sessions.length;
+      if (count === 0) return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div><div style="font-size:12px;color:var(--text-faint);text-align:center;padding:10px 0">No data</div></div>`;
+      const totalSec = sessions.reduce((a, s) => a + (s.total_time_sec || 0), 0);
+      const avgSec   = totalSec / count;
+      const maxSec   = Math.max(...sessions.map(s => s.total_time_sec || 0));
+      const posArr   = sessions.filter(s => s.total_time_sec > 0).map(s => s.total_time_sec);
       const minSec   = posArr.length ? Math.min(...posArr) : 0;
-      return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${m.icon}</span><span class="dtc-title" style="color:${m.color}">${m.label}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Sessions</span><span class="dtc-stat-val" style="color:${m.color}">${sessions.length}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Avg. Time</span><span class="dtc-stat-val">${fmtMin(avgSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Total Time</span><span class="dtc-stat-val">${fmtMin(totalSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Longest</span><span class="dtc-stat-val">${fmtMin(maxSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Shortest</span><span class="dtc-stat-val">${minSec?fmtMin(minSec):'—'}</span></div></div>`;
+      return `<div class="device-time-card"><div class="dtc-header"><span class="dtc-icon">${meta.icon}</span><span class="dtc-title" style="color:${meta.color}">${meta.label}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Sessions</span><span class="dtc-stat-val" style="color:${meta.color}">${count}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Avg. Time</span><span class="dtc-stat-val">${fmtMin(avgSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Total Time</span><span class="dtc-stat-val">${fmtMin(totalSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Longest</span><span class="dtc-stat-val">${fmtMin(maxSec)}</span></div><div class="dtc-stat-row"><span class="dtc-stat-label">Shortest</span><span class="dtc-stat-val">${minSec ? fmtMin(minSec) : '—'}</span></div></div>`;
     }).join('');
-  } catch(e) { container.innerHTML = '<div class="error-state">Error: '+escHtml(e.message)+'</div>'; }
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════ CHARTS ════
 async function loadHourlyChart() {
   try {
-    const { data, error } = await sb.from('page_events').select('created_at').eq('event_type','visit').eq('reset_epoch',currentEpoch).order('created_at',{ascending:true});
+    const { data, error } = await sb.from('page_events')
+      .select('created_at').eq('event_type', 'visit').eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: true });
     if (error) throw error;
-    const hb = {};
-    (data||[]).forEach(r => { const h = new Date(r.created_at).getHours(); hb[h]=(hb[h]||0)+1; });
-    const labels = Array.from({length:24},(_,i)=>i+':00');
-    const values = Array.from({length:24},(_,i)=>hb[i]||0);
+    const hourBuckets = {};
+    (data || []).forEach(r => { const h = new Date(r.created_at).getHours(); hourBuckets[h] = (hourBuckets[h] || 0) + 1; });
+    const labels = Array.from({ length: 24 }, (_, i) => i + ':00');
+    const values = Array.from({ length: 24 }, (_, i) => hourBuckets[i] || 0);
     const ctx = document.getElementById('chart-hourly').getContext('2d');
-    if (charts.hourly) { charts.hourly.destroy(); charts.hourly=null; }
+    if (charts.hourly) { charts.hourly.destroy(); charts.hourly = null; }
     charts.hourly = new Chart(ctx, {
-      type:'bar',
-      data:{labels,datasets:[{data:values,backgroundColor:'rgba(56,139,253,0.5)',borderColor:'rgba(56,139,253,0.9)',borderWidth:1,borderRadius:3}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#484F58',font:{size:9},maxRotation:0},grid:{color:'#21262D'}},y:{ticks:{color:'#484F58',font:{size:9}},grid:{color:'#21262D'},beginAtZero:true}}}
+      type: 'bar',
+      data: { labels, datasets: [{ data: values, backgroundColor: 'rgba(56,139,253,0.5)', borderColor: 'rgba(56,139,253,0.9)', borderWidth: 1, borderRadius: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color:'#484F58', font:{ size:9 }, maxRotation:0 }, grid:{ color:'#21262D' } }, y: { ticks: { color:'#484F58', font:{ size:9 } }, grid:{ color:'#21262D' }, beginAtZero:true } } }
     });
-  } catch(e) { console.warn('Hourly chart:', e.message); }
+  } catch(e) { console.warn('Hourly chart error:', e.message); }
 }
 
 async function loadDeviceChart() {
   try {
-    const { data, error } = await sb.from('sessions').select('device_type').eq('reset_epoch',currentEpoch);
+    const { data, error } = await sb.from('sessions').select('device_type').eq('reset_epoch', currentEpoch);
     if (error) throw error;
-    const counts = {mobile:0,desktop:0,tablet:0};
-    (data||[]).forEach(s => { const dt=(s.device_type||'desktop').toLowerCase(); if(counts[dt]!==undefined)counts[dt]++; else counts.desktop++; });
+    const counts = { mobile: 0, desktop: 0, tablet: 0 };
+    (data || []).forEach(s => { const dt = (s.device_type || 'desktop').toLowerCase(); if (counts[dt] !== undefined) counts[dt]++; else counts['desktop']++; });
     const ctx = document.getElementById('chart-device').getContext('2d');
-    if (charts.device) { charts.device.destroy(); charts.device=null; }
+    if (charts.device) { charts.device.destroy(); charts.device = null; }
     charts.device = new Chart(ctx, {
-      type:'doughnut',
-      data:{labels:['Mobile','Desktop','Tablet'],datasets:[{data:[counts.mobile,counts.desktop,counts.tablet],backgroundColor:['rgba(56,139,253,0.7)','rgba(63,185,80,0.7)','rgba(240,180,41,0.7)'],borderColor:['#388BFD','#3FB950','#F0B429'],borderWidth:1}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8B949E',font:{size:11},padding:12}}}}
+      type: 'doughnut',
+      data: { labels: ['Mobile','Desktop','Tablet'], datasets: [{ data: [counts.mobile, counts.desktop, counts.tablet], backgroundColor: ['rgba(56,139,253,0.7)','rgba(63,185,80,0.7)','rgba(240,180,41,0.7)'], borderColor: ['#388BFD','#3FB950','#F0B429'], borderWidth: 1 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position:'bottom', labels:{ color:'#8B949E', font:{ size:11 }, padding:12 } } } }
     });
-  } catch(e) { console.warn('Device chart:', e.message); }
+  } catch(e) { console.warn('Device chart error:', e.message); }
 }
 
 async function loadSpeakerPeak() {
   const container = document.getElementById('speaker-bars');
   try {
-    const { data, error } = await sb.from('page_events').select('speaker_id, speaker_name').eq('event_type','heartbeat').eq('reset_epoch',currentEpoch).not('speaker_id','is',null);
+    const { data, error } = await sb.from('page_events')
+      .select('speaker_id, speaker_name').eq('event_type', 'heartbeat').eq('reset_epoch', currentEpoch)
+      .not('speaker_id', 'is', null);
     if (error) throw error;
     const counts = {};
-    (data||[]).forEach(r => { const k=r.speaker_name||('Speaker '+r.speaker_id); counts[k]=(counts[k]||0)+1; });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,12);
-    const max = sorted[0]?.[1]||1;
-    if (!sorted.length) { container.innerHTML='<div class="empty-state">No speaker data yet</div>'; return; }
-    container.innerHTML = sorted.map(([name,count]) =>
+    (data || []).forEach(r => { const key = r.speaker_name || ('Speaker ' + r.speaker_id); counts[key] = (counts[key] || 0) + 1; });
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+    const max = sorted[0]?.[1] || 1;
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No speaker data yet</div>'; return; }
+    container.innerHTML = sorted.map(([name, count]) =>
       `<div class="speaker-bar-row"><div class="speaker-bar-name" title="${escHtml(name)}">${escHtml(name)}</div><div class="speaker-bar-track"><div class="speaker-bar-fill" style="width:${Math.round(count/max*100)}%"></div></div><div class="speaker-bar-count">${count}</div></div>`
     ).join('');
-  } catch(e) { container.innerHTML='<div class="error-state">Error: '+escHtml(e.message)+'</div>'; }
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 async function loadGeo() {
   const tbody = document.getElementById('geo-table');
   try {
-    const { data, error } = await sb.from('sessions').select('country, city').eq('reset_epoch',currentEpoch);
+    const { data, error } = await sb.from('sessions').select('country, city').eq('reset_epoch', currentEpoch);
     if (error) throw error;
     const counts = {};
-    (data||[]).forEach(s => { const k=(s.country||'Unknown')+'||'+(s.city||'—'); counts[k]=(counts[k]||0)+1; });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,20);
-    if (!sorted.length) { tbody.innerHTML='<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>'; return; }
-    tbody.innerHTML = sorted.map(([key,count]) => {
-      const [country,city]=key.split('||');
+    (data || []).forEach(s => { const key = (s.country || 'Unknown') + '||' + (s.city || '—'); counts[key] = (counts[key] || 0) + 1; });
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 20);
+    if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">No geo data yet</div></td></tr>'; return; }
+    tbody.innerHTML = sorted.map(([key, count]) => {
+      const [country, city] = key.split('||');
       return `<tr><td>${escHtml(country)}</td><td style="color:var(--text-faint)">${escHtml(city)}</td><td><span class="pill pill-navy">${count}</span></td></tr>`;
     }).join('');
-  } catch(e) { tbody.innerHTML='<tr><td colspan="3"><div class="error-state">Error: '+escHtml(e.message)+'</div></td></tr>'; }
-}
-
-// ════ SESSIONS — card view ════
-async function loadSessions() {
-  const container = document.getElementById('session-cards');
-  container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
-  try {
-    const [sessRes, msgCountRes, fbCountRes] = await Promise.all([
-      sb.from('sessions').select('*').eq('reset_epoch', currentEpoch).order('last_seen',{ascending:false}),
-      sb.from('messages').select('session_id, sender').eq('reset_epoch', currentEpoch),
-      sb.from('feedback').select('session_id').eq('reset_epoch', currentEpoch)
-    ]);
-    const sessions = sessRes.data || [];
-    document.getElementById('sessions-count').textContent = sessions.length + ' sessions';
-
-    // Build counts per session
-    const msgCounts = {}; // session_id → participant msg count
-    (msgCountRes.data||[]).forEach(m => {
-      if (m.sender === 'participant') msgCounts[m.session_id] = (msgCounts[m.session_id]||0)+1;
-    });
-    const fbCounts = {};
-    (fbCountRes.data||[]).forEach(f => { fbCounts[f.session_id] = (fbCounts[f.session_id]||0)+1; });
-
-    if (!sessions.length) { container.innerHTML='<div class="empty-state">No sessions yet</div>'; return; }
-
-    container.innerHTML = sessions.map(s => buildSessCard(s, msgCounts[s.id]||0, fbCounts[s.id]||0)).join('');
-
-    // Restore expanded state
-    expandedSessions.forEach(sid => {
-      const body = document.getElementById('sbody-'+sid);
-      const chev = document.getElementById('schev-'+sid);
-      if (body) body.classList.add('open');
-      if (chev) chev.classList.add('open');
-      const tab = activeTabMap[sid] || 'chat';
-      activateSessTab(sid, tab, false);
-    });
   } catch(e) {
-    container.innerHTML = '<div class="error-state">Error: '+escHtml(e.message)+'</div>';
+    tbody.innerHTML = '<tr><td colspan="3"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
   }
 }
 
-function buildSessCard(s, msgCount, fbCount) {
-  const email = emailMap[s.id] || s.participant_email;
-  const label = email ? email : (s.id.substring(0,16)+'…');
-  const initial = (email ? email[0] : (s.id[0]||'?')).toUpperCase();
-  const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'}) : '—';
-  const fmtTime = sec => { if(!sec||sec<=0) return '—'; const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),sc=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${sc}s`:`${sc}s`; };
-  const devType = (s.device_type||'').toLowerCase();
-  const devIcon = devType==='mobile'?'📱':devType==='tablet'?'📋':'🖥️';
+// ════ SESSIONS TABLE ════
+async function loadSessions() {
+  const tbody = document.getElementById('sessions-table');
+  tbody.innerHTML = '<tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
+  try {
+    const { data, error } = await sb.from('sessions').select('*')
+      .eq('reset_epoch', currentEpoch).order('last_seen', { ascending: false });
+    if (error) throw error;
+    document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
+    if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state">No sessions yet</div></td></tr>'; return; }
+    const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' }) : '—';
+    const fmtTime = sec => { if (!sec || sec <= 0) return '—'; const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${s}s`:`${s}s`; };
+    tbody.innerHTML = (data || []).map(s => {
+      const devType = (s.device_type || '').toLowerCase();
+      const deviceBadge = devType ? `<span class="td-badge td-badge-${devType}">${devType}</span>` : '<span style="color:var(--text-faint)">—</span>';
+      const chatBadge = s.chat_opened   ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
+      const fbBadge   = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>'   : '<span style="color:var(--text-faint)">—</span>';
+      const email = emailMap[s.id] || s.participant_email;
+      const visitorCell = email ? `<span class="td-email">${escHtml(email)}</span>` : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id||'').substring(0,12))}…</span>`;
+      return `<tr data-sid="${escHtml(s.id)}"><td>${visitorCell}</td><td>${fmtDate(s.first_seen)}</td><td>${fmtDate(s.last_seen)}</td><td style="text-align:center">${s.visit_count||1}</td><td>${deviceBadge}</td><td style="color:var(--text-faint)">${escHtml(s.browser||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.os||'—')}</td><td>${escHtml(s.country||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.city||'—')}</td><td style="color:var(--text-faint);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(s.isp||'')}">${escHtml(s.isp||'—')}</td><td>${chatBadge}</td><td style="text-align:center">${s.chat_msg_count||0}</td><td>${fbBadge}</td><td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td><td><button class="activity-btn" onclick="openActivityModal('${escHtml(s.id)}')">Activity ▸</button></td></tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="15"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+  }
+}
 
-  const chatHasData  = msgCount > 0;
-  const fbHasData    = fbCount  > 0;
+// ════════════════════════════════════════════════════════
+//  CHAT CONVERSATIONS — grouped by session, with bubbles,
+//  per-session AI toggle, and inline reply
+// ════════════════════════════════════════════════════════
+async function loadChat() {
+  const container = document.getElementById('conv-list');
+  container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
+  try {
+    // Load all messages for this epoch
+    const { data: msgs, error } = await sb.from('messages')
+      .select('*').eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: true });
+    if (error) throw error;
 
-  return `<div class="sess-card" id="scard-${escHtml(s.id)}">
-    <div class="sess-header" onclick="toggleSessCard('${escHtml(s.id)}')">
-      <div class="sess-avatar">${escHtml(initial)}</div>
-      <div class="sess-identity">
-        <div class="sess-email" title="${escHtml(label)}">${escHtml(label)}</div>
-        <div class="sess-meta-row">
-          <span class="sess-meta-item">${devIcon} ${escHtml(s.device_type||'—')}</span>
-          <span class="sess-meta-sep">·</span>
-          <span class="sess-meta-item">🌍 ${escHtml(s.country||'—')}${s.city?', '+escHtml(s.city):''}</span>
-          <span class="sess-meta-sep">·</span>
-          <span class="sess-meta-item">⏱ ${fmtTime(s.total_time_sec)}</span>
-          <span class="sess-meta-sep">·</span>
-          <span class="sess-meta-item">First: ${fmtDate(s.first_seen)}</span>
+    // Load sessions to get ai_override
+    const { data: sessions } = await sb.from('sessions')
+      .select('id, ai_override, chat_opened').eq('reset_epoch', currentEpoch);
+    const sessionMap = {};
+    (sessions || []).forEach(s => {
+      sessionMap[s.id] = s;
+      aiOverrideMap[s.id] = s.ai_override;
+    });
+
+    // Group messages by session_id
+    const grouped = {};
+    (msgs || []).forEach(m => {
+      if (!grouped[m.session_id]) grouped[m.session_id] = [];
+      grouped[m.session_id].push(m);
+    });
+
+    // Only show sessions that have at least one participant message
+    const sessionIds = Object.keys(grouped).filter(sid =>
+      grouped[sid].some(m => m.sender === 'participant')
+    );
+
+    document.getElementById('chat-count').textContent = sessionIds.length + ' conversations';
+
+    if (!sessionIds.length) {
+      container.innerHTML = '<div class="empty-state">No chat conversations yet</div>';
+      return;
+    }
+
+    // Sort: most recently active first
+    sessionIds.sort((a, b) => {
+      const la = grouped[a][grouped[a].length - 1]?.created_at || '';
+      const lb = grouped[b][grouped[b].length - 1]?.created_at || '';
+      return lb.localeCompare(la);
+    });
+
+    container.innerHTML = sessionIds.map(sid => buildConvCard(sid, grouped[sid], sessionMap[sid])).join('');
+
+    // Re-expand previously expanded convs
+    expandedConvs.forEach(sid => {
+      const body = document.getElementById('conv-body-' + sid);
+      const chev = document.getElementById('conv-chev-' + sid);
+      if (body) { body.classList.add('open'); }
+      if (chev) { chev.classList.add('open'); }
+      scrollConvToBottom(sid);
+    });
+
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
+}
+
+function buildConvCard(sid, msgs, sessInfo) {
+  const email = emailMap[sid];
+  const label = email ? email : (sid.substring(0, 14) + '…');
+  const initial = (email ? email[0] : sid[0] || '?').toUpperCase();
+  const participantMsgs = msgs.filter(m => m.sender === 'participant');
+  const msgCount = participantMsgs.length;
+  const aiOverride = aiOverrideMap[sid]; // null | true | false
+
+  // AI toggle label
+  let aiToggleClass, aiToggleIcon, aiToggleLabel;
+  if (aiOverride === false) {
+    aiToggleClass = 'conv-ai-toggle ai-off';
+    aiToggleIcon  = '✕';
+    aiToggleLabel = 'AI Off';
+  } else if (aiOverride === true) {
+    aiToggleClass = 'conv-ai-toggle ai-on';
+    aiToggleIcon  = '✓';
+    aiToggleLabel = 'AI On';
+  } else {
+    aiToggleClass = 'conv-ai-toggle ai-global';
+    aiToggleIcon  = '◎';
+    aiToggleLabel = 'AI Global';
+  }
+
+  // Build message bubbles HTML
+  const bubblesHtml = msgs.map(m => {
+    const t = new Date(m.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+    let senderClass, senderLabel, bubbleClass;
+    if (m.sender === 'participant') {
+      senderClass = 'msg-sender-participant'; senderLabel = '👤 Participant'; bubbleClass = 'participant';
+    } else if (m.sender === 'ai') {
+      senderClass = 'msg-sender-ai'; senderLabel = '🤖 AI Assistant'; bubbleClass = 'ai';
+    } else {
+      senderClass = 'msg-sender-organizer'; senderLabel = '🏢 Organizer'; bubbleClass = 'organizer';
+    }
+    return `<div class="msg-bubble ${bubbleClass}">
+      <div class="msg-bubble-meta">
+        <span class="msg-sender-label ${senderClass}">${senderLabel}</span>
+        <span>· ${t}</span>
+      </div>
+      <div class="msg-bubble-inner">${escHtml(m.text)}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="conv-card" id="conv-card-${escHtml(sid)}">
+    <div class="conv-header" onclick="toggleConv('${escHtml(sid)}')">
+      <div class="conv-header-left">
+        <div class="conv-avatar">${escHtml(initial)}</div>
+        <div class="conv-identity">
+          <div class="conv-email">${escHtml(label)}</div>
+          <div class="conv-sid">${escHtml(sid.substring(0,16))}…</div>
         </div>
       </div>
-      <div class="sess-stats">
-        <div class="sess-stat-pill ${chatHasData?'has-data':''}" onclick="event.stopPropagation();openSessTab('${escHtml(s.id)}','chat')" title="${chatHasData?'View chat':'No chat messages'}">
-          <span class="sess-stat-icon">💬</span>
-          <span class="sess-stat-count">${msgCount}</span>
-          <span class="sess-stat-label">msgs</span>
-        </div>
-        <div class="sess-stat-pill ${fbHasData?'has-data':''}" onclick="event.stopPropagation();openSessTab('${escHtml(s.id)}','feedback')" title="${fbHasData?'View feedback':'No feedback'}">
-          <span class="sess-stat-icon">📝</span>
-          <span class="sess-stat-count">${fbCount}</span>
-          <span class="sess-stat-label">fb</span>
-        </div>
-        <div class="sess-stat-pill has-data" onclick="event.stopPropagation();openSessTab('${escHtml(s.id)}','visits')" title="Visit info">
-          <span class="sess-stat-icon">👁</span>
-          <span class="sess-stat-count">${s.visit_count||1}</span>
-          <span class="sess-stat-label">visits</span>
-        </div>
+      <div class="conv-meta">
+        <span class="conv-msg-count">${msgCount} msg${msgCount !== 1 ? 's' : ''}</span>
+        <button class="conv-ai-toggle ${aiToggleClass}" onclick="toggleSessionAI(event,'${escHtml(sid)}')" title="Toggle AI for this session">
+          <span>${aiToggleIcon}</span>
+          <span>${aiToggleLabel}</span>
+        </button>
+        <span class="conv-chevron" id="conv-chev-${escHtml(sid)}">▼</span>
       </div>
-      <span class="sess-chevron" id="schev-${escHtml(s.id)}">▼</span>
     </div>
-    <div class="sess-body" id="sbody-${escHtml(s.id)}">
-      <div class="sess-tabs">
-        <button class="sess-tab" id="stab-chat-${escHtml(s.id)}"   onclick="activateSessTab('${escHtml(s.id)}','chat')">💬 Chat</button>
-        <button class="sess-tab" id="stab-feedback-${escHtml(s.id)}" onclick="activateSessTab('${escHtml(s.id)}','feedback')">📝 Feedback</button>
-        <button class="sess-tab" id="stab-visits-${escHtml(s.id)}"  onclick="activateSessTab('${escHtml(s.id)}','visits')">👁 Visit Info</button>
+    <div class="conv-body" id="conv-body-${escHtml(sid)}">
+      <div class="conv-messages" id="conv-msgs-${escHtml(sid)}">
+        ${bubblesHtml || '<div style="text-align:center;padding:16px;font-size:12px;color:var(--text-faint)">No messages</div>'}
       </div>
-      <div class="sess-tab-content" id="stc-chat-${escHtml(s.id)}">
-        <div class="loading-state"><div class="spinner"></div></div>
+      <div class="conv-reply-area">
+        <textarea class="conv-reply-inp" id="conv-inp-${escHtml(sid)}" placeholder="Type a reply... (Enter to send)" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvReply('${escHtml(sid)}')}"
+          oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button class="conv-reply-btn" id="conv-btn-${escHtml(sid)}" onclick="sendConvReply('${escHtml(sid)}')">Send</button>
       </div>
-      <div class="sess-tab-content" id="stc-feedback-${escHtml(s.id)}">
-        <div class="loading-state"><div class="spinner"></div></div>
-      </div>
-      <div class="sess-tab-content" id="stc-visits-${escHtml(s.id)}">
-        ${buildVisitInfo(s)}
-      </div>
+      <div class="conv-reply-status" id="conv-status-${escHtml(sid)}" style="padding:0 16px 10px;display:none"></div>
     </div>
   </div>`;
 }
 
-function buildVisitInfo(s) {
-  const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'}) : '—';
-  const fmtTime = sec => { if(!sec||sec<=0) return '—'; const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),sc=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${sc}s`:`${sc}s`; };
-  const aiVal = aiOverrideMap[s.id];
-  const aiLabel = aiVal===false?'Off (manual)':aiVal===true?'On (manual)':'Global default';
-  const aiColor = aiVal===false?'var(--red)':aiVal===true?'var(--green)':'var(--text-faint)';
-  return `<div class="visit-info-grid">
-    <div class="visit-info-item"><div class="visit-info-label">First Seen</div><div class="visit-info-val">${fmtDate(s.first_seen)}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Last Seen</div><div class="visit-info-val">${fmtDate(s.last_seen)}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Visit Count</div><div class="visit-info-val">${s.visit_count||1}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Time on Site</div><div class="visit-info-val">${fmtTime(s.total_time_sec)}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Device</div><div class="visit-info-val">${escHtml(s.device_type||'—')}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Browser</div><div class="visit-info-val">${escHtml(s.browser||'—')}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">OS</div><div class="visit-info-val">${escHtml(s.os||'—')}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">Location</div><div class="visit-info-val">${escHtml((s.country||'—')+(s.city?', '+s.city:''))}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">ISP</div><div class="visit-info-val" style="font-size:11px">${escHtml(s.isp||'—')}</div></div>
-    <div class="visit-info-item"><div class="visit-info-label">AI Override</div><div class="visit-info-val" style="color:${aiColor}">${aiLabel}</div></div>
-  </div>
-  <div class="ai-toggle-row" style="margin-top:12px">
-    <label class="toggle-sw">
-      <input type="checkbox" id="sai-${escHtml(s.id)}" ${aiVal===true?'checked':''} onchange="toggleSessAI('${escHtml(s.id)}',this)">
-      <span class="toggle-track"></span>
-    </label>
-    <span class="toggle-label" id="sai-lbl-${escHtml(s.id)}" style="color:${aiColor}">${aiLabel}</span>
-    <button onclick="resetSessAI('${escHtml(s.id)}')" style="margin-left:auto;font-size:10px;padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text-faint);cursor:pointer">Reset to Global</button>
-  </div>`;
-}
-
-function toggleSessCard(sid) {
-  const body = document.getElementById('sbody-'+sid);
-  const chev = document.getElementById('schev-'+sid);
+function toggleConv(sid) {
+  const body = document.getElementById('conv-body-' + sid);
+  const chev = document.getElementById('conv-chev-' + sid);
   if (!body) return;
   const isOpen = body.classList.toggle('open');
   if (chev) chev.classList.toggle('open', isOpen);
   if (isOpen) {
-    expandedSessions.add(sid);
-    const tab = activeTabMap[sid] || 'chat';
-    activateSessTab(sid, tab);
+    expandedConvs.add(sid);
+    scrollConvToBottom(sid);
   } else {
-    expandedSessions.delete(sid);
+    expandedConvs.delete(sid);
   }
 }
 
-function openSessTab(sid, tab) {
-  const body = document.getElementById('sbody-'+sid);
-  const chev = document.getElementById('schev-'+sid);
-  if (!body) return;
-  body.classList.add('open');
-  if (chev) chev.classList.add('open');
-  expandedSessions.add(sid);
-  activateSessTab(sid, tab);
-}
-
-function activateSessTab(sid, tab, doLoad=true) {
-  activeTabMap[sid] = tab;
-  ['chat','feedback','visits'].forEach(t => {
-    const tabEl  = document.getElementById('stab-'+t+'-'+sid);
-    const contEl = document.getElementById('stc-'+t+'-'+sid);
-    if (tabEl)  tabEl.classList.toggle('active', t===tab);
-    if (contEl) contEl.classList.toggle('active', t===tab);
-  });
-  if (doLoad) loadSessTabData(sid, tab);
-}
-
-async function loadSessTabData(sid, tab) {
-  if (!sessDataCache[sid]) sessDataCache[sid] = {};
-  const cache = sessDataCache[sid];
-
-  if (tab === 'chat' && !cache.msgs) {
-    const el = document.getElementById('stc-chat-'+sid);
-    if (el) el.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-    try {
-      const { data } = await sb.from('messages').select('*').eq('session_id',sid).order('created_at',{ascending:true});
-      cache.msgs = data || [];
-      renderSessChatTab(sid, cache.msgs);
-    } catch(e) {
-      if (el) el.innerHTML = '<div class="error-state">Error: '+escHtml(e.message)+'</div>';
-    }
-  } else if (tab === 'chat' && cache.msgs) {
-    renderSessChatTab(sid, cache.msgs);
-  }
-
-  if (tab === 'feedback' && !cache.feedbacks) {
-    const el = document.getElementById('stc-feedback-'+sid);
-    if (el) el.innerHTML = '<div class="loading-state"><div class="spinner"></div></div>';
-    try {
-      const { data } = await sb.from('feedback').select('*').eq('session_id',sid).order('created_at',{ascending:true});
-      cache.feedbacks = data || [];
-      renderSessFeedbackTab(sid, cache.feedbacks);
-    } catch(e) {
-      if (el) el.innerHTML = '<div class="error-state">Error: '+escHtml(e.message)+'</div>';
-    }
-  } else if (tab === 'feedback' && cache.feedbacks) {
-    renderSessFeedbackTab(sid, cache.feedbacks);
-  }
-}
-
-function renderSessChatTab(sid, msgs) {
-  const el = document.getElementById('stc-chat-'+sid);
-  if (!el) return;
-  const bubblesHtml = msgs.map(m => {
-    const t = new Date(m.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
-    let sClass, sLabel, bClass;
-    if (m.sender==='participant') { sClass='msg-sender-participant'; sLabel='👤 Participant'; bClass='participant'; }
-    else if (m.sender==='ai')    { sClass='msg-sender-ai'; sLabel='🤖 AI'; bClass='ai'; }
-    else                          { sClass='msg-sender-organizer'; sLabel='🏢 Organizer'; bClass='organizer'; }
-    return `<div class="msg-bubble ${bClass}"><div class="msg-bubble-meta"><span class="msg-sender-label ${sClass}">${sLabel}</span><span>· ${t}</span></div><div class="msg-bubble-inner">${escHtml(m.text)}</div></div>`;
-  }).join('');
-
-  el.innerHTML = `
-    <div class="mini-messages" id="smsg-${escHtml(sid)}">
-      ${bubblesHtml || '<div class="empty-state">No messages yet</div>'}
-    </div>
-    <div class="sess-reply-area">
-      <textarea class="sess-reply-inp" id="sinp-${escHtml(sid)}" placeholder="Reply... (Enter to send)"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendSessReply('${escHtml(sid)}')}"
-        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-      <button class="sess-reply-btn" id="sbtn-${escHtml(sid)}" onclick="sendSessReply('${escHtml(sid)}')">Send</button>
-    </div>
-    <div id="srep-status-${escHtml(sid)}" class="sess-reply-status" style="display:none"></div>`;
-
-  // scroll to bottom
+function scrollConvToBottom(sid) {
   setTimeout(() => {
-    const msgEl = document.getElementById('smsg-'+sid);
-    if (msgEl) msgEl.scrollTop = msgEl.scrollHeight;
+    const el = document.getElementById('conv-msgs-' + sid);
+    if (el) el.scrollTop = el.scrollHeight;
   }, 50);
 }
 
-function renderSessFeedbackTab(sid, feedbacks) {
-  const el = document.getElementById('stc-feedback-'+sid);
-  if (!el) return;
-  if (!feedbacks.length) { el.innerHTML='<div class="empty-state">No feedback from this session</div>'; return; }
-  el.innerHTML = `<div class="mini-feed">${feedbacks.map(f => {
-    const t = new Date(f.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
-    return `<div class="mini-fb-item"><div class="mini-fb-text">${escHtml(f.text)}</div><div class="mini-fb-meta">${f.speaker?'During: '+escHtml(f.speaker)+' · ':''} ${t}</div></div>`;
-  }).join('')}</div>`;
-}
+// ── Per-session AI Toggle ──
+async function toggleSessionAI(event, sid) {
+  event.stopPropagation(); // don't expand/collapse card
+  const current = aiOverrideMap[sid]; // null | true | false
+  // Cycle: global → off → on → global
+  let next;
+  if (current === null || current === undefined) next = false;
+  else if (current === false) next = true;
+  else next = null;
 
-async function sendSessReply(sid) {
-  const inp    = document.getElementById('sinp-'+sid);
-  const btn    = document.getElementById('sbtn-'+sid);
-  const status = document.getElementById('srep-status-'+sid);
-  const text   = inp ? inp.value.trim() : '';
-  if (!text) return;
-  btn.disabled = true; inp.disabled = true;
+  aiOverrideMap[sid] = next;
+  updateConvAIToggle(sid, next);
+
   try {
-    const { error } = await sb.from('messages').insert({ session_id:sid, sender:'organizer', text, reset_epoch:liveEpoch });
-    if (error) throw error;
-
-    // Disable AI for session automatically
-    if (aiOverrideMap[sid] !== false) {
-      aiOverrideMap[sid] = false;
-      await sb.from('sessions').update({ ai_override:false }).eq('id',sid);
-    }
-
-    inp.value=''; inp.style.height='auto';
-    // Append bubble
-    const msgsEl = document.getElementById('smsg-'+sid);
-    if (msgsEl) {
-      const t = new Date().toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
-      const div = document.createElement('div');
-      div.className = 'msg-bubble organizer';
-      div.innerHTML = `<div class="msg-bubble-meta"><span class="msg-sender-label msg-sender-organizer">🏢 Organizer</span><span>· ${t}</span></div><div class="msg-bubble-inner">${escHtml(text)}</div>`;
-      msgsEl.appendChild(div);
-      msgsEl.scrollTop = msgsEl.scrollHeight;
-    }
-    // Update cache
-    if (sessDataCache[sid]?.msgs) sessDataCache[sid].msgs.push({sender:'organizer',text,created_at:new Date().toISOString()});
-
-    if (status) { status.style.display='block'; status.className='sess-reply-status status-ok'; status.textContent='✓ Sent — AI disabled for this session'; setTimeout(()=>{status.style.display='none';},3000); }
-  } catch(e) {
-    if (status) { status.style.display='block'; status.className='sess-reply-status status-err'; status.textContent='✗ '+e.message; }
-  } finally { btn.disabled=false; inp.disabled=false; inp.focus(); }
-}
-
-async function toggleSessAI(sid, checkbox) {
-  const val = checkbox.checked ? true : false;
-  aiOverrideMap[sid] = val;
-  updateSessAILabel(sid, val);
-  try {
-    const { error } = await sb.from('sessions').update({ ai_override:val }).eq('id',sid);
+    const { error } = await sb.from('sessions').update({ ai_override: next }).eq('id', sid);
     if (error) throw error;
   } catch(e) {
-    aiOverrideMap[sid] = !val;
-    checkbox.checked = !val;
-    updateSessAILabel(sid, !val);
+    // Revert on error
+    aiOverrideMap[sid] = current;
+    updateConvAIToggle(sid, current);
+    console.warn('AI toggle error:', e.message);
   }
 }
 
-async function resetSessAI(sid) {
-  aiOverrideMap[sid] = null;
-  const cb = document.getElementById('sai-'+sid);
-  if (cb) cb.checked = false;
-  updateSessAILabel(sid, null);
+function updateConvAIToggle(sid, val) {
+  const btn = document.querySelector(`#conv-card-${CSS.escape(sid)} .conv-ai-toggle`);
+  if (!btn) return;
+  btn.className = 'conv-ai-toggle ' + (val === false ? 'ai-off' : val === true ? 'ai-on' : 'ai-global');
+  const spans = btn.querySelectorAll('span');
+  if (spans[0]) spans[0].textContent = val === false ? '✕' : val === true ? '✓' : '◎';
+  if (spans[1]) spans[1].textContent = val === false ? 'AI Off' : val === true ? 'AI On' : 'AI Global';
+}
+
+// ── Inline Reply ──
+async function sendConvReply(sid) {
+  const inp    = document.getElementById('conv-inp-' + sid);
+  const btn    = document.getElementById('conv-btn-' + sid);
+  const status = document.getElementById('conv-status-' + sid);
+  const text   = inp ? inp.value.trim() : '';
+  if (!text) return;
+
+  btn.disabled = true;
+  inp.disabled = true;
+
   try {
-    await sb.from('sessions').update({ ai_override:null }).eq('id',sid);
-  } catch(e) { console.warn('AI reset error:', e.message); }
+    const { error } = await sb.from('messages').insert({
+      session_id: sid,
+      sender: 'organizer',
+      text,
+      reset_epoch: liveEpoch
+    });
+    if (error) throw error;
+
+    // Disable AI for this session automatically when organizer replies
+    if (aiOverrideMap[sid] !== false) {
+      aiOverrideMap[sid] = false;
+      updateConvAIToggle(sid, false);
+      await sb.from('sessions').update({ ai_override: false }).eq('id', sid);
+    }
+
+    inp.value = '';
+    inp.style.height = 'auto';
+
+    // Append bubble immediately
+    const msgsEl = document.getElementById('conv-msgs-' + sid);
+    if (msgsEl) {
+      const t = new Date().toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble organizer';
+      bubble.innerHTML = `<div class="msg-bubble-meta"><span class="msg-sender-label msg-sender-organizer">🏢 Organizer</span><span>· ${t}</span></div><div class="msg-bubble-inner">${escHtml(text)}</div>`;
+      msgsEl.appendChild(bubble);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    if (status) {
+      status.style.display = 'block';
+      status.textContent = '✓ Sent! AI disabled for this session.';
+      setTimeout(() => { status.style.display = 'none'; }, 3000);
+    }
+  } catch(e) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.color = 'var(--red)';
+      status.textContent = '✗ Error: ' + e.message;
+    }
+  } finally {
+    btn.disabled = false;
+    inp.disabled = false;
+    inp.focus();
+  }
 }
 
-function updateSessAILabel(sid, val) {
-  const lbl = document.getElementById('sai-lbl-'+sid);
-  if (!lbl) return;
-  const label = val===false?'Off (manual)':val===true?'On (manual)':'Global default';
-  const color = val===false?'var(--red)':val===true?'var(--green)':'var(--text-faint)';
-  lbl.textContent = label;
-  lbl.style.color = color;
+// ════ ACTIVITY MODAL ════
+async function openActivityModal(sessionId) {
+  const modal = document.getElementById('activity-modal');
+  const body  = document.getElementById('modal-body');
+  const title = document.getElementById('modal-title');
+  const sub   = document.getElementById('modal-sub');
+  const emailTag = document.getElementById('modal-email-tag');
+  const email = emailMap[sessionId];
+  title.textContent = email ? email : ('Session ' + sessionId.substring(0, 12) + '…');
+  if (email) { emailTag.textContent = email; emailTag.style.display = 'inline-block'; }
+  else emailTag.style.display = 'none';
+  sub.textContent = 'Loading activity…';
+  body.innerHTML  = '<div class="loading-state"><div class="spinner"></div>Loading activity...</div>';
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  try {
+    const [sessRes, msgsRes, fbRes, wsRes, eventsRes] = await Promise.all([
+      sb.from('sessions').select('*').eq('id', sessionId).single(),
+      sb.from('messages').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('feedback').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('workshop_registrations').select('*').eq('session_id', sessionId).order('created_at', { ascending: true }),
+      sb.from('page_events').select('*').eq('session_id', sessionId).in('event_type', ['visit','page_hidden','page_visible']).order('created_at', { ascending: true }).limit(20)
+    ]);
+    const sess = sessRes.data;
+    const msgs = msgsRes.data || [];
+    const feedbacks = fbRes.data || [];
+    const wsRegs  = wsRes.data  || [];
+    const events  = eventsRes.data || [];
+    if (!sess) { body.innerHTML = '<div class="empty-state">Session not found.</div>'; sub.textContent = ''; return; }
+    const parts = [];
+    if (sess.device_type) parts.push(sess.device_type);
+    if (sess.browser)     parts.push(sess.browser);
+    if (sess.os)          parts.push(sess.os);
+    if (sess.country)     parts.push(sess.country + (sess.city ? ', ' + sess.city : ''));
+    sub.textContent = parts.join(' · ') || 'No device info';
+    const fmtDate = ts => new Date(ts).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+    const fmtDur  = sec => { if (!sec || sec <= 0) return '—'; const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${s}s`:`${s}s`; };
+    const userMsgs = msgs.filter(m => m.sender === 'participant');
+    let html = `<div class="activity-stats-row"><div class="activity-stat-chip"><span class="activity-stat-chip-val">${sess.visit_count||1}</span><span class="activity-stat-chip-label">Visits</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${userMsgs.length}</span><span class="activity-stat-chip-label">Chat msgs</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${feedbacks.length}</span><span class="activity-stat-chip-label">Feedback</span></div><div class="activity-stat-chip"><span class="activity-stat-chip-val">${fmtDur(sess.total_time_sec)}</span><span class="activity-stat-chip-label">Time on site</span></div></div>`;
+    if (wsRegs.length) {
+      html += `<div class="activity-section-title">Workshop Registration</div><div class="activity-timeline">`;
+      wsRegs.forEach(r => { html += `<div class="activity-item"><div class="activity-dot activity-dot-workshop"></div><div class="activity-content"><div class="activity-type activity-type-workshop">Registered</div><div class="activity-text">✉ ${escHtml(r.email)}</div></div><div class="activity-time">${fmtDate(r.created_at)}</div></div>`; });
+      html += `</div>`;
+    }
+    if (msgs.length) {
+      html += `<div class="activity-section-title">Chat Conversation</div><div class="activity-timeline">`;
+      msgs.forEach(m => {
+        const isUser=m.sender==='participant', isAI=m.sender==='ai';
+        const dotClass  = isUser?'activity-dot-chat':isAI?'activity-dot-ai':'activity-dot-visit';
+        const typeClass = isUser?'activity-type-chat':isAI?'activity-type-ai':'activity-type-visit';
+        const typeLabel = isUser?'👤 Participant':isAI?'🤖 AI Assistant':'🏢 Organizer';
+        html += `<div class="activity-item"><div class="activity-dot ${dotClass}"></div><div class="activity-content"><div class="activity-type ${typeClass}">${typeLabel}</div><div class="activity-text">${escHtml(m.text)}</div></div><div class="activity-time">${fmtDate(m.created_at)}</div></div>`;
+      });
+      html += `</div>`;
+    }
+    if (feedbacks.length) {
+      html += `<div class="activity-section-title">Feedback</div><div class="activity-timeline">`;
+      feedbacks.forEach(f => { html += `<div class="activity-item"><div class="activity-dot activity-dot-fb"></div><div class="activity-content"><div class="activity-type activity-type-fb">Feedback${f.speaker?' · during '+escHtml(f.speaker):''}</div><div class="activity-text">${escHtml(f.text)}</div></div><div class="activity-time">${fmtDate(f.created_at)}</div></div>`; });
+      html += `</div>`;
+    }
+    if (events.length) {
+      html += `<div class="activity-section-title">Page Events</div><div class="activity-timeline">`;
+      const labels = { visit:'🟢 Page opened', page_hidden:'🟡 Switched tab', page_visible:'🟢 Returned' };
+      events.forEach(e => { html += `<div class="activity-item"><div class="activity-dot activity-dot-visit"></div><div class="activity-content"><div class="activity-type activity-type-visit">${labels[e.event_type]||e.event_type}</div></div><div class="activity-time">${fmtDate(e.created_at)}</div></div>`; });
+      html += `</div>`;
+    }
+    if (!wsRegs.length && !msgs.length && !feedbacks.length && !events.length) html = '<div class="activity-empty">No activity recorded yet.</div>';
+    body.innerHTML = html;
+  } catch(e) {
+    body.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+    sub.textContent = '';
+  }
 }
 
-// ════ FEEDBACK PAGE ════
+function closeActivityModal(event) { if (event.target === document.getElementById('activity-modal')) closeActivityModalDirect(); }
+function closeActivityModalDirect() { document.getElementById('activity-modal').classList.remove('open'); document.body.style.overflow = ''; }
+
+// ════ FEEDBACK ════
 async function loadFeedback() {
   const feed = document.getElementById('fb-feed');
   feed.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    const { data, count, error } = await sb.from('feedback').select('*',{count:'exact'}).eq('reset_epoch',currentEpoch).order('created_at',{ascending:false});
+    const { data, count, error } = await sb.from('feedback')
+      .select('*', { count: 'exact' }).eq('reset_epoch', currentEpoch)
+      .order('created_at', { ascending: false });
     if (error) throw error;
-    document.getElementById('fb-count').textContent = (count||0)+' submissions';
-    if (!(data||[]).length) { feed.innerHTML='<div class="empty-state">No feedback yet</div>'; return; }
-    feed.innerHTML = (data||[]).map(f => {
-      const t = new Date(f.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+    document.getElementById('fb-count').textContent = (count || 0) + ' submissions';
+    if (!(data || []).length) { feed.innerHTML = '<div class="empty-state">No feedback yet</div>'; return; }
+    feed.innerHTML = (data || []).map(f => {
+      const t = new Date(f.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
       const email = emailMap[f.session_id];
       const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
-      return `<div class="feed-item"><div class="feed-item-top"><span><span class="feed-sender">${email?escHtml(email):'Feedback'}</span>${emailTag}</span><span class="feed-time">${t}</span></div><div class="feed-text">${escHtml(f.text)}</div>${f.speaker?`<div class="feed-meta">During: ${escHtml(f.speaker)}</div>`:''}</div>`;
+      return `<div class="feed-item"><div class="feed-item-top"><span><span class="feed-sender feedback" data-sid="${escHtml(f.session_id||'')}">${email?escHtml(email):'Feedback'}</span>${emailTag}</span><span class="feed-time">${t}</span></div><div class="feed-text">${escHtml(f.text)}</div>${f.speaker?`<div class="feed-meta">During: ${escHtml(f.speaker)}</div>`:''}</div>`;
     }).join('');
-  } catch(e) { feed.innerHTML='<div class="error-state">Error: '+escHtml(e.message)+'</div>'; }
+  } catch(e) {
+    feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════ QUESTIONS ════
@@ -1286,16 +1462,19 @@ async function loadQuestions() {
   const container = document.getElementById('q-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    const { data, error } = await sb.from('messages').select('text').eq('sender','participant').eq('reset_epoch',currentEpoch);
+    const { data, error } = await sb.from('messages')
+      .select('text').eq('sender', 'participant').eq('reset_epoch', currentEpoch);
     if (error) throw error;
     const counts = {};
-    (data||[]).forEach(m => { const t=(m.text||'').trim(); if(t.length>2) counts[t]=(counts[t]||0)+1; });
-    const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,30);
-    if (!sorted.length) { container.innerHTML='<div class="empty-state">No messages yet</div>'; return; }
-    container.innerHTML = sorted.map(([text,count],i) =>
+    (data || []).forEach(m => { const t = (m.text||'').trim(); if (t.length > 2) counts[t] = (counts[t]||0)+1; });
+    const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 30);
+    if (!sorted.length) { container.innerHTML = '<div class="empty-state">No messages yet</div>'; return; }
+    container.innerHTML = sorted.map(([text, count], i) =>
       `<div class="q-item"><div class="q-rank">#${i+1}</div><div class="q-text">${escHtml(text)}</div><div class="q-count">×${count}</div></div>`
     ).join('');
-  } catch(e) { container.innerHTML='<div class="error-state">Error: '+escHtml(e.message)+'</div>'; }
+  } catch(e) {
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
+  }
 }
 
 // ════ WORKSHOP ════
@@ -1303,29 +1482,32 @@ async function loadWorkshop() {
   const tbody = document.getElementById('workshop-table');
   tbody.innerHTML = '<tr><td colspan="4"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
   try {
-    const { data, count, error } = await sb.from('workshop_registrations').select('*',{count:'exact'}).order('created_at',{ascending:false});
+    const { data, count, error } = await sb.from('workshop_registrations')
+      .select('*', { count: 'exact' }).order('created_at', { ascending: false });
     if (error) throw error;
-    document.getElementById('workshop-count').textContent = (count||0)+' registrations';
+    document.getElementById('workshop-count').textContent = (count || 0) + ' registrations';
     const banner = document.getElementById('workshop-banner');
-    if (count>0) { banner.style.display='flex'; document.getElementById('workshop-reg-num').textContent=count; }
-    else banner.style.display='none';
-    if (!(data||[]).length) { tbody.innerHTML='<tr><td colspan="4"><div class="empty-state">No registrations yet</div></td></tr>'; return; }
-    tbody.innerHTML = (data||[]).map(r => {
-      const t = new Date(r.created_at).toLocaleString('en-GB',{hour12:false,timeStyle:'short',dateStyle:'short'});
+    if (count > 0) { banner.style.display = 'flex'; document.getElementById('workshop-reg-num').textContent = count; }
+    else banner.style.display = 'none';
+    if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No registrations yet</div></td></tr>'; return; }
+    tbody.innerHTML = (data || []).map(r => {
+      const t = new Date(r.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
       return `<tr><td class="td-email">${escHtml(r.email)}</td><td class="td-mono" title="${escHtml(r.session_id||'')}">${escHtml((r.session_id||'').substring(0,12))}…</td><td style="color:var(--text-faint)">${t}</td><td><span class="pill pill-navy">Session ${r.reset_epoch||1}</span></td></tr>`;
     }).join('');
-  } catch(e) { tbody.innerHTML='<tr><td colspan="4"><div class="error-state">Error: '+escHtml(e.message)+'</div></td></tr>'; }
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="4"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+  }
 }
 
 // ════ PRESENCE ════
 function subscribePresence() {
   if (presenceChannel) sb.removeChannel(presenceChannel);
   presenceChannel = sb.channel('presence_room');
-  presenceChannel.on('presence',{event:'sync'}, () => {
+  presenceChannel.on('presence', { event: 'sync' }, () => {
     const count = Object.keys(presenceChannel.presenceState()).length;
     document.getElementById('s-online').textContent            = count;
     document.getElementById('sb-online').textContent           = count;
-    document.getElementById('topbar-online-count').textContent = count+' online';
+    document.getElementById('topbar-online-count').textContent = count + ' online';
   }).subscribe();
 }
 
@@ -1336,96 +1518,119 @@ function populateSpeakerSelect() {
 }
 
 function renderSpeakerCard(currentId) {
-  const idx  = AGENDA.findIndex(a => a.id===currentId);
-  const cur  = idx>=0 ? AGENDA[idx]   : null;
-  const next = idx>=0 ? (AGENDA[idx+1]||null) : null;
+  const idx  = AGENDA.findIndex(a => a.id === currentId);
+  const cur  = idx >= 0 ? AGENDA[idx] : null;
+  const next = idx >= 0 ? (AGENDA[idx + 1] || null) : null;
   document.getElementById('snc-current-name').textContent = cur  ? cur.speaker  : '—';
-  document.getElementById('snc-current-sub').textContent  = cur  ? (cur.isBreak?'Break / Ceremony':`Item ${cur.id} of ${AGENDA.length}`) : '';
+  document.getElementById('snc-current-sub').textContent  = cur  ? (cur.isBreak ? 'Break / Ceremony' : `Item ${cur.id} of ${AGENDA.length}`) : '';
   document.getElementById('snc-next-name').textContent    = next ? next.speaker : '—';
-  document.getElementById('snc-next-sub').textContent     = next ? (next.isBreak?'Break / Ceremony':'') : (cur?'Program ended':'');
-  document.getElementById('snc-idx').textContent          = idx>=0 ? `${idx+1} / ${AGENDA.length}` : '—';
-  document.getElementById('ctrl-speaker-sel').value       = currentId||'';
+  document.getElementById('snc-next-sub').textContent     = next ? (next.isBreak ? 'Break / Ceremony' : '') : (cur ? 'Program ended' : '');
+  document.getElementById('snc-idx').textContent          = idx >= 0 ? `${idx+1} / ${AGENDA.length}` : '—';
+  document.getElementById('ctrl-speaker-sel').value       = currentId || '';
 }
 
 async function loadControl() {
   try {
-    const { data, error } = await sb.from('live_state').select('*').eq('id',1).single();
+    const { data, error } = await sb.from('live_state').select('*').eq('id', 1).single();
     if (error) throw error;
     if (!data) return;
     renderSpeakerCard(data.current_id);
-    const aiT = document.getElementById('ctrl-ai-toggle');
-    aiT.checked = Boolean(data.ai_enabled);
-    document.getElementById('ctrl-ai-label').textContent = aiT.checked?'AI Enabled':'AI Disabled';
-    const cdT = document.getElementById('ctrl-cd-toggle');
-    cdT.checked = Boolean(data.show_countdown);
-    document.getElementById('ctrl-cd-label').textContent = cdT.checked?'Countdown ON':'Countdown OFF';
-    const wsT = document.getElementById('ctrl-ws-toggle');
-    wsT.checked = Boolean(data.show_workshop);
-    document.getElementById('ctrl-ws-label').textContent = wsT.checked?'Workshop ON':'Workshop OFF';
+    const aiToggle = document.getElementById('ctrl-ai-toggle');
+    aiToggle.checked = Boolean(data.ai_enabled);
+    document.getElementById('ctrl-ai-label').textContent = aiToggle.checked ? 'AI Enabled' : 'AI Disabled';
+    const cdToggle = document.getElementById('ctrl-cd-toggle');
+    cdToggle.checked = Boolean(data.show_countdown);
+    document.getElementById('ctrl-cd-label').textContent = cdToggle.checked ? 'Countdown ON' : 'Countdown OFF';
+    const wsToggle = document.getElementById('ctrl-ws-toggle');
+    wsToggle.checked = Boolean(data.show_workshop);
+    document.getElementById('ctrl-ws-label').textContent = wsToggle.checked ? 'Workshop ON' : 'Workshop OFF';
   } catch(e) { console.warn('Control load error:', e.message); }
 }
 
 async function stepSpeaker(dir) {
-  const curId = parseInt(document.getElementById('ctrl-speaker-sel').value)||AGENDA[0].id;
-  const idx   = AGENDA.findIndex(a=>a.id===curId);
-  const ni    = Math.max(0,Math.min(AGENDA.length-1,idx+dir));
-  await _saveSpeaker(AGENDA[ni].id);
+  const curId  = parseInt(document.getElementById('ctrl-speaker-sel').value) || AGENDA[0].id;
+  const idx    = AGENDA.findIndex(a => a.id === curId);
+  const newIdx = Math.max(0, Math.min(AGENDA.length - 1, idx + dir));
+  await _saveSpeaker(AGENDA[newIdx].id);
 }
+
 async function jumpSpeaker() {
   const id = parseInt(document.getElementById('ctrl-speaker-sel').value);
   if (id) await _saveSpeaker(id);
 }
+
 async function _saveSpeaker(id) {
   const status = document.getElementById('ctrl-speaker-status');
-  status.className='status-msg status-info'; status.textContent='Saving...';
+  status.className = 'status-msg status-info'; status.textContent = 'Saving...';
   try {
-    const { error } = await sb.from('live_state').update({current_id:id,speaker_started_at:new Date().toISOString()}).eq('id',1);
+    const { error } = await sb.from('live_state').update({ current_id: id, speaker_started_at: new Date().toISOString() }).eq('id', 1);
     if (error) throw error;
     renderSpeakerCard(id);
-    status.className='status-msg status-ok';
-    status.textContent='✓ Updated at '+new Date().toLocaleTimeString();
-    setTimeout(()=>{status.textContent='';},3000);
-  } catch(e) { status.className='status-msg status-err'; status.textContent='✗ '+e.message; }
+    status.className = 'status-msg status-ok';
+    status.textContent = '✓ Updated at ' + new Date().toLocaleTimeString();
+    setTimeout(() => { status.textContent = ''; }, 3000);
+  } catch(e) {
+    status.className = 'status-msg status-err'; status.textContent = '✗ Error: ' + e.message;
+  }
 }
+
 async function setAI() {
-  const tog=document.getElementById('ctrl-ai-toggle'), lbl=document.getElementById('ctrl-ai-label');
-  lbl.textContent='Saving...';
-  try { const{error}=await sb.from('live_state').update({ai_enabled:tog.checked}).eq('id',1); if(error)throw error; lbl.textContent=tog.checked?'AI Enabled':'AI Disabled'; }
-  catch(e) { lbl.textContent='✗ Error'; tog.checked=!tog.checked; }
-}
-async function setCountdown() {
-  const tog=document.getElementById('ctrl-cd-toggle'), lbl=document.getElementById('ctrl-cd-label');
-  lbl.textContent='Saving...';
-  try { const{error}=await sb.from('live_state').update({show_countdown:tog.checked}).eq('id',1); if(error)throw error; lbl.textContent=tog.checked?'Countdown ON':'Countdown OFF'; }
-  catch(e) { lbl.textContent='✗ Error'; tog.checked=!tog.checked; }
-}
-async function setWorkshop() {
-  const tog=document.getElementById('ctrl-ws-toggle'), lbl=document.getElementById('ctrl-ws-label');
-  lbl.textContent='Saving...';
-  try { const{error}=await sb.from('live_state').update({show_workshop:tog.checked}).eq('id',1); if(error)throw error; lbl.textContent=tog.checked?'Workshop ON':'Workshop OFF'; }
-  catch(e) { lbl.textContent='✗ Error'; tog.checked=!tog.checked; }
-}
-async function sendReply() {
-  const sel=document.getElementById('ctrl-reply-sel'), text=document.getElementById('ctrl-reply-text').value.trim(), status=document.getElementById('ctrl-reply-status');
-  if(!sel.value){status.className='status-msg status-err';status.textContent='Please select a session';return;}
-  if(!text){status.className='status-msg status-err';status.textContent='Please enter a message';return;}
-  status.className='status-msg status-info';status.textContent='Sending...';
+  const tog = document.getElementById('ctrl-ai-toggle');
+  const label = document.getElementById('ctrl-ai-label');
+  label.textContent = 'Saving...';
   try {
-    const{error}=await sb.from('messages').insert({session_id:sel.value,sender:'organizer',text,reset_epoch:liveEpoch});
-    if(error)throw error;
-    document.getElementById('ctrl-reply-text').value='';
-    status.className='status-msg status-ok';status.textContent='✓ Sent!';
-    setTimeout(()=>{status.textContent='';},3000);
-  } catch(e){status.className='status-msg status-err';status.textContent='✗ '+e.message;}
+    const { error } = await sb.from('live_state').update({ ai_enabled: tog.checked }).eq('id', 1);
+    if (error) throw error;
+    label.textContent = tog.checked ? 'AI Enabled' : 'AI Disabled';
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
+}
+
+async function setCountdown() {
+  const tog = document.getElementById('ctrl-cd-toggle');
+  const label = document.getElementById('ctrl-cd-label');
+  label.textContent = 'Saving...';
+  try {
+    const { error } = await sb.from('live_state').update({ show_countdown: tog.checked }).eq('id', 1);
+    if (error) throw error;
+    label.textContent = tog.checked ? 'Countdown ON' : 'Countdown OFF';
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
+}
+
+async function setWorkshop() {
+  const tog = document.getElementById('ctrl-ws-toggle');
+  const label = document.getElementById('ctrl-ws-label');
+  label.textContent = 'Saving...';
+  try {
+    const { error } = await sb.from('live_state').update({ show_workshop: tog.checked }).eq('id', 1);
+    if (error) throw error;
+    label.textContent = tog.checked ? 'Workshop ON' : 'Workshop OFF';
+  } catch(e) { label.textContent = '✗ Error'; tog.checked = !tog.checked; }
+}
+
+async function sendReply() {
+  const sel    = document.getElementById('ctrl-reply-sel');
+  const text   = document.getElementById('ctrl-reply-text').value.trim();
+  const status = document.getElementById('ctrl-reply-status');
+  if (!sel.value) { status.className='status-msg status-err'; status.textContent='Please select a session'; return; }
+  if (!text)      { status.className='status-msg status-err'; status.textContent='Please enter a message'; return; }
+  status.className = 'status-msg status-info'; status.textContent = 'Sending...';
+  try {
+    const { error } = await sb.from('messages').insert({ session_id: sel.value, sender: 'organizer', text, reset_epoch: liveEpoch });
+    if (error) throw error;
+    document.getElementById('ctrl-reply-text').value = '';
+    status.className = 'status-msg status-ok'; status.textContent = '✓ Sent!';
+    setTimeout(() => { status.textContent = ''; }, 3000);
+  } catch(e) {
+    status.className = 'status-msg status-err'; status.textContent = '✗ Error: ' + e.message;
+  }
 }
 
 // ════ UTILS ════
 function escHtml(str) {
-  return String(str??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-document.addEventListener('keydown', e => { if(e.key==='Escape') {} });
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeActivityModalDirect(); });
 </script>
 </body>
 </html>
-HTMLEOF
-echo "Done, size: $(wc -c < /home/claude/dashboard.html) bytes"
