@@ -829,23 +829,18 @@ async function trackSession() {
   // registration.html-მა attendance-ში ჩაწერა { email, session_id }
   // ეს ქმნის კავშირს: "ვინ იყო ეს session"
   if (!participantEmail) {
-    try {
-      const { data: att } = await sb
-        .from('attendance')
-        .select('email')
-        .eq('session_id', sessionId)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single();
-      if (att?.email) {
-        participantEmail = att.email;
-        // workshop form-ს pre-fill
-        const wsInp = document.getElementById('ws-form-email');
-        if (wsInp && !wsInp.value) wsInp.value = participantEmail;
-      }
-    } catch(e) {
-      // არარსებული record — ნორმალურია (ვისაც registration არ გაუვლია)
-    }
+try {
+  const { data: att } = await sb
+    .from('attendance')
+    .select('email')
+    .eq('session_id', sessionId)
+    .limit(1);
+  if (att && att.length > 0 && att[0].email) {
+    participantEmail = att[0].email;
+    const wsInp = document.getElementById('ws-form-email');
+    if (wsInp && !wsInp.value) wsInp.value = participantEmail;
+  }
+} catch(e) {}
   }
 
   const dev = getDeviceInfo();
