@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/agenda.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,7 +52,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
 .speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
 
-/* ── BADGE TIMER (organizer-style) ── */
+/* ── BADGE TIMER ── */
 .badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;font-variant-numeric:tabular-nums;}
 .badge-timer{background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);min-width:48px;text-align:center;}
 .badge-timer.over{background:rgba(220,38,38,.08);color:var(--warn);border-color:rgba(220,38,38,.3);}
@@ -83,62 +86,25 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
 
 /* ── SINGLE FEATURED WORKSHOP CARD ── */
-.ws-cards{
-  display:grid;
-  grid-template-columns:1fr;
-  max-width:480px;
-  margin:0 auto;
-  width:100%;
-}
+.ws-cards{display:grid;grid-template-columns:1fr;max-width:480px;margin:0 auto;width:100%;}
 .ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
 .ws-card:active{transform:scale(.97);}
 .ws-card.full{opacity:.55;pointer-events:none;}
-.ws-card-inner{
-  position:relative;z-index:1;
-  background:var(--surface);
-  border:1.5px solid var(--border);
-  border-radius:14px;
-  padding:20px 18px;
-  transition:border-color .2s,background .2s;
-  height:100%;display:flex;flex-direction:column;gap:12px;
-}
+.ws-card-inner{position:relative;z-index:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px 18px;transition:border-color .2s,background .2s;height:100%;display:flex;flex-direction:column;gap:12px;}
 .ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
 .ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
-.ws-card-icon{
-  width:44px;height:44px;border-radius:10px;
-  background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);
-  border:1px solid var(--navy-border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:800;color:var(--navy);
-  letter-spacing:.04em;flex-shrink:0;
-}
+.ws-card-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--navy);letter-spacing:.04em;flex-shrink:0;}
 .ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 6px;border-radius:20px;}
 .ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
 .ws-card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.2;}
-
-/* Presenter block */
-.ws-card-presenter{
-  display:flex;flex-direction:column;gap:2px;
-  padding:10px 12px;
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:8px;
-}
+.ws-card-presenter{display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;}
 .ws-presenter-name{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
 .ws-presenter-inst{font-size:10px;color:var(--text-faint);font-style:italic;}
-
-/* Requirements block */
 .ws-requirements{display:flex;flex-direction:column;gap:6px;}
 .ws-req-label{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;}
 .ws-req-items{display:flex;gap:8px;flex-wrap:wrap;}
-.ws-req-item{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:11px;font-weight:600;color:var(--text-dim);
-  background:var(--bg2);border:1px solid var(--border);
-  border-radius:20px;padding:5px 12px;
-}
-
+.ws-req-item{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-dim);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;}
 .ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
 .ws-seats{display:flex;flex-direction:column;gap:4px;}
 .ws-seats-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
@@ -148,14 +114,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-seats-text{font-size:9px;font-weight:700;color:var(--text-dim);}
 .ws-seats-text.warn{color:#B45309;}
 .ws-seats-text.danger{color:#DC2626;}
-.ws-select-btn{
-  display:flex;align-items:center;justify-content:center;
-  padding:11px 14px;background:var(--navy);border-radius:10px;
-  font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;
-  transition:opacity .15s;width:100%;
-}
+.ws-select-btn{display:flex;align-items:center;justify-content:center;padding:11px 14px;background:var(--navy);border-radius:10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;transition:opacity .15s;width:100%;}
 .ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
-
 .ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
 @keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
@@ -325,7 +285,6 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
             <div class="ws-card-title" id="ws-title-a">AI Literacy</div>
             <div class="ws-card-presenter">
               <span class="ws-presenter-name">Mariam Katcheishvili, M.D., Ph.Dc.</span>
-
             </div>
             <div class="ws-requirements">
               <div class="ws-req-label">Requirements</div>
@@ -525,6 +484,7 @@ let selectedWorkshop = null;
 let workshopCounts   = { a: 0 };
 let workshopRegistered = null;
 
+// ── SESSION ID: registration.html-თან გაზიარებული key ──
 const _existingSid = localStorage.getItem('syssa_sid');
 const isReturning  = !!_existingSid;
 let sessionId = _existingSid || ('p_' + Math.random().toString(36).substr(2, 9));
@@ -627,6 +587,11 @@ async function initWorkshop() {
     participantEmail   = storedEmail;
     showWorkshopSuccess(storedKey, storedEmail);
     return;
+  }
+  // email pre-fill: თუ attendance-დან უკვე ვიცით
+  if (participantEmail) {
+    const inp = document.getElementById('ws-form-email');
+    if (inp) inp.value = participantEmail;
   }
   updateSeatsUI();
 }
@@ -759,6 +724,7 @@ async function submitWorkshop() {
     const isDuplicate = wErr?.code === '23505';
     if (wErr && !isDuplicate) throw wErr;
 
+    // ── email-ი sessions + messages + feedback ცხრილებში ჩავწეროთ ──
     await sb.from('sessions').update({ participant_email: email }).eq('id', sessionId);
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
     await sb.from('feedback').update({ participant_email: email }).eq('session_id', sessionId);
@@ -861,17 +827,50 @@ async function getGeo() {
 async function trackSession() {
   if (!sb || sessionTracked) return;
   sessionTracked = true;
+
+  // ── ახალი: attendance ცხრილიდან email წავიკითხოთ session_id-ით ──
+  // registration.html-მა attendance-ში ჩაწერა { email, session_id }
+  // ეს ქმნის კავშირს: "ვინ იყო ეს session"
+  if (!participantEmail) {
+    try {
+      const { data: att } = await sb
+        .from('attendance')
+        .select('email')
+        .eq('session_id', sessionId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+      if (att?.email) {
+        participantEmail = att.email;
+        // workshop form-ს pre-fill
+        const wsInp = document.getElementById('ws-form-email');
+        if (wsInp && !wsInp.value) wsInp.value = participantEmail;
+      }
+    } catch(e) {
+      // არარსებული record — ნორმალურია (ვისაც registration არ გაუვლია)
+    }
+  }
+
   const dev = getDeviceInfo();
   const geo = await getGeo();
   const visitKey   = 'syssa_visits_' + sessionId;
   const visitCount = parseInt(localStorage.getItem(visitKey) || '0') + 1;
   localStorage.setItem(visitKey, String(visitCount));
+
   const upsertData = {
-    id: sessionId, last_seen: new Date().toISOString(),
-    visit_count: visitCount, reset_epoch: currentEpoch, ...dev, ...geo
+    id: sessionId,
+    last_seen: new Date().toISOString(),
+    visit_count: visitCount,
+    reset_epoch: currentEpoch,
+    ...dev,
+    ...geo
   };
   if (participantEmail) upsertData.participant_email = participantEmail;
-  try { await sb.from('sessions').upsert(upsertData, { onConflict: 'id' }); } catch(e) {}
+
+  try {
+    await sb.from('sessions').upsert(upsertData, { onConflict: 'id' });
+  } catch(e) {}
+
   logEvent('visit', { is_returning: isReturning, visit_number: visitCount });
 }
 
@@ -973,6 +972,7 @@ window.addEventListener('load', async () => {
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
 
+    // localStorage-ის email (workshop-ის შემდეგ)
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
 
@@ -980,7 +980,7 @@ window.addEventListener('load', async () => {
     applyTopSlot();
     startApp();
     showNotifBannerIfNeeded();
-    trackSession();
+    trackSession();   // ← attendance lookup ხდება აქ
     startHeartbeat();
 
   } catch(e) {
@@ -1387,3 +1387,5 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "done"
