@@ -550,12 +550,12 @@ function renderOverview(d) {
   _setProgress('pr-d2in',  'pr-d2in-v',  d2in,  total);
   _setProgress('pr-d2out', 'pr-d2out-v', d2out, total);
 
-  var bs = d.bySheet || {};
-  _renderGCard('att', bs['Attendees']);
-  _renderGCard('unp', bs['Attendees (Unpaid)']);
-  _renderGCard('spk', bs['Speakers']);
-  _renderGCard('coa', bs['Co-Authors']);
-
+  var gs = d.groups || {};
+_renderGCard('att', gs.attendees);
+_renderGCard('unp', gs.attendeesUnpaid);
+_renderGCard('spk', gs.speakers);
+_renderGCard('coa', gs.coauthors);
+  
   var feed = d.recentActivity || [];
   var el = document.getElementById('ov-activity');
   el.innerHTML = feed.length ? feed.map(function(a) {
