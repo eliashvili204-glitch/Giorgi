@@ -279,9 +279,10 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
               <div class="ws-card-icon" id="ws-icon-a">AI</div>
               <div class="ws-card-tag" id="ws-tag-a">Available</div>
             </div>
-            <div class="ws-card-title" id="ws-title-a">AI Literacy</div>
+            <div class="ws-card-title" id="ws-title-a">AI Literacy in Medicine</div>
             <div class="ws-card-presenter">
               <span class="ws-presenter-name">Mariam Katcheishvili, M.D., Ph.Dc.</span>
+              <span class="ws-presenter-inst">David Tvildiani Medical University, Georgia</span>
             </div>
             <div class="ws-requirements">
               <div class="ws-req-label">Requirements</div>
@@ -301,7 +302,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
         <div class="ws-form-card">
           <div class="ws-form-selected">
             <span class="ws-form-selected-icon" id="ws-form-icon">AI</span>
-            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">AI Literacy</div></div>
+            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">AI Literacy in Medicine</div></div>
             <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
           </div>
           <div class="ws-form-body">
@@ -412,52 +413,69 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 // ════════════════════════════════════════════
 const SB_URL     = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-const CONF_START = new Date('2026-06-13T05:00:00Z');
+const CONF_START = new Date('2026-06-13T05:00:00Z'); // 09:00 Tbilisi (UTC+4)
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
 
 const WORKSHOPS = {
-  a: { title: 'AI Literacy', desc: 'Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia', icon: 'AI', limit: 30 }
+  a: { title: 'AI Literacy in Medicine', desc: 'Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia', icon: 'AI', limit: 30 }
 };
 
+// ════════════════════════════════════════════
+//  AGENDA
+// ════════════════════════════════════════════
 const AGENDA = [
-  {id:1,  time:"09:00\u201310:00", speaker:"Registration & Welcome",                title:"",                                              session:"day1_pre"},
-  {id:2,  time:"10:00\u201310:30", speaker:"Opening Ceremony",                      title:"Opening Ceremony & Welcome Remarks",             session:"day1_open"},
-  {id:3,  time:"10:30\u201311:00", speaker:"[Keynote Speaker Name]",                title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_keynote"},
-  {id:4,  time:"11:00\u201311:15", speaker:"[Presenter 1]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
-  {id:5,  time:"11:15\u201311:30", speaker:"[Presenter 2]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
-  {id:6,  time:"11:30\u201311:45", speaker:"[Presenter 3]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
-  {id:7,  time:"11:45\u201312:00", speaker:"[Presenter 4]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
-  {id:8,  time:"12:00\u201312:15", speaker:"[Presenter 5]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s1"},
-  {id:9,  time:"12:15\u201312:45", speaker:"Coffee Break",                          title:"",                                              session:"day1_break1", isBreak:true},
-  {id:10, time:"12:45\u201312:50", speaker:"[Poster Presenter 1]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:11, time:"12:50\u201312:55", speaker:"[Poster Presenter 2]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:12, time:"12:55\u201313:00", speaker:"[Poster Presenter 3]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:13, time:"13:00\u201313:05", speaker:"[Poster Presenter 4]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:14, time:"13:05\u201313:10", speaker:"[Poster Presenter 5]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:15, time:"13:10\u201313:15", speaker:"[Poster Presenter 6]",                  title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_poster"},
-  {id:16, time:"13:15\u201313:30", speaker:"[Presenter 6]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:17, time:"13:30\u201313:45", speaker:"[Presenter 7]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:18, time:"13:45\u201314:00", speaker:"[Presenter 8]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:19, time:"14:00\u201314:15", speaker:"[Presenter 9]",                         title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:20, time:"14:15\u201314:30", speaker:"[Presenter 10]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:21, time:"14:30\u201314:45", speaker:"[Presenter 11]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:22, time:"14:45\u201315:00", speaker:"[Presenter 12]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2"},
-  {id:23, time:"15:00\u201316:00", speaker:"Lunch Break \u2014 Poster Display Open",title:"",                                              session:"day1_lunch",  isBreak:true},
-  {id:24, time:"16:00\u201316:15", speaker:"[Presenter 13]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
-  {id:25, time:"16:15\u201316:30", speaker:"[Presenter 14]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
-  {id:26, time:"16:30\u201316:45", speaker:"[Presenter 15]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day1_s2b"},
-  {id:27, time:"16:45\u201317:00", speaker:"Closing Day 1",                         title:"",                                              session:"day1_close"},
-  {id:28, time:"10:00\u201310:15", speaker:"Welcome Back & Day 2 Overview",         title:"",                                              session:"day2_open"},
-  {id:29, time:"10:15\u201310:30", speaker:"[Presenter 16]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
-  {id:30, time:"10:30\u201310:45", speaker:"[Presenter 17]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
-  {id:31, time:"10:45\u201311:00", speaker:"[Presenter 18]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
-  {id:32, time:"11:00\u201311:15", speaker:"[Presenter 19]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
-  {id:33, time:"11:15\u201311:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title \u2014 TBC]",      session:"day2_s3"},
-  {id:34, time:"11:30\u201312:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
-  {id:35, time:"12:00\u201312:30", speaker:"Panel Discussion",                      title:"[Theme / Title \u2014 TBC]",                     session:"day2_panel"},
-  {id:36, time:"12:00\u201312:30", speaker:"Workshop — AI Literacy",                title:"Mariam Katcheishvili, M.D., Ph.Dc., DTMU",      session:"day2_ws"},
-  {id:38, time:"12:30\u201312:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close"}
+  // ── DAY 1 ─────────────────────────────────────────────────────────────────
+  {id:1,  time:"09:00\u201310:00", speaker:"Registration",                                         title:"",                                                                                                                                                              session:"day1_pre",    isBreak:true},
+  {id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony",                                     title:"Opening Ceremony & Welcome Remarks\nNino Tabagari, MD, PhD \u00b7 Mariam Chubinidze \u00b7 Interest Group Leads",                                              session:"day1_open"},
+
+  // Session I — Surgical & Multisystemic Complications of Infection
+  {id:3,  time:"10:45\u201311:00", speaker:"Ekaterine Tvildiani",                                  title:"Type II Necrotizing Fasciitis of Upper Extremity Following Firework Injury\nDTMU \u00b7 Sup: Vakhtang Pirpilashvili, MD, Ph.D.",                                session:"day1_s1"},
+  {id:4,  time:"11:00\u201311:15", speaker:"Arnav Ambokar",                                        title:"Pyoderma Gangrenosum as a Chronic Non-Healing Leg Ulcer Managed with Multimodal Therapy and PRF Dressings\nUniversity of Georgia \u00b7 Sup: Dnyanesh Mhatre, MD", session:"day1_s1"},
+  {id:5,  time:"11:15\u201311:30", speaker:"Parvin Mozafari",                                      title:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections\nUniversity of Georgia \u00b7 Sup: Nino Lomidze, MD, PhD",                              session:"day1_s1"},
+  {id:6,  time:"11:30\u201311:45", speaker:"Lakshya Pruthi, Mokshika Sharma",                      title:"Rare Overlap of Dengue and Malaria Complicated by a Leukemoid-Like Response\nDTMU \u00b7 Sup: Lika Khelashvili, MD",                                          session:"day1_s1"},
+  {id:7,  time:"11:45\u201312:00", speaker:"Gisoo Farhani, Roshanak Jafarirouzbahani",             title:"Surgical Complications of Dengue Infection: A Multisystemic Perspective\nUniversity of Georgia / New Vision University \u00b7 Sup: Irma Kibrotsashvili, MD",   session:"day1_s1"},
+  {id:8,  time:"12:00\u201312:10", speaker:"Saba Akhaladze, Anna Japaridze",                       title:"An Unusual Etiology for Overwhelming Post-Splenectomy Infection\nDTMU \u00b7 Sup: Natia Utmelidze, MD",                                                       session:"day1_s1"},
+  {id:9,  time:"12:00\u201312:10", speaker:"Nutsa Tsagareli, Vikrant Ghulaxe",                     title:"Diagnostic Challenges of Dobrava Hantavirus Infection with Multiorgan Involvement in Georgia\nTbilisi State Medical University \u00b7 Sup: Teona Buachidze, MD", session:"day1_s1"},
+
+  {id:10, time:"12:10\u201312:30", speaker:"Coffee Break",                                         title:"",                                                                                                                                                              session:"day1_break1", isBreak:true},
+
+  // Session IIA — Neuro-Infectious & Neuroinflammatory Diseases
+  {id:11, time:"12:30\u201312:45", speaker:"Ana Bechvaia, Ketevan Tchitchinadze",                  title:"Rare Case of Neurocysticercosis in Georgia\nDTMU \u00b7 Sup: Eka Chkhartishvili, MD, Ph.D.",                                                                   session:"day1_s2a"},
+  {id:12, time:"12:45\u201313:00", speaker:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili",  title:"Validation of Georgian-Translated Neuropsychological Instruments for Infectious Disease-Associated Encephalopathy\nDTMU \u00b7 Sup: Tamar Macharadze, MD, Ph.D.", session:"day1_s2a"},
+  {id:13, time:"13:00\u201313:15", speaker:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze", title:"Inflammation and Infection in the Development of Psychosis and Other Psychiatric Diseases\nDTMU \u00b7 Sup: Mariam Chelidze, MD",                               session:"day1_s2a"},
+  {id:14, time:"13:15\u201313:25", speaker:"Tanishqa Hivre",                                       title:"Late-Onset Psychosis in a 77-Year-Old Male with Neurosyphilis\nDTMU \u00b7 Sup: Shama Shah, MD",                                                               session:"day1_s2a"},
+  {id:15, time:"13:25\u201313:35", speaker:"Davit Abuladze",                                       title:"Redefining the Classic Paradigm: Anti-NMDA Receptor Encephalitis in a Young Male\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, Ph.D.",                             session:"day1_s2a"},
+  {id:16, time:"13:35\u201313:45", speaker:"Sakshi Sharma, Yuvraj Pathria",                        title:"Dual LGI1-CASPR2 Positive Autoimmune Limbic Encephalitis in a 15-Year-Old Female\nDTMU \u00b7 Sup: Tatia Aprasidze, MD, Ph.D.",                                session:"day1_s2a"},
+  {id:17, time:"13:45\u201313:55", speaker:"Barbare Lezhava, Mariam Khrustali",                    title:"A Rare Case of Lemi\u00e8re\u2019s Syndrome in a Pediatric Patient\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, Ph.D.",                                           session:"day1_s2a"},
+
+  {id:18, time:"13:40\u201314:40", speaker:"Lunch Break \u2014 Poster Presentations",              title:"Evaluators: Liza Goderdzishvili, MD, Ph.D. \u00b7 Aleksandre Ramishvili, MD, Ph.Dc.",                                                                           session:"day1_lunch",  isBreak:true},
+
+  // Session IIB — Emerging Complications of Viral Infections
+  {id:19, time:"14:40\u201314:55", speaker:"Anna Vashakidze, Mariam Baghuashvili",                 title:"Rare Case of Varicella-Zoster Virus Meningoencephalomyelitis in a Patient with Systemic Sclerosis\nDTMU \u00b7 Sup: Lana Sukhitashvili, MD",                    session:"day1_s2b"},
+  {id:20, time:"14:55\u201315:10", speaker:"Syeda Fatima Zehra, Sakshi Sharma",                    title:"Supraventricular Tachycardia as an Uncommon Presentation of Dengue Myocarditis\nDTMU \u00b7 Sup: Tamar Gaprindashvili, MD, Ph.Dc",                             session:"day1_s2b"},
+  {id:21, time:"15:10\u201315:25", speaker:"Madiha Mirza",                                         title:"Measles and COVID-19: Epidemiological Disruption, Immune Dysregulation, and Long-Term Neurological Sequelae\nUniversity of Georgia \u00b7 Sup: Venera Mchedlishvili, MD", session:"day1_s2b"},
+  {id:22, time:"15:25\u201315:40", speaker:"Sai Sravya Sahini, Leticia El-Boutty",                 title:"Elevated Cytokine Levels During Acute COVID-19 and Persistent Immune Dysregulation After Recovery\nUniversity of Georgia \u00b7 Sup: Ekaterine Cherkezishvili, MD", session:"day1_s2b"},
+  {id:23, time:"15:40\u201315:55", speaker:"Faazil Mansuri et al.",                                title:"Advances in Lipid Nanoparticle-Enhanced SARS-CoV-2 mRNA Vaccine Delivery vs Conventional Approaches\nDTMU / Georgian-American University \u00b7 Sup: Giorgi Mgeladze, MD", session:"day1_s2b"},
+  {id:24, time:"15:55\u201316:00", speaker:"Anna Kvernadze, Ana Abelova, Nia Lazishvili",          title:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome\nDTMU \u00b7 Sup: Gvantsa Kharaishvili, MD, Ph.D",           session:"day1_s2b"},
+  {id:25, time:"16:00",            speaker:"Panel Discussion (Q&A) \u2014 Closing Day 1",          title:"",                                                                                                                                                              session:"day1_close"},
+
+  // ── DAY 2 ─────────────────────────────────────────────────────────────────
+  {id:26, time:"10:00\u201310:30", speaker:"Workshop \u2014 AI Literacy in Medicine",              title:"Mariam Katcheishvili, M.D., Ph.Dc., David Tvildiani Medical University, Georgia",                                                                             session:"day2_ws"},
+
+  // Session III — Infection, Inflammation & Autoimmunity
+  {id:27, time:"10:30\u201310:45", speaker:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Dauda", title:"Placental Tropism in Gestational Psittacosis: A New Understanding of a Deadly Zoonotic Disease\nDTMU \u00b7 Sup: Tamar Badurashvili, MD",                    session:"day2_s3"},
+  {id:28, time:"10:45\u201311:00", speaker:"Safa Mohammed Saleem, Syeda Fatima Zehra",             title:"Ovarian Tuberculosis Masquerading as Ovarian Malignancy\nTSMU / DTMU \u00b7 Sup: Tinatin Kutchukhidze, MD",                                                    session:"day2_s3"},
+  {id:29, time:"11:00\u201311:15", speaker:"Tuta Piyush",                                          title:"Intestinal Tuberculosis Mimicking Crohn\u2019s Disease: A Diagnostic Challenge\nDTMU \u00b7 Sup: Nino Sordia, MD",                                             session:"day2_s3"},
+
+  {id:30, time:"11:00\u201311:30", speaker:"Coffee Break",                                         title:"",                                                                                                                                                              session:"day2_break",  isBreak:true},
+
+  {id:31, time:"11:30\u201311:45", speaker:"Raja Basil Adeel",                                     title:"Daptomycin-Associated Eosinophilic Colitis: A Novel Extrapulmonary Manifestation\nUniversity of Georgia \u00b7 Sup: Giorgi Chilingarashvili, MD, MSc",          session:"day2_s3b"},
+  {id:32, time:"11:45\u201312:00", speaker:"Keya Baliga, Rajvi Soni",                              title:"Rare Case of Autoimmune Polyendocrine Syndrome Type 2 with Progressive Endocrine Dysfunction and Vitiligo\nSEU Georgian National University \u00b7 Sup: Nino Turashvili, MD", session:"day2_s3b"},
+
+  {id:33, time:"12:00\u201312:40", speaker:"Tea Kakabadze, M.D., Ph.D.",                           title:"Antibiotic Resistance and Stewardship Strategy\nDTMU / Tengiz Tsertsvadze Infectious Diseases, AIDS and Clinical Immunology Research Center",                   session:"day2_panel"},
+
+  {id:34, time:"12:40\u201313:00", speaker:"Closing Ceremony",                                     title:"Closing Ceremony & Certificate Distribution",                                                                                                                   session:"day2_close"},
 ];
 
 // ════════════════════════════════════════════
@@ -481,7 +499,6 @@ let selectedWorkshop = null;
 let workshopCounts   = { a: 0 };
 let workshopRegistered = null;
 
-// ── SESSION ID: registration.html-თან გაზიარებული key ──
 const _existingSid = localStorage.getItem('syssa_sid');
 const isReturning  = !!_existingSid;
 let sessionId = _existingSid || ('p_' + Math.random().toString(36).substr(2, 9));
@@ -585,7 +602,6 @@ async function initWorkshop() {
     showWorkshopSuccess(storedKey, storedEmail);
     return;
   }
-  // email pre-fill: თუ attendance-დან უკვე ვიცით
   if (participantEmail) {
     const inp = document.getElementById('ws-form-email');
     if (inp) inp.value = participantEmail;
@@ -721,7 +737,6 @@ async function submitWorkshop() {
     const isDuplicate = wErr?.code === '23505';
     if (wErr && !isDuplicate) throw wErr;
 
-    // ── email-ი sessions + messages + feedback ცხრილებში ჩავწეროთ ──
     await sb.from('sessions').update({ participant_email: email }).eq('id', sessionId);
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
     await sb.from('feedback').update({ participant_email: email }).eq('session_id', sessionId);
@@ -825,22 +840,19 @@ async function trackSession() {
   if (!sb || sessionTracked) return;
   sessionTracked = true;
 
-  // ── ახალი: attendance ცხრილიდან email წავიკითხოთ session_id-ით ──
-  // registration.html-მა attendance-ში ჩაწერა { email, session_id }
-  // ეს ქმნის კავშირს: "ვინ იყო ეს session"
   if (!participantEmail) {
-try {
-  const { data: att } = await sb
-    .from('attendance')
-    .select('email')
-    .eq('session_id', sessionId)
-    .limit(1);
-  if (att && att.length > 0 && att[0].email) {
-    participantEmail = att[0].email;
-    const wsInp = document.getElementById('ws-form-email');
-    if (wsInp && !wsInp.value) wsInp.value = participantEmail;
-  }
-} catch(e) {}
+    try {
+      const { data: att } = await sb
+        .from('attendance')
+        .select('email')
+        .eq('session_id', sessionId)
+        .limit(1);
+      if (att && att.length > 0 && att[0].email) {
+        participantEmail = att[0].email;
+        const wsInp = document.getElementById('ws-form-email');
+        if (wsInp && !wsInp.value) wsInp.value = participantEmail;
+      }
+    } catch(e) {}
   }
 
   const dev = getDeviceInfo();
@@ -964,7 +976,6 @@ window.addEventListener('load', async () => {
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
 
-    // localStorage-ის email (workshop-ის შემდეგ)
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
 
@@ -972,7 +983,7 @@ window.addEventListener('load', async () => {
     applyTopSlot();
     startApp();
     showNotifBannerIfNeeded();
-    trackSession();   // ← attendance lookup ხდება აქ
+    trackSession();
     startHeartbeat();
 
   } catch(e) {
@@ -1105,22 +1116,20 @@ function render() {
   document.getElementById('next-title').textContent  = nxt ? (nxt.title.split('\n')[0] || '') : '';
 
   const SECS = [
-    { key: 'day1_pre',     label: '' },
-    { key: 'day1_open',    label: 'Opening Ceremony' },
-    { key: 'day1_keynote', label: 'Keynote Address' },
-    { key: 'day1_s1',      label: 'Oral Presentations \u2014 Session I' },
-    { key: 'day1_break1',  label: '' },
-    { key: 'day1_poster',  label: 'Poster Pitches (5 min each)' },
-    { key: 'day1_s2',      label: 'Oral Presentations \u2014 Session II' },
-    { key: 'day1_lunch',   label: '' },
-    { key: 'day1_s2b',     label: '' },
-    { key: 'day1_close',   label: '' },
-    { key: 'day2_open',    label: 'Day 2 \u2014 Sunday, 14 June 2026' },
-    { key: 'day2_s3',      label: 'Oral Presentations \u2014 Session III' },
-    { key: 'day2_break',   label: '' },
-    { key: 'day2_panel',   label: 'Panel Discussion & Workshop' },
-    { key: 'day2_ws',      label: '' },
-    { key: 'day2_close',   label: '' },
+    { key: 'day1_pre',    label: 'Day 1 \u2014 Saturday, 13 June 2026' },
+    { key: 'day1_open',   label: 'Opening Ceremony' },
+    { key: 'day1_s1',     label: 'Session I \u2014 Surgical & Multisystemic Complications of Infection' },
+    { key: 'day1_break1', label: '' },
+    { key: 'day1_s2a',    label: 'Session IIA \u2014 Neuro-Infectious & Neuroinflammatory Diseases' },
+    { key: 'day1_lunch',  label: '' },
+    { key: 'day1_s2b',    label: 'Session IIB \u2014 Emerging Complications of Viral Infections' },
+    { key: 'day1_close',  label: '' },
+    { key: 'day2_ws',     label: 'Day 2 \u2014 Sunday, 14 June 2026' },
+    { key: 'day2_s3',     label: 'Session III \u2014 Infection, Inflammation & Autoimmunity in Reproductive, GI & Endocrine Disease' },
+    { key: 'day2_break',  label: '' },
+    { key: 'day2_s3b',    label: '' },
+    { key: 'day2_panel',  label: 'Keynote \u2014 Antibiotic Resistance and Stewardship Strategy' },
+    { key: 'day2_close',  label: '' },
   ];
 
   const frag = document.createDocumentFragment();
@@ -1260,11 +1269,12 @@ ${beforeConf
 Key FAQ:
 - Registration: June 13, 09:00 AM sharp.
 - Certificates: emailed within 24h after QR check-out on day 2. Both QR check-in and check-out on both days are mandatory.
-- Coffee Break: 12:15–12:45 (Day 1), 11:30–12:00 (Day 2). Lunch: 15:00–16:00 (Day 1).
+- Coffee Break: 12:10–12:30 (Day 1), 11:00–11:30 (Day 2). Lunch: 13:40–14:40 (Day 1).
+- Sessions: Day 1 has 3 oral sessions (I, IIA, IIB) plus poster presentations during lunch. Day 2 has Session III plus a keynote on antibiotic resistance and the closing ceremony.
 - WiFi/room issues: direct to on-site organizing team.
 - Platform created by Giorgi Eliashvili.
 - Working language: English.
-- Workshop: "AI Literacy" by Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia. Requirements: laptop and sunglasses. 30 seats available.
+- Workshop: "AI Literacy in Medicine" by Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia. Requirements: laptop and sunglasses. 30 seats available. Day 2, 10:00–10:30.
 
 Rules: Reply directly, no filler phrases. No markdown bold or headers. Max 1–2 sentences. Max 1–2 emojis. CRITICAL: reply in the exact same language as the user — Georgian question = Georgian answer, English = English.`;
 }
@@ -1379,5 +1389,3 @@ async function sendFeedback() {
 </script>
 </body>
 </html>
-HTMLEOF
-echo "done"
