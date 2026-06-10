@@ -286,17 +286,19 @@
 // ══════════════════════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════════════════════
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby8yNhzTPzVii7m-4sxDvNDpq3K4tn0W0wI63N3M7K_7D2GA2LpxGx_4-j4n843cUxgJA/exec';
-var RATE_LIMIT_MS   = 7 * 60 * 60 * 1000;
-var DEVICE_RL_KEY   = 'xi_device_last_submit';
-var PAGE_LOAD_KEY   = 'xi_page_loads';
-var MAX_RETRIES     = 3;
-var RETRY_DELAY_MS  = 2500;
+var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
+var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+var PROXY_URL     = SB_URL + '/functions/v1/sheets-proxy';
+var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;  // 7 საათი
+var DEVICE_RL_KEY = 'xi_device_last_submit';
+var PAGE_LOAD_KEY = 'xi_page_loads';
+var MAX_RETRIES   = 3;
+var RETRY_DELAY_MS      = 2500;
 var LOCK_RETRY_DELAY_MS = 3000;
-var IS_IOS          = /iP(hone|ad|od)/.test(navigator.userAgent);
+var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════
-//  PAGE-LOAD COUNTER
+//  PAGE-LOAD COUNTER  (location denied-ის შემდეგ "Continue" გამოჩნდება)
 // ══════════════════════════════════════════════════════════════
 var pageLoads = 0;
 try {
@@ -313,16 +315,18 @@ function resetPageLoads() {
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
-var geoState    = 'detecting';
-var userLat     = null;
-var userLng     = null;
-var lastUrl     = null;
-var isSubmitting = false;
-var currentRequestId = 0;  // ✅ თითოეული request-ის უნიკალური ID
+var geoState         = 'detecting';
+var userLat          = null;
+var userLng          = null;
+var lastPayload      = null;   // ← lastUrl-ის ნაცვლად object ვინახავთ
+var isSubmitting     = false;
+var currentRequestId = 0;
 var countdownInterval = null;
 
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
+//  localStorage-ში ვინახავთ submit-ის დროს.
+//  წავიკითხავთ page load-ზე და submit-ამდე.
 // ══════════════════════════════════════════════════════════════
 function getDeviceRateRemaining() {
   try {
@@ -333,6 +337,7 @@ function getDeviceRateRemaining() {
   } catch(e) { return 0; }
 }
 
+// ✅ მხოლოდ SUCCESS-ის შემდეგ ეძახება handleResult()-იდან
 function setDeviceRateLimit() {
   try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
 }
@@ -365,8 +370,10 @@ function startCountdown(remainingMs, reason, title) {
     var left = deadline - Date.now();
     if (left <= 0) {
       clearInterval(countdownInterval);
+      countdownInterval = null;
       document.getElementById('rl-countdown').textContent = '00:00:00';
       box.style.display = 'none';
+      // ✅ countdown დამთავრდა — button ჩართვა მხოლოდ თუ geo ready
       if (geoState === 'found' || geoState === 'offsite' || geoState === 'manual') {
         document.getElementById('submit-btn').disabled = false;
       }
@@ -398,6 +405,7 @@ function startLocation() {
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
+  // ✅ Device rate limit შევამოწმოთ page load-ზევე
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -470,6 +478,7 @@ function onGeoSuccess(pos) {
   }
 
   setInputsEnabled(true);
+  // ✅ button ჩართვა მხოლოდ device limit არ არის
   if (getDeviceRateRemaining() <= 0) {
     document.getElementById('submit-btn').disabled = false;
   }
@@ -547,7 +556,7 @@ function showBlock(desc, showContinue) {
   document.getElementById('loc-continue-btn').style.display =
     (showContinue && pageLoads >= 3) ? 'block' : 'none';
 }
-function hideBlock() { document.getElementById('locationBlock').style.display = 'none'; }
+function hideBlock()        { document.getElementById('locationBlock').style.display = 'none'; }
 function showManualNotice() { document.getElementById('manual-notice').style.display = 'block'; }
 function hideManualNotice() { document.getElementById('manual-notice').style.display = 'none'; }
 
@@ -561,54 +570,74 @@ function pick(el) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  FETCH WITH RETRY
+//  SUPABASE INSERT
+//  ✅ Primary record — ეს წარმატება = სიმართლე
 // ══════════════════════════════════════════════════════════════
-function fetchWithRetry(url, left, onSuccess, onFail) {
-  var attempt = MAX_RETRIES - left + 1;
-  fetch(url, { redirect: 'follow' })  // ✅ redirect follow
-    .then(function(r) {
-      return r.text().then(function(t) { onSuccess(t.trim()); });
-    })
-    .catch(function() {
-      if (left > 1) {
-        var ri = document.getElementById('retry-info');
-        ri.style.display = 'block';
-        ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
-        setTimeout(function() { fetchWithRetry(url, left - 1, onSuccess, onFail); }, RETRY_DELAY_MS);
-      } else {
-        document.getElementById('retry-info').style.display = 'none';
-        onFail();
-      }
-    });
+function supabaseInsert(payload) {
+  return fetch(SB_URL + '/rest/v1/attendance', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Prefer':        'return=minimal'
+    },
+    body: JSON.stringify(payload)
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
-//  LOCK TIMEOUT RETRY
+//  SHEETS-PROXY CALL
+//  ✅ Synchronous — validation response-ს ბრუნებს Apps Script-იდან
+//  type: 'attendance' → sheets-proxy → Apps Script doGet → processForm
 // ══════════════════════════════════════════════════════════════
-function retryAfterLockTimeout() {
-  if (!lastUrl) return;
-  var ri = document.getElementById('retry-info');
-  ri.style.display = 'block';
-  ri.textContent   = 'Processing…';
+function callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft) {
+  if (retriesLeft === undefined) retriesLeft = MAX_RETRIES;
 
-  setTimeout(function() {
-    fetchWithRetry(
-      lastUrl, MAX_RETRIES,
-      function(result) {
-      if (requestId !== currentRequestId) return;  // ✅ მოძველებული response — იგნორირება
-      handleResult(result);
+  fetch(PROXY_URL, {
+    method:  'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': 'Bearer ' + SB_KEY
     },
-      function() {
-        isSubmitting = false;
-        document.getElementById('retry-info').style.display = 'none';
-        showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
-        setTimeout(function() {
-          document.getElementById('submit-btn').disabled  = false;
-          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-        }, 3000);
-      }
-    );
-  }, LOCK_RETRY_DELAY_MS);
+    body: JSON.stringify({
+      type:       'attendance',
+      email:      payload.email,
+      day:        payload.day,
+      action:     payload.action,
+      lat:        payload.lat,
+      lng:        payload.lng,
+      loc_status: payload.loc_status
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    // ✅ stale request-ი — ignore
+    if (requestId !== currentRequestId) return;
+    // sheets-proxy აბრუნებს { ok: true, result: "SUCCESS" } ან { ok: false, error: "..." }
+    if (data && data.result) {
+      onSuccess(data.result);
+    } else if (data && data.error) {
+      onSuccess('ERROR:' + data.error);
+    } else {
+      onSuccess('ERROR:proxy_no_result');
+    }
+  })
+  .catch(function() {
+    if (requestId !== currentRequestId) return;
+    if (retriesLeft > 1) {
+      var attempt = MAX_RETRIES - retriesLeft + 1;
+      var ri = document.getElementById('retry-info');
+      ri.style.display = 'block';
+      ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
+      setTimeout(function() {
+        callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft - 1);
+      }, RETRY_DELAY_MS);
+    } else {
+      document.getElementById('retry-info').style.display = 'none';
+      onFail();
+    }
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -622,20 +651,47 @@ function showMsg(text, type) {
 
 // ══════════════════════════════════════════════════════════════
 //  RESULT HANDLER
+//  Apps Script processForm()-ის response-ს ამუშავებს
 // ══════════════════════════════════════════════════════════════
 function handleResult(result) {
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
+  isSubmitting = false;
 
+  // ── lock_timeout: retry ──
   if (result === 'ERROR:lock_timeout') {
-    retryAfterLockTimeout();
+    if (!lastPayload) {
+      showMsg('❌ Server busy. Please try again.', 'error');
+      document.getElementById('submit-btn').disabled = false;
+      return;
+    }
+    var ri = document.getElementById('retry-info');
+    ri.style.display = 'block';
+    ri.textContent   = 'Server busy — retrying…';
+    isSubmitting = true;  // ✅ lock retry-ს დროს ვბლოკავთ double submit-ს
+
+    var retryReqId = ++currentRequestId;
+    setTimeout(function() {
+      callSheetsProxy(
+        lastPayload,
+        retryReqId,
+        function(res) { handleResult(res); },
+        function() {
+          isSubmitting = false;
+          document.getElementById('retry-info').style.display = 'none';
+          showMsg('❌ Server busy. Please try again.', 'error');
+          document.getElementById('submit-btn').disabled = false;
+          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+        }
+      );
+    }, LOCK_RETRY_DELAY_MS);
     return;
   }
 
+  // ── server-side rate limit (email-ის ლიმიტი Apps Script-ში) ──
   if (result.indexOf('RATE_LIMITED:') === 0) {
     var remMs = parseInt(result.split(':')[1], 10);
-    isSubmitting = false;
-    // ❌ setDeviceRateLimit() არ ეძახება — ეს მეილის ლიმიტია, მოწყობილობის არა
+    // ✅ setDeviceRateLimit() არ ეძახება — ეს email-ის ლიმიტია, device-ის არა
     startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
@@ -654,17 +710,21 @@ function handleResult(result) {
   };
 
   var entry = RESULT_MAP[result];
-  isSubmitting = false;
 
   if (entry) {
-    showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      setDeviceRateLimit();
-      startCountdown(RATE_LIMIT_MS,
-        'Registration successful. This device cannot register again for 7 hours.',
-        'Device Limit Active'
-      );
+      // ✅ Success message გამოჩნდება — 1.5 წამის შემდეგ countdown იწყება
+      showMsg(entry.text, entry.type);
+      setDeviceRateLimit();  // ✅ მხოლოდ წარმატების შემდეგ
+      setTimeout(function() {
+        startCountdown(
+          RATE_LIMIT_MS,
+          'Registration successful. This device cannot register again for 7 hours.',
+          'Device Limit Active'
+        );
+      }, 1500);
     } else {
+      showMsg(entry.text, entry.type);
       document.getElementById('submit-btn').disabled = false;
     }
   } else if (result.indexOf('ERROR:') === 0) {
@@ -677,11 +737,18 @@ function handleResult(result) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SUBMIT
-//  ✅ FIX: isSubmitting guard დამატებულია პირველ ხაზად
+//  SUBMIT — მთავარი ფუნქცია
+//
+//  Flow:
+//   1. Validation (geo, device limit, email format)
+//   2. Supabase INSERT  ← primary record
+//   3. sheets-proxy     ← validation response + Google Sheet sync
+//   4. handleResult()   ← UI update
+//   5. setDeviceRateLimit() ← მხოლოდ SUCCESS-ზე, handleResult-ში
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
-  if (isSubmitting) return;  // ✅ double-submit protection
+  // ✅ double-submit protection
+  if (isSubmitting) return;
 
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
@@ -689,6 +756,7 @@ function submitForm() {
     return;
   }
 
+  // ✅ device rate limit — submit-ამდე კიდევ ერთხელ შევამოწმოთ
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -707,40 +775,94 @@ function submitForm() {
   var day    = document.querySelector('#seg-day .seg-btn.active').textContent.trim() === 'Day 1' ? 1 : 2;
   var action = document.querySelector('#seg-action .seg-btn.active').textContent.trim() === 'Check-in' ? 'in' : 'out';
 
+  var locStatus = geoState === 'found'   ? 'onsite'
+                : geoState === 'offsite' ? 'offsite'
+                : 'LOCATION_FAILED';
+
+  // ✅ payload object — retry-ისთვის გვჭირდება
+  lastPayload = {
+    email:      email,
+    day:        day,
+    action:     action,
+    lat:        userLat !== null ? String(userLat) : '',
+    lng:        userLng !== null ? String(userLng) : '',
+    loc_status: locStatus
+  };
+
   document.getElementById('submit-btn').disabled  = true;
   document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
   showMsg('Submitting attendance…', 'info');
   hideRateLimitBox();
   document.getElementById('retry-info').style.display = 'none';
   isSubmitting = true;
-  var requestId = ++currentRequestId;  // ✅ ეს request-ის ID
 
-  var locStatus = geoState === 'found'   ? 'onsite'
-                : geoState === 'offsite' ? 'offsite'
-                : 'LOCATION_FAILED';
+  // ✅ unique request ID — stale response-ების გასაფილტრად
+  var reqId = ++currentRequestId;
 
-  lastUrl = APPS_SCRIPT_URL
-    + '?email='     + encodeURIComponent(email)
-    + '&day='       + day
-    + '&action='    + action
-    + '&lat='       + (userLat !== null ? userLat : '')
-    + '&lng='       + (userLng !== null ? userLng : '')
-    + '&locStatus=' + locStatus;
+  // ══ Step 1: Supabase INSERT (primary record) ══
+  var supabasePayload = {
+    email:      email,
+    day:        day,
+    action:     action,
+    lat:        userLat !== null ? String(userLat) : null,
+    lng:        userLng !== null ? String(userLng) : null,
+    loc_status: locStatus
+  };
 
-  fetchWithRetry(
-    lastUrl, MAX_RETRIES,
-    function(result) { handleResult(result); },
-    function() {
-      isSubmitting = false;
-      showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
-      // ✅ 3 წამი delayed — race condition: პირველი request-ის response გვიან ჩამოსვლის შემთხვევაში
-      // button disabled რჩება და double-submit ვერ მოხდება
-      setTimeout(function() {
-        document.getElementById('submit-btn').disabled  = false;
-        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      }, 3000);
-    }
-  );
+  supabaseInsert(supabasePayload)
+    .then(function(r) {
+      if (reqId !== currentRequestId) return;
+
+      if (!r.ok) {
+        // Supabase INSERT ჩავარდა — network ან RLS პრობლემა
+        // ვაგრძელებთ sheets-proxy-ით — record მაინც ჩაიწერება Sheet-ში
+        console.warn('Supabase INSERT failed (' + r.status + ') — continuing with sheets-proxy');
+      }
+
+      // ══ Step 2: sheets-proxy → Apps Script → validation + Sheet sync ══
+      callSheetsProxy(
+        lastPayload,
+        reqId,
+        function(result) {
+          if (reqId !== currentRequestId) return;
+          handleResult(result);
+        },
+        function() {
+          // sheets-proxy სრულად ჩავარდა (3 retry-ის შემდეგ)
+          if (reqId !== currentRequestId) return;
+          isSubmitting = false;
+          document.getElementById('retry-info').style.display = 'none';
+          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+          showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
+          setTimeout(function() {
+            document.getElementById('submit-btn').disabled = false;
+          }, 3000);
+        }
+      );
+    })
+    .catch(function() {
+      if (reqId !== currentRequestId) return;
+      // Supabase fetch-ი სრულად ჩავარდა (network) — sheets-proxy-ით ვაგრძელებთ
+      console.warn('Supabase INSERT fetch error — continuing with sheets-proxy');
+      callSheetsProxy(
+        lastPayload,
+        reqId,
+        function(result) {
+          if (reqId !== currentRequestId) return;
+          handleResult(result);
+        },
+        function() {
+          if (reqId !== currentRequestId) return;
+          isSubmitting = false;
+          document.getElementById('retry-info').style.display = 'none';
+          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+          showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+          setTimeout(function() {
+            document.getElementById('submit-btn').disabled = false;
+          }, 3000);
+        }
+      );
+    });
 }
 
 // ══════════════════════════════════════════════════════════════
