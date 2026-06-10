@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/admin.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -308,6 +311,45 @@ tbody td:first-child{color:var(--text);}
 @keyframes flash-row{0%{background:rgba(56,139,253,.18)}100%{background:transparent}}
 .row-flash{animation:flash-row 1.5s ease-out;}
 
+/* ══ EXPANDABLE SESSION ROWS ══ */
+.srow{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .15s;margin-bottom:6px;}
+.srow:hover{border-color:var(--border2);}
+.srow-main{display:flex;align-items:center;gap:8px;padding:10px 14px;flex-wrap:wrap;}
+.srow-identity{flex:1;min-width:0;display:flex;align-items:center;gap:8px;}
+.srow-avatar{width:28px;height:28px;border-radius:50%;background:var(--navy-soft);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;}
+.srow-label{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;font-weight:600;}
+.srow-sublabel{font-size:10px;color:var(--text-faint);font-family:monospace;}
+.srow-chips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;}
+.srow-sep{width:1px;height:18px;background:var(--border);flex-shrink:0;}
+.schip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border);color:var(--text-dim);background:var(--bg3);white-space:nowrap;}
+.schip.clickable{cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+.schip.clickable:hover{background:var(--navy-soft);border-color:var(--navy-border);color:var(--navy);}
+.schip.s-active{background:var(--navy-soft);border-color:var(--navy-border);color:var(--navy);}
+.schip-arrow{font-size:9px;transition:transform .2s;display:inline-block;}
+.schip.s-active .schip-arrow{transform:rotate(180deg);}
+.srow-expand{display:none;border-top:1px solid var(--border);flex-direction:column;}
+.srow-expand.open{display:flex;}
+.srow-tabs{display:flex;background:var(--bg3);border-bottom:1px solid var(--border);}
+.srow-tab{padding:8px 16px;font-size:11px;font-weight:700;color:var(--text-faint);cursor:pointer;letter-spacing:.05em;border-bottom:2px solid transparent;margin-bottom:-1px;text-transform:uppercase;transition:color .12s,border-color .12s;}
+.srow-tab:hover:not(.active){color:var(--text-dim);}
+.srow-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+.srow-body{padding:14px 16px;}
+.srow-chat{display:flex;flex-direction:column;gap:8px;}
+.srow-msg{display:flex;flex-direction:column;gap:3px;max-width:82%;}
+.srow-msg.participant{align-self:flex-start;}
+.srow-msg.ai,.srow-msg.organizer{align-self:flex-end;}
+.srow-msg-meta{font-size:9px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.srow-msg.ai .srow-msg-meta,.srow-msg.organizer .srow-msg-meta{align-self:flex-end;}
+.srow-bubble{padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.5;word-break:break-word;}
+.srow-msg.participant .srow-bubble{background:var(--bg3);border:1px solid var(--border);border-bottom-left-radius:3px;color:var(--text);}
+.srow-msg.ai .srow-bubble{background:var(--purple-soft);border:1px solid rgba(188,140,255,.3);border-bottom-right-radius:3px;color:var(--text);}
+.srow-msg.organizer .srow-bubble{background:var(--navy-soft);border:1px solid var(--navy-border);border-bottom-right-radius:3px;color:var(--text);}
+.srow-fb-list{display:flex;flex-direction:column;gap:8px;}
+.srow-fb-item{padding:10px 12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);}
+.srow-fb-text{font-size:13px;color:var(--text);line-height:1.5;}
+.srow-fb-meta{font-size:10px;color:var(--text-faint);margin-top:4px;}
+.srow-empty{text-align:center;padding:20px;font-size:12px;color:var(--text-faint);}
+
 @media(max-width:768px){
   .sidebar{display:none;}
   .mob-nav{display:flex;}
@@ -329,6 +371,10 @@ tbody td:first-child{color:var(--text);}
   .snc-name-next{font-size:15px;}
   .modal-box{max-height:92vh;}
   .conv-ai-toggle span:last-child{display:none;}
+  .srow-main{gap:6px;}
+  .srow-chips{gap:4px;}
+  .schip{padding:3px 8px;font-size:10px;}
+  .srow-label{max-width:140px;}
 }
 </style>
 </head>
@@ -477,22 +523,7 @@ tbody td:first-child{color:var(--text);}
         <div class="sec-title">All Sessions</div>
         <div class="sec-count" id="sessions-count"></div>
       </div>
-      <div class="table-card">
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Visitor</th><th>First Seen</th><th>Last Seen</th><th>Visits</th>
-                <th>Device</th><th>Browser</th><th>OS</th><th>Country</th><th>City</th>
-                <th>ISP</th><th>Chat</th><th>Msgs</th><th>Feedback</th><th>Time on Site</th><th>Activity</th>
-              </tr>
-            </thead>
-            <tbody id="sessions-table">
-              <tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div id="sessions-container"></div>
     </div>
 
     <!-- ══ CHAT ══ -->
@@ -700,9 +731,7 @@ let liveEpoch = 1;
 let presenceChannel = null;
 let realtimeChannel = null;
 let emailMap = {};
-// per-session AI override cache: sessionId → null|true|false
 let aiOverrideMap = {};
-// expanded conversation tracking
 let expandedConvs = new Set();
 
 // ════ INIT ════
@@ -738,7 +767,7 @@ async function loadEmailMap() {
       if (s.id && s.participant_email && !emailMap[s.id]) {
         emailMap[s.id] = s.participant_email.toLowerCase().trim();
       }
-      if (s.id) aiOverrideMap[s.id] = s.ai_override; // null | true | false
+      if (s.id) aiOverrideMap[s.id] = s.ai_override;
     });
   } catch(e) {
     console.warn('loadEmailMap error:', e.message);
@@ -764,7 +793,6 @@ function subscribeRealtimeEmails() {
           emailMap[s.id] = s.participant_email.toLowerCase().trim();
           refreshCurrentPageAfterEmailUpdate(s.id, emailMap[s.id], true);
         }
-        // sync ai_override changes
         aiOverrideMap[s.id] = s.ai_override;
       }
     })
@@ -776,14 +804,17 @@ function refreshCurrentPageAfterEmailUpdate(sessionId, email, wasUnknown) {
   refreshReplySel();
   if (!wasUnknown) return;
   if (activePage === 'sessions') {
-    const row = document.querySelector(`tr[data-sid="${CSS.escape(sessionId)}"]`);
-    if (row) {
-      const visitorCell = row.querySelector('td:first-child');
-      if (visitorCell) {
-        visitorCell.innerHTML = `<span class="td-email">${escHtml(email)}</span>`;
-        row.classList.add('row-flash');
-        setTimeout(() => row.classList.remove('row-flash'), 1600);
-      }
+    // Update label in expandable row if visible
+    const rowLabel = document.querySelector(`#srow-${CSS.escape(sessionId)} .srow-label`);
+    if (rowLabel) {
+      rowLabel.textContent = email;
+      rowLabel.title = email;
+      const sublabel = document.querySelector(`#srow-${CSS.escape(sessionId)} .srow-sublabel`);
+      if (sublabel) sublabel.remove();
+      const avatarEl = document.querySelector(`#srow-${CSS.escape(sessionId)} .srow-avatar`);
+      if (avatarEl) avatarEl.textContent = email[0].toUpperCase();
+      const srow = document.getElementById('srow-' + sessionId);
+      if (srow) { srow.classList.add('row-flash'); setTimeout(() => srow.classList.remove('row-flash'), 1600); }
     } else {
       loadSessions();
     }
@@ -948,7 +979,6 @@ async function loadOverviewStats() {
     document.getElementById('s-time').textContent      = avgSec > 0 ? (avgSec / 60).toFixed(1) : '—';
     document.getElementById('s-workshop').textContent  = wsRes.count  ?? 0;
 
-    // Update ai override cache
     sessions.forEach(s => { aiOverrideMap[s.id] = s.ai_override; });
 
     const sel = document.getElementById('ctrl-reply-sel');
@@ -1077,47 +1107,198 @@ async function loadGeo() {
   }
 }
 
-// ════ SESSIONS TABLE ════
+// ════ SESSIONS — EXPANDABLE ROWS ════
+const _sessExpandState = {};
+
 async function loadSessions() {
-  const tbody = document.getElementById('sessions-table');
-  tbody.innerHTML = '<tr><td colspan="15"><div class="loading-state"><div class="spinner"></div>Loading...</div></td></tr>';
+  const container = document.getElementById('sessions-container');
+  container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
+
   try {
     const { data, error } = await sb.from('sessions').select('*')
       .eq('reset_epoch', currentEpoch).order('last_seen', { ascending: false });
     if (error) throw error;
+
     document.getElementById('sessions-count').textContent = (data || []).length + ' sessions';
-    if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state">No sessions yet</div></td></tr>'; return; }
-    const fmtDate = ts => ts ? new Date(ts).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' }) : '—';
-    const fmtTime = sec => { if (!sec || sec <= 0) return '—'; const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60; return h>0?`${h}h ${m}m`:m>0?`${m}m ${s}s`:`${s}s`; };
-    tbody.innerHTML = (data || []).map(s => {
-      const devType = (s.device_type || '').toLowerCase();
-      const deviceBadge = devType ? `<span class="td-badge td-badge-${devType}">${devType}</span>` : '<span style="color:var(--text-faint)">—</span>';
-      const chatBadge = s.chat_opened   ? '<span class="td-badge td-badge-chat">Yes</span>' : '<span style="color:var(--text-faint)">—</span>';
-      const fbBadge   = s.feedback_sent ? '<span class="td-badge td-badge-fb">Yes</span>'   : '<span style="color:var(--text-faint)">—</span>';
-      const email = emailMap[s.id] || s.participant_email;
-      const visitorCell = email ? `<span class="td-email">${escHtml(email)}</span>` : `<span class="td-mono" title="${escHtml(s.id)}">${escHtml((s.id||'').substring(0,12))}…</span>`;
-      return `<tr data-sid="${escHtml(s.id)}"><td>${visitorCell}</td><td>${fmtDate(s.first_seen)}</td><td>${fmtDate(s.last_seen)}</td><td style="text-align:center">${s.visit_count||1}</td><td>${deviceBadge}</td><td style="color:var(--text-faint)">${escHtml(s.browser||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.os||'—')}</td><td>${escHtml(s.country||'—')}</td><td style="color:var(--text-faint)">${escHtml(s.city||'—')}</td><td style="color:var(--text-faint);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escHtml(s.isp||'')}">${escHtml(s.isp||'—')}</td><td>${chatBadge}</td><td style="text-align:center">${s.chat_msg_count||0}</td><td>${fbBadge}</td><td style="font-weight:600;color:var(--text)">${fmtTime(s.total_time_sec)}</td><td><button class="activity-btn" onclick="openActivityModal('${escHtml(s.id)}')">Activity ▸</button></td></tr>`;
-    }).join('');
+
+    if (!(data || []).length) {
+      container.innerHTML = '<div class="empty-state">No sessions yet</div>';
+      return;
+    }
+
+    // Load message counts per session
+    const { data: msgData } = await sb.from('messages')
+      .select('session_id, sender').eq('reset_epoch', currentEpoch);
+    const msgMap = {};
+    (msgData || []).forEach(m => {
+      if (!msgMap[m.session_id]) msgMap[m.session_id] = { participant: 0, ai: 0, organizer: 0 };
+      if (msgMap[m.session_id][m.sender] !== undefined) msgMap[m.session_id][m.sender]++;
+    });
+
+    // Load feedback counts per session
+    const { data: fbData } = await sb.from('feedback')
+      .select('session_id').eq('reset_epoch', currentEpoch);
+    const fbMap = {};
+    (fbData || []).forEach(f => { fbMap[f.session_id] = (fbMap[f.session_id] || 0) + 1; });
+
+    const list = document.createElement('div');
+    (data || []).forEach(s => list.appendChild(buildSessionRow(s, msgMap[s.id] || {}, fbMap[s.id] || 0)));
+
+    container.innerHTML = '';
+    container.appendChild(list);
+
+    // Re-open previously expanded rows
+    Object.entries(_sessExpandState).forEach(([sid, st]) => {
+      if (st.open && st.tab) openSessionPanel(sid, st.tab, true);
+    });
+
   } catch(e) {
-    tbody.innerHTML = '<tr><td colspan="15"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
+    container.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
   }
 }
 
-// ════════════════════════════════════════════════════════
-//  CHAT CONVERSATIONS — grouped by session, with bubbles,
-//  per-session AI toggle, and inline reply
-// ════════════════════════════════════════════════════════
+function buildSessionRow(s, msgCounts, fbCount) {
+  const email    = emailMap[s.id] || s.participant_email;
+  const label    = email ? email : (s.id.substring(0, 14) + '…');
+  const initial  = (email ? email[0] : s.id[0] || '?').toUpperCase();
+  const chatCount = (msgCounts.participant || 0);
+  const devType  = (s.device_type || '').toLowerCase();
+  const devIcon  = devType === 'mobile' ? '📱' : devType === 'tablet' ? '📋' : '🖥️';
+
+  const fmtTime = sec => {
+    if (!sec || sec <= 0) return '—';
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), ss = sec%60;
+    return h > 0 ? h+'h '+m+'m' : m > 0 ? m+'m '+ss+'s' : ss+'s';
+  };
+
+  const row = document.createElement('div');
+  row.className = 'srow';
+  row.id = 'srow-' + s.id;
+
+  const chatChip = chatCount > 0
+    ? `<span class="schip clickable" id="schip-chat-${escAttr(s.id)}" onclick="toggleSessionPanel('${escJs(s.id)}','chat')">💬 ჩატი: ${chatCount} <span class="schip-arrow">▾</span></span>`
+    : `<span class="schip" style="opacity:.45">💬 ჩატი: 0</span>`;
+
+  const fbChip = fbCount > 0
+    ? `<span class="schip clickable" id="schip-fb-${escAttr(s.id)}" onclick="toggleSessionPanel('${escJs(s.id)}','fb')">⭐ ფიდბექი: ${fbCount} <span class="schip-arrow">▾</span></span>`
+    : `<span class="schip" style="opacity:.45">⭐ ფიდბექი: 0</span>`;
+
+  row.innerHTML = `
+    <div class="srow-main">
+      <div class="srow-identity">
+        <div class="srow-avatar">${escHtml(initial)}</div>
+        <div style="min-width:0">
+          <div class="srow-label" title="${escAttr(label)}">${escHtml(label)}</div>
+          ${!email ? `<div class="srow-sublabel">${escHtml(s.id.substring(0,16))}…</div>` : ''}
+        </div>
+      </div>
+      <div class="srow-chips">
+        <span class="schip">${devIcon} ${escHtml(devType||'—')}</span>
+        <span class="schip">🔁 ${s.visit_count||1}x</span>
+        <span class="schip">⏱ ${fmtTime(s.total_time_sec)}</span>
+        <div class="srow-sep"></div>
+        ${chatChip}
+        ${fbChip}
+        <span class="schip clickable" onclick="openActivityModal('${escJs(s.id)}')" style="color:var(--text-faint)">Activity ▸</span>
+      </div>
+    </div>
+    <div class="srow-expand" id="srow-exp-${escAttr(s.id)}">
+      <div class="srow-tabs" id="srow-tabs-${escAttr(s.id)}"></div>
+      <div class="srow-body" id="srow-body-${escAttr(s.id)}"></div>
+    </div>`;
+
+  return row;
+}
+
+function toggleSessionPanel(sid, tab) {
+  const st = _sessExpandState[sid] || { open: false, tab: null };
+  if (st.open && st.tab === tab) {
+    closeSessionPanel(sid);
+  } else {
+    openSessionPanel(sid, tab);
+  }
+}
+
+async function openSessionPanel(sid, tab, silent) {
+  const exp  = document.getElementById('srow-exp-' + sid);
+  const body = document.getElementById('srow-body-' + sid);
+  const tabs = document.getElementById('srow-tabs-' + sid);
+  if (!exp) return;
+
+  _sessExpandState[sid] = { open: true, tab };
+  exp.classList.add('open');
+  updateSessionChips(sid);
+
+  tabs.innerHTML = `
+    <div class="srow-tab${tab==='chat'?' active':''}" id="stab-chat-${escAttr(sid)}" onclick="switchSessionTab('${escJs(sid)}','chat')">💬 ჩატი</div>
+    <div class="srow-tab${tab==='fb'?' active':''}" id="stab-fb-${escAttr(sid)}" onclick="switchSessionTab('${escJs(sid)}','fb')">⭐ ფიდბექი</div>`;
+
+  if (!silent) body.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
+
+  if (tab === 'chat') {
+    const { data } = await sb.from('messages').select('*')
+      .eq('session_id', sid).order('created_at', { ascending: true });
+    const msgs = data || [];
+    if (!msgs.length) { body.innerHTML = '<div class="srow-empty">No messages yet.</div>'; return; }
+    body.innerHTML = `<div class="srow-chat">${msgs.map(m => {
+      const cls  = m.sender === 'participant' ? 'participant' : m.sender === 'ai' ? 'ai' : 'organizer';
+      const who  = m.sender === 'participant' ? '👤 Participant' : m.sender === 'ai' ? '🤖 AI' : '🏢 Organizer';
+      const t    = new Date(m.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+      return `<div class="srow-msg ${cls}"><div class="srow-msg-meta">${who} · ${t}</div><div class="srow-bubble">${escHtml(m.text)}</div></div>`;
+    }).join('')}</div>`;
+  } else {
+    const { data } = await sb.from('feedback').select('*')
+      .eq('session_id', sid).eq('reset_epoch', currentEpoch).order('created_at', { ascending: false });
+    const items = data || [];
+    if (!items.length) { body.innerHTML = '<div class="srow-empty">No feedback yet.</div>'; return; }
+    body.innerHTML = `<div class="srow-fb-list">${items.map(f => {
+      const t = new Date(f.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
+      return `<div class="srow-fb-item"><div class="srow-fb-text">${escHtml(f.text)}</div><div class="srow-fb-meta">${f.speaker ? 'During: '+escHtml(f.speaker)+' · ' : ''}${t}</div></div>`;
+    }).join('')}</div>`;
+  }
+}
+
+function closeSessionPanel(sid) {
+  const exp = document.getElementById('srow-exp-' + sid);
+  if (exp) exp.classList.remove('open');
+  _sessExpandState[sid] = { open: false, tab: null };
+  updateSessionChips(sid);
+}
+
+function switchSessionTab(sid, tab) {
+  _sessExpandState[sid] = { open: true, tab };
+  document.querySelectorAll(`#srow-tabs-${CSS.escape(sid)} .srow-tab`).forEach(t => t.classList.remove('active'));
+  const activeTab = document.getElementById('stab-' + tab + '-' + sid);
+  if (activeTab) activeTab.classList.add('active');
+  openSessionPanel(sid, tab);
+}
+
+function updateSessionChips(sid) {
+  const st = _sessExpandState[sid] || { open: false, tab: null };
+  ['chat','fb'].forEach(t => {
+    const chip = document.getElementById('schip-' + t + '-' + sid);
+    if (!chip) return;
+    const arrow = chip.querySelector('.schip-arrow');
+    if (st.open && st.tab === t) {
+      chip.classList.add('s-active');
+      if (arrow) arrow.style.transform = 'rotate(180deg)';
+    } else {
+      chip.classList.remove('s-active');
+      if (arrow) arrow.style.transform = '';
+    }
+  });
+}
+
+// ════ CHAT CONVERSATIONS ════
 async function loadChat() {
   const container = document.getElementById('conv-list');
   container.innerHTML = '<div class="loading-state"><div class="spinner"></div>Loading...</div>';
   try {
-    // Load all messages for this epoch
     const { data: msgs, error } = await sb.from('messages')
       .select('*').eq('reset_epoch', currentEpoch)
       .order('created_at', { ascending: true });
     if (error) throw error;
 
-    // Load sessions to get ai_override
     const { data: sessions } = await sb.from('sessions')
       .select('id, ai_override, chat_opened').eq('reset_epoch', currentEpoch);
     const sessionMap = {};
@@ -1126,14 +1307,12 @@ async function loadChat() {
       aiOverrideMap[s.id] = s.ai_override;
     });
 
-    // Group messages by session_id
     const grouped = {};
     (msgs || []).forEach(m => {
       if (!grouped[m.session_id]) grouped[m.session_id] = [];
       grouped[m.session_id].push(m);
     });
 
-    // Only show sessions that have at least one participant message
     const sessionIds = Object.keys(grouped).filter(sid =>
       grouped[sid].some(m => m.sender === 'participant')
     );
@@ -1145,7 +1324,6 @@ async function loadChat() {
       return;
     }
 
-    // Sort: most recently active first
     sessionIds.sort((a, b) => {
       const la = grouped[a][grouped[a].length - 1]?.created_at || '';
       const lb = grouped[b][grouped[b].length - 1]?.created_at || '';
@@ -1154,7 +1332,6 @@ async function loadChat() {
 
     container.innerHTML = sessionIds.map(sid => buildConvCard(sid, grouped[sid], sessionMap[sid])).join('');
 
-    // Re-expand previously expanded convs
     expandedConvs.forEach(sid => {
       const body = document.getElementById('conv-body-' + sid);
       const chev = document.getElementById('conv-chev-' + sid);
@@ -1174,25 +1351,17 @@ function buildConvCard(sid, msgs, sessInfo) {
   const initial = (email ? email[0] : sid[0] || '?').toUpperCase();
   const participantMsgs = msgs.filter(m => m.sender === 'participant');
   const msgCount = participantMsgs.length;
-  const aiOverride = aiOverrideMap[sid]; // null | true | false
+  const aiOverride = aiOverrideMap[sid];
 
-  // AI toggle label
   let aiToggleClass, aiToggleIcon, aiToggleLabel;
   if (aiOverride === false) {
-    aiToggleClass = 'conv-ai-toggle ai-off';
-    aiToggleIcon  = '✕';
-    aiToggleLabel = 'AI Off';
+    aiToggleClass = 'conv-ai-toggle ai-off'; aiToggleIcon = '✕'; aiToggleLabel = 'AI Off';
   } else if (aiOverride === true) {
-    aiToggleClass = 'conv-ai-toggle ai-on';
-    aiToggleIcon  = '✓';
-    aiToggleLabel = 'AI On';
+    aiToggleClass = 'conv-ai-toggle ai-on'; aiToggleIcon = '✓'; aiToggleLabel = 'AI On';
   } else {
-    aiToggleClass = 'conv-ai-toggle ai-global';
-    aiToggleIcon  = '◎';
-    aiToggleLabel = 'AI Global';
+    aiToggleClass = 'conv-ai-toggle ai-global'; aiToggleIcon = '◎'; aiToggleLabel = 'AI Global';
   }
 
-  // Build message bubbles HTML
   const bubblesHtml = msgs.map(m => {
     const t = new Date(m.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
     let senderClass, senderLabel, bubbleClass;
@@ -1204,16 +1373,13 @@ function buildConvCard(sid, msgs, sessInfo) {
       senderClass = 'msg-sender-organizer'; senderLabel = '🏢 Organizer'; bubbleClass = 'organizer';
     }
     return `<div class="msg-bubble ${bubbleClass}">
-      <div class="msg-bubble-meta">
-        <span class="msg-sender-label ${senderClass}">${senderLabel}</span>
-        <span>· ${t}</span>
-      </div>
+      <div class="msg-bubble-meta"><span class="msg-sender-label ${senderClass}">${senderLabel}</span><span>· ${t}</span></div>
       <div class="msg-bubble-inner">${escHtml(m.text)}</div>
     </div>`;
   }).join('');
 
-  return `<div class="conv-card" id="conv-card-${escHtml(sid)}">
-    <div class="conv-header" onclick="toggleConv('${escHtml(sid)}')">
+  return `<div class="conv-card" id="conv-card-${escAttr(sid)}">
+    <div class="conv-header" onclick="toggleConv('${escJs(sid)}')">
       <div class="conv-header-left">
         <div class="conv-avatar">${escHtml(initial)}</div>
         <div class="conv-identity">
@@ -1223,24 +1389,23 @@ function buildConvCard(sid, msgs, sessInfo) {
       </div>
       <div class="conv-meta">
         <span class="conv-msg-count">${msgCount} msg${msgCount !== 1 ? 's' : ''}</span>
-        <button class="conv-ai-toggle ${aiToggleClass}" onclick="toggleSessionAI(event,'${escHtml(sid)}')" title="Toggle AI for this session">
-          <span>${aiToggleIcon}</span>
-          <span>${aiToggleLabel}</span>
+        <button class="conv-ai-toggle ${aiToggleClass}" onclick="toggleSessionAI(event,'${escJs(sid)}')" title="Toggle AI for this session">
+          <span>${aiToggleIcon}</span><span>${aiToggleLabel}</span>
         </button>
-        <span class="conv-chevron" id="conv-chev-${escHtml(sid)}">▼</span>
+        <span class="conv-chevron" id="conv-chev-${escAttr(sid)}">▼</span>
       </div>
     </div>
-    <div class="conv-body" id="conv-body-${escHtml(sid)}">
-      <div class="conv-messages" id="conv-msgs-${escHtml(sid)}">
+    <div class="conv-body" id="conv-body-${escAttr(sid)}">
+      <div class="conv-messages" id="conv-msgs-${escAttr(sid)}">
         ${bubblesHtml || '<div style="text-align:center;padding:16px;font-size:12px;color:var(--text-faint)">No messages</div>'}
       </div>
       <div class="conv-reply-area">
-        <textarea class="conv-reply-inp" id="conv-inp-${escHtml(sid)}" placeholder="Type a reply... (Enter to send)" rows="1"
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvReply('${escHtml(sid)}')}"
+        <textarea class="conv-reply-inp" id="conv-inp-${escAttr(sid)}" placeholder="Type a reply... (Enter to send)" rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendConvReply('${escJs(sid)}')}"
           oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-        <button class="conv-reply-btn" id="conv-btn-${escHtml(sid)}" onclick="sendConvReply('${escHtml(sid)}')">Send</button>
+        <button class="conv-reply-btn" id="conv-btn-${escAttr(sid)}" onclick="sendConvReply('${escJs(sid)}')">Send</button>
       </div>
-      <div class="conv-reply-status" id="conv-status-${escHtml(sid)}" style="padding:0 16px 10px;display:none"></div>
+      <div class="conv-reply-status" id="conv-status-${escAttr(sid)}" style="padding:0 16px 10px;display:none"></div>
     </div>
   </div>`;
 }
@@ -1251,39 +1416,27 @@ function toggleConv(sid) {
   if (!body) return;
   const isOpen = body.classList.toggle('open');
   if (chev) chev.classList.toggle('open', isOpen);
-  if (isOpen) {
-    expandedConvs.add(sid);
-    scrollConvToBottom(sid);
-  } else {
-    expandedConvs.delete(sid);
-  }
+  if (isOpen) { expandedConvs.add(sid); scrollConvToBottom(sid); }
+  else expandedConvs.delete(sid);
 }
 
 function scrollConvToBottom(sid) {
-  setTimeout(() => {
-    const el = document.getElementById('conv-msgs-' + sid);
-    if (el) el.scrollTop = el.scrollHeight;
-  }, 50);
+  setTimeout(() => { const el = document.getElementById('conv-msgs-' + sid); if (el) el.scrollTop = el.scrollHeight; }, 50);
 }
 
-// ── Per-session AI Toggle ──
 async function toggleSessionAI(event, sid) {
-  event.stopPropagation(); // don't expand/collapse card
-  const current = aiOverrideMap[sid]; // null | true | false
-  // Cycle: global → off → on → global
+  event.stopPropagation();
+  const current = aiOverrideMap[sid];
   let next;
   if (current === null || current === undefined) next = false;
   else if (current === false) next = true;
   else next = null;
-
   aiOverrideMap[sid] = next;
   updateConvAIToggle(sid, next);
-
   try {
     const { error } = await sb.from('sessions').update({ ai_override: next }).eq('id', sid);
     if (error) throw error;
   } catch(e) {
-    // Revert on error
     aiOverrideMap[sid] = current;
     updateConvAIToggle(sid, current);
     console.warn('AI toggle error:', e.message);
@@ -1299,37 +1452,22 @@ function updateConvAIToggle(sid, val) {
   if (spans[1]) spans[1].textContent = val === false ? 'AI Off' : val === true ? 'AI On' : 'AI Global';
 }
 
-// ── Inline Reply ──
 async function sendConvReply(sid) {
   const inp    = document.getElementById('conv-inp-' + sid);
   const btn    = document.getElementById('conv-btn-' + sid);
   const status = document.getElementById('conv-status-' + sid);
   const text   = inp ? inp.value.trim() : '';
   if (!text) return;
-
-  btn.disabled = true;
-  inp.disabled = true;
-
+  btn.disabled = true; inp.disabled = true;
   try {
-    const { error } = await sb.from('messages').insert({
-      session_id: sid,
-      sender: 'organizer',
-      text,
-      reset_epoch: liveEpoch
-    });
+    const { error } = await sb.from('messages').insert({ session_id: sid, sender: 'organizer', text, reset_epoch: liveEpoch });
     if (error) throw error;
-
-    // Disable AI for this session automatically when organizer replies
     if (aiOverrideMap[sid] !== false) {
       aiOverrideMap[sid] = false;
       updateConvAIToggle(sid, false);
       await sb.from('sessions').update({ ai_override: false }).eq('id', sid);
     }
-
-    inp.value = '';
-    inp.style.height = 'auto';
-
-    // Append bubble immediately
+    inp.value = ''; inp.style.height = 'auto';
     const msgsEl = document.getElementById('conv-msgs-' + sid);
     if (msgsEl) {
       const t = new Date().toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
@@ -1339,22 +1477,11 @@ async function sendConvReply(sid) {
       msgsEl.appendChild(bubble);
       msgsEl.scrollTop = msgsEl.scrollHeight;
     }
-
-    if (status) {
-      status.style.display = 'block';
-      status.textContent = '✓ Sent! AI disabled for this session.';
-      setTimeout(() => { status.style.display = 'none'; }, 3000);
-    }
+    if (status) { status.style.display='block'; status.textContent='✓ Sent! AI disabled for this session.'; setTimeout(()=>{status.style.display='none';},3000); }
   } catch(e) {
-    if (status) {
-      status.style.display = 'block';
-      status.style.color = 'var(--red)';
-      status.textContent = '✗ Error: ' + e.message;
-    }
+    if (status) { status.style.display='block'; status.style.color='var(--red)'; status.textContent='✗ Error: '+e.message; }
   } finally {
-    btn.disabled = false;
-    inp.disabled = false;
-    inp.focus();
+    btn.disabled = false; inp.disabled = false; inp.focus();
   }
 }
 
@@ -1450,7 +1577,7 @@ async function loadFeedback() {
       const t = new Date(f.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
       const email = emailMap[f.session_id];
       const emailTag = email ? `<span class="feed-email-tag">${escHtml(email)}</span>` : '';
-      return `<div class="feed-item"><div class="feed-item-top"><span><span class="feed-sender feedback" data-sid="${escHtml(f.session_id||'')}">${email?escHtml(email):'Feedback'}</span>${emailTag}</span><span class="feed-time">${t}</span></div><div class="feed-text">${escHtml(f.text)}</div>${f.speaker?`<div class="feed-meta">During: ${escHtml(f.speaker)}</div>`:''}</div>`;
+      return `<div class="feed-item"><div class="feed-item-top"><span><span class="feed-sender feedback" data-sid="${escAttr(f.session_id||'')}">${email?escHtml(email):'Feedback'}</span>${emailTag}</span><span class="feed-time">${t}</span></div><div class="feed-text">${escHtml(f.text)}</div>${f.speaker?`<div class="feed-meta">During: ${escHtml(f.speaker)}</div>`:''}</div>`;
     }).join('');
   } catch(e) {
     feed.innerHTML = '<div class="error-state">Error: ' + escHtml(e.message) + '</div>';
@@ -1492,7 +1619,7 @@ async function loadWorkshop() {
     if (!(data || []).length) { tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">No registrations yet</div></td></tr>'; return; }
     tbody.innerHTML = (data || []).map(r => {
       const t = new Date(r.created_at).toLocaleString('en-GB', { hour12:false, timeStyle:'short', dateStyle:'short' });
-      return `<tr><td class="td-email">${escHtml(r.email)}</td><td class="td-mono" title="${escHtml(r.session_id||'')}">${escHtml((r.session_id||'').substring(0,12))}…</td><td style="color:var(--text-faint)">${t}</td><td><span class="pill pill-navy">Session ${r.reset_epoch||1}</span></td></tr>`;
+      return `<tr><td class="td-email">${escHtml(r.email)}</td><td class="td-mono" title="${escAttr(r.session_id||'')}">${escHtml((r.session_id||'').substring(0,12))}…</td><td style="color:var(--text-faint)">${t}</td><td><span class="pill pill-navy">Session ${r.reset_epoch||1}</span></td></tr>`;
     }).join('');
   } catch(e) {
     tbody.innerHTML = '<tr><td colspan="4"><div class="error-state">Error: ' + escHtml(e.message) + '</div></td></tr>';
@@ -1629,8 +1756,16 @@ async function sendReply() {
 function escHtml(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+function escAttr(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escJs(str) {
+  return String(str ?? '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeActivityModalDirect(); });
 </script>
 </body>
 </html>
+ENDOFFILE
+echo "File written: $(wc -l < /home/claude/admin.html) lines"
