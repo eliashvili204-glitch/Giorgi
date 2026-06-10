@@ -77,7 +77,6 @@
     .btn-refresh.spinning .spin-icon { animation: spin .6s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* error banner */
     .error-banner { display:none; margin: 16px 28px 0; padding: 12px 16px; background: var(--red-soft); border: 1px solid var(--red-bdr); border-radius: 10px; font-size: 12px; color: var(--red); }
     .error-banner.visible { display: flex; align-items: center; gap: 8px; }
 
@@ -121,6 +120,7 @@
     .gcard.g    { --gc: var(--green); }
     .gcard.a    { --gc: var(--amber); }
     .gcard.p    { --gc: var(--purple); }
+    .gcard.c    { --gc: var(--cyan); }
 
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
     .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
@@ -193,7 +193,6 @@
     .empty { text-align: center; padding: 36px; color: var(--text-muted); font-size: 12px; }
     .footer { text-align: center; padding: 16px; font-size: 11px; color: var(--text-muted); }
 
-    /* skeleton loader */
     .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border2) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 20px; }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
@@ -211,7 +210,6 @@
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="brand">
     <div class="brand-icon">🏥</div>
@@ -232,12 +230,10 @@
   </div>
 </div>
 
-<!-- ERROR BANNER -->
 <div class="error-banner" id="errorBanner">
   ⚠️ <span id="errorMsg">მონაცემების ჩატვირთვა ვერ მოხდა. შეამოწმე Apps Script URL.</span>
 </div>
 
-<!-- SEARCH RESULTS -->
 <div class="srp-panel" id="searchResultsPanel">
   <div class="srp-header">
     <span class="srp-title">Search Results</span>
@@ -251,15 +247,15 @@
   </div>
 </div>
 
-<!-- NAV -->
 <div class="nav-wrap">
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('overview')"     id="tab-btn-overview">Overview</button>
-    <button class="nav-tab"        onclick="switchTab('participants')" id="tab-btn-participants">Participants <span class="tab-count" id="cnt-participants">—</span></button>
-    <button class="nav-tab"        onclick="switchTab('speakers')"     id="tab-btn-speakers">Speakers <span class="tab-count" id="cnt-speakers">—</span></button>
-    <button class="nav-tab"        onclick="switchTab('coauthors')"    id="tab-btn-coauthors">Co-Authors <span class="tab-count" id="cnt-coauthors">—</span></button>
-    <button class="nav-tab"        onclick="switchTab('posters')"      id="tab-btn-posters">Posters <span class="tab-count" id="cnt-posters">—</span></button>
-    <button class="nav-tab"        onclick="switchTab('certs')"        id="tab-btn-certs">Certificates <span class="tab-count" id="cnt-certs">—</span></button>
+    <button class="nav-tab active" onclick="switchTab('overview')"         id="tab-btn-overview">Overview</button>
+    <button class="nav-tab"        onclick="switchTab('attendees')"        id="tab-btn-attendees">Attendees <span class="tab-count" id="cnt-attendees">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('attendeesUnpaid')"  id="tab-btn-attendeesUnpaid">Attendees (Unpaid) <span class="tab-count" id="cnt-attendeesUnpaid">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('speakers')"         id="tab-btn-speakers">Speakers <span class="tab-count" id="cnt-speakers">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('coauthors')"        id="tab-btn-coauthors">Co-Authors <span class="tab-count" id="cnt-coauthors">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('posters')"          id="tab-btn-posters">Posters <span class="tab-count" id="cnt-posters">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('certs')"            id="tab-btn-certs">Certificates <span class="tab-count" id="cnt-certs">—</span></button>
   </div>
 </div>
 
@@ -268,20 +264,29 @@
   <!-- OVERVIEW -->
   <div class="tab-panel active" id="panel-overview">
     <div class="kpi-row">
-      <div class="kpi">        <div class="kpi-num" id="ov-total">—</div>  <div class="kpi-lbl">Total Registered</div></div>
-      <div class="kpi g">     <div class="kpi-num" id="ov-d1in">—</div>   <div class="kpi-lbl">Day 1 Check-in</div></div>
-      <div class="kpi c">     <div class="kpi-num" id="ov-d2in">—</div>   <div class="kpi-lbl">Day 2 Check-in</div></div>
-      <div class="kpi r">     <div class="kpi-num" id="ov-absent">—</div> <div class="kpi-lbl">Not Checked In</div></div>
+      <div class="kpi">     <div class="kpi-num" id="ov-total">—</div>  <div class="kpi-lbl">Total Registered</div></div>
+      <div class="kpi g">   <div class="kpi-num" id="ov-d1in">—</div>   <div class="kpi-lbl">Day 1 Check-in</div></div>
+      <div class="kpi c">   <div class="kpi-num" id="ov-d2in">—</div>   <div class="kpi-lbl">Day 2 Check-in</div></div>
+      <div class="kpi r">   <div class="kpi-num" id="ov-absent">—</div> <div class="kpi-lbl">Not Checked In</div></div>
     </div>
 
     <div class="groups-row">
       <div class="gcard navy">
-        <div class="gc-label">Participants</div>
-        <div class="gc-total" id="grp-part-total">—</div>
-        <div class="gc-sub"   id="grp-part-absent">—</div>
+        <div class="gc-label">Attendees</div>
+        <div class="gc-total" id="grp-att-total">—</div>
+        <div class="gc-sub"   id="grp-att-absent">—</div>
         <div class="gc-row">
-          <div class="gc-mini"><div class="gc-mini-num" id="grp-part-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
-          <div class="gc-mini"><div class="gc-mini-num" id="grp-part-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-att-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-att-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
+        </div>
+      </div>
+      <div class="gcard c">
+        <div class="gc-label">Attendees (Unpaid)</div>
+        <div class="gc-total" id="grp-unp-total">—</div>
+        <div class="gc-sub"   id="grp-unp-absent">—</div>
+        <div class="gc-row">
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-unp-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
+          <div class="gc-mini"><div class="gc-mini-num" id="grp-unp-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
         </div>
       </div>
       <div class="gcard g">
@@ -300,15 +305,6 @@
         <div class="gc-row">
           <div class="gc-mini"><div class="gc-mini-num" id="grp-coa-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
           <div class="gc-mini"><div class="gc-mini-num" id="grp-coa-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
-        </div>
-      </div>
-      <div class="gcard p">
-        <div class="gc-label">Posters</div>
-        <div class="gc-total" id="grp-post-total">—</div>
-        <div class="gc-sub"   id="grp-post-absent">—</div>
-        <div class="gc-row">
-          <div class="gc-mini"><div class="gc-mini-num" id="grp-post-d1in">—</div><div class="gc-mini-lbl">Day 1 In</div></div>
-          <div class="gc-mini"><div class="gc-mini-num" id="grp-post-d2in">—</div><div class="gc-mini-lbl">Day 2 In</div></div>
         </div>
       </div>
     </div>
@@ -332,20 +328,35 @@
     <div class="footer" id="last-updated"></div>
   </div>
 
-  <!-- GROUP PANELS -->
-  <div class="tab-panel" id="panel-participants">
-    <div class="strip" id="strip-participants"></div>
-    <div class="two-col" id="stats-participants" style="margin-bottom:16px;"></div>
+  <!-- ATTENDEES -->
+  <div class="tab-panel" id="panel-attendees">
+    <div class="strip" id="strip-attendees"></div>
+    <div class="two-col" id="stats-attendees" style="margin-bottom:16px;"></div>
     <div class="table-panel">
       <div class="tbl-header">
-        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Participants</span><span class="tbl-badge" id="badge-participants">0</span></div>
-        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('participants',this.value)">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Attendees</span><span class="tbl-badge" id="badge-attendees">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('attendees',this.value)">
       </div>
       <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
-      <tbody id="tbody-participants"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+      <tbody id="tbody-attendees"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
     </div>
   </div>
 
+  <!-- ATTENDEES UNPAID -->
+  <div class="tab-panel" id="panel-attendeesUnpaid">
+    <div class="strip" id="strip-attendeesUnpaid"></div>
+    <div class="two-col" id="stats-attendeesUnpaid" style="margin-bottom:16px;"></div>
+    <div class="table-panel">
+      <div class="tbl-header">
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Attendees (Unpaid)</span><span class="tbl-badge" id="badge-attendeesUnpaid">0</span></div>
+        <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('attendeesUnpaid',this.value)">
+      </div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
+      <tbody id="tbody-attendeesUnpaid"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- SPEAKERS -->
   <div class="tab-panel" id="panel-speakers">
     <div class="strip" id="strip-speakers"></div>
     <div class="two-col" id="stats-speakers" style="margin-bottom:16px;"></div>
@@ -359,6 +370,7 @@
     </div>
   </div>
 
+  <!-- CO-AUTHORS -->
   <div class="tab-panel" id="panel-coauthors">
     <div class="strip" id="strip-coauthors"></div>
     <div class="two-col" id="stats-coauthors" style="margin-bottom:16px;"></div>
@@ -372,6 +384,7 @@
     </div>
   </div>
 
+  <!-- POSTERS -->
   <div class="tab-panel" id="panel-posters">
     <div class="strip" id="strip-posters"></div>
     <div class="two-col" id="stats-posters" style="margin-bottom:16px;"></div>
@@ -398,30 +411,23 @@
         <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Certificate Queue</span><span class="tbl-badge" id="badge-certs">0</span></div>
         <input class="tbl-search" placeholder="Search name or email…" oninput="filterCertTable(this.value)">
       </div>
-      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Status</th><th>Attempts</th><th>Queued At</th><th>Last Error</th></tr></thead>
-      <tbody id="tbody-certs"><tr><td colspan="8" class="empty">Loading…</td></tr></tbody></table></div>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Status</th><th>Last Error</th></tr></thead>
+      <tbody id="tbody-certs"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table></div>
     </div>
   </div>
 
 </div>
 
 <script>
-// ════════════════════════════════════════════
-//  ⚠️  აქ ჩასვი შენი Apps Script Web App URL
-//  გამოიყურება ასე:
-//  https://script.google.com/macros/s/AKfycb.../exec
-// ════════════════════════════════════════════
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz325d6tvjltqO2d_dbcDoCYAXEpuYd_K9G3iXW8BB2NNrPei0Sl-OMfS20Kf2aMBu1xg/exec";
 
-var groupData = { participants:[], speakers:[], coauthors:[], posters:[] };
-var certsData = [];
+var ALL_GROUPS = ['attendees','attendeesUnpaid','speakers','coauthors','posters'];
+var groupData  = { attendees:[], attendeesUnpaid:[], speakers:[], coauthors:[], posters:[] };
+var certsData  = [];
 
 window.onload = function(){ loadAll(); };
-
-// ── Auto-refresh ყოველ 60 წამში ──
 setInterval(loadAll, 60000);
 
-// ════ loadAll ════
 function loadAll() {
   var btn = document.getElementById('refreshBtn');
   btn.disabled = true;
@@ -431,17 +437,21 @@ function loadAll() {
   var done = 0;
   function check() { if (++done >= 3) { btn.disabled = false; btn.classList.remove('spinning'); } }
 
-  // Dashboard overview
   apiFetch("dashboard")
     .then(function(d) { renderOverview(d); check(); })
     .catch(function(err) { showError(err.message); check(); });
 
-  // Attendee lists
   apiFetch("attendees")
     .then(function(lists) {
-      groupData = lists;
-      ['participants','speakers','coauthors','posters'].forEach(function(g) {
-        var arr = lists[g] || [];
+      groupData = {
+        attendees:        lists.attendees        || [],
+        attendeesUnpaid:  lists.attendeesUnpaid  || [],
+        speakers:         lists.speakers         || [],
+        coauthors:        lists.coauthors        || [],
+        posters:          lists.posters          || []
+      };
+      ALL_GROUPS.forEach(function(g) {
+        var arr = groupData[g];
         renderGroupTable(g, arr);
         renderGroupStats(g, arr);
         _set('cnt-'+g, arr.length);
@@ -451,7 +461,6 @@ function loadAll() {
     })
     .catch(function(err) { showError(err.message); check(); });
 
-  // Certs
   apiFetch("certs")
     .then(function(rows) {
       certsData = rows || [];
@@ -464,7 +473,6 @@ function loadAll() {
     .catch(function(err) { showError(err.message); check(); });
 }
 
-// ════ API fetch helper — JSONP (bypasses CORS for Apps Script) ════
 function apiFetch(action) {
   return new Promise(function(resolve, reject) {
     var cbName  = "_cb_" + action + "_" + Date.now();
@@ -480,21 +488,17 @@ function apiFetch(action) {
       if (script.parentNode) script.parentNode.removeChild(script);
     }
 
-    window[cbName] = function(data) {
-      cleanup();
-      resolve(data);
-    };
+    window[cbName] = function(data) { cleanup(); resolve(data); };
 
     script.src = APPS_SCRIPT_URL + "?page=api&action=" + action + "&callback=" + cbName;
     script.onerror = function() {
       cleanup();
-      reject(new Error("Apps Script-ი ვერ ჩაიტვირთა (" + action + "). შეამოွმე Deploy პარამეტრები."));
+      reject(new Error("Apps Script-ი ვერ ჩაიტვირთა (" + action + ")"));
     };
     document.head.appendChild(script);
   });
 }
 
-// ════ Error helpers ════
 function showError(msg) {
   var b = document.getElementById('errorBanner');
   document.getElementById('errorMsg').textContent = msg;
@@ -504,7 +508,6 @@ function hideError() {
   document.getElementById('errorBanner').classList.remove('visible');
 }
 
-// ════ Global Search ════
 function globalSearchHandler(q) {
   q = q.toLowerCase().trim();
   var panel = document.getElementById('searchResultsPanel');
@@ -512,7 +515,7 @@ function globalSearchHandler(q) {
   if (!q) { panel.classList.remove('visible'); return; }
 
   var results = [];
-  ['participants','speakers','coauthors','posters'].forEach(function(g) {
+  ALL_GROUPS.forEach(function(g) {
     (groupData[g]||[]).forEach(function(a) {
       if (a.name.toLowerCase().indexOf(q) !== -1 || a.email.toLowerCase().indexOf(q) !== -1) {
         results.push(Object.assign({}, a, {group: g}));
@@ -526,7 +529,7 @@ function globalSearchHandler(q) {
         return '<tr><td class="td-idx">'+(i+1)+'</td>'+
           '<td class="td-name">'+_esc(a.name)+'</td>'+
           '<td class="td-email">'+_esc(a.email)+'</td>'+
-          '<td style="font-size:11px;color:var(--text-soft);text-transform:capitalize">'+_esc(a.group)+'</td>'+
+          '<td style="font-size:11px;color:var(--text-soft)">'+_esc(a.group)+'</td>'+
           '<td>'+_pill(a.d1in_status)+'</td><td>'+_pill(a.d1out_status)+'</td>'+
           '<td>'+_pill(a.d2in_status)+'</td><td>'+_pill(a.d2out_status)+'</td></tr>';
       }).join('')
@@ -534,7 +537,6 @@ function globalSearchHandler(q) {
   panel.classList.add('visible');
 }
 
-// ════ Overview ════
 function renderOverview(d) {
   if (!d) return;
   var total  = d.total||0, d1in = d.day1in||0, d1out = d.day1out||0;
@@ -548,11 +550,11 @@ function renderOverview(d) {
   _setProgress('pr-d2in',  'pr-d2in-v',  d2in,  total);
   _setProgress('pr-d2out', 'pr-d2out-v', d2out, total);
 
-  var gs = d.groups || {};
-  _renderGCard('part', gs.participants);
-  _renderGCard('spk',  gs.speakers);
-  _renderGCard('coa',  gs.coauthors);
-  _renderGCard('post', gs.posters);
+  var bs = d.bySheet || {};
+  _renderGCard('att', bs['Attendees']);
+  _renderGCard('unp', bs['Attendees (Unpaid)']);
+  _renderGCard('spk', bs['Speakers']);
+  _renderGCard('coa', bs['Co-Authors']);
 
   var feed = d.recentActivity || [];
   var el = document.getElementById('ov-activity');
@@ -580,7 +582,6 @@ function _renderGCard(key, g) {
   _set('grp-'+key+'-d2in',   g.day2in||0);
 }
 
-// ════ Group Stats ════
 function renderGroupStats(group, arr) {
   var total = arr.length;
   var d1in  = arr.filter(function(a){ return !!a.d1in_status; }).length;
@@ -589,8 +590,14 @@ function renderGroupStats(group, arr) {
   var d2out = arr.filter(function(a){ return !!a.d2out_status; }).length;
   var absent = total - d1in;
 
-  var labels = {participants:'Participants',speakers:'Speakers',coauthors:'Co-Authors',posters:'Poster Presenters'};
-  var colors = {participants:'var(--navy)',speakers:'var(--green)',coauthors:'var(--amber)',posters:'var(--purple)'};
+  var labels = {
+    attendees:'Attendees', attendeesUnpaid:'Attendees (Unpaid)',
+    speakers:'Speakers', coauthors:'Co-Authors', posters:'Poster Presenters'
+  };
+  var colors = {
+    attendees:'var(--navy)', attendeesUnpaid:'var(--cyan)',
+    speakers:'var(--green)', coauthors:'var(--amber)', posters:'var(--purple)'
+  };
 
   var strip = document.getElementById('strip-'+group);
   if (strip) strip.innerHTML =
@@ -612,7 +619,6 @@ function renderGroupStats(group, arr) {
     _qs('Day 1 In',d1in,'var(--green)')+_qs('Day 2 In',d2in,'var(--cyan)')+'</div></div>';
 }
 
-// ════ Group Table ════
 function renderGroupTable(group, arr) {
   var tbody = document.getElementById('tbody-'+group);
   if (!tbody) return;
@@ -634,11 +640,10 @@ function filterGroupTable(group, q) {
   }) : arr);
 }
 
-// ════ Cert Table ════
 function renderCertTable(arr) {
   var tbody = document.getElementById('tbody-certs');
   if (!tbody) return;
-  if (!arr||!arr.length) { tbody.innerHTML='<tr><td colspan="8" class="empty">No certificates queued yet</td></tr>'; return; }
+  if (!arr||!arr.length) { tbody.innerHTML='<tr><td colspan="6" class="empty">No certificates queued yet</td></tr>'; return; }
   tbody.innerHTML = arr.map(function(r,i) {
     var s   = (r.status||'').toLowerCase();
     var cls = s==='done'?'pill-done' : s==='failed'?'pill-failed' : s==='processing'?'pill-processing' : 'pill-pending';
@@ -648,8 +653,6 @@ function renderCertTable(arr) {
       '<td class="td-email">'+_esc(r.email)+'</td>'+
       '<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.group)+'</td>'+
       '<td><span class="pill '+cls+'">'+_esc(r.status)+'</span></td>'+
-      '<td style="text-align:center;font-size:11px;color:var(--text-mid)">'+_esc(r.attempts)+'</td>'+
-      '<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.timestamp)+'</td>'+
       '<td style="font-size:11px;color:var(--red);max-width:180px;overflow:hidden;text-overflow:ellipsis">'+_esc(r.lastError)+'</td></tr>';
   }).join('');
 }
@@ -674,15 +677,14 @@ function filterCertTable(q) {
   }) : certsData);
 }
 
-// ════ Tabs ════
 function switchTab(name) {
-  ['overview','participants','speakers','coauthors','posters','certs'].forEach(function(t) {
+  var all = ['overview','attendees','attendeesUnpaid','speakers','coauthors','posters','certs'];
+  all.forEach(function(t) {
     document.getElementById('panel-'+t).classList.toggle('active', t===name);
     document.getElementById('tab-btn-'+t).classList.toggle('active', t===name);
   });
 }
 
-// ════ Utils ════
 function _set(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
 function _setProgress(bId,vId,val,total){
   var pct = total>0 ? Math.round(val/total*100) : 0;
