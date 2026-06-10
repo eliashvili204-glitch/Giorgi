@@ -298,7 +298,18 @@ var LOCK_RETRY_DELAY_MS = 3000;
 var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
 
 // ══════════════════════════════════════════════════════════════
-//  PAGE-LOAD COUNTER  (location denied-ის შემდეგ "Continue" გამოჩნდება)
+//  SESSION ID — იგივე key რასაც agenda იყენებს (syssa_sid)
+//  registration-ი ქმნის ან კითხულობს არსებულს,
+//  attendance-ში ჩაიწერება session_id სვეტში
+// ══════════════════════════════════════════════════════════════
+var sessionId = localStorage.getItem('syssa_sid');
+if (!sessionId) {
+  sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
+  localStorage.setItem('syssa_sid', sessionId);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PAGE-LOAD COUNTER
 // ══════════════════════════════════════════════════════════════
 var pageLoads = 0;
 try {
@@ -318,15 +329,13 @@ function resetPageLoads() {
 var geoState         = 'detecting';
 var userLat          = null;
 var userLng          = null;
-var lastPayload      = null;   // ← lastUrl-ის ნაცვლად object ვინახავთ
+var lastPayload      = null;
 var isSubmitting     = false;
 var currentRequestId = 0;
 var countdownInterval = null;
 
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
-//  localStorage-ში ვინახავთ submit-ის დროს.
-//  წავიკითხავთ page load-ზე და submit-ამდე.
 // ══════════════════════════════════════════════════════════════
 function getDeviceRateRemaining() {
   try {
@@ -337,7 +346,6 @@ function getDeviceRateRemaining() {
   } catch(e) { return 0; }
 }
 
-// ✅ მხოლოდ SUCCESS-ის შემდეგ ეძახება handleResult()-იდან
 function setDeviceRateLimit() {
   try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
 }
@@ -373,7 +381,6 @@ function startCountdown(remainingMs, reason, title) {
       countdownInterval = null;
       document.getElementById('rl-countdown').textContent = '00:00:00';
       box.style.display = 'none';
-      // ✅ countdown დამთავრდა — button ჩართვა მხოლოდ თუ geo ready
       if (geoState === 'found' || geoState === 'offsite' || geoState === 'manual') {
         document.getElementById('submit-btn').disabled = false;
       }
@@ -405,7 +412,6 @@ function startLocation() {
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
-  // ✅ Device rate limit შევამოწმოთ page load-ზევე
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -478,7 +484,6 @@ function onGeoSuccess(pos) {
   }
 
   setInputsEnabled(true);
-  // ✅ button ჩართვა მხოლოდ device limit არ არის
   if (getDeviceRateRemaining() <= 0) {
     document.getElementById('submit-btn').disabled = false;
   }
@@ -571,7 +576,6 @@ function pick(el) {
 
 // ══════════════════════════════════════════════════════════════
 //  SUPABASE INSERT
-//  ✅ Primary record — ეს წარმატება = სიმართლე
 // ══════════════════════════════════════════════════════════════
 function supabaseInsert(payload) {
   return fetch(SB_URL + '/rest/v1/attendance', {
@@ -588,8 +592,6 @@ function supabaseInsert(payload) {
 
 // ══════════════════════════════════════════════════════════════
 //  SHEETS-PROXY CALL
-//  ✅ Synchronous — validation response-ს ბრუნებს Apps Script-იდან
-//  type: 'attendance' → sheets-proxy → Apps Script doGet → processForm
 // ══════════════════════════════════════════════════════════════
 function callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft) {
   if (retriesLeft === undefined) retriesLeft = MAX_RETRIES;
@@ -612,9 +614,7 @@ function callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft) {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    // ✅ stale request-ი — ignore
     if (requestId !== currentRequestId) return;
-    // sheets-proxy აბრუნებს { ok: true, result: "SUCCESS" } ან { ok: false, error: "..." }
     if (data && data.result) {
       onSuccess(data.result);
     } else if (data && data.error) {
@@ -651,7 +651,6 @@ function showMsg(text, type) {
 
 // ══════════════════════════════════════════════════════════════
 //  RESULT HANDLER
-//  Apps Script processForm()-ის response-ს ამუშავებს
 // ══════════════════════════════════════════════════════════════
 function handleResult(result) {
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
@@ -668,7 +667,7 @@ function handleResult(result) {
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Server busy — retrying…';
-    isSubmitting = true;  // ✅ lock retry-ს დროს ვბლოკავთ double submit-ს
+    isSubmitting = true;
 
     var retryReqId = ++currentRequestId;
     setTimeout(function() {
@@ -688,10 +687,9 @@ function handleResult(result) {
     return;
   }
 
-  // ── server-side rate limit (email-ის ლიმიტი Apps Script-ში) ──
+  // ── server-side rate limit ──
   if (result.indexOf('RATE_LIMITED:') === 0) {
     var remMs = parseInt(result.split(':')[1], 10);
-    // ✅ setDeviceRateLimit() არ ეძახება — ეს email-ის ლიმიტია, device-ის არა
     startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
@@ -713,9 +711,12 @@ function handleResult(result) {
 
   if (entry) {
     if (entry.type === 'success') {
-      // ✅ Success message გამოჩნდება — 1.5 წამის შემდეგ countdown იწყება
       showMsg(entry.text, entry.type);
-      setDeviceRateLimit();  // ✅ მხოლოდ წარმატების შემდეგ
+      setDeviceRateLimit();  // ✅ success-ის შემდეგ
+
+      // ── session_id → sessions ცხრილში ჩაიწეროს agenda-ს მიერ წაკითხვისთვის ──
+      // (attendance ცხრილში session_id უკვე ჩაიწერა supabaseInsert-ში)
+
       setTimeout(function() {
         startCountdown(
           RATE_LIMIT_MS,
@@ -737,17 +738,9 @@ function handleResult(result) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SUBMIT — მთავარი ფუნქცია
-//
-//  Flow:
-//   1. Validation (geo, device limit, email format)
-//   2. Supabase INSERT  ← primary record
-//   3. sheets-proxy     ← validation response + Google Sheet sync
-//   4. handleResult()   ← UI update
-//   5. setDeviceRateLimit() ← მხოლოდ SUCCESS-ზე, handleResult-ში
+//  SUBMIT
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
-  // ✅ double-submit protection
   if (isSubmitting) return;
 
   var allowed = ['found', 'offsite', 'manual'];
@@ -756,7 +749,6 @@ function submitForm() {
     return;
   }
 
-  // ✅ device rate limit — submit-ამდე კიდევ ერთხელ შევამოწმოთ
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -779,7 +771,6 @@ function submitForm() {
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
-  // ✅ payload object — retry-ისთვის გვჭირდება
   lastPayload = {
     email:      email,
     day:        day,
@@ -796,17 +787,17 @@ function submitForm() {
   document.getElementById('retry-info').style.display = 'none';
   isSubmitting = true;
 
-  // ✅ unique request ID — stale response-ების გასაფილტრად
   var reqId = ++currentRequestId;
 
-  // ══ Step 1: Supabase INSERT (primary record) ══
+  // ══ Step 1: Supabase INSERT — session_id ჩართულია ══
   var supabasePayload = {
     email:      email,
     day:        day,
     action:     action,
     lat:        userLat !== null ? String(userLat) : null,
     lng:        userLng !== null ? String(userLng) : null,
-    loc_status: locStatus
+    loc_status: locStatus,
+    session_id: sessionId   // ← ახალი: agenda-სთან დაკავშირება
   };
 
   supabaseInsert(supabasePayload)
@@ -814,12 +805,10 @@ function submitForm() {
       if (reqId !== currentRequestId) return;
 
       if (!r.ok) {
-        // Supabase INSERT ჩავარდა — network ან RLS პრობლემა
-        // ვაგრძელებთ sheets-proxy-ით — record მაინც ჩაიწერება Sheet-ში
         console.warn('Supabase INSERT failed (' + r.status + ') — continuing with sheets-proxy');
       }
 
-      // ══ Step 2: sheets-proxy → Apps Script → validation + Sheet sync ══
+      // ══ Step 2: sheets-proxy ══
       callSheetsProxy(
         lastPayload,
         reqId,
@@ -828,7 +817,6 @@ function submitForm() {
           handleResult(result);
         },
         function() {
-          // sheets-proxy სრულად ჩავარდა (3 retry-ის შემდეგ)
           if (reqId !== currentRequestId) return;
           isSubmitting = false;
           document.getElementById('retry-info').style.display = 'none';
@@ -842,7 +830,6 @@ function submitForm() {
     })
     .catch(function() {
       if (reqId !== currentRequestId) return;
-      // Supabase fetch-ი სრულად ჩავარდა (network) — sheets-proxy-ით ვაგრძელებთ
       console.warn('Supabase INSERT fetch error — continuing with sheets-proxy');
       callSheetsProxy(
         lastPayload,
