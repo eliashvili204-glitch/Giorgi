@@ -143,7 +143,7 @@
   .loc-how-title   { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
   .loc-how-body    { font-size:11px; color:#8B4035; line-height:1.9; }
   .loc-continue-btn {
-    display:none; width:100%; padding:9px;
+    width:100%; padding:9px;
     background:var(--navy); border:none; border-radius:var(--radius);
     font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
     color:#fff; cursor:pointer; letter-spacing:0.04em; transition:opacity 0.15s;
@@ -244,28 +244,21 @@
       </div>
 
       <div id="manual-notice">
-        ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
+        ⚠️ Attendance will be marked <strong>LOCATION_FAILED</strong> and reviewed manually.
       </div>
 
       <div id="locationBlock">
         <div class="loc-block-title">Location Access Required</div>
         <div class="loc-block-desc" id="loc-block-desc">
-          Location access is blocked. Follow the steps below to enable it, then reload the page.
+          Location access is blocked or unavailable.
         </div>
         <div class="loc-how">
           <div class="loc-how-title">How to enable</div>
           <div class="loc-how-body" id="loc-how-body"></div>
         </div>
         <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
-          Continue anyway
+          Continue without location
         </button>
-      </div>
-
-      <div id="manualPanel" style="display:none; background:#FFF8F6; border:1px solid #EDD5CE; border-radius:var(--radius); padding:14px; margin-top:10px;">
-        <div style="font-size:11px; font-weight:700; color:var(--warn); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px;">Submitting without location</div>
-        <div style="background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; font-size:11px; color:#8B4035; line-height:1.7;">
-          Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag. An organiser may follow up to verify your presence.
-        </div>
       </div>
     </div>
 
@@ -288,51 +281,38 @@
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-var PROXY_URL     = SB_URL + '/functions/v1/sheets-proxy';
-var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;  // 7 საათი
+var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
 var DEVICE_RL_KEY = 'xi_device_last_submit';
-var PAGE_LOAD_KEY = 'xi_page_loads';
-var MAX_RETRIES   = 3;
-var RETRY_DELAY_MS      = 2500;
-var LOCK_RETRY_DELAY_MS = 3000;
 var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
+var IS_SAFARI     = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+var CONF_LAT = 41.6893212;
+var CONF_LNG = 44.8192619;
+var RADIUS_M = 300;
 
 // ══════════════════════════════════════════════════════════════
-//  SESSION ID — იგივე key რასაც agenda იყენებს (syssa_sid)
-//  registration-ი ქმნის ან კითხულობს არსებულს,
-//  attendance-ში ჩაიწერება session_id სვეტში
+//  SESSION ID
 // ══════════════════════════════════════════════════════════════
-var sessionId = localStorage.getItem('syssa_sid');
-if (!sessionId) {
-  sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
-  localStorage.setItem('syssa_sid', sessionId);
-}
-
-// ══════════════════════════════════════════════════════════════
-//  PAGE-LOAD COUNTER
-// ══════════════════════════════════════════════════════════════
-var pageLoads = 0;
+var sessionId = null;
 try {
-  pageLoads = parseInt(localStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
-  pageLoads++;
-  localStorage.setItem(PAGE_LOAD_KEY, pageLoads);
-} catch(e) {}
-
-function resetPageLoads() {
-  pageLoads = 0;
-  try { localStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
+  sessionId = localStorage.getItem('syssa_sid');
+  if (!sessionId) {
+    sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('syssa_sid', sessionId);
+  }
+} catch(e) {
+  sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
 }
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
-var geoState         = 'detecting';
-var userLat          = null;
-var userLng          = null;
-var lastPayload      = null;
-var isSubmitting     = false;
-var currentRequestId = 0;
+var geoState          = 'detecting';
+var userLat           = null;
+var userLng           = null;
+var isSubmitting      = false;
 var countdownInterval = null;
+var geoAttempt        = 0;   // რამდენჯერ ვცადეთ
 
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
@@ -345,7 +325,6 @@ function getDeviceRateRemaining() {
     return rem > 0 ? rem : 0;
   } catch(e) { return 0; }
 }
-
 function setDeviceRateLimit() {
   try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
 }
@@ -355,25 +334,21 @@ function setDeviceRateLimit() {
 // ══════════════════════════════════════════════════════════════
 function formatMs(ms) {
   if (ms <= 0) return '00:00:00';
-  var totalSec = Math.floor(ms / 1000);
-  var h = Math.floor(totalSec / 3600);
-  var m = Math.floor((totalSec % 3600) / 60);
-  var s = totalSec % 60;
-  return pad(h) + ':' + pad(m) + ':' + pad(s);
+  var s = Math.floor(ms / 1000);
+  var h = Math.floor(s / 3600);
+  var m = Math.floor((s % 3600) / 60);
+  return pad(h) + ':' + pad(m) + ':' + pad(s % 60);
 }
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
 function startCountdown(remainingMs, reason, title) {
   if (countdownInterval) clearInterval(countdownInterval);
-
   var box = document.getElementById('rateLimitBox');
   box.style.display = 'block';
   document.getElementById('rl-title').textContent  = title  || 'Registration Limit Reached';
   document.getElementById('rl-reason').textContent = reason || '';
   document.getElementById('submit-btn').disabled   = true;
-
   var deadline = Date.now() + remainingMs;
-
   function tick() {
     var left = deadline - Date.now();
     if (left <= 0) {
@@ -399,19 +374,21 @@ function hideRateLimitBox() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  GEOLOCATION
+//  GEOLOCATION — გამოსწორებული ლოგიკა
 // ══════════════════════════════════════════════════════════════
 function startLocation() {
-  geoState = 'detecting';
-  userLat  = null;
-  userLng  = null;
+  geoState    = 'detecting';
+  geoAttempt  = 0;
+  userLat     = null;
+  userLng     = null;
+
   setInputsEnabled(false);
   document.getElementById('submit-btn').disabled = true;
-  hideManualNotice();
-  hideBlock();
-  document.getElementById('manualPanel').style.display = 'none';
+  document.getElementById('locationBlock').style.display = 'none';
+  document.getElementById('manual-notice').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
+  // Device rate limit შემოწმება (display only — ჯერ კიდევ ვეძებთ ლოკაციას)
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -421,59 +398,61 @@ function startLocation() {
   }
 
   if (!navigator.geolocation) {
-    showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
+    onGeoUnavailable('Your browser does not support location services.');
     return;
   }
 
-  if (navigator.permissions) {
-    navigator.permissions.query({ name: 'geolocation' }).then(function(result) {
-      if (result.state === 'denied') { onLocDenied(); }
-      else { tryHighAccuracy(); }
-    }).catch(tryHighAccuracy);
+  // Safari/iOS: permissions API-ს გვერდი ავუვლით — პირდაპირ getCurrentPosition
+  // სხვები: permissions API-თი ვამოწმებთ
+  if (navigator.permissions && !IS_IOS && !IS_SAFARI) {
+    navigator.permissions.query({ name: 'geolocation' })
+      .then(function(result) {
+        if (result.state === 'denied') {
+          onGeoDenied();
+        } else {
+          doGetPosition();
+        }
+      })
+      .catch(function() {
+        // permissions API ვერ ვიყენეთ — პირდაპირ ვეძებთ
+        doGetPosition();
+      });
   } else {
-    tryHighAccuracy();
+    // iOS / Safari — პირდაპირ ვეძებთ (permissions API არ მუშაობს სწორად)
+    doGetPosition();
   }
 }
 
-function tryHighAccuracy() {
-  navigator.geolocation.getCurrentPosition(
-    onGeoSuccess,
-    function(err) {
-      if (err.code === 1) { onLocDenied(); return; }
-      setStatusDetecting('Retrying with network location…');
-      setTimeout(tryLowAccuracy, 600);
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-  );
-}
+function doGetPosition() {
+  geoAttempt++;
 
-function tryLowAccuracy() {
+  // პირველი მცდელობა: high accuracy, გრძელი timeout
+  var options = geoAttempt === 1
+    ? { enableHighAccuracy: true,  timeout: 15000, maximumAge: 0 }
+    : { enableHighAccuracy: false, timeout: 12000, maximumAge: 30000 };
+
+  if (geoAttempt === 2) {
+    setStatusDetecting('Retrying with network location…');
+  }
+
   navigator.geolocation.getCurrentPosition(
     onGeoSuccess,
-    function(err) {
-      if (err.code === 1) { onLocDenied(); return; }
-      showBlock('Location could not be determined. Check that Location Services are enabled, then reload the page.', true);
-    },
-    { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
+    onGeoError,
+    options
   );
 }
 
 function onGeoSuccess(pos) {
-  resetPageLoads();
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
-
-  var CONF_LAT = 41.6893212;
-  var CONF_LNG = 44.8192619;
-  var RADIUS_M = 300;
+  var acc  = Math.round(pos.coords.accuracy);
 
   var dLat  = (userLat - CONF_LAT) * 111000;
   var dLng  = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
   var distM = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
-  var acc   = Math.round(pos.coords.accuracy);
 
-  hideBlock();
-  hideManualNotice();
+  document.getElementById('locationBlock').style.display = 'none';
+  document.getElementById('manual-notice').style.display = 'none';
 
   if (distM <= RADIUS_M) {
     geoState = 'found';
@@ -489,12 +468,51 @@ function onGeoSuccess(pos) {
   }
 }
 
-function onLocDenied() {
+function onGeoError(err) {
+  // PERMISSION_DENIED (code 1)
+  if (err.code === 1) {
+    onGeoDenied();
+    return;
+  }
+
+  // POSITION_UNAVAILABLE (code 2) ან TIMEOUT (code 3)
+  if (geoAttempt < 2) {
+    // კიდევ ერთხელ ვცდი — low accuracy
+    setTimeout(doGetPosition, 800);
+    return;
+  }
+
+  // 2 მცდელობის შემდეგ ვეღარ ვიძებთ
+  onGeoUnavailable('Location could not be determined. You can continue without it.');
+}
+
+function onGeoDenied() {
   geoState = 'denied';
+  setStatusDenied('Location access blocked');
+  document.getElementById('loc-block-desc').textContent =
+    'Location access is blocked. Enable it and reload the page, or continue without location.';
+  document.getElementById('loc-how-body').innerHTML = IS_IOS
+    ? '<b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using App<br>ან<br>Settings → Safari → Location → Allow'
+    : IS_SAFARI
+      ? '<b>Safari (Mac):</b> Safari menu → Settings for This Website → Location → Allow'
+      : '<b>Chrome (Android):</b> Address bar → 🔒 lock icon → Permissions → Location → Allow<br><b>Chrome (Desktop):</b> Address bar → 🔒 lock → Location → Allow';
+  document.getElementById('locationBlock').style.display = 'block';
+  // denied-ზეც ვაჩვენებთ "continue without" ღილაკს
+  document.getElementById('loc-continue-btn').style.display = 'block';
   setInputsEnabled(false);
   document.getElementById('submit-btn').disabled = true;
-  setStatusDenied('Location access blocked');
-  showBlock('Location access is blocked. Follow the steps below to enable it, then reload the page.', true);
+}
+
+function onGeoUnavailable(desc) {
+  geoState = 'unavailable';
+  setStatusDenied('Location unavailable');
+  document.getElementById('loc-block-desc').textContent = desc;
+  document.getElementById('loc-how-body').innerHTML = IS_IOS
+    ? '<b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using App'
+    : '<b>Android:</b> Settings → Site Settings → Location → Allow';
+  document.getElementById('locationBlock').style.display = 'block';
+  document.getElementById('loc-continue-btn').style.display = 'block';
+  // unavailable-ზე inputs ჩართულია manual-ისთვის
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -504,15 +522,15 @@ function activateManual() {
   geoState = 'manual';
   userLat  = null;
   userLng  = null;
-  hideBlock();
-  showManualNotice();
-  document.getElementById('manualPanel').style.display = 'block';
+
+  document.getElementById('locationBlock').style.display = 'none';
+  document.getElementById('manual-notice').style.display = 'block';
 
   var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-dot';
-  ind.style.cssText = 'background:#92400E;';
-  document.getElementById('locText').textContent = 'Continuing without location';
-  document.getElementById('locStatus').className = 'manual';
+  ind.className  = 'loc-dot';
+  ind.style.cssText = '';
+  document.getElementById('locText').textContent  = 'Continuing without location';
+  document.getElementById('locStatus').className  = 'manual';
 
   setInputsEnabled(true);
   if (getDeviceRateRemaining() <= 0) {
@@ -525,24 +543,24 @@ function activateManual() {
 // ══════════════════════════════════════════════════════════════
 function setStatusDetecting(text) {
   var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-pulse';
+  ind.className     = 'loc-pulse';
   ind.style.cssText = '';
-  document.getElementById('locText').textContent = text;
-  document.getElementById('locStatus').className = '';
+  document.getElementById('locText').textContent  = text;
+  document.getElementById('locStatus').className  = '';
 }
 function setStatusFound(text)   { _setDot('found',   text); }
 function setStatusOffsite(text) { _setDot('offsite', text); }
 function setStatusDenied(text)  { _setDot('denied',  text); }
 function _setDot(cls, text) {
   var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-dot';
+  ind.className     = 'loc-dot';
   ind.style.cssText = '';
-  document.getElementById('locText').textContent = text;
-  document.getElementById('locStatus').className = cls;
+  document.getElementById('locText').textContent  = text;
+  document.getElementById('locStatus').className  = cls;
 }
 
 // ══════════════════════════════════════════════════════════════
-//  INPUTS ENABLE / DISABLE
+//  INPUTS
 // ══════════════════════════════════════════════════════════════
 function setInputsEnabled(enabled) {
   document.getElementById('email-inp').disabled = !enabled;
@@ -550,94 +568,14 @@ function setInputsEnabled(enabled) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  BLOCK PANEL
-// ══════════════════════════════════════════════════════════════
-function showBlock(desc, showContinue) {
-  document.getElementById('loc-block-desc').textContent = desc;
-  document.getElementById('locationBlock').style.display = 'block';
-  document.getElementById('loc-how-body').innerHTML = IS_IOS
-    ? '<b>iPhone (Safari):</b> Settings → Safari → Location → Allow'
-    : '<b>Android (Chrome):</b> Settings → Site Settings → Location → Allow';
-  document.getElementById('loc-continue-btn').style.display =
-    (showContinue && pageLoads >= 3) ? 'block' : 'none';
-}
-function hideBlock()        { document.getElementById('locationBlock').style.display = 'none'; }
-function showManualNotice() { document.getElementById('manual-notice').style.display = 'block'; }
-function hideManualNotice() { document.getElementById('manual-notice').style.display = 'none'; }
-
-// ══════════════════════════════════════════════════════════════
 //  SEGMENT PICKER
 // ══════════════════════════════════════════════════════════════
 function pick(el) {
   if (el.disabled) return;
-  el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) { b.classList.remove('active'); });
+  el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
   el.classList.add('active');
-}
-
-// ══════════════════════════════════════════════════════════════
-//  SUPABASE INSERT
-// ══════════════════════════════════════════════════════════════
-function supabaseInsert(payload) {
-  return fetch(SB_URL + '/rest/v1/attendance', {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'apikey':        SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY,
-      'Prefer':        'return=minimal'
-    },
-    body: JSON.stringify(payload)
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-//  SHEETS-PROXY CALL
-// ══════════════════════════════════════════════════════════════
-function callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft) {
-  if (retriesLeft === undefined) retriesLeft = MAX_RETRIES;
-
-  fetch(PROXY_URL, {
-    method:  'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': 'Bearer ' + SB_KEY
-    },
-    body: JSON.stringify({
-      type:       'attendance',
-      email:      payload.email,
-      day:        payload.day,
-      action:     payload.action,
-      lat:        payload.lat,
-      lng:        payload.lng,
-      loc_status: payload.loc_status
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (requestId !== currentRequestId) return;
-    if (data && data.result) {
-      onSuccess(data.result);
-    } else if (data && data.error) {
-      onSuccess('ERROR:' + data.error);
-    } else {
-      onSuccess('ERROR:proxy_no_result');
-    }
-  })
-  .catch(function() {
-    if (requestId !== currentRequestId) return;
-    if (retriesLeft > 1) {
-      var attempt = MAX_RETRIES - retriesLeft + 1;
-      var ri = document.getElementById('retry-info');
-      ri.style.display = 'block';
-      ri.textContent   = 'Connection issue — retrying (' + attempt + '/' + MAX_RETRIES + ')…';
-      setTimeout(function() {
-        callSheetsProxy(payload, requestId, onSuccess, onFail, retriesLeft - 1);
-      }, RETRY_DELAY_MS);
-    } else {
-      document.getElementById('retry-info').style.display = 'none';
-      onFail();
-    }
-  });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -653,43 +591,14 @@ function showMsg(text, type) {
 //  RESULT HANDLER
 // ══════════════════════════════════════════════════════════════
 function handleResult(result) {
-  document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+  document.getElementById('submit-btn').innerHTML     = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
   isSubmitting = false;
 
-  // ── lock_timeout: retry ──
-  if (result === 'ERROR:lock_timeout') {
-    if (!lastPayload) {
-      showMsg('❌ Server busy. Please try again.', 'error');
-      document.getElementById('submit-btn').disabled = false;
-      return;
-    }
-    var ri = document.getElementById('retry-info');
-    ri.style.display = 'block';
-    ri.textContent   = 'Server busy — retrying…';
-    isSubmitting = true;
-
-    var retryReqId = ++currentRequestId;
-    setTimeout(function() {
-      callSheetsProxy(
-        lastPayload,
-        retryReqId,
-        function(res) { handleResult(res); },
-        function() {
-          isSubmitting = false;
-          document.getElementById('retry-info').style.display = 'none';
-          showMsg('❌ Server busy. Please try again.', 'error');
-          document.getElementById('submit-btn').disabled = false;
-          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-        }
-      );
-    }, LOCK_RETRY_DELAY_MS);
-    return;
-  }
-
-  // ── server-side rate limit ──
-  if (result.indexOf('RATE_LIMITED:') === 0) {
-    var remMs = parseInt(result.split(':')[1], 10);
+  // Server-side rate limit
+  if (typeof result === 'string' && result.indexOf('RATE_LIMITED:') === 0) {
+    var parts = result.split(':');
+    var remMs = parseInt(parts[1], 10);
     startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
@@ -708,15 +617,10 @@ function handleResult(result) {
   };
 
   var entry = RESULT_MAP[result];
-
   if (entry) {
+    showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      showMsg(entry.text, entry.type);
-      setDeviceRateLimit();  // ✅ success-ის შემდეგ
-
-      // ── session_id → sessions ცხრილში ჩაიწეროს agenda-ს მიერ წაკითხვისთვის ──
-      // (attendance ცხრილში session_id უკვე ჩაიწერა supabaseInsert-ში)
-
+      setDeviceRateLimit();
       setTimeout(function() {
         startCountdown(
           RATE_LIMIT_MS,
@@ -725,10 +629,9 @@ function handleResult(result) {
         );
       }, 1500);
     } else {
-      showMsg(entry.text, entry.type);
       document.getElementById('submit-btn').disabled = false;
     }
-  } else if (result.indexOf('ERROR:') === 0) {
+  } else if (typeof result === 'string' && result.indexOf('ERROR:') === 0) {
     showMsg('❌ Server error: ' + result.replace('ERROR:', '').trim(), 'error');
     document.getElementById('submit-btn').disabled = false;
   } else {
@@ -738,7 +641,7 @@ function handleResult(result) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SUBMIT
+//  SUBMIT — სუფთა, ერთი ნაკადი
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
   if (isSubmitting) return;
@@ -758,7 +661,7 @@ function submitForm() {
     return;
   }
 
-  var email = document.getElementById('email-inp').value.trim();
+  var email = document.getElementById('email-inp').value.trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showMsg('Please enter a valid email address.', 'error');
     return;
@@ -771,97 +674,82 @@ function submitForm() {
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
-  lastPayload = {
-    email:      email,
-    day:        day,
-    action:     action,
-    lat:        userLat !== null ? String(userLat) : '',
-    lng:        userLng !== null ? String(userLng) : '',
-    loc_status: locStatus
-  };
-
+  // UI
   document.getElementById('submit-btn').disabled  = true;
   document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
+  document.getElementById('retry-info').style.display = 'none';
   showMsg('Submitting attendance…', 'info');
   hideRateLimitBox();
-  document.getElementById('retry-info').style.display = 'none';
   isSubmitting = true;
 
-  var reqId = ++currentRequestId;
-
-// ══ Step 1: email შემოწმება participants-ში ══
+  // ── Step 1: email შემოწმება participants ცხრილში ──
   fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
     headers: {
       'apikey':        SB_KEY,
       'Authorization': 'Bearer ' + SB_KEY
     }
   })
-  .then(function(r) { return r.json(); })
+  .then(function(r) {
+    if (!r.ok) throw new Error('participants_check_' + r.status);
+    return r.json();
+  })
   .then(function(data) {
-
-    // ❌ email არ არის სიაში
     if (!data || data.length === 0) {
+      // Email არ არის სიაში
       isSubmitting = false;
       document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
       document.getElementById('submit-btn').disabled = false;
       showMsg('❌ Email not found. Please use your registered email.', 'error');
-      return;
+      return Promise.reject('__not_found__');
     }
 
-    // ✅ email მოიძებნა → INSERT attendance
-    var supabasePayload = {
-      email:      email,
-      day:        day,
-      action:     action,
-      lat:        userLat !== null ? String(userLat) : null,
-      lng:        userLng !== null ? String(userLng) : null,
-      loc_status: locStatus,
-      session_id: sessionId
+    // ── Step 2: attendance INSERT ──
+    var payload = {
+      email:          email,
+      day:            day,
+      action:         action,
+      lat:            userLat !== null ? userLat : null,
+      lng:            userLng !== null ? userLng : null,
+      loc_status:     locStatus,
+      session_id:     sessionId,
+      synced_to_sheets: false
     };
 
-    return supabaseInsert(supabasePayload);
+    return fetch(SB_URL + '/rest/v1/attendance', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
   })
   .then(function(r) {
-    if (!r) return;
-    handleResult('SUCCESS');
+    if (!r) return; // not_found branch-ი
+
+    if (r.status === 201) {
+      // ✅ წარმატება
+      handleResult('SUCCESS');
+    } else if (r.status === 409) {
+      // Conflict — უკვე ჩაწერილია
+      handleResult('ALREADY_DONE');
+    } else {
+      return r.text().then(function(body) {
+        console.warn('Supabase INSERT error', r.status, body);
+        handleResult('ERROR:insert_' + r.status);
+      });
+    }
   })
-  .catch(function() {
+  .catch(function(err) {
+    if (err === '__not_found__') return; // უკვე დამუშავებულია
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-    showMsg('❌ Connection failed. Please try again.', 'error');
     document.getElementById('submit-btn').disabled = false;
+    showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+    console.error('submitForm error:', err);
   });
-}
-    email:      email,
-    day:        day,
-    action:     action,
-    lat:        userLat !== null ? String(userLat) : null,
-    lng:        userLng !== null ? String(userLng) : null,
-    loc_status: locStatus,
-    session_id: sessionId   // ← ახალი: agenda-სთან დაკავშირება
-  };
-
-  supabaseInsert(supabasePayload)
-    .then(function(r) {
-      if (reqId !== currentRequestId) return;
-
-      if (!r.ok) {
-        console.warn('Supabase INSERT failed (' + r.status + ') — continuing with sheets-proxy');
-      }
-
-// ══ Step 2: პირდაპირ success ══
-      if (reqId !== currentRequestId) return;
-      handleResult('SUCCESS');
-    })
-   .catch(function() {
-      if (reqId !== currentRequestId) return;
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
-      setTimeout(function() {
-        document.getElementById('submit-btn').disabled = false;
-      }, 3000);
-    });
 }
 
 // ══════════════════════════════════════════════════════════════
