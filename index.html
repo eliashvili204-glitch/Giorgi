@@ -424,12 +424,21 @@ const WORKSHOPS = {
 const AGENDA = [
 
   {id:1,  time:"09:00–10:00", speaker:"Registration", title:"", session:"day1_pre", isBreak:true},
-  {id:2,  time:"10:00–10:45", speaker:"Opening Ceremony & Welcome Remarks",
+{id:2,  time:"10:00–10:45", speaker:"Opening Ceremony & Welcome Remarks",
     title:"",
-    welcomeAddresses: ["Nino Tabagari, MD, PhD — Dean, David Tvildiani Medical University", "Mariam Chubinidze — President, Students' and Young Scientists' Scientific Association"],
-    interestGroups: ["Tekla Tsabadze — SIGA", "Shreya Mane — GIGA", "Ana Bechvaia — CIGA", "Anna Kvernadze — IMIG", "Kora Chakhava — SIGN"],
+    welcomeAddresses: [
+      "Nino Tabagari, MD, PhD — Dean, David Tvildiani Medical University",
+      "Mariam Chubinidze — President, Students' and Young Scientists' Scientific Association"
+    ],
+    interestGroups: [
+      "Tekla Tsabadze — Head of the Surgical Interest Group (SIGA)",
+      "Shreya Mane — Head of the Gynecology Interest Group (GIGA)",
+      "Ana Bechvaia — Organizing Committee Member, Cardiology Interest Group (CIGA)",
+      "Anna Kvernadze — Head of the Internal Medicine Interest Group (IMIG)",
+      "Kora Chakhava — Head of the Neurology Interest Group (SIGN)"
+    ],
     isOpening:true, session:"day1_open"},
-
+  
   {id:3,  time:"10:45–12:10", speaker:"SESSION I — Surgical & Multisystemic Complications of Infection",
    title:"Chairs: Guram Beridze | Nana Megrelidze", session:"day1_s1_hdr", isHeader:true},
 
@@ -1207,7 +1216,7 @@ function render() {
         });
         const igLabel = document.createElement('div');
         igLabel.style.cssText = 'font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-top:8px;margin-bottom:3px;';
-        igLabel.textContent = 'Interest Group Leads';
+        igLabel.textContent = 'Introduction to the Interest Groups:';
         info.appendChild(igLabel);
         const igWrap = document.createElement('div'); igWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;';
         (item.interestGroups||[]).forEach(g => {
