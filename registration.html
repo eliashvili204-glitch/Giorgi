@@ -4,20 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>XI International Conference</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:           #EAEFF2;
+    --bg:           #F0F4F7;
     --surface:      #FFFFFF;
-    --border:       #B2C4D1;
+    --border:       #C8D8E4;
     --border-focus: #1A365D;
     --text:         #0A1B29;
     --text-mid:     #33475B;
     --text-soft:    #607386;
     --navy:         #1A365D;
-    --navy-soft:    #E6EDF5;
+    --navy-light:   #2A4A7F;
+    --navy-soft:    #E8EFF6;
     --navy-border:  #94A9C2;
     --selected-bg:  #1A365D;
     --selected-text:#FFFFFF;
@@ -26,7 +27,8 @@
     --amber:        #92400E;
     --amber-bg:     #FFFBEB;
     --amber-border: #FDE68A;
-    --radius:       8px;
+    --gold:         #C9A84C;
+    --radius:       10px;
   }
 
   html, body {
@@ -39,85 +41,177 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* ── CARD ── */
   .card {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(26,54,93,0.08), 0 1px 3px rgba(0,0,0,0.04);
-    animation: up 0.4s cubic-bezier(0.16,1,0.3,1) both;
+    box-shadow: 0 8px 32px rgba(26,54,93,0.10), 0 1px 4px rgba(0,0,0,0.04);
+    animation: cardUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
   }
 
-  @media (max-width: 440px) {
+  @keyframes cardUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 460px) {
     body { align-items: flex-start; background: var(--surface); }
     .card {
       max-width: 100%; border-radius: 0;
       border-left: none; border-right: none; border-top: none;
       box-shadow: none; min-height: 100vh;
     }
-    .card-body   { padding: 24px 20px 32px !important; }
-    .seg-btn     { padding: 11px 0 !important; font-size: 14px !important; }
+    .card-body   { padding: 24px 20px 36px !important; }
+    .seg-btn     { padding: 12px 0 !important; font-size: 13px !important; }
     .input-field { font-size: 16px !important; padding: 12px !important; }
-    .submit      { padding: 14px !important; font-size: 14px !important; }
+    .submit      { padding: 15px !important; font-size: 13px !important; }
   }
 
-  @keyframes up {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-img {
-    width: 100%; height: 148px;
-    background: linear-gradient(135deg, #1A365D 0%, #2a5298 50%, #1a3a5c 100%);
+  /* ── HERO BANNER ── */
+  .card-hero {
+    position: relative;
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(150deg, #0D2240 0%, #1A365D 45%, #1E4080 100%);
     display: flex; align-items: center; justify-content: center;
-    border-bottom: 1px solid var(--border); overflow: hidden; position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-  .banner-content { position:relative; z-index:1; text-align:center; padding:0 20px; }
-  .banner-roman   { font-family:'Playfair Display',serif; font-size:13px; font-weight:400; letter-spacing:0.35em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:6px; }
-  .banner-title   { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:#FFF; letter-spacing:0.04em; line-height:1.2; margin-bottom:8px; }
-  .banner-divider { width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 8px; }
-  .banner-sub     { font-size:11px; font-weight:400; color:rgba(255,255,255,0.5); letter-spacing:0.08em; text-transform:uppercase; }
-  .card-img::before { content:''; position:absolute; top:-30px; right:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); pointer-events:none; }
-  .card-img::after  { content:''; position:absolute; bottom:-40px; left:-20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04); pointer-events:none; }
 
-  .card-body   { padding: 24px 28px 28px; background: var(--surface); }
-  .card-header { margin-bottom: 24px; }
-  .card-title  { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; letter-spacing:0.02em; color:#1A365D; margin-bottom:6px; line-height:1.2; }
-  .card-desc   { font-size:12px; font-weight:400; color:var(--text-soft); letter-spacing:0.01em; line-height:1.6; margin-top:2px; }
+  /* geometric accent lines */
+  .card-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,0.018) 28px,
+        rgba(255,255,255,0.018) 29px
+      );
+  }
 
+  /* gold rule */
+  .card-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--gold) 35%, var(--gold) 65%, transparent 100%);
+    opacity: 0.6;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 1;
+    text-align: center; padding: 0 24px;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold); opacity: 0.85;
+    margin-bottom: 10px;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300;
+    color: #FFFFFF; letter-spacing: 0.05em;
+    line-height: 1.15; margin-bottom: 10px;
+  }
+  .hero-rule {
+    width: 32px; height: 1px;
+    background: rgba(201,168,76,0.5);
+    margin: 0 auto 9px;
+  }
+  .hero-sub {
+    font-size: 9px; font-weight: 500;
+    color: rgba(255,255,255,0.42);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+
+  /* ── BODY ── */
+  .card-body { padding: 26px 28px 30px; }
+
+  .card-header { margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
+  .card-title  {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--navy); margin-bottom: 4px; line-height: 1.2;
+  }
+  .card-desc   { font-size: 11.5px; color: var(--text-soft); line-height: 1.6; }
+
+  /* ── FIELDS ── */
   .field       { margin-bottom: 18px; }
-  .field-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-soft); margin-bottom:8px; }
-
-  .segment { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-  .seg-btn {
-    padding:9px 0; background:var(--navy-soft); border:1px solid var(--navy-border);
-    border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:13px;
-    font-weight:500; color:var(--text-mid); cursor:pointer; letter-spacing:0.01em;
-    transition:border-color 0.15s, background 0.15s, color 0.15s;
+  .field-label {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-soft); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
   }
-  .seg-btn:hover:not(.active):not(:disabled) { border-color:var(--border-focus); color:var(--navy); background:#dce8f0; }
-  .seg-btn.active   { background:var(--selected-bg); border-color:var(--selected-bg); color:var(--selected-text); }
-  .seg-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .field-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--border);
+  }
 
-  .sep { height:1px; background:var(--border); margin:4px 0 18px; }
+  /* ── SEGMENT ── */
+  .segment { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .seg-btn {
+    padding: 10px 0;
+    background: var(--navy-soft);
+    border: 1px solid var(--navy-border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-mid); cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+  .seg-btn:hover:not(.active):not(:disabled) {
+    border-color: var(--border-focus);
+    color: var(--navy);
+    background: #d8e8f2;
+  }
+  .seg-btn.active {
+    background: var(--selected-bg);
+    border-color: var(--selected-bg);
+    color: var(--selected-text);
+    box-shadow: 0 2px 8px rgba(26,54,93,0.22);
+  }
+  .seg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  .sep { height: 1px; background: var(--border); margin: 2px 0 18px; }
+
+  /* ── INPUT ── */
   .input-wrap { position: relative; }
   .input-field {
-    width:100%; padding:10px 12px; background:var(--bg);
-    border:1px solid var(--border); border-radius:var(--radius);
-    font-family:'DM Sans',sans-serif; font-size:13px; font-weight:400;
-    color:var(--text); outline:none; letter-spacing:0.01em;
-    transition:border-color 0.2s, background 0.2s;
+    width: 100%; padding: 11px 13px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: var(--text); outline: none;
+    letter-spacing: 0.01em;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   }
-  .input-field::placeholder { color:var(--text-soft); }
-  .input-field:focus    { border-color:var(--border-focus); background:var(--navy-soft); }
-  .input-field:disabled { opacity:0.45; cursor:not-allowed; background:var(--bg); }
+  .input-field::placeholder { color: var(--text-soft); }
+  .input-field:focus {
+    border-color: var(--border-focus);
+    background: var(--navy-soft);
+    box-shadow: 0 0 0 3px rgba(26,54,93,0.08);
+  }
+  .input-field:disabled { opacity: 0.45; cursor: not-allowed; background: var(--bg); }
 
+  /* ── LOCATION STATUS ── */
   #locStatus {
     margin-top: 10px;
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 7px;
     font-size: 11px; font-weight: 400;
     color: var(--text-soft); letter-spacing: 0.01em;
     min-height: 20px;
@@ -127,90 +221,126 @@
   #locStatus.denied  { color: var(--warn); }
   #locStatus.manual  { color: var(--amber); }
 
-  .loc-dot   { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
-  .loc-pulse { width:6px; height:6px; border-radius:50%; background:var(--text-soft); flex-shrink:0; animation:pulse 1.2s ease-in-out infinite; }
+  .loc-dot   { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .loc-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--text-soft); flex-shrink: 0; animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .loc-text { flex: 1; }
 
+  /* ── LOCATION BLOCK ── */
   #locationBlock {
     display: none;
     background: #FEF2F2; border: 1px solid #FCA5A5;
     border-radius: var(--radius); padding: 14px; margin-top: 10px;
   }
-  .loc-block-title { font-size:11px; font-weight:700; color:var(--warn); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:6px; }
-  .loc-block-desc  { font-size:11px; color:#8B4035; line-height:1.65; margin-bottom:10px; }
-  .loc-how         { background:rgba(192,80,58,0.07); border-radius:6px; padding:10px 12px; margin-bottom:10px; }
-  .loc-how-title   { font-size:10px; font-weight:700; color:var(--warn); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:5px; }
-  .loc-how-body    { font-size:11px; color:#8B4035; line-height:1.9; }
+  .loc-block-title { font-size: 10px; font-weight: 700; color: var(--warn); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .loc-block-desc  { font-size: 11px; color: #8B4035; line-height: 1.65; margin-bottom: 10px; }
+  .loc-how         { background: rgba(192,80,58,0.07); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+  .loc-how-title   { font-size: 9.5px; font-weight: 700; color: var(--warn); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
+  .loc-how-body    { font-size: 11px; color: #8B4035; line-height: 1.9; }
   .loc-continue-btn {
-    width:100%; padding:9px;
-    background:var(--navy); border:none; border-radius:var(--radius);
-    font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
-    color:#fff; cursor:pointer; letter-spacing:0.04em; transition:opacity 0.15s;
+    display: none; width: 100%; padding: 9px;
+    background: var(--navy); border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+    color: #fff; cursor: pointer; letter-spacing: 0.04em;
+    transition: opacity 0.15s;
   }
-  .loc-continue-btn:hover { opacity:0.88; }
+  .loc-continue-btn:hover { opacity: 0.88; }
 
   #manual-notice {
-    display:none; margin-top:8px; padding:8px 10px;
-    background:var(--amber-bg); border:1px solid var(--amber-border);
-    border-radius:var(--radius); font-size:11px; color:var(--amber); line-height:1.6;
+    display: none; margin-top: 8px; padding: 9px 11px;
+    background: var(--amber-bg); border: 1px solid var(--amber-border);
+    border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
   }
 
+  /* manual panel */
+  #manualPanel {
+    display: none;
+    background: #FFF8F6; border: 1px solid #EDD5CE;
+    border-radius: var(--radius); padding: 14px; margin-top: 10px;
+  }
+  .mp-title { font-size: 10px; font-weight: 700; color: var(--warn); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .mp-body  { background: rgba(192,80,58,0.07); border-radius: 6px; padding: 10px 12px; font-size: 11px; color: #8B4035; line-height: 1.7; }
+
+  /* ── RATE LIMIT BOX ── */
   #rateLimitBox {
-    display:none; margin-top:16px; padding:14px 16px;
-    background:#FFF8F0; border:1px solid #FBBF60;
-    border-radius:var(--radius);
-    animation:up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+    display: none; margin-top: 16px; padding: 16px;
+    background: #FFF8F0; border: 1px solid #FBBF60;
+    border-radius: var(--radius);
+    animation: cardUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
   }
-  .rl-title          { font-size:11px; font-weight:700; color:#92400E; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px; }
-  .rl-reason         { font-size:11px; color:#92400E; margin-bottom:10px; line-height:1.6; }
-  .rl-countdown      { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#92400E; letter-spacing:0.04em; text-align:center; padding:8px 0 4px; }
-  .rl-countdown-label{ font-size:10px; font-weight:500; color:#B45309; letter-spacing:0.1em; text-transform:uppercase; text-align:center; margin-top:2px; }
+  .rl-title           { font-size: 10px; font-weight: 700; color: #92400E; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .rl-reason          { font-size: 11px; color: #92400E; margin-bottom: 10px; line-height: 1.6; }
+  .rl-countdown       { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #92400E; letter-spacing: 0.04em; text-align: center; padding: 6px 0 2px; }
+  .rl-countdown-label { font-size: 9.5px; font-weight: 500; color: #B45309; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-top: 2px; }
 
+  /* ── SUBMIT ── */
   .submit {
-    width:100%; padding:12px; margin-top:22px; background:var(--navy);
-    border:none; border-radius:var(--radius); font-family:'DM Sans',sans-serif;
-    font-size:13px; font-weight:700; color:#fff; letter-spacing:0.06em;
-    text-transform:uppercase; cursor:pointer;
-    transition:opacity 0.15s, transform 0.1s;
-    box-shadow:0 4px 12px rgba(26,54,93,0.18);
+    width: 100%; padding: 13px; margin-top: 24px;
+    background: var(--navy);
+    border: none; border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700; color: #fff;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 4px 14px rgba(26,54,93,0.22);
+    position: relative; overflow: hidden;
   }
-  .submit:hover    { opacity:0.88; }
-  .submit:active   { opacity:0.75; transform:scale(0.98); }
-  .submit:disabled { opacity:0.4; cursor:not-allowed; transform:none; background:var(--text-mid); box-shadow:none; }
+  .submit::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .submit:hover    { opacity: 0.88; box-shadow: 0 6px 18px rgba(26,54,93,0.28); }
+  .submit:active   { opacity: 0.76; transform: scale(0.985); }
+  .submit:disabled { opacity: 0.38; cursor: not-allowed; transform: none; background: var(--text-mid); box-shadow: none; }
 
+  /* ── MESSAGES ── */
   .msg {
-    margin-top:14px; padding:12px 14px; border-radius:var(--radius);
-    font-size:12px; line-height:1.6; font-weight:500; display:none;
-    animation:up 0.3s cubic-bezier(0.16,1,0.3,1) both;
+    margin-top: 14px; padding: 12px 14px;
+    border-radius: var(--radius);
+    font-size: 12px; line-height: 1.6; font-weight: 500;
+    display: none;
+    animation: cardUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
   }
-  .msg.success { display:block; background:#F0FDF4; border:1px solid #86EFAC; color:var(--success); }
-  .msg.error   { display:block; background:#FEF2F2; border:1px solid #FCA5A5; color:var(--warn); }
-  .msg.info    { display:block; background:var(--navy-soft); border:1px solid var(--navy-border); color:var(--navy); }
-  .msg.warning { display:block; background:var(--amber-bg); border:1px solid var(--amber-border); color:var(--amber); }
+  .msg.success { display: block; background: #F0FDF4; border: 1px solid #86EFAC; color: var(--success); }
+  .msg.error   { display: block; background: #FEF2F2; border: 1px solid #FCA5A5; color: var(--warn); }
+  .msg.info    { display: block; background: var(--navy-soft); border: 1px solid var(--navy-border); color: var(--navy); }
+  .msg.warning { display: block; background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
 
-  .spinner { display:inline-block; width:13px; height:13px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; vertical-align:middle; margin-right:7px; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+  .spinner {
+    display: inline-block; width: 13px; height: 13px;
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 7px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .retry-badge { display:inline-block; font-size:10px; font-weight:600; color:var(--text-soft); margin-top:6px; letter-spacing:0.04em; }
+  .retry-badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    color: var(--text-soft); margin-top: 6px; letter-spacing: 0.04em;
+  }
 </style>
 </head>
 <body>
 <div class="card">
 
-  <div class="card-img">
-    <div class="banner-content">
-      <div class="banner-roman">XI · International</div>
-      <div class="banner-title">Conference</div>
-      <div class="banner-divider"></div>
-      <div class="banner-sub">Attendance Registration</div>
+  <!-- HERO -->
+  <div class="card-hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">XI · International Conference</div>
+      <div class="hero-title">Infection at the Crossroads</div>
+      <div class="hero-rule"></div>
+      <div class="hero-sub">Attendance Registration</div>
     </div>
   </div>
 
+  <!-- BODY -->
   <div class="card-body">
     <div class="card-header">
-      <div class="card-title">XI International Conference</div>
-      <div class="card-desc">Select day, action and enter your registered email.</div>
+      <div class="card-title">Register Attendance</div>
+      <div class="card-desc">Select day and action, then enter your registered email.</div>
     </div>
 
     <div class="field">
@@ -244,28 +374,36 @@
       </div>
 
       <div id="manual-notice">
-        ⚠️ Attendance will be marked <strong>LOCATION_FAILED</strong> and reviewed manually.
+        ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
       </div>
 
       <div id="locationBlock">
         <div class="loc-block-title">Location Access Required</div>
         <div class="loc-block-desc" id="loc-block-desc">
-          Location access is blocked or unavailable.
+          Location access is blocked. Follow the steps below to enable it, then reload the page.
         </div>
         <div class="loc-how">
           <div class="loc-how-title">How to enable</div>
           <div class="loc-how-body" id="loc-how-body"></div>
         </div>
         <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
-          Continue without location
+          Continue anyway
         </button>
+      </div>
+
+      <div id="manualPanel">
+        <div class="mp-title">Submitting without location</div>
+        <div class="mp-body">
+          Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag.
+          An organiser may follow up to verify your presence.
+        </div>
       </div>
     </div>
 
     <div id="rateLimitBox">
-      <div class="rl-title"          id="rl-title">Registration Limit Reached</div>
-      <div class="rl-reason"         id="rl-reason"></div>
-      <div class="rl-countdown"      id="rl-countdown">00:00:00</div>
+      <div class="rl-title"           id="rl-title">Registration Limit Reached</div>
+      <div class="rl-reason"          id="rl-reason"></div>
+      <div class="rl-countdown"       id="rl-countdown">00:00:00</div>
       <div class="rl-countdown-label">remaining until next registration</div>
     </div>
 
@@ -277,12 +415,16 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-//  CONFIG
+//  CONFIG  — Supabase (უცვლელი)
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
 var DEVICE_RL_KEY = 'xi_device_last_submit';
+var PAGE_LOAD_KEY = 'xi_page_loads';
+var MAX_RETRIES   = 3;
+var RETRY_DELAY_MS      = 2500;
+var LOCK_RETRY_DELAY_MS = 3000;
 var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
 var IS_SAFARI     = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -305,14 +447,30 @@ try {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  PAGE-LOAD COUNTER  (3 refresh → "Continue anyway")
+// ══════════════════════════════════════════════════════════════
+var pageLoads = 0;
+try {
+  pageLoads = parseInt(localStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
+  pageLoads++;
+  localStorage.setItem(PAGE_LOAD_KEY, pageLoads);
+} catch(e) {}
+
+function resetPageLoads() {
+  pageLoads = 0;
+  try { localStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
 var geoState          = 'detecting';
 var userLat           = null;
 var userLng           = null;
 var isSubmitting      = false;
+var currentRequestId  = 0;
 var countdownInterval = null;
-var geoAttempt        = 0;   // რამდენჯერ ვცადეთ
+var geoAttempt        = 0;
 
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
@@ -374,21 +532,20 @@ function hideRateLimitBox() {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  GEOLOCATION — გამოსწორებული ლოგიკა
+//  GEOLOCATION
 // ══════════════════════════════════════════════════════════════
 function startLocation() {
-  geoState    = 'detecting';
-  geoAttempt  = 0;
-  userLat     = null;
-  userLng     = null;
-
+  geoState   = 'detecting';
+  geoAttempt = 0;
+  userLat    = null;
+  userLng    = null;
   setInputsEnabled(false);
   document.getElementById('submit-btn').disabled = true;
-  document.getElementById('locationBlock').style.display = 'none';
-  document.getElementById('manual-notice').style.display = 'none';
+  hideManualNotice();
+  hideBlock();
+  document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
-  // Device rate limit შემოწმება (display only — ჯერ კიდევ ვეძებთ ლოკაციას)
   var devRem = getDeviceRateRemaining();
   if (devRem > 0) {
     startCountdown(devRem,
@@ -398,51 +555,33 @@ function startLocation() {
   }
 
   if (!navigator.geolocation) {
-    onGeoUnavailable('Your browser does not support location services.');
+    showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
     return;
   }
 
-  // Safari/iOS: permissions API-ს გვერდი ავუვლით — პირდაპირ getCurrentPosition
-  // სხვები: permissions API-თი ვამოწმებთ
   if (navigator.permissions && !IS_IOS && !IS_SAFARI) {
     navigator.permissions.query({ name: 'geolocation' })
       .then(function(result) {
-        if (result.state === 'denied') {
-          onGeoDenied();
-        } else {
-          doGetPosition();
-        }
+        if (result.state === 'denied') { onLocDenied(); }
+        else { doGetPosition(); }
       })
-      .catch(function() {
-        // permissions API ვერ ვიყენეთ — პირდაპირ ვეძებთ
-        doGetPosition();
-      });
+      .catch(doGetPosition);
   } else {
-    // iOS / Safari — პირდაპირ ვეძებთ (permissions API არ მუშაობს სწორად)
     doGetPosition();
   }
 }
 
 function doGetPosition() {
   geoAttempt++;
-
-  // პირველი მცდელობა: high accuracy, გრძელი timeout
   var options = geoAttempt === 1
     ? { enableHighAccuracy: true,  timeout: 15000, maximumAge: 0 }
     : { enableHighAccuracy: false, timeout: 12000, maximumAge: 30000 };
-
-  if (geoAttempt === 2) {
-    setStatusDetecting('Retrying with network location…');
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    onGeoSuccess,
-    onGeoError,
-    options
-  );
+  if (geoAttempt === 2) setStatusDetecting('Retrying with network location…');
+  navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError, options);
 }
 
 function onGeoSuccess(pos) {
+  resetPageLoads();
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
   var acc  = Math.round(pos.coords.accuracy);
@@ -451,8 +590,9 @@ function onGeoSuccess(pos) {
   var dLng  = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
   var distM = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
 
-  document.getElementById('locationBlock').style.display = 'none';
-  document.getElementById('manual-notice').style.display = 'none';
+  hideBlock();
+  hideManualNotice();
+  document.getElementById('manualPanel').style.display = 'none';
 
   if (distM <= RADIUS_M) {
     geoState = 'found';
@@ -469,50 +609,20 @@ function onGeoSuccess(pos) {
 }
 
 function onGeoError(err) {
-  // PERMISSION_DENIED (code 1)
-  if (err.code === 1) {
-    onGeoDenied();
-    return;
-  }
-
-  // POSITION_UNAVAILABLE (code 2) ან TIMEOUT (code 3)
+  if (err.code === 1) { onLocDenied(); return; }
   if (geoAttempt < 2) {
-    // კიდევ ერთხელ ვცდი — low accuracy
     setTimeout(doGetPosition, 800);
     return;
   }
-
-  // 2 მცდელობის შემდეგ ვეღარ ვიძებთ
-  onGeoUnavailable('Location could not be determined. You can continue without it.');
+  showBlock('Location could not be determined. Check that Location Services are enabled, then reload the page.', true);
 }
 
-function onGeoDenied() {
+function onLocDenied() {
   geoState = 'denied';
-  setStatusDenied('Location access blocked');
-  document.getElementById('loc-block-desc').textContent =
-    'Location access is blocked. Enable it and reload the page, or continue without location.';
-  document.getElementById('loc-how-body').innerHTML = IS_IOS
-    ? '<b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using App<br>ან<br>Settings → Safari → Location → Allow'
-    : IS_SAFARI
-      ? '<b>Safari (Mac):</b> Safari menu → Settings for This Website → Location → Allow'
-      : '<b>Chrome (Android):</b> Address bar → 🔒 lock icon → Permissions → Location → Allow<br><b>Chrome (Desktop):</b> Address bar → 🔒 lock → Location → Allow';
-  document.getElementById('locationBlock').style.display = 'block';
-  // denied-ზეც ვაჩვენებთ "continue without" ღილაკს
-  document.getElementById('loc-continue-btn').style.display = 'block';
   setInputsEnabled(false);
   document.getElementById('submit-btn').disabled = true;
-}
-
-function onGeoUnavailable(desc) {
-  geoState = 'unavailable';
-  setStatusDenied('Location unavailable');
-  document.getElementById('loc-block-desc').textContent = desc;
-  document.getElementById('loc-how-body').innerHTML = IS_IOS
-    ? '<b>iPhone:</b> Settings → Privacy → Location Services → Safari → While Using App'
-    : '<b>Android:</b> Settings → Site Settings → Location → Allow';
-  document.getElementById('locationBlock').style.display = 'block';
-  document.getElementById('loc-continue-btn').style.display = 'block';
-  // unavailable-ზე inputs ჩართულია manual-ისთვის
+  setStatusDenied('Location access blocked');
+  showBlock('Location access is blocked. Follow the steps below to enable it, then reload the page.', true);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -522,15 +632,15 @@ function activateManual() {
   geoState = 'manual';
   userLat  = null;
   userLng  = null;
-
-  document.getElementById('locationBlock').style.display = 'none';
-  document.getElementById('manual-notice').style.display = 'block';
+  hideBlock();
+  showManualNotice();
+  document.getElementById('manualPanel').style.display = 'block';
 
   var ind = document.getElementById('loc-indicator');
-  ind.className  = 'loc-dot';
-  ind.style.cssText = '';
-  document.getElementById('locText').textContent  = 'Continuing without location';
-  document.getElementById('locStatus').className  = 'manual';
+  ind.className = 'loc-dot';
+  ind.style.cssText = 'background:#92400E;';
+  document.getElementById('locText').textContent = 'Continuing without location';
+  document.getElementById('locStatus').className = 'manual';
 
   setInputsEnabled(true);
   if (getDeviceRateRemaining() <= 0) {
@@ -543,21 +653,39 @@ function activateManual() {
 // ══════════════════════════════════════════════════════════════
 function setStatusDetecting(text) {
   var ind = document.getElementById('loc-indicator');
-  ind.className     = 'loc-pulse';
+  ind.className = 'loc-pulse';
   ind.style.cssText = '';
-  document.getElementById('locText').textContent  = text;
-  document.getElementById('locStatus').className  = '';
+  document.getElementById('locText').textContent = text;
+  document.getElementById('locStatus').className = '';
 }
 function setStatusFound(text)   { _setDot('found',   text); }
 function setStatusOffsite(text) { _setDot('offsite', text); }
 function setStatusDenied(text)  { _setDot('denied',  text); }
 function _setDot(cls, text) {
   var ind = document.getElementById('loc-indicator');
-  ind.className     = 'loc-dot';
+  ind.className = 'loc-dot';
   ind.style.cssText = '';
-  document.getElementById('locText').textContent  = text;
-  document.getElementById('locStatus').className  = cls;
+  document.getElementById('locText').textContent = text;
+  document.getElementById('locStatus').className = cls;
 }
+
+// ══════════════════════════════════════════════════════════════
+//  BLOCK / NOTICE HELPERS
+// ══════════════════════════════════════════════════════════════
+function showBlock(desc, showContinue) {
+  document.getElementById('loc-block-desc').textContent = desc;
+  document.getElementById('locationBlock').style.display = 'block';
+  document.getElementById('loc-how-body').innerHTML = IS_IOS
+    ? '<b>iPhone (Safari):</b> Settings → Privacy → Location Services → Safari → While Using App'
+    : IS_SAFARI
+      ? '<b>Safari (Mac):</b> Safari menu → Settings for This Website → Location → Allow'
+      : '<b>Chrome (Android):</b> Address bar → 🔒 → Permissions → Location → Allow<br><b>Chrome (Desktop):</b> Address bar → 🔒 → Location → Allow';
+  document.getElementById('loc-continue-btn').style.display =
+    (showContinue && pageLoads >= 3) ? 'block' : 'none';
+}
+function hideBlock()       { document.getElementById('locationBlock').style.display = 'none'; }
+function showManualNotice(){ document.getElementById('manual-notice').style.display = 'block'; }
+function hideManualNotice(){ document.getElementById('manual-notice').style.display = 'none'; }
 
 // ══════════════════════════════════════════════════════════════
 //  INPUTS
@@ -591,14 +719,14 @@ function showMsg(text, type) {
 //  RESULT HANDLER
 // ══════════════════════════════════════════════════════════════
 function handleResult(result) {
-  document.getElementById('submit-btn').innerHTML     = 'Confirm Attendance';
+  document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
-  isSubmitting = false;
 
   // Server-side rate limit
   if (typeof result === 'string' && result.indexOf('RATE_LIMITED:') === 0) {
     var parts = result.split(':');
     var remMs = parseInt(parts[1], 10);
+    isSubmitting = false;
     startCountdown(remMs,
       'This email has already been registered. Please wait before trying again.',
       'Email Limit Active'
@@ -617,6 +745,8 @@ function handleResult(result) {
   };
 
   var entry = RESULT_MAP[result];
+  isSubmitting = false;
+
   if (entry) {
     showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
@@ -641,7 +771,7 @@ function handleResult(result) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SUBMIT — სუფთა, ერთი ნაკადი
+//  SUBMIT  — Supabase პირდაპირ (უცვლელი ლოგიკა)
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
   if (isSubmitting) return;
@@ -674,15 +804,15 @@ function submitForm() {
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
-  // UI
   document.getElementById('submit-btn').disabled  = true;
   document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
   document.getElementById('retry-info').style.display = 'none';
   showMsg('Submitting attendance…', 'info');
   hideRateLimitBox();
   isSubmitting = true;
+  var requestId = ++currentRequestId;
 
-  // ── Step 1: email შემოწმება participants ცხრილში ──
+  // ── Step 1: participants შემოწმება ──
   fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
     headers: {
       'apikey':        SB_KEY,
@@ -694,8 +824,9 @@ function submitForm() {
     return r.json();
   })
   .then(function(data) {
+    if (requestId !== currentRequestId) return Promise.reject('__stale__');
+
     if (!data || data.length === 0) {
-      // Email არ არის სიაში
       isSubmitting = false;
       document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
       document.getElementById('submit-btn').disabled = false;
@@ -705,13 +836,13 @@ function submitForm() {
 
     // ── Step 2: attendance INSERT ──
     var payload = {
-      email:          email,
-      day:            day,
-      action:         action,
-      lat:            userLat !== null ? userLat : null,
-      lng:            userLng !== null ? userLng : null,
-      loc_status:     locStatus,
-      session_id:     sessionId,
+      email:            email,
+      day:              day,
+      action:           action,
+      lat:              userLat !== null ? userLat : null,
+      lng:              userLng !== null ? userLng : null,
+      loc_status:       locStatus,
+      session_id:       sessionId,
       synced_to_sheets: false
     };
 
@@ -727,13 +858,12 @@ function submitForm() {
     });
   })
   .then(function(r) {
-    if (!r) return; // not_found branch-ი
+    if (!r) return;
+    if (requestId !== currentRequestId) return;
 
     if (r.status === 201) {
-      // ✅ წარმატება
       handleResult('SUCCESS');
     } else if (r.status === 409) {
-      // Conflict — უკვე ჩაწერილია
       handleResult('ALREADY_DONE');
     } else {
       return r.text().then(function(body) {
@@ -743,11 +873,22 @@ function submitForm() {
     }
   })
   .catch(function(err) {
-    if (err === '__not_found__') return; // უკვე დამუშავებულია
+    if (err === '__not_found__' || err === '__stale__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-    document.getElementById('submit-btn').disabled = false;
-    showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+
+    // retry logic
+    var ri = document.getElementById('retry-info');
+    ri.style.display = 'block';
+    ri.textContent   = 'Connection issue — retrying…';
+
+    setTimeout(function() {
+      if (requestId !== currentRequestId) return;
+      ri.style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+    }, RETRY_DELAY_MS);
+
     console.error('submitForm error:', err);
   });
 }
