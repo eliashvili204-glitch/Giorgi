@@ -1,3 +1,6 @@
+bash
+
+cat > /home/claude/organizer.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,17 +58,22 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .item:hover{background:rgba(26,54,93,.06);}
 .item.live{border-left-color:var(--live);background:rgba(22,163,74,.08);}
 .item.break{opacity:.7;}
+.item.header-row{background:var(--navy-soft);border-radius:8px;padding:10px 14px;margin:8px 0 2px;border:1px solid var(--navy-border);cursor:pointer;}
+.item.header-row:hover{background:rgba(26,54,93,.12);}
+.item.keynote-row{background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border-radius:10px;padding:12px 14px;margin:8px 0 2px;border:1.5px solid var(--navy-border);cursor:pointer;}
 .t-col{min-width:80px;padding:10px 10px 10px 0;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;line-height:1.3;}
 .divline{width:1px;background:var(--border);flex-shrink:0;margin:6px 0;}
 .i-col{flex:1;padding:10px 0 10px 12px;}
 .i-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
 .item.live .i-name span:first-child{color:var(--live);}
+.item.header-row .i-name{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;}
 .i-sub{font-size:11px;color:var(--text-dim);margin-top:3px;line-height:1.4;}
 .i-sub2{font-size:10px;color:var(--text-faint);margin-top:2px;font-style:italic;}
 .badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;font-variant-numeric:tabular-nums;}
 .badge-next{background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
 .badge-timer{background:var(--navy-soft);color:var(--navy);border:1px solid var(--navy-border);min-width:48px;text-align:center;}
 .badge-timer.over{background:rgba(220,38,38,.08);color:var(--warn);border-color:rgba(220,38,38,.3);}
+.keynote-label{font-size:8px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.18em;margin-bottom:4px;}
 
 /* ── SIDE PANEL ── */
 .side-panel{background:var(--surface);border-left:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 54px);}
@@ -228,51 +236,73 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 const SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
+// ════════════════════════════════════════════
+//  AGENDA — from participant app (exact match)
+// ════════════════════════════════════════════
 const AGENDA = [
-  {id:1,  time:"09:00–10:00", speaker:"Registration & Welcome",                title:"",                                              session:"day1_pre",    isBreak:true},
-  {id:2,  time:"10:00–10:30", speaker:"Opening Ceremony",                      title:"Opening Ceremony & Welcome Remarks",             session:"day1_open",   isBreak:true},
-  {id:3,  time:"10:30–11:00", speaker:"[Keynote Speaker Name]",                title:"[Institution / Abstract Title — TBC]",           session:"day1_keynote"},
-  {id:4,  time:"11:00–11:15", speaker:"[Presenter 1]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
-  {id:5,  time:"11:15–11:30", speaker:"[Presenter 2]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
-  {id:6,  time:"11:30–11:45", speaker:"[Presenter 3]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
-  {id:7,  time:"11:45–12:00", speaker:"[Presenter 4]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
-  {id:8,  time:"12:00–12:15", speaker:"[Presenter 5]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s1"},
-  {id:9,  time:"12:15–12:45", speaker:"Coffee Break",                          title:"",                                              session:"day1_break1", isBreak:true},
-  {id:10, time:"12:45–12:50", speaker:"[Poster Presenter 1]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:11, time:"12:50–12:55", speaker:"[Poster Presenter 2]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:12, time:"12:55–13:00", speaker:"[Poster Presenter 3]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:13, time:"13:00–13:05", speaker:"[Poster Presenter 4]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:14, time:"13:05–13:10", speaker:"[Poster Presenter 5]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:15, time:"13:10–13:15", speaker:"[Poster Presenter 6]",                  title:"[Institution / Abstract Title — TBC]",           session:"day1_poster"},
-  {id:16, time:"13:15–13:30", speaker:"[Presenter 6]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:17, time:"13:30–13:45", speaker:"[Presenter 7]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:18, time:"13:45–14:00", speaker:"[Presenter 8]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:19, time:"14:00–14:15", speaker:"[Presenter 9]",                         title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:20, time:"14:15–14:30", speaker:"[Presenter 10]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:21, time:"14:30–14:45", speaker:"[Presenter 11]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:22, time:"14:45–15:00", speaker:"[Presenter 12]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2"},
-  {id:23, time:"15:00–16:00", speaker:"Lunch Break — Poster Display Open",     title:"",                                              session:"day1_lunch",  isBreak:true},
-  {id:24, time:"16:00–16:15", speaker:"[Presenter 13]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
-  {id:25, time:"16:15–16:30", speaker:"[Presenter 14]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
-  {id:26, time:"16:30–16:45", speaker:"[Presenter 15]",                        title:"[Institution / Abstract Title — TBC]",           session:"day1_s2b"},
-  {id:27, time:"16:45–17:00", speaker:"Closing Day 1",                         title:"",                                              session:"day1_close",  isBreak:true},
-  {id:28, time:"10:00–10:15", speaker:"Welcome Back & Day 2 Overview",         title:"",                                              session:"day2_open",   isBreak:true},
-  {id:29, time:"10:15–10:30", speaker:"[Presenter 16]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
-  {id:30, time:"10:30–10:45", speaker:"[Presenter 17]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
-  {id:31, time:"10:45–11:00", speaker:"[Presenter 18]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
-  {id:32, time:"11:00–11:15", speaker:"[Presenter 19]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
-  {id:33, time:"11:15–11:30", speaker:"[Presenter 20]",                        title:"[Institution / Abstract Title — TBC]",           session:"day2_s3"},
-  {id:34, time:"11:30–12:00", speaker:"Coffee Break",                          title:"",                                              session:"day2_break",  isBreak:true},
-  {id:35, time:"12:00–12:30", speaker:"Panel Discussion",                      title:"[Theme / Title — TBC]",                         session:"day2_panel"},
-  {id:36, time:"12:00–12:30", speaker:"Workshop A",                            title:"[Title — TBC]",                                 session:"day2_ws"},
-  {id:37, time:"12:00–12:30", speaker:"Workshop B",                            title:"[Title — TBC]",                                 session:"day2_ws"},
-  {id:38, time:"12:30–12:45", speaker:"Closing Ceremony",                      title:"Closing Ceremony & Certificate Distribution",    session:"day2_close",  isBreak:true},
+
+  // ── DAY 1 ────────────────────────────────────────────────────────────────
+
+  {id:1,  time:"09:00\u201310:00", speaker:"Registration",                                                                     title:"",                                                                                                                                                                                                           session:"day1_pre",    isBreak:true},
+  {id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony & Welcome Remarks",                                               title:"Nino Tabagari, MD, PhD \u00b7 Mariam Chubinidze \u00b7 Interest Group Leads\nTekla Tsabadze (SIGA) \u00b7 Shreya Mane (GIGA) \u00b7 Ana Bechvaia (CIGA) \u00b7 Anna Kvernadze (IMIG) \u00b7 Kora Chakhava (SIGN)", session:"day1_open"},
+
+  // Session I — Surgical & Multisystemic Complications of Infection
+  {id:3,  time:"10:45\u201312:10", speaker:"SESSION I \u2014 Surgical & Multisystemic Complications of Infection",            title:"Chairs: Guram Beridze | Nana Megrelidze",                                                                                                                                                                   session:"day1_s1_hdr", isHeader:true},
+  {id:4,  time:"",                 speaker:"Ekaterine Tvildiani",                                                              title:"Type II Necrotizing Fasciitis of Upper Extremity Following Firework Injury\nDTMU \u00b7 Sup: Vakhtang Pirpilashvili, MD, PhD \u2014 Municipal Hospital of Pirmasens, Germany",                              session:"day1_s1"},
+  {id:5,  time:"",                 speaker:"Arnav Ambokar",                                                                    title:"Pyoderma Gangrenosum as a Chronic Non-Healing Leg Ulcer Managed with Multimodal Therapy and PRF Dressings\nUniversity of Georgia \u00b7 Sup: Dnyanesh Mhatre, MD \u2014 Dr. Mhatre Skin and Laser Clinic, India", session:"day1_s1"},
+  {id:6,  time:"",                 speaker:"Parvin Mozafari",                                                                  title:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections\nUniversity of Georgia \u00b7 Sup: Nino Lomidze, MD, PhD",                                                                         session:"day1_s1"},
+  {id:7,  time:"",                 speaker:"Lakshya Pruthi, Mokshika Sharma",                                                  title:"Rare Overlap of Dengue and Malaria Complicated by a Leukemoid-Like Response\nDTMU \u00b7 Sup: Lika Khelashvili, MD",                                                                                    session:"day1_s1"},
+  {id:8,  time:"",                 speaker:"Gisoo Farhani, Roshanak Jafarirouzbahani",                                         title:"Surgical Complications of Dengue Infection: A Multisystemic Perspective\nUniversity of Georgia / New Vision University \u00b7 Sup: Irma Kibrotsashvili, MD",                                              session:"day1_s1"},
+  {id:9,  time:"",                 speaker:"Saba Akhaladze, Anna Japaridze",                                                   title:"An Unusual Etiology for Overwhelming Post-Splenectomy Infection\nDTMU \u00b7 Sup: Natia Utmelidze, MD \u2014 Pineo Medical Ecosystem",                                                                  session:"day1_s1"},
+  {id:10, time:"",                 speaker:"Nutsa Tsagareli, Vikrant Ghulaxe",                                                 title:"Diagnostic Challenges of Dobrava Hantavirus Infection with Multiorgan Involvement in Georgia\nTbilisi State Medical University \u00b7 Sup: Teona Buachidze, MD \u2014 Todua Clinic",                       session:"day1_s1"},
+
+  {id:11, time:"12:10\u201312:30", speaker:"Coffee Break",                                                                     title:"",                                                                                                                                                                                                           session:"day1_break1", isBreak:true},
+
+  // Session IIA — Neuro-Infectious & Neuroinflammatory Diseases
+  {id:12, time:"12:30\u201313:40", speaker:"SESSION IIA \u2014 Neuro-Infectious & Neuroinflammatory Diseases",                title:"Chairs: Natalia Shergelashvili | Sanchit Dhanda",                                                                                                                                                              session:"day1_s2a_hdr",isHeader:true},
+  {id:13, time:"",                 speaker:"Ana Bechvaia, Ketevan Tchitchinadze",                                              title:"Rare Case of Neurocysticercosis in Georgia\nDTMU \u00b7 Sup: Eka Chkhartishvili, MD, PhD",                                                                                                                 session:"day1_s2a"},
+  {id:14, time:"",                 speaker:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili",                               title:"Validation of Georgian-Translated Neuropsychological Instruments for Infectious Disease-Associated Encephalopathy\nDTMU \u00b7 Sup: Tamar Macharadze, MD, PhD",                                             session:"day1_s2a"},
+  {id:15, time:"",                 speaker:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze",                              title:"Inflammation and Infection in the Development of Psychosis and Other Psychiatric Diseases\nDTMU \u00b7 Sup: Mariam Chelidze, MD",                                                                         session:"day1_s2a"},
+  {id:16, time:"",                 speaker:"Tanishqa Hivre",                                                                   title:"Late-Onset Psychosis in a 77-Year-Old Male with Neurosyphilis\nDTMU \u00b7 Sup: Shama Shah, MD",                                                                                                           session:"day1_s2a"},
+  {id:17, time:"",                 speaker:"Davit Abuladze",                                                                   title:"Redefining the Classic Paradigm: Anti-NMDA Receptor Encephalitis in a Young Male\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, PhD \u2014 M. Iashvili Children's Hospital",                                  session:"day1_s2a"},
+  {id:18, time:"",                 speaker:"Sakshi Sharma, Yuvraj Pathria",                                                    title:"Dual LGI1-CASPR2 Positive Autoimmune Limbic Encephalitis in a 15-Year-Old Female\nDTMU \u00b7 Sup: Tatia Aprasidze, MD, PhD \u2014 M. Iashvili Children's Hospital",                                     session:"day1_s2a"},
+  {id:19, time:"",                 speaker:"Barbare Lezhava, Mariam Khrustali",                                                title:"A Rare Case of Lemi\u00e8re\u2019s Syndrome in a Pediatric Patient\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, PhD \u2014 M. Iashvili Children's Central Hospital",                                      session:"day1_s2a"},
+
+  {id:20, time:"13:40\u201314:40", speaker:"Lunch Break \u2014 Poster Presentations",                                          title:"Evaluators: Liza Goderdzishvili, MD, PhD(c) \u00b7 Aleksandre Ramishvili, MD, PhD(c)",                                                                                                                             session:"day1_lunch",  isBreak:true},
+
+  // Session IIB — Emerging Complications of Viral Infections
+  {id:21, time:"14:40\u201316:00", speaker:"SESSION IIB \u2014 Emerging Complications of Viral Infections",                   title:"Chairs: Giorgi Riabinkin | Shrinika Satishkumar",                                                                                                                                                                  session:"day1_s2b_hdr",isHeader:true},
+  {id:22, time:"",                 speaker:"Anna Vashakidze, Mariam Baghuashvili",                                             title:"Rare Case of Varicella-Zoster Virus Meningoencephalomyelitis in a Patient with Systemic Sclerosis\nDTMU \u00b7 Sup: Lana Sukhitashvili, MD \u2014 Caucasus Medical Center",                                  session:"day1_s2b"},
+  {id:23, time:"",                 speaker:"Syeda Fatima Zehra, Sakshi Sharma",                                                title:"Supraventricular Tachycardia as an Uncommon Presentation of Dengue Myocarditis\nDTMU \u00b7 Sup: Tamar Gaprindashvili, MD, PhD(c) \u2014 Bokhua Memorial Cardiovascular Center",                        session:"day1_s2b"},
+  {id:24, time:"",                 speaker:"Madiha Mirza",                                                                     title:"Measles and COVID-19: Epidemiological Disruption, Immune Dysregulation, and Long-Term Neurological Sequelae\nUniversity of Georgia \u00b7 Sup: Venera Mchedlishvili, MD",                                    session:"day1_s2b"},
+  {id:25, time:"",                 speaker:"Sai Sravya Sahini, Leticia El-Boutty",                                             title:"Elevated Cytokine Levels During Acute COVID-19 and Persistent Immune Dysregulation After Recovery\nUniversity of Georgia \u00b7 Sup: Ekaterine Cherkezishvili, MD",                                        session:"day1_s2b"},
+  {id:26, time:"",                 speaker:"Faazil Mohmadrafi Mansuri et al.",                                                 title:"Advances in Lipid Nanoparticle-Enhanced SARS-CoV-2 mRNA Vaccine Delivery vs Conventional Approaches\nDTMU / Georgian-American University \u00b7 Sup: Giorgi Mgeladze, MD",                                  session:"day1_s2b"},
+  {id:27, time:"",                 speaker:"Anna Kvernadze, Ana Abelova, Nia Lazishvili",                                      title:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome\nDTMU \u00b7 Sup: Gvantsa Kharaishvili, MD, PhD \u2014 DTMU / Palacky University Olomouc",               session:"day1_s2b"},
+  {id:28, time:"",                 speaker:"Panel Discussion (Q&A) \u2014 Closing Day 1",                                      title:"",                                                                                                                                                                                                           session:"day1_close"},
+
+  // ── DAY 2 ────────────────────────────────────────────────────────────────
+
+  {id:29, time:"10:00\u201310:30", speaker:"WORKSHOP \u2014 AI Literacy for Future Physicians",                                title:"Mariam Katcheishvili, MD, PhD(c) \u2014 David Tvildiani Medical University, Georgia",                                                                                                                            session:"day2_ws"},
+
+  // Session III
+  {id:30, time:"10:30\u201312:00", speaker:"SESSION III \u2014 Infection, Inflammation & Autoimmunity in Reproductive, Gastrointestinal, and Endocrine Disease", title:"Chairs: Elene Imnaishvili | Nino Tsivadze",                                                                                                                             session:"day2_s3_hdr", isHeader:true},
+  {id:31, time:"",                 speaker:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Tanko Keziah Dauda",              title:"Placental Tropism in Gestational Psittacosis: A New Understanding of a Deadly Zoonotic Disease\nDTMU \u00b7 Sup: Tamar Badurashvili, MD \u2014 Hepa Clinic",                                               session:"day2_s3"},
+  {id:32, time:"",                 speaker:"Safa Mohammed Saleem, Syeda Fatima Zehra",                                        title:"Ovarian Tuberculosis Masquerading as Ovarian Malignancy\nTSMU / DTMU \u00b7 Sup: Tinatin Kutchukhidze, MD \u2014 New Vision University",                                                                    session:"day2_s3"},
+  {id:33, time:"",                 speaker:"Tuta Piyush",                                                                      title:"Intestinal Tuberculosis Mimicking Crohn\u2019s Disease: A Diagnostic Challenge\nDTMU \u00b7 Sup: Nino Sordia, MD",                                                                                       session:"day2_s3"},
+
+  {id:34, time:"11:00\u201311:30", speaker:"Coffee Break",                                                                     title:"",                                                                                                                                                                                                           session:"day2_break",  isBreak:true},
+
+  {id:35, time:"",                 speaker:"Raja Basil Adeel",                                                                 title:"Daptomycin-Associated Eosinophilic Colitis: A Novel Extrapulmonary Manifestation\nUniversity of Georgia \u00b7 Sup: Giorgi Chilingarashvili, MD, MSc \u2014 Nazareth Hospital, USA",                       session:"day2_s3b"},
+  {id:36, time:"",                 speaker:"Keya Baliga, Rajvi Soni",                                                         title:"Rare Case of Autoimmune Polyendocrine Syndrome Type 2 with Progressive Endocrine Dysfunction and Vitiligo\nSEU Georgian National University \u00b7 Sup: Nino Turashvili, MD \u2014 Vakhtang Bochorishvili Medical Center", session:"day2_s3b"},
+
+  {id:37, time:"12:00\u201312:40", speaker:"Tea Kakabadze, MD, PhD \u00b7 Tengiz Tsertsvadze",                                 title:"Antibiotic Resistance and Stewardship Strategy\nDTMU / Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",                                                                                  session:"day2_panel",  isKeynote:true},
+
+  {id:38, time:"12:40\u201313:00", speaker:"Closing Ceremony",                                                                 title:"Closing Ceremony & Certificate Distribution",                                                                                                                                                                session:"day2_close"},
 ];
 
 let sb = null;
-let currentId = 3;
+let currentId = 4;
 let channel = null;
-let timerStart = Date.now();
 let speakerStartedAt = Date.now();
 let timerInterval = null;
 let threads = {};
@@ -413,7 +443,7 @@ function switchTab(tab) {
   document.getElementById('fb-list').style.display = tab === 'fb' ? 'flex' : 'none';
   const dlBtn = document.getElementById('fb-download-btn');
   if (dlBtn) dlBtn.style.display = (tab === 'fb' && feedbacks.length) ? 'flex' : 'none';
-} 
+}
 
 function renderChatList() {
   const list = document.getElementById('chat-list');
@@ -528,23 +558,28 @@ function renderFbList() {
   if(dlBtn) dlBtn.style.display = (activeTab === 'fb') ? 'flex' : 'none';
 }
 
+// ════════════════════════════════════════════
+//  SECTIONS — matching participant app structure
+// ════════════════════════════════════════════
 const SECS = [
-  { key:'day1_pre',    label:'' },
-  { key:'day1_open',   label:'Opening Ceremony' },
-  { key:'day1_keynote',label:'Keynote Address' },
-  { key:'day1_s1',     label:'Oral Presentations — Session I' },
-  { key:'day1_break1', label:'' },
-  { key:'day1_poster', label:'Poster Pitches (5 min each)' },
-  { key:'day1_s2',     label:'Oral Presentations — Session II' },
-  { key:'day1_lunch',  label:'' },
-  { key:'day1_s2b',    label:'' },
-  { key:'day1_close',  label:'' },
-  { key:'day2_open',   label:'Day 2 — Sunday, 14 June 2026' },
-  { key:'day2_s3',     label:'Oral Presentations — Session III' },
-  { key:'day2_break',  label:'' },
-  { key:'day2_panel',  label:'Panel Discussion & Workshops' },
-  { key:'day2_ws',     label:'' },
-  { key:'day2_close',  label:'' },
+  { key:'day1_pre',     label:'Day 1 \u2014 Saturday, 13 June 2026' },
+  { key:'day1_open',    label:'' },
+  { key:'day1_s1_hdr',  label:'' },
+  { key:'day1_s1',      label:'' },
+  { key:'day1_break1',  label:'' },
+  { key:'day1_s2a_hdr', label:'' },
+  { key:'day1_s2a',     label:'' },
+  { key:'day1_lunch',   label:'' },
+  { key:'day1_s2b_hdr', label:'' },
+  { key:'day1_s2b',     label:'' },
+  { key:'day1_close',   label:'' },
+  { key:'day2_ws',      label:'Day 2 \u2014 Sunday, 14 June 2026' },
+  { key:'day2_s3_hdr',  label:'' },
+  { key:'day2_s3',      label:'' },
+  { key:'day2_break',   label:'' },
+  { key:'day2_s3b',     label:'' },
+  { key:'day2_panel',   label:'' },
+  { key:'day2_close',   label:'' },
 ];
 
 function getNextAny(fromId) {
@@ -557,18 +592,13 @@ function getPrevAny(fromId) {
 }
 function getNextPresenter(fromId) {
   const ci = AGENDA.findIndex(a => a.id === fromId);
-  for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak) return AGENDA[i];
-  return null;
-}
-function getPrevPresenter(fromId) {
-  const ci = AGENDA.findIndex(a => a.id === fromId);
-  for (let i = ci - 1; i >= 0; i--) if (!AGENDA[i].isBreak) return AGENDA[i];
+  for (let i = ci + 1; i < AGENDA.length; i++) if (!AGENDA[i].isBreak && !AGENDA[i].isHeader) return AGENDA[i];
   return null;
 }
 
 function parseDurationMins(timeStr) {
   if (!timeStr) return null;
-  const m = timeStr.match(/(\d{2}):(\d{2})[–\-](\d{2}):(\d{2})/);
+  const m = timeStr.match(/(\d{2}):(\d{2})[\u2013\-](\d{2}):(\d{2})/);
   if (!m) return null;
   const start = parseInt(m[1]) * 60 + parseInt(m[2]);
   const end   = parseInt(m[3]) * 60 + parseInt(m[4]);
@@ -584,32 +614,103 @@ function render() {
   document.getElementById('side-next-name').textContent = nxt ? nxt.speaker : 'Program Concluded';
   document.getElementById('side-next-talk').textContent = nxt ? (nxt.title.split('\n')[0] || '') : '';
 
-  let html = '';
+  const frag = document.createDocumentFragment();
+
   SECS.forEach(sec => {
     const items = AGENDA.filter(a => a.session === sec.key);
     if (!items.length) return;
-    if (sec.label) html += `<div class="section-title">${sec.label}</div>`;
+
+    if (sec.label) {
+      const hd = document.createElement('div');
+      hd.className = 'section-title';
+      hd.textContent = sec.label;
+      frag.appendChild(hd);
+    }
+
     items.forEach(item => {
       const isCur = item.id === currentId;
       const isNxt = nxt && item.id === nxt.id;
-      const subs = item.title ? item.title.split('\n') : [];
-      html += `<div class="item ${isCur?'live':''} ${item.isBreak?'break':''}" onclick="setLive(${item.id})">
-        <div class="t-col">${item.time||''}</div>
-        <div class="divline"></div>
-        <div class="i-col">
-          <div class="i-name">
-            <span>${item.speaker}</span>
-            ${isCur?`<span class="badge badge-timer" id="agenda-timer">00:00</span>`:''}
-            ${isNxt?`<span class="badge badge-next">Up next</span>`:''}
-          </div>
-          ${subs[0]?`<div class="i-sub">${subs[0]}</div>`:''}
-          ${subs[1]?`<div class="i-sub2">${subs[1]}</div>`:''}
-        </div>
-      </div>`;
+      const subs  = item.title ? item.title.split('\n') : [];
+
+      // ── Session header rows ──
+      if (item.isHeader) {
+        const row = document.createElement('div');
+        row.className = 'item header-row' + (isCur ? ' live' : '');
+        row.onclick = () => setLive(item.id);
+
+        const tCol = document.createElement('div');
+        tCol.className = 't-col';
+        tCol.textContent = item.time || '';
+        row.appendChild(tCol);
+
+        const divl = document.createElement('div'); divl.className = 'divline'; row.appendChild(divl);
+
+        const iCol = document.createElement('div'); iCol.className = 'i-col';
+        const nameRow = document.createElement('div');
+        nameRow.className = 'i-name';
+        const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
+        if (isCur) { const bt = document.createElement('span'); bt.className='badge badge-timer'; bt.id='agenda-timer'; bt.textContent='00:00'; nameRow.appendChild(bt); }
+        if (isNxt) { const bn = document.createElement('span'); bn.className='badge badge-next'; bn.textContent='Up next'; nameRow.appendChild(bn); }
+        iCol.appendChild(nameRow);
+        if (subs[0]) { const s1 = document.createElement('div'); s1.className='i-sub'; s1.style.color='var(--navy)'; s1.style.fontWeight='500'; s1.textContent=subs[0]; iCol.appendChild(s1); }
+        row.appendChild(iCol);
+        frag.appendChild(row);
+        return;
+      }
+
+      // ── Keynote rows ──
+      if (item.isKeynote) {
+        const row = document.createElement('div');
+        row.className = 'item keynote-row' + (isCur ? ' live' : '');
+        row.onclick = () => setLive(item.id);
+
+        const tCol = document.createElement('div'); tCol.className='t-col'; tCol.style.color='var(--navy)'; tCol.textContent=item.time||''; row.appendChild(tCol);
+        const divl = document.createElement('div'); divl.className='divline'; row.appendChild(divl);
+        const iCol = document.createElement('div'); iCol.className='i-col';
+
+        const kLabel = document.createElement('div'); kLabel.className='keynote-label'; kLabel.textContent='Keynote Address'; iCol.appendChild(kLabel);
+
+        const nameRow = document.createElement('div'); nameRow.className='i-name'; nameRow.style.color='var(--navy)';
+        const nameSpan = document.createElement('span'); nameSpan.textContent=item.speaker; nameRow.appendChild(nameSpan);
+        if (isCur) { const bt = document.createElement('span'); bt.className='badge badge-timer'; bt.id='agenda-timer'; bt.textContent='00:00'; nameRow.appendChild(bt); }
+        if (isNxt) { const bn = document.createElement('span'); bn.className='badge badge-next'; bn.textContent='Up next'; nameRow.appendChild(bn); }
+        iCol.appendChild(nameRow);
+        if (subs[0]) { const s1=document.createElement('div'); s1.className='i-sub'; s1.style.fontWeight='600'; s1.textContent=subs[0]; iCol.appendChild(s1); }
+        if (subs[1]) { const s2=document.createElement('div'); s2.className='i-sub2'; s2.textContent=subs[1]; iCol.appendChild(s2); }
+        row.appendChild(iCol);
+        frag.appendChild(row);
+        return;
+      }
+
+      // ── Regular rows ──
+      const row = document.createElement('div');
+      row.className = 'item' + (isCur ? ' live' : '') + (item.isBreak ? ' break' : '');
+      row.onclick = () => setLive(item.id);
+
+      if (item.time) {
+        const tCol = document.createElement('div'); tCol.className='t-col'; tCol.textContent=item.time; row.appendChild(tCol);
+        const divl = document.createElement('div'); divl.className='divline'; row.appendChild(divl);
+      }
+
+      const iCol = document.createElement('div'); iCol.className='i-col';
+      if (!item.time) iCol.style.paddingLeft = '0';
+
+      const nameRow = document.createElement('div'); nameRow.className='i-name';
+      const nameSpan = document.createElement('span'); nameSpan.textContent=item.speaker; nameRow.appendChild(nameSpan);
+      if (isCur) { const bt=document.createElement('span'); bt.className='badge badge-timer'; bt.id='agenda-timer'; bt.textContent='00:00'; nameRow.appendChild(bt); }
+      if (isNxt) { const bn=document.createElement('span'); bn.className='badge badge-next'; bn.textContent='Up next'; nameRow.appendChild(bn); }
+      iCol.appendChild(nameRow);
+      if (subs[0]) { const s1=document.createElement('div'); s1.className='i-sub'; s1.textContent=subs[0]; iCol.appendChild(s1); }
+      if (subs[1]) { const s2=document.createElement('div'); s2.className='i-sub2'; s2.textContent=subs[1]; iCol.appendChild(s2); }
+      row.appendChild(iCol);
+      frag.appendChild(row);
     });
   });
-  document.getElementById('agenda-panel').innerHTML = html;
-  setTimeout(() => { const live = document.querySelector('.item.live'); if (live) live.scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
+
+  const panel = document.getElementById('agenda-panel');
+  panel.innerHTML = '';
+  panel.appendChild(frag);
+  setTimeout(() => { const live = panel.querySelector('.item.live'); if (live) live.scrollIntoView({ behavior:'smooth', block:'center' }); }, 100);
 }
 
 function startTimer(resetToNow) {
@@ -810,3 +911,5 @@ async function downloadFeedbackPDF() {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done. $(wc -l < /home/claude/organizer.html) lines"
