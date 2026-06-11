@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Infection at the Crossroads — June 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
 :root{
   --bg:#EAEFF2;--bg2:#D5E1EA;--surface:#FFFFFF;--border:#B2C4D1;
   --text:#0A1B29;--text-dim:#33475B;--text-faint:#607386;--text-soft:#33475B;
@@ -15,39 +16,39 @@
   --live:#22C55E;--warn:#DC2626;
 }
 *{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation;-webkit-user-select:none;user-select:none;}
-body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;font-size:14px;line-height:1.5;}
 
 /* ── LOADING / ERROR ── */
 #loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px;}
-#loading p{font-size:12px;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;}
-.spinner{width:28px;height:28px;border:1.5px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .9s linear infinite;}
+#loading p{font-size:11px;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;}
+.spinner{width:26px;height:26px;border:1.5px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:spin .9s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 #error-screen{display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;}
 #error-screen p{color:var(--warn);font-size:13px;max-width:360px;line-height:1.7;}
-#app{display:none;flex-direction:column;min-height:100vh;padding-bottom:84px;}
+#app{display:none;flex-direction:column;min-height:100vh;padding-bottom:88px;}
 
 /* ── LOGOS ── */
-.logos{background:var(--bg2);padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.logo-circle{width:34px;height:34px;border-radius:50%;border:1px solid var(--border)!important;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--text-dim)!important;background:transparent!important;text-align:center;line-height:1.2;flex-shrink:0;letter-spacing:.02em;}
-.logo-sep{width:1px;height:22px;background:var(--border);flex-shrink:0;}
-.logo-text{font-size:8px;color:var(--text-dim)!important;line-height:1.4;letter-spacing:.03em;}
-.syssa-logo{background:none;border:1px solid var(--border);border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--text)!important;}
+.logos{background:var(--bg2);padding:11px 20px;display:flex;align-items:center;justify-content:center;gap:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.logo-circle{width:32px;height:32px;border-radius:50%;border:1px solid var(--border)!important;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:700;color:var(--text-dim)!important;background:transparent!important;text-align:center;line-height:1.2;flex-shrink:0;letter-spacing:.02em;font-family:'Inter',sans-serif;}
+.logo-sep{width:1px;height:20px;background:var(--border);flex-shrink:0;}
+.logo-text{font-size:8px;color:var(--text-dim)!important;line-height:1.4;letter-spacing:.06em;font-family:'Inter',sans-serif;}
+.syssa-logo{background:none;border:1px solid var(--border);border-radius:3px;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--text)!important;font-family:'Inter',sans-serif;}
 .gold-circle{border-color:var(--gold-border)!important;color:var(--gold)!important;background:var(--gold-soft)!important;font-size:7px;}
-.page-title{text-align:center;padding:24px 20px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
-.page-title h1{font-family:'DM Serif Display',serif;font-size:18px;font-weight:400;color:var(--navy);letter-spacing:.03em;line-height:1.4;}
+.page-title{text-align:center;padding:22px 24px 18px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);}
+.page-title h1{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--navy);letter-spacing:.04em;line-height:1.4;font-style:italic;}
 
 /* ── NOW SPEAKING ── */
 .now-section{padding:20px 20px 0;}
-.now-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.02);transition:outline .2s;}
-.now-top{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.now-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px 18px;box-shadow:0 4px 20px rgba(0,0,0,0.03);transition:outline .2s;}
+.now-top{display:flex;align-items:center;gap:8px;margin-bottom:13px;}
 .live-dot{width:7px;height:7px;border-radius:50%;background:#16A34A;animation:pulse 2s infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
-.live-tag{font-size:9px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:.14em;}
-.now-speaker{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:var(--text);line-height:1.25;margin-bottom:6px;}
-.now-title{font-size:13px;color:var(--navy);line-height:1.5;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.now-sub{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.5;font-style:italic;}
-.speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
-.speaker-timer-val{font-size:11px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.06em;}
+.live-tag{font-size:9px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:.16em;font-family:'Inter',sans-serif;}
+.now-speaker{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--text);line-height:1.2;margin-bottom:7px;letter-spacing:.01em;}
+.now-title{font-size:13px;color:var(--navy);line-height:1.55;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:.01em;}
+.now-sub{font-size:11px;color:var(--text-faint);margin-top:5px;line-height:1.55;font-style:italic;}
+.speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:15px;background:var(--bg2);border-radius:20px;padding:5px 13px;border:1px solid var(--border);}
+.speaker-timer-val{font-size:11px;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.08em;}
 
 /* ── BADGE TIMER ── */
 .badge{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.04em;white-space:nowrap;font-variant-numeric:tabular-nums;}
@@ -55,22 +56,22 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .badge-timer.over{background:rgba(220,38,38,.08);color:var(--warn);border-color:rgba(220,38,38,.3);}
 
 /* ── COUNTDOWN ── */
-.countdown-wrap{padding:24px 20px 8px;}
+.countdown-wrap{padding:22px 20px 8px;}
 .countdown-card{background:linear-gradient(160deg,var(--navy-soft) 0%,var(--surface) 60%,#F0F4F8 100%);border:1px solid var(--border);border-radius:16px;padding:28px 20px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.02);}
-.cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 12px;margin-bottom:18px;}
+.cd-event-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 13px;margin-bottom:18px;}
 .cd-event-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
 .cd-event-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
-.cd-heading{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text-dim);margin-bottom:22px;line-height:1.4;}
-.cd-heading span{color:var(--gold);font-weight:700;}
+.cd-heading{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:var(--text-dim);margin-bottom:22px;line-height:1.5;}
+.cd-heading span{color:var(--gold);font-style:normal;font-weight:600;}
 .cd-blocks{display:flex;align-items:stretch;justify-content:center;gap:8px;}
 .cd-unit{display:flex;flex-direction:column;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px 10px;min-width:62px;flex:1;max-width:72px;}
-.cd-num{font-family:'DM Serif Display',serif;font-size:40px;color:var(--text);line-height:1;}
-.cd-word{font-size:8px;font-weight:700;color:var(--text-faint);letter-spacing:.14em;text-transform:uppercase;margin-top:6px;}
-.cd-sep{font-family:'DM Serif Display',serif;font-size:30px;color:var(--border);align-self:center;margin-bottom:18px;line-height:1;}
+.cd-num{font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--text);line-height:1;font-weight:400;}
+.cd-word{font-size:8px;font-weight:600;color:var(--text-faint);letter-spacing:.16em;text-transform:uppercase;margin-top:6px;font-family:'Inter',sans-serif;}
+.cd-sep{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--border);align-self:center;margin-bottom:18px;line-height:1;}
 .cd-footer{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;}
 .cd-footer-line{flex:1;height:1px;background:var(--border);max-width:40px;}
-.cd-date{font-size:11px;color:var(--text-dim);letter-spacing:.04em;white-space:nowrap;}
-.cd-date strong{color:var(--gold);font-weight:700;}
+.cd-date{font-size:11px;color:var(--text-dim);letter-spacing:.03em;white-space:nowrap;}
+.cd-date strong{color:var(--gold);font-weight:600;}
 
 /* ── WORKSHOP ── */
 .workshop-wrap{padding:20px 20px 0;}
@@ -79,10 +80,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-header-badge{display:inline-flex;align-items:center;gap:6px;background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:4px 14px;margin-bottom:12px;}
 .ws-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--navy);animation:pulse 2s infinite;}
 .ws-badge-text{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.14em;}
-.ws-header-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.ws-header-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text);margin-bottom:6px;line-height:1.3;}
 .ws-header-sub{font-size:11px;color:var(--text-faint);line-height:1.6;}
-
-/* ── SINGLE FEATURED WORKSHOP CARD ── */
 .ws-cards{display:grid;grid-template-columns:1fr;max-width:480px;margin:0 auto;width:100%;}
 .ws-card{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;overflow:hidden;-webkit-tap-highlight-color:transparent;}
 .ws-card:active{transform:scale(.97);}
@@ -90,36 +89,36 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-card-inner{position:relative;z-index:1;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px 18px;transition:border-color .2s,background .2s;height:100%;display:flex;flex-direction:column;gap:12px;}
 .ws-card:hover:not(.full) .ws-card-inner{border-color:var(--navy-border);box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-card.selected .ws-card-inner{border-color:var(--navy);background:linear-gradient(135deg,var(--navy-soft) 0%,rgba(230,237,245,0.3) 100%);}
-.ws-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
-.ws-card-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--navy);letter-spacing:.04em;flex-shrink:0;}
-.ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 6px;border-radius:20px;}
+.ws-card-top{display:flex;align-items:center;justify-content:space-between;}
+.ws-card-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border:1px solid var(--navy-border);display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:800;color:var(--navy);letter-spacing:.06em;flex-shrink:0;}
+.ws-card-tag{font-size:8px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;background:var(--navy-soft);border:1px solid var(--navy-border);padding:2px 7px;border-radius:20px;}
 .ws-card-tag.full-tag{color:#DC2626;background:rgba(220,38,38,0.08);border-color:rgba(220,38,38,0.3);}
-.ws-card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);line-height:1.2;}
-.ws-card-presenter{display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;}
-.ws-presenter-name{font-size:12px;font-weight:700;color:var(--navy);line-height:1.4;}
-.ws-presenter-inst{font-size:10px;color:var(--text-faint);font-style:italic;}
+.ws-card-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--text);line-height:1.25;font-style:italic;}
+.ws-card-presenter{display:flex;flex-direction:column;gap:3px;padding:11px 13px;background:var(--bg);border:1px solid var(--border);border-radius:9px;}
+.ws-presenter-name{font-size:12px;font-weight:600;color:var(--navy);line-height:1.4;}
+.ws-presenter-inst{font-size:10.5px;color:var(--text-faint);font-style:italic;line-height:1.5;}
 .ws-requirements{display:flex;flex-direction:column;gap:6px;}
-.ws-req-label{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;}
+.ws-req-label{font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;}
 .ws-req-items{display:flex;gap:8px;flex-wrap:wrap;}
-.ws-req-item{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--text-dim);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;}
+.ws-req-item{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--text-dim);background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;}
 .ws-card-footer{display:flex;flex-direction:column;gap:8px;margin-top:2px;}
-.ws-seats{display:flex;flex-direction:column;gap:4px;}
+.ws-seats{display:flex;flex-direction:column;gap:5px;}
 .ws-seats-bar-wrap{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .ws-seats-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--navy),#4A90D9);transition:width .6s ease;}
 .ws-seats-bar.warn{background:linear-gradient(90deg,#F59E0B,#FBBF24);}
 .ws-seats-bar.danger{background:linear-gradient(90deg,#EF4444,#F87171);}
-.ws-seats-text{font-size:9px;font-weight:700;color:var(--text-dim);}
+.ws-seats-text{font-size:9px;font-weight:700;color:var(--text-dim);letter-spacing:.04em;}
 .ws-seats-text.warn{color:#B45309;}
 .ws-seats-text.danger{color:#DC2626;}
-.ws-select-btn{display:flex;align-items:center;justify-content:center;padding:11px 14px;background:var(--navy);border-radius:10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.04em;transition:opacity .15s;width:100%;}
+.ws-select-btn{display:flex;align-items:center;justify-content:center;padding:11px 14px;background:var(--navy);border-radius:10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:.06em;transition:opacity .15s;width:100%;}
 .ws-card:hover:not(.full) .ws-select-btn{opacity:.88;}
 .ws-form-wrap{animation:wsSlideIn .3s cubic-bezier(.16,1,.3,1) both;}
 @keyframes wsSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .ws-form-card{background:var(--surface);border:1.5px solid var(--navy-border);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(26,54,93,0.1);}
 .ws-form-selected{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--navy-soft);border-bottom:1px solid var(--navy-border);}
-.ws-form-selected-icon{font-size:10px;font-weight:800;color:var(--navy);flex-shrink:0;letter-spacing:.04em;}
-.ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
-.ws-form-selected-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+.ws-form-selected-icon{font-size:10px;font-weight:800;color:var(--navy);flex-shrink:0;letter-spacing:.06em;}
+.ws-form-selected-label{font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.12em;margin-bottom:2px;}
+.ws-form-selected-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.2;}
 .ws-form-change{margin-left:auto;background:none;border:1px solid var(--navy-border);border-radius:6px;padding:4px 10px;font-size:10px;font-weight:700;color:var(--navy);cursor:pointer;white-space:nowrap;transition:background .15s;flex-shrink:0;}
 .ws-form-change:hover{background:rgba(26,54,93,0.1);}
 .ws-form-body{display:flex;gap:8px;padding:14px 16px;}
@@ -134,31 +133,44 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .ws-form-err{padding:8px 16px 12px;font-size:11px;color:#DC2626;line-height:1.5;}
 .ws-success{background:var(--surface);border:1.5px solid rgba(22,163,74,0.4);border-radius:14px;padding:24px 20px;text-align:center;animation:wsSlideIn .4s cubic-bezier(.16,1,.3,1) both;}
 .ws-success-icon{width:44px;height:44px;border-radius:50%;background:rgba(22,163,74,0.12);border:1.5px solid rgba(22,163,74,0.4);display:flex;align-items:center;justify-content:center;font-size:20px;color:#16A34A;margin:0 auto 12px;}
-.ws-success-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:6px;}
+.ws-success-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--text);margin-bottom:6px;}
 .ws-success-sub{font-size:12px;color:var(--text-dim);line-height:1.6;}
 .ws-success-seats{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;color:#16A34A;background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.3);padding:4px 12px;border-radius:20px;}
 
 /* ── NEXT / AGENDA ── */
 .next-section{padding:12px 20px 0;}
-.next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
-.next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;}
-.next-name{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;color:var(--text);}
-.next-title{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.next-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 4px 16px rgba(0,0,0,0.02);}
+.next-label{font-size:9px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:5px;font-weight:600;}
+.next-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;color:var(--text);letter-spacing:.01em;}
+.next-title{font-size:11.5px;color:var(--text-dim);margin-top:4px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .agenda-section{padding:24px 20px 0;}
-.agenda-section h3{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px;}
-.a-session-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;padding:14px 0 6px;border-top:1px solid var(--border);margin-top:10px;}
+.agenda-section > h3{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;}
+
+/* ── SESSION HEADERS ── */
+.a-day-header{padding:20px 0 10px;border-top:1.5px solid var(--navy-border);margin-top:8px;}
+.a-day-header:first-child{border-top:none;padding-top:0;margin-top:0;}
+.a-day-label{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--navy);font-weight:500;line-height:1.2;}
+.a-day-date{font-size:10px;color:var(--text-faint);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;font-weight:500;}
+.a-session-title{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.1em;padding:14px 0 7px;border-top:1px solid var(--border);margin-top:6px;}
 .a-session-title:first-child{border-top:none;padding-top:0;}
-.a-row{display:flex;gap:0;padding:10px 0;border-bottom:1px solid var(--border);}
-.a-row.a-live{background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 14px;margin:4px -14px;box-shadow:0 4px 12px rgba(22,163,74,0.08);}
+.a-session-chairs{font-size:10px;color:var(--text-faint);font-style:italic;margin-bottom:4px;}
+
+/* ── AGENDA ROWS ── */
+.a-row{display:flex;gap:0;padding:11px 0;border-bottom:1px solid var(--border);}
+.a-row.a-live{background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:13px 14px;margin:4px -14px;box-shadow:0 4px 12px rgba(22,163,74,0.08);}
 .a-row.a-break{}
-.a-time{min-width:76px;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.02em;}
+.a-time{min-width:80px;font-size:10.5px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.03em;font-variant-numeric:tabular-nums;}
 .a-divl{width:1px;background:var(--border);flex-shrink:0;margin:2px 0;}
 .a-info{flex:1;padding-left:14px;}
-.a-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.a-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-family:'Inter',sans-serif;}
 .a-row.a-live .a-name{color:#16A34A;}
-.a-sub{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.a-sub-sup{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
+.a-title{font-size:12px;color:var(--navy);margin-top:4px;line-height:1.55;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:14px;}
+.a-sub{font-size:10.5px;color:var(--text-dim);margin-top:3px;line-height:1.5;}
+.a-sup-line{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
 .a-badge-next{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;white-space:nowrap;background:var(--bg2);color:var(--text-dim);border:1px solid var(--border);}
+.a-break-label{font-size:12px;font-weight:500;color:var(--text-faint);}
+
+/* ── FOOTER ── */
 .footer{padding:18px 20px;text-align:center;border-top:1px solid var(--border);margin-top:28px;}
 .footer-status{font-size:10px;color:var(--text-faint);display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.04em;}
 .f-dot{width:5px;height:5px;border-radius:50%;background:#16A34A;}
@@ -189,7 +201,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .panel-icon-fb{background:var(--gold-soft);border:1px solid var(--gold-border);color:var(--gold);}
 .panel-icon.ai-on{background:var(--navy-soft);border:1px solid var(--navy-border);color:var(--navy);}
 .panel-icon.ai-off{background:#FEE2E2;border:1px solid #FCA5A5;color:var(--warn);}
-.panel-title{font-size:13px;font-weight:700;color:var(--text);}
+.panel-title{font-size:13px;font-weight:600;color:var(--text);}
 .panel-sub{font-size:10px;color:var(--text-faint);margin-top:1px;}
 .panel-close{background:none;border:none;color:var(--text-faint);font-size:16px;cursor:pointer;line-height:1;padding:2px 4px;}
 .chat-msgs{overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:80px;}
@@ -234,7 +246,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     <div class="logo-sep"></div><div class="syssa-logo">S|Y|S|S|A</div>
     <div class="logo-sep"></div><div class="logo-circle gold-circle">XI</div>
   </div>
-  <div class="page-title"><h1>XI INTERNATIONAL CONFERENCE<br>"INFECTION AT THE CROSSROADS"</h1></div>
+  <div class="page-title"><h1>XI International Conference<br>"Infection at the Crossroads"</h1></div>
 
   <div id="notif-banner" class="notif-banner" style="display:none">
     <div class="notif-banner-text">Enable notifications to be alerted when the organizer replies to you</div>
@@ -281,8 +293,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
             </div>
             <div class="ws-card-title" id="ws-title-a">AI Literacy for Future Physicians</div>
             <div class="ws-card-presenter">
-              <span class="ws-presenter-name">Mariam Katcheishvili, MD, Ph.D</span>
-              <span class="ws-presenter-inst">A hands-on workshop introducing the fundamentals of artificial intelligence through interactive model training. Participants will explore how AI learns from data, the impact of bias and overfitting, and the implications of AI for modern healthcare. No coding experience required.</span>
+              <span class="ws-presenter-name">Mariam Katcheishvili, MD, PhD(c)</span>
+              <span class="ws-presenter-inst">David Tvildiani Medical University, Georgia &mdash; A hands-on workshop introducing the fundamentals of artificial intelligence through interactive model training. Participants will explore how AI learns from data, the impact of bias and overfitting, and the implications of AI for modern healthcare. No coding experience required.</span>
             </div>
             <div class="ws-requirements">
               <div class="ws-req-label">Requirements</div>
@@ -302,13 +314,13 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
         <div class="ws-form-card">
           <div class="ws-form-selected">
             <span class="ws-form-selected-icon" id="ws-form-icon">AI</span>
-            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">AI Literacy in Medicine</div></div>
+            <div><div class="ws-form-selected-label">Selected Workshop</div><div class="ws-form-selected-name" id="ws-form-name">AI Literacy for Future Physicians</div></div>
             <button class="ws-form-change" onclick="changeWorkshop()">Change &#x2715;</button>
           </div>
           <div class="ws-form-body">
             <input class="ws-form-inp" id="ws-form-email" type="email" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')submitWorkshop()">
             <button class="ws-form-submit" id="ws-form-submit" onclick="submitWorkshop()">
-              <span id="ws-submit-text">Register Now</span>
+              <span id="ws-submit-text">Register</span>
               <span id="ws-submit-spinner" style="display:none" class="ws-spinner"></span>
             </button>
           </div>
@@ -346,7 +358,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 
   <!-- AGENDA -->
   <div id="agenda-section" class="agenda-section">
-    <h3>Full Agenda</h3>
+    <h3>Full Programme</h3>
     <div id="agenda-list"></div>
   </div>
 
@@ -418,64 +430,206 @@ const CONF_START = new Date('2026-06-13T05:00:00Z'); // 09:00 Tbilisi (UTC+4)
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz325d6tvjltqO2d_dbcDoCYAXEpuYd_K9G3iXW8BB2NNrPei0Sl-OMfS20Kf2aMBu1xg/exec';
 
 const WORKSHOPS = {
-  a: { title: 'AI Literacy in Medicine', desc: 'Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia', icon: 'AI', limit: 30 }
+  a: { title: 'AI Literacy for Future Physicians', desc: 'Mariam Katcheishvili, MD, PhD(c) — David Tvildiani Medical University, Georgia', icon: 'AI', limit: 30 }
 };
 
 // ════════════════════════════════════════════
-//  AGENDA
+//  AGENDA  (complete data from official programme)
 // ════════════════════════════════════════════
 const AGENDA = [
-  // ── DAY 1 ─────────────────────────────────────────────────────────────────
-  {id:1,  time:"09:00\u201310:00", speaker:"Registration",                                         title:"",                                                                                                                                                              session:"day1_pre",    isBreak:true},
-  {id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony",                                     title:"Opening Ceremony & Welcome Remarks\nNino Tabagari, MD, PhD \u00b7 Mariam Chubinidze \u00b7 Interest Group Leads",                                              session:"day1_open"},
 
-  // Session I — Surgical & Multisystemic Complications of Infection
-  {id:3,  time:"10:45\u201311:00", speaker:"Ekaterine Tvildiani",                                  title:"Type II Necrotizing Fasciitis of Upper Extremity Following Firework Injury\nDTMU \u00b7 Sup: Vakhtang Pirpilashvili, MD, Ph.D.",                                session:"day1_s1"},
-  {id:4,  time:"11:00\u201311:15", speaker:"Arnav Ambokar",                                        title:"Pyoderma Gangrenosum as a Chronic Non-Healing Leg Ulcer Managed with Multimodal Therapy and PRF Dressings\nUniversity of Georgia \u00b7 Sup: Dnyanesh Mhatre, MD", session:"day1_s1"},
-  {id:5,  time:"11:15\u201311:30", speaker:"Parvin Mozafari",                                      title:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections\nUniversity of Georgia \u00b7 Sup: Nino Lomidze, MD, PhD",                              session:"day1_s1"},
-  {id:6,  time:"11:30\u201311:45", speaker:"Lakshya Pruthi, Mokshika Sharma",                      title:"Rare Overlap of Dengue and Malaria Complicated by a Leukemoid-Like Response\nDTMU \u00b7 Sup: Lika Khelashvili, MD",                                          session:"day1_s1"},
-  {id:7,  time:"11:45\u201312:00", speaker:"Gisoo Farhani, Roshanak Jafarirouzbahani",             title:"Surgical Complications of Dengue Infection: A Multisystemic Perspective\nUniversity of Georgia / New Vision University \u00b7 Sup: Irma Kibrotsashvili, MD",   session:"day1_s1"},
-  {id:8,  time:"12:00\u201312:10", speaker:"Saba Akhaladze, Anna Japaridze",                       title:"An Unusual Etiology for Overwhelming Post-Splenectomy Infection\nDTMU \u00b7 Sup: Natia Utmelidze, MD",                                                       session:"day1_s1"},
-  {id:9,  time:"12:00\u201312:10", speaker:"Nutsa Tsagareli, Vikrant Ghulaxe",                     title:"Diagnostic Challenges of Dobrava Hantavirus Infection with Multiorgan Involvement in Georgia\nTbilisi State Medical University \u00b7 Sup: Teona Buachidze, MD", session:"day1_s1"},
+  // ── DAY 1 ── Saturday, 13 June 2026 ─────────────────────────────────────
 
-  {id:10, time:"12:10\u201312:30", speaker:"Coffee Break",                                         title:"",                                                                                                                                                              session:"day1_break1", isBreak:true},
+  // Registration
+  { id:1,  time:"09:00–10:00", speaker:"Registration",
+    title:"", sup:"",
+    session:"day1_pre", isBreak:true, showTime:true },
 
-  // Session IIA — Neuro-Infectious & Neuroinflammatory Diseases
-  {id:11, time:"12:30\u201312:45", speaker:"Ana Bechvaia, Ketevan Tchitchinadze",                  title:"Rare Case of Neurocysticercosis in Georgia\nDTMU \u00b7 Sup: Eka Chkhartishvili, MD, Ph.D.",                                                                   session:"day1_s2a"},
-  {id:12, time:"12:45\u201313:00", speaker:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili",  title:"Validation of Georgian-Translated Neuropsychological Instruments for Infectious Disease-Associated Encephalopathy\nDTMU \u00b7 Sup: Tamar Macharadze, MD, Ph.D.", session:"day1_s2a"},
-  {id:13, time:"13:00\u201313:15", speaker:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze", title:"Inflammation and Infection in the Development of Psychosis and Other Psychiatric Diseases\nDTMU \u00b7 Sup: Mariam Chelidze, MD",                               session:"day1_s2a"},
-  {id:14, time:"13:15\u201313:25", speaker:"Tanishqa Hivre",                                       title:"Late-Onset Psychosis in a 77-Year-Old Male with Neurosyphilis\nDTMU \u00b7 Sup: Shama Shah, MD",                                                               session:"day1_s2a"},
-  {id:15, time:"13:25\u201313:35", speaker:"Davit Abuladze",                                       title:"Redefining the Classic Paradigm: Anti-NMDA Receptor Encephalitis in a Young Male\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, Ph.D.",                             session:"day1_s2a"},
-  {id:16, time:"13:35\u201313:45", speaker:"Sakshi Sharma, Yuvraj Pathria",                        title:"Dual LGI1-CASPR2 Positive Autoimmune Limbic Encephalitis in a 15-Year-Old Female\nDTMU \u00b7 Sup: Tatia Aprasidze, MD, Ph.D.",                                session:"day1_s2a"},
-  {id:17, time:"13:45\u201313:55", speaker:"Barbare Lezhava, Mariam Khrustali",                    title:"A Rare Case of Lemi\u00e8re\u2019s Syndrome in a Pediatric Patient\nDTMU \u00b7 Sup: Teona Shatirishvili, MD, Ph.D.",                                           session:"day1_s2a"},
+  // Opening Ceremony
+  { id:2,  time:"10:00–10:45", speaker:"Opening Ceremony & Welcome Remarks",
+    title:"",
+    detail:"Welcome Addresses: Nino Tabagari, MD, PhD (Dean, DTMU) · Mariam Chubinidze (President, SYSSA)\nInterest Groups: Tekla Tsabadze (SIGA) · Shreya Mane (GIGA) · Ana Bechvaia (CIGA) · Anna Kvernadze (IMIG) · Kora Chakhava (SIGN)",
+    session:"day1_open" },
 
-  {id:18, time:"13:40\u201314:40", speaker:"Lunch Break \u2014 Poster Presentations",              title:"Evaluators: Liza Goderdzishvili, MD, Ph.D. \u00b7 Aleksandre Ramishvili, MD, Ph.Dc.",                                                                           session:"day1_lunch",  isBreak:true},
+  // ── SESSION I ────────────────────────────────────────────────────────────
+  { id:3,  time:"10:45–11:00", speaker:"Ekaterine Tvildiani",
+    title:"Type II Necrotizing Fasciitis of Upper Extremity Following Firework Injury",
+    sup:"David Tvildiani Medical University · Supervisor: Vakhtang Pirpilashvili, MD, PhD — Municipal Hospital of Pirmasens, Germany",
+    session:"day1_s1" },
 
-  // Session IIB — Emerging Complications of Viral Infections
-  {id:19, time:"14:40\u201314:55", speaker:"Anna Vashakidze, Mariam Baghuashvili",                 title:"Rare Case of Varicella-Zoster Virus Meningoencephalomyelitis in a Patient with Systemic Sclerosis\nDTMU \u00b7 Sup: Lana Sukhitashvili, MD",                    session:"day1_s2b"},
-  {id:20, time:"14:55\u201315:10", speaker:"Syeda Fatima Zehra, Sakshi Sharma",                    title:"Supraventricular Tachycardia as an Uncommon Presentation of Dengue Myocarditis\nDTMU \u00b7 Sup: Tamar Gaprindashvili, MD, Ph.Dc",                             session:"day1_s2b"},
-  {id:21, time:"15:10\u201315:25", speaker:"Madiha Mirza",                                         title:"Measles and COVID-19: Epidemiological Disruption, Immune Dysregulation, and Long-Term Neurological Sequelae\nUniversity of Georgia \u00b7 Sup: Venera Mchedlishvili, MD", session:"day1_s2b"},
-  {id:22, time:"15:25\u201315:40", speaker:"Sai Sravya Sahini, Leticia El-Boutty",                 title:"Elevated Cytokine Levels During Acute COVID-19 and Persistent Immune Dysregulation After Recovery\nUniversity of Georgia \u00b7 Sup: Ekaterine Cherkezishvili, MD", session:"day1_s2b"},
-  {id:23, time:"15:40\u201315:55", speaker:"Faazil Mansuri et al.",                                title:"Advances in Lipid Nanoparticle-Enhanced SARS-CoV-2 mRNA Vaccine Delivery vs Conventional Approaches\nDTMU / Georgian-American University \u00b7 Sup: Giorgi Mgeladze, MD", session:"day1_s2b"},
-  {id:24, time:"15:55\u201316:00", speaker:"Anna Kvernadze, Ana Abelova, Nia Lazishvili",          title:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome\nDTMU \u00b7 Sup: Gvantsa Kharaishvili, MD, Ph.D",           session:"day1_s2b"},
-  {id:25, time:"16:00",            speaker:"Panel Discussion (Q&A) \u2014 Closing Day 1",          title:"",                                                                                                                                                              session:"day1_close"},
+  { id:4,  time:"11:00–11:15", speaker:"Arnav Ambokar",
+    title:"Pyoderma Gangrenosum as a Chronic Non-Healing Leg Ulcer Managed with Multimodal Therapy and Platelet-Rich Fibrin Dressings",
+    sup:"University of Georgia · Supervisor: Dnyanesh Mhatre, MD — Dr. Mhatre Skin and Laser Clinic, India",
+    session:"day1_s1" },
 
-  // ── DAY 2 ─────────────────────────────────────────────────────────────────
-  {id:26, time:"10:00\u201310:30", speaker:"Workshop \u2014 AI Literacy in Medicine",              title:"Mariam Katcheishvili, M.D., Ph.Dc., David Tvildiani Medical University, Georgia",                                                                             session:"day2_ws"},
+  { id:5,  time:"11:15–11:30", speaker:"Parvin Mozafari",
+    title:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections",
+    sup:"University of Georgia · Supervisor: Nino Lomidze, MD, PhD — University of Georgia, Georgia",
+    session:"day1_s1" },
 
-  // Session III — Infection, Inflammation & Autoimmunity
-  {id:27, time:"10:30\u201310:45", speaker:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Dauda", title:"Placental Tropism in Gestational Psittacosis: A New Understanding of a Deadly Zoonotic Disease\nDTMU \u00b7 Sup: Tamar Badurashvili, MD",                    session:"day2_s3"},
-  {id:28, time:"10:45\u201311:00", speaker:"Safa Mohammed Saleem, Syeda Fatima Zehra",             title:"Ovarian Tuberculosis Masquerading as Ovarian Malignancy\nTSMU / DTMU \u00b7 Sup: Tinatin Kutchukhidze, MD",                                                    session:"day2_s3"},
-  {id:29, time:"11:00\u201311:15", speaker:"Tuta Piyush",                                          title:"Intestinal Tuberculosis Mimicking Crohn\u2019s Disease: A Diagnostic Challenge\nDTMU \u00b7 Sup: Nino Sordia, MD",                                             session:"day2_s3"},
+  { id:6,  time:"11:30–11:45", speaker:"Lakshya Pruthi, Mokshika Sharma",
+    title:"Rare Overlap of Dengue and Malaria Complicated by a Leukemoid-Like Response",
+    sup:"David Tvildiani Medical University · Supervisor: Lika Khelashvili, MD — DTMU, Georgia",
+    session:"day1_s1" },
 
-  {id:30, time:"11:00\u201311:30", speaker:"Coffee Break",                                         title:"",                                                                                                                                                              session:"day2_break",  isBreak:true},
+  { id:7,  time:"11:45–12:00", speaker:"Gisoo Farhani, Roshanak Jafarirouzbahani",
+    title:"Surgical Complications of Dengue Infection: A Multisystemic Perspective on Intraoperative and Postoperative Challenges Across Clinical Contexts",
+    sup:"University of Georgia / New Vision University · Supervisor: Irma Kibrotsashvili, MD — University of Georgia, Georgia",
+    session:"day1_s1" },
 
-  {id:31, time:"11:30\u201311:45", speaker:"Raja Basil Adeel",                                     title:"Daptomycin-Associated Eosinophilic Colitis: A Novel Extrapulmonary Manifestation\nUniversity of Georgia \u00b7 Sup: Giorgi Chilingarashvili, MD, MSc",          session:"day2_s3b"},
-  {id:32, time:"11:45\u201312:00", speaker:"Keya Baliga, Rajvi Soni",                              title:"Rare Case of Autoimmune Polyendocrine Syndrome Type 2 with Progressive Endocrine Dysfunction and Vitiligo\nSEU Georgian National University \u00b7 Sup: Nino Turashvili, MD", session:"day2_s3b"},
+  { id:8,  time:"12:00–12:05", speaker:"Saba Akhaladze, Anna Japaridze",
+    title:"An Unusual Etiology for Overwhelming Post-Splenectomy Infection",
+    sup:"David Tvildiani Medical University · Supervisor: Natia Utmelidze, MD — Pineo Medical Ecosystem, Georgia",
+    session:"day1_s1" },
 
-  {id:33, time:"12:00\u201312:40", speaker:"Tea Kakabadze, M.D., Ph.D.",                           title:"Antibiotic Resistance and Stewardship Strategy\nDTMU / Tengiz Tsertsvadze Infectious Diseases, AIDS and Clinical Immunology Research Center",                   session:"day2_panel"},
+  { id:9,  time:"12:05–12:10", speaker:"Nutsa Tsagareli, Vikrant Ghulaxe",
+    title:"Diagnostic Challenges of Dobrava Hantavirus Infection with Multiorgan Involvement in Georgia",
+    sup:"Tbilisi State Medical University · Supervisor: Teona Buachidze, MD — Todua Clinic, Georgia",
+    session:"day1_s1" },
 
-  {id:34, time:"12:40\u201313:00", speaker:"Closing Ceremony",                                     title:"Closing Ceremony & Certificate Distribution",                                                                                                                   session:"day2_close"},
+  { id:90, time:"12:10",       speaker:"Panel Discussion (Q&A)",
+    title:"", sup:"",
+    session:"day1_s1" },
+
+  // Coffee Break
+  { id:10, time:"12:10–12:30", speaker:"Coffee Break",
+    title:"", sup:"",
+    session:"day1_break1", isBreak:true, showTime:true },
+
+  // ── SESSION IIA ──────────────────────────────────────────────────────────
+  { id:11, time:"12:30–12:43", speaker:"Ana Bechvaia, Ketevan Tchitchinadze",
+    title:"Rare Case of Neurocysticercosis in Georgia",
+    sup:"David Tvildiani Medical University · Supervisor: Eka Chkhartishvili, MD, PhD — DTMU, Georgia",
+    session:"day1_s2a" },
+
+  { id:12, time:"12:43–12:56", speaker:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili",
+    title:"Validation of Georgian-Translated Neuropsychological Instruments for the Assessment of Cognitive Dysfunction Relevant to Infectious Disease-Associated Encephalopathy",
+    sup:"David Tvildiani Medical University · Supervisor: Tamar Macharadze, MD, PhD — DTMU, Georgia",
+    session:"day1_s2a" },
+
+  { id:13, time:"12:56–13:09", speaker:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze",
+    title:"Inflammation and Infection in the Development of Psychosis and Other Psychiatric Diseases",
+    sup:"David Tvildiani Medical University · Supervisor: Mariam Chelidze, MD — DTMU / Todua Clinic, Georgia",
+    session:"day1_s2a" },
+
+  { id:14, time:"13:09–13:19", speaker:"Tanishqa Hivre",
+    title:"Late-Onset Psychosis in a 77-Year-Old Male with Neurosyphilis",
+    sup:"David Tvildiani Medical University · Supervisor: Shama Shah, MD — Bharatiya Vidya Bhavan's V.M. Public School, India",
+    session:"day1_s2a" },
+
+  { id:15, time:"13:19–13:29", speaker:"Davit Abuladze",
+    title:"Redefining the Classic Paradigm: Anti-NMDA Receptor Encephalitis in a Young Male",
+    sup:"David Tvildiani Medical University · Supervisor: Teona Shatirishvili, MD, PhD — DTMU / M. Iashvili Children's Hospital, Georgia",
+    session:"day1_s2a" },
+
+  { id:16, time:"13:29–13:39", speaker:"Sakshi Sharma, Yuvraj Pathria",
+    title:"Dual LGI1-CASPR2 Positive Autoimmune Limbic Encephalitis in a 15-Year-Old Female",
+    sup:"David Tvildiani Medical University · Supervisor: Tatia Aprasidze, MD, PhD — M. Iashvili Children's Hospital, Georgia",
+    session:"day1_s2a" },
+
+  { id:17, time:"13:39–13:55", speaker:"Barbare Lezhava, Mariam Khrustali",
+    title:"A Rare Case of Lemi\u00e8re's Syndrome in a Pediatric Patient: Diagnostic and Treatment Challenges",
+    sup:"David Tvildiani Medical University · Supervisor: Teona Shatirishvili, MD, PhD — DTMU / M. Iashvili Children's Central Hospital, Georgia",
+    session:"day1_s2a" },
+
+  { id:170, time:"13:55", speaker:"Panel Discussion (Q&A)",
+    title:"", sup:"",
+    session:"day1_s2a" },
+
+  // Lunch Break
+  { id:18, time:"13:40–14:40", speaker:"Lunch Break — Poster Presentations",
+    title:"Poster Evaluators: Liza Goderdzishvili, MD, PhD(c) (DTMU / Tbilisi Central Hospital) · Aleksandre Ramishvili, MD, PhD(c) (DTMU)",
+    sup:"",
+    session:"day1_lunch", isBreak:true, showTime:true },
+
+  // ── SESSION IIB ──────────────────────────────────────────────────────────
+  { id:19, time:"14:40–14:55", speaker:"Anna Vashakidze, Mariam Baghuashvili",
+    title:"Rare Case of Varicella-Zoster Virus Meningoencephalomyelitis in a Patient with Systemic Sclerosis",
+    sup:"David Tvildiani Medical School · Supervisor: Lana Sukhitashvili, MD — Caucasus Medical Center, Georgia",
+    session:"day1_s2b" },
+
+  { id:20, time:"14:55–15:10", speaker:"Syeda Fatima Zehra, Sakshi Sharma",
+    title:"Supraventricular Tachycardia as an Uncommon Presentation of Dengue Myocarditis",
+    sup:"David Tvildiani Medical University · Supervisor: Tamar Gaprindashvili, MD, PhD(c) — DTMU / Bokhua Memorial Cardiovascular Center, Georgia",
+    session:"day1_s2b" },
+
+  { id:21, time:"15:10–15:25", speaker:"Madiha Mirza",
+    title:"Measles and COVID-19: Epidemiological Disruption, Immune Dysregulation, and Long-Term Neurological Sequelae",
+    sup:"University of Georgia · Supervisor: Venera Mchedlishvili, MD — University of Georgia, Georgia",
+    session:"day1_s2b" },
+
+  { id:22, time:"15:25–15:40", speaker:"Sai Sravya Sahini, Leticia El-Boutty",
+    title:"Elevated Cytokine Levels During Acute COVID-19 and Persistent Immune Dysregulation After Recovery",
+    sup:"University of Georgia · Supervisor: Ekaterine Cherkezishvili, MD — University of Georgia, Georgia",
+    session:"day1_s2b" },
+
+  { id:23, time:"15:40–15:52", speaker:"Faazil Mohmadrafi Mansuri et al.",
+    title:"Advances in Lipid Nanoparticle-Enhanced SARS-CoV-2 mRNA Vaccine Delivery vs Conventional Approaches",
+    sup:"DTMU / Georgian-American University · Supervisor: Giorgi Mgeladze, MD — Georgian American University, Georgia\nCo-authors: Drishti Kansara, Daniel Barakat, Aarya Jadhav, Insha Khan, Kavya Gaur, Shreya Patil (GAU)",
+    session:"day1_s2b" },
+
+  { id:24, time:"15:52–16:00", speaker:"Anna Kvernadze, Ana Abelova, Nia Lazishvili",
+    title:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome",
+    sup:"David Tvildiani Medical University · Supervisor: Gvantsa Kharaishvili, MD, PhD — DTMU / Palacky University Olomouc, Czech Republic",
+    session:"day1_s2b" },
+
+  { id:25, time:"16:00", speaker:"Panel Discussion (Q&A) — Closing Day 1",
+    title:"", sup:"",
+    session:"day1_close" },
+
+  // ── DAY 2 ── Sunday, 14 June 2026 ───────────────────────────────────────
+
+  // Workshop
+  { id:26, time:"10:00–10:30", speaker:"Mariam Katcheishvili, MD, PhD(c)",
+    title:"Workshop — AI Literacy for Future Physicians",
+    sup:"David Tvildiani Medical University, Georgia",
+    session:"day2_ws" },
+
+  // ── SESSION III ──────────────────────────────────────────────────────────
+  { id:27, time:"10:30–10:45", speaker:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Tanko Keziah Dauda",
+    title:"Placental Tropism in Gestational Psittacosis: A New Understanding of a Deadly Zoonotic Disease",
+    sup:"David Tvildiani Medical University · Supervisor: Tamar Badurashvili, MD — Hepa Clinic, Georgia",
+    session:"day2_s3" },
+
+  { id:28, time:"10:45–11:00", speaker:"Safa Mohammed Saleem, Syeda Fatima Zehra",
+    title:"Ovarian Tuberculosis Masquerading as Ovarian Malignancy",
+    sup:"Tbilisi State Medical University / DTMU · Supervisor: Tinatin Kutchukhidze, MD — New Vision University, Georgia",
+    session:"day2_s3" },
+
+  { id:29, time:"11:00–11:15", speaker:"Tuta Piyush",
+    title:"Intestinal Tuberculosis Mimicking Crohn\u2019s Disease: A Diagnostic Challenge at the Crossroads of Infection and Inflammation",
+    sup:"David Tvildiani Medical University · Supervisor: Nino Sordia, MD — DTMU, Georgia",
+    session:"day2_s3" },
+
+  // Coffee Break
+  { id:30, time:"11:00–11:30", speaker:"Coffee Break",
+    title:"", sup:"",
+    session:"day2_break", isBreak:true, showTime:true },
+
+  { id:31, time:"11:30–11:45", speaker:"Raja Basil Adeel",
+    title:"Daptomycin-Associated Eosinophilic Colitis: A Novel Extrapulmonary Manifestation",
+    sup:"University of Georgia, Tbilisi · Supervisor: Giorgi Chilingarashvili, MD, MSc — Nazareth Hospital, USA",
+    session:"day2_s3b" },
+
+  { id:32, time:"11:45–12:00", speaker:"Keya Baliga, Rajvi Soni",
+    title:"Rare Case of Autoimmune Polyendocrine Syndrome Type 2 with Progressive Endocrine Dysfunction and Vitiligo in a Young Woman",
+    sup:"Georgian National University SEU · Supervisor: Nino Turashvili, MD — Vakhtang Bochorishvili Medical Center, Georgia",
+    session:"day2_s3b" },
+
+  { id:33, time:"12:00–12:10", speaker:"Panel Discussion (Q&A)",
+    title:"", sup:"",
+    session:"day2_s3b" },
+
+  // Keynote
+  { id:34, time:"12:00–12:40", speaker:"Tea Kakabadze, MD, PhD",
+    title:"Keynote — Antibiotic Resistance and Stewardship Strategy",
+    sup:"David Tvildiani Medical University · Co-presenter: Tengiz Tsertsvadze — Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",
+    session:"day2_panel" },
+
+  // Closing
+  { id:35, time:"12:40–13:00", speaker:"Closing Ceremony",
+    title:"Closing Ceremony & Certificate Distribution", sup:"",
+    session:"day2_close" },
 ];
 
 // ════════════════════════════════════════════
@@ -555,18 +709,15 @@ function handleEpochChange(newEpoch) {
 function applyTopSlot() {
   const cdActive = showCountdown && CONF_START.getTime() > Date.now();
   const wsActive = showWorkshop && !cdActive;
-
   document.getElementById('countdown-section').style.display = cdActive ? 'block' : 'none';
   document.getElementById('workshop-section').style.display  = wsActive ? 'block' : 'none';
   document.getElementById('now-section').style.display  = cdActive ? 'none' : 'block';
   document.getElementById('next-section').style.display = cdActive ? 'none' : 'block';
-
   if (cdActive) {
     if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); }
   } else {
     if (cdInterval) { clearInterval(cdInterval); cdInterval = null; }
   }
-
   if (wsActive) {
     if (!workshopRegistered) initWorkshop();
     else showWorkshopSuccess(workshopRegistered, participantEmail);
@@ -675,97 +826,53 @@ async function submitWorkshop() {
   const spinner = document.getElementById('ws-submit-spinner');
   const btnTxt  = document.getElementById('ws-submit-text');
   const email   = (inp.value || '').trim().toLowerCase();
-
-  errEl.style.display = 'none';
-  inp.classList.remove('err');
-
+  errEl.style.display = 'none'; inp.classList.remove('err');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    inp.classList.add('err');
-    errEl.textContent   = 'Please enter a valid email address.';
-    errEl.style.display = 'block';
-    inp.focus();
-    return;
+    inp.classList.add('err'); errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; inp.focus(); return;
   }
-
   btn.disabled = true; inp.disabled = true;
   spinner.style.display = 'inline-block'; btnTxt.textContent = 'Checking...';
-
   if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
     try {
-      const checkResp = await fetch(
-        SB_URL + '/functions/v1/sheets-proxy',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
-          body: JSON.stringify({ email })
-        }
-      ).catch(() => null);
+      const checkResp = await fetch(SB_URL + '/functions/v1/sheets-proxy', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY}, body: JSON.stringify({ email }) }).catch(() => null);
       if (checkResp && checkResp.ok) {
         const checkData = await checkResp.json().catch(() => ({}));
         if (!checkData.authorized) {
-          errEl.textContent   = 'Your email is not on the participants list.';
-          errEl.style.display = 'block';
-          inp.classList.add('err');
-          btn.disabled = false; inp.disabled = false;
-          spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
-          return;
+          errEl.textContent = 'Your email is not on the participants list.'; errEl.style.display = 'block'; inp.classList.add('err');
+          btn.disabled = false; inp.disabled = false; spinner.style.display = 'none'; btnTxt.textContent = 'Register'; return;
         }
       }
     } catch(e) { console.warn('Whitelist check failed, proceeding:', e.message); }
   }
-
   btnTxt.textContent = 'Registering...';
-
   try {
     await loadWorkshopCounts();
     const w    = WORKSHOPS[selectedWorkshop];
     const left = Math.max(0, w.limit - workshopCounts[selectedWorkshop]);
     if (left === 0) {
-      errEl.textContent   = 'Sorry, this workshop is now full.';
-      errEl.style.display = 'block';
-      updateSeatsUI();
-      btn.disabled = false; inp.disabled = false;
-      spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
-      return;
+      errEl.textContent = 'Sorry, this workshop is now full.'; errEl.style.display = 'block'; updateSeatsUI();
+      btn.disabled = false; inp.disabled = false; spinner.style.display = 'none'; btnTxt.textContent = 'Register'; return;
     }
-
-    const { error: wErr } = await sb.from('workshop_registrations').insert({
-      email, session_id: sessionId, reset_epoch: currentEpoch,
-      workshop_key: selectedWorkshop, workshop_name: w.title
-    });
-
+    const { error: wErr } = await sb.from('workshop_registrations').insert({ email, session_id: sessionId, reset_epoch: currentEpoch, workshop_key: selectedWorkshop, workshop_name: w.title });
     const isDuplicate = wErr?.code === '23505';
     if (wErr && !isDuplicate) throw wErr;
-
     await sb.from('sessions').update({ participant_email: email }).eq('id', sessionId);
     await sb.from('messages').update({ participant_email: email }).eq('session_id', sessionId);
     await sb.from('feedback').update({ participant_email: email }).eq('session_id', sessionId);
-
-    participantEmail   = email;
-    workshopRegistered = selectedWorkshop;
+    participantEmail = email; workshopRegistered = selectedWorkshop;
     localStorage.setItem('syssa_workshop_email', email);
     localStorage.setItem('syssa_workshop_key_' + currentEpoch, selectedWorkshop);
-
     await loadWorkshopCounts();
-
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      fetch(SB_URL + '/functions/v1/sheets-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SB_KEY },
-        body: JSON.stringify({ email, workshop: w.title })
-      }).catch(() => {});
+      fetch(SB_URL + '/functions/v1/sheets-proxy', { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY}, body: JSON.stringify({ email, workshop: w.title }) }).catch(() => {});
     }
-
     showWorkshopSuccess(selectedWorkshop, email);
     logEvent('workshop_registered', { workshop: selectedWorkshop });
-
   } catch(e) {
-    errEl.textContent   = 'Registration failed. Please try again.';
-    errEl.style.display = 'block';
-    inp.classList.add('err');
+    errEl.textContent = 'Registration failed. Please try again.'; errEl.style.display = 'block'; inp.classList.add('err');
     btn.disabled = false; inp.disabled = false;
   } finally {
-    spinner.style.display = 'none'; btnTxt.textContent = 'Register Now';
+    spinner.style.display = 'none'; btnTxt.textContent = 'Register';
   }
 }
 
@@ -775,7 +882,7 @@ function showWorkshopSuccess(key, email) {
   document.getElementById('ws-form-wrap').style.display = 'none';
   const s = document.getElementById('ws-success');
   s.style.display = 'flex'; s.style.flexDirection = 'column'; s.style.alignItems = 'center';
-  document.getElementById('ws-success-sub').textContent = w.title + ' \u00b7 ' + email;
+  document.getElementById('ws-success-sub').textContent = w.title + ' · ' + email;
   loadWorkshopCounts().then(() => {
     const left = Math.max(0, w.limit - workshopCounts[key]);
     document.getElementById('ws-success-seats').textContent = left > 0
@@ -790,10 +897,7 @@ function resetWorkshopUI() {
   if (wsCards)   wsCards.style.display   = 'grid';
   if (wsForm)    wsForm.style.display    = 'none';
   if (wsSuccess) wsSuccess.style.display = 'none';
-  ['a'].forEach(k => {
-    const c = document.getElementById('ws-card-' + k);
-    if (c) c.classList.remove('selected', 'full');
-  });
+  ['a'].forEach(k => { const c = document.getElementById('ws-card-' + k); if (c) c.classList.remove('selected', 'full'); });
   const errEl = document.getElementById('ws-form-err');
   if (errEl) errEl.style.display = 'none';
   const inp = document.getElementById('ws-form-email');
@@ -811,17 +915,17 @@ function getDeviceInfo() {
   if (/tablet|ipad|playbook|silk/i.test(ua)) device = 'tablet';
   else if (/mobile|iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(ua)) device = 'mobile';
   let browser = 'other';
-  if (/edg\//i.test(ua))        browser = 'Edge';
-  else if (/chrome/i.test(ua))  browser = 'Chrome';
-  else if (/safari/i.test(ua))  browser = 'Safari';
+  if (/edg\//i.test(ua)) browser = 'Edge';
+  else if (/chrome/i.test(ua)) browser = 'Chrome';
+  else if (/safari/i.test(ua)) browser = 'Safari';
   else if (/firefox/i.test(ua)) browser = 'Firefox';
-  else if (/opr\//i.test(ua))   browser = 'Opera';
+  else if (/opr\//i.test(ua)) browser = 'Opera';
   let os = 'other';
-  if (/windows/i.test(ua))          os = 'Windows';
+  if (/windows/i.test(ua)) os = 'Windows';
   else if (/iphone|ipad/i.test(ua)) os = 'iOS';
-  else if (/android/i.test(ua))     os = 'Android';
-  else if (/mac/i.test(ua))         os = 'macOS';
-  else if (/linux/i.test(ua))       os = 'Linux';
+  else if (/android/i.test(ua)) os = 'Android';
+  else if (/mac/i.test(ua)) os = 'macOS';
+  else if (/linux/i.test(ua)) os = 'Linux';
   return { device_type: device, browser, os, screen_width: screen.width, screen_height: screen.height };
 }
 async function getGeo() {
@@ -839,14 +943,9 @@ async function getGeo() {
 async function trackSession() {
   if (!sb || sessionTracked) return;
   sessionTracked = true;
-
   if (!participantEmail) {
     try {
-      const { data: att } = await sb
-        .from('attendance')
-        .select('email')
-        .eq('session_id', sessionId)
-        .limit(1);
+      const { data: att } = await sb.from('attendance').select('email').eq('session_id', sessionId).limit(1);
       if (att && att.length > 0 && att[0].email) {
         participantEmail = att[0].email;
         const wsInp = document.getElementById('ws-form-email');
@@ -854,38 +953,21 @@ async function trackSession() {
       }
     } catch(e) {}
   }
-
   const dev = getDeviceInfo();
   const geo = await getGeo();
   const visitKey   = 'syssa_visits_' + sessionId;
   const visitCount = parseInt(localStorage.getItem(visitKey) || '0') + 1;
   localStorage.setItem(visitKey, String(visitCount));
-
-  const upsertData = {
-    id: sessionId,
-    last_seen: new Date().toISOString(),
-    visit_count: visitCount,
-    reset_epoch: currentEpoch,
-    ...dev,
-    ...geo
-  };
+  const upsertData = { id: sessionId, last_seen: new Date().toISOString(), visit_count: visitCount, reset_epoch: currentEpoch, ...dev, ...geo };
   if (participantEmail) upsertData.participant_email = participantEmail;
-
-  try {
-    await sb.from('sessions').upsert(upsertData, { onConflict: 'id' });
-  } catch(e) {}
-
+  try { await sb.from('sessions').upsert(upsertData, { onConflict: 'id' }); } catch(e) {}
   logEvent('visit', { is_returning: isReturning, visit_number: visitCount });
 }
 
 function logEvent(type, payload = {}) {
   if (!sb) return;
   const cur = AGENDA.find(a => a.id === currentId);
-  sb.from('page_events').insert({
-    session_id: sessionId, event_type: type,
-    speaker_id: currentId, speaker_name: cur ? cur.speaker : null,
-    reset_epoch: currentEpoch, payload
-  }).then(() => {}).catch(() => {});
+  sb.from('page_events').insert({ session_id: sessionId, event_type: type, speaker_id: currentId, speaker_name: cur ? cur.speaker : null, reset_epoch: currentEpoch, payload }).then(() => {}).catch(() => {});
 }
 
 function startHeartbeat() {
@@ -908,11 +990,7 @@ document.addEventListener('visibilitychange', () => {
 window.addEventListener('beforeunload', () => {
   const elapsed = Math.floor((Date.now() - pageEnterTime) / 1000);
   if (navigator.sendBeacon && sb) {
-    navigator.sendBeacon(SB_URL + '/rest/v1/page_events', JSON.stringify({
-      session_id: sessionId, event_type: 'page_exit',
-      speaker_id: currentId, reset_epoch: currentEpoch,
-      payload: { time_on_page_sec: elapsed }
-    }));
+    navigator.sendBeacon(SB_URL + '/rest/v1/page_events', JSON.stringify({ session_id: sessionId, event_type: 'page_exit', speaker_id: currentId, reset_epoch: currentEpoch, payload: { time_on_page_sec: elapsed } }));
   }
 });
 
@@ -942,7 +1020,7 @@ function updateAIIcon() {
   const icon = document.getElementById('ai-icon');
   const sub  = document.getElementById('ai-status-sub');
   if (icon) icon.className = 'panel-icon ' + (aiEnabled ? 'ai-on' : 'ai-off');
-  if (sub)  sub.textContent = aiEnabled ? 'Powered by AI \u00b7 Ask anything' : 'Currently offline';
+  if (sub)  sub.textContent = aiEnabled ? 'Powered by AI · Ask anything' : 'Currently offline';
 }
 
 // ════════════════════════════════════════════
@@ -952,13 +1030,10 @@ window.addEventListener('load', async () => {
   try {
     sb = supabase.createClient(SB_URL, SB_KEY);
     const { data, error } = await withTimeout(
-      sb.from('live_state')
-        .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch')
-        .eq('id', 1).single(),
+      sb.from('live_state').select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch').eq('id', 1).single(),
       8000
     );
     if (error) throw error;
-
     const serverEpoch = data.current_epoch ?? 1;
     const storedEpoch = parseInt(localStorage.getItem('syssa_epoch') || '0');
     if (storedEpoch !== serverEpoch) {
@@ -968,24 +1043,20 @@ window.addEventListener('load', async () => {
       localStorage.setItem('syssa_sid', sessionId);
       localStorage.setItem('syssa_epoch', String(serverEpoch));
     }
-    currentEpoch = serverEpoch;
-
-    currentId        = data.current_id;
-    speakerStartedAt = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
+    currentEpoch        = serverEpoch;
+    currentId           = data.current_id;
+    speakerStartedAt    = data.speaker_started_at ? new Date(data.speaker_started_at).getTime() : Date.now();
     if (data.ai_enabled     != null) aiEnabled    = Boolean(data.ai_enabled);
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
-
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
-
     updateAIIcon();
     applyTopSlot();
     startApp();
     showNotifBannerIfNeeded();
     trackSession();
     startHeartbeat();
-
   } catch(e) {
     document.getElementById('loading').style.display      = 'none';
     document.getElementById('error-screen').style.display = 'flex';
@@ -997,10 +1068,7 @@ window.addEventListener('load', async () => {
 // ════════════════════════════════════════════
 function subscribeReplies() {
   sb.channel('replies_' + sessionId)
-    .on('postgres_changes', {
-      event: 'INSERT', schema: 'public', table: 'messages',
-      filter: 'session_id=eq.' + sessionId
-    }, p => {
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: 'session_id=eq.' + sessionId }, p => {
       if (p.new.sender === 'organizer') {
         appendBubble('Host', p.new.text, 'org');
         sendPushIfNeeded(p.new.text);
@@ -1018,14 +1086,12 @@ function startApp() {
   sb.channel('live_state_ch')
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_state' }, async p => {
       try {
-        const { data: f } = await sb.from('live_state')
-          .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch')
-          .eq('id', 1).single();
+        const { data: f } = await sb.from('live_state').select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch').eq('id', 1).single();
         if (f) {
           currentId        = f.current_id;
           speakerStartedAt = f.speaker_started_at ? new Date(f.speaker_started_at).getTime() : Date.now();
           if (f.current_epoch  != null) handleEpochChange(f.current_epoch);
-          if (f.ai_enabled     != null) { aiEnabled    = Boolean(f.ai_enabled); updateAIIcon(); }
+          if (f.ai_enabled     != null) { aiEnabled = Boolean(f.ai_enabled); updateAIIcon(); }
           if (f.show_countdown != null) showCountdown = Boolean(f.show_countdown);
           if (f.show_workshop  != null) showWorkshop  = Boolean(f.show_workshop);
           applyTopSlot();
@@ -1033,42 +1099,34 @@ function startApp() {
       } catch(e) { if (p.new && p.new.current_id) currentId = p.new.current_id; }
       render(); startAudTimer();
       const nc = document.getElementById('now-card');
-      if (nc && nc.offsetParent !== null) {
-        nc.style.outline = '2px solid var(--live)';
-        setTimeout(() => nc.style.outline = 'none', 500);
-      }
+      if (nc && nc.offsetParent !== null) { nc.style.outline = '2px solid var(--live)'; setTimeout(() => nc.style.outline = 'none', 500); }
     })
     .subscribe(s => {
       document.getElementById('f-dot').classList.toggle('off', s !== 'SUBSCRIBED');
-      document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting\u2026';
+      document.getElementById('f-label').textContent = s === 'SUBSCRIBED' ? 'Live' : 'Connecting…';
     });
 
   subscribeReplies();
 
   sb.channel('workshop_ch')
-    .on('postgres_changes', {
-      event: '*', schema: 'public', table: 'workshop_registrations'
-    }, async () => {
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'workshop_registrations' }, async () => {
       await loadWorkshopCounts();
       updateSeatsUI();
       const s = document.getElementById('ws-success');
       if (s && s.style.display !== 'none' && workshopRegistered) {
         const w = WORKSHOPS[workshopRegistered];
         const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
-        document.getElementById('ws-success-seats').textContent = left > 0
-          ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+        document.getElementById('ws-success-seats').textContent = left > 0 ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
       }
     }).subscribe();
 
   setInterval(async () => {
-    await loadWorkshopCounts();
-    updateSeatsUI();
+    await loadWorkshopCounts(); updateSeatsUI();
     const s = document.getElementById('ws-success');
     if (s && s.style.display !== 'none' && workshopRegistered) {
       const w = WORKSHOPS[workshopRegistered];
       const left = Math.max(0, w.limit - workshopCounts[workshopRegistered]);
-      document.getElementById('ws-success-seats').textContent = left > 0
-        ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
+      document.getElementById('ws-success-seats').textContent = left > 0 ? left + ' seat' + (left === 1 ? '' : 's') + ' remaining' : 'Workshop is now full';
     }
   }, 10000);
 
@@ -1088,15 +1146,10 @@ function startAudTimer() {
     const elapsed = Math.floor((Date.now() - speakerStartedAt) / 1000);
     const val = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0');
     const isOver = durationMins !== null && elapsed >= durationMins * 60;
-
     const el = document.getElementById('aud-timer');
     if (el) { el.textContent = val; el.style.color = isOver ? 'var(--warn)' : 'var(--navy)'; }
-
     const ae = document.getElementById('aud-agenda-timer');
-    if (ae) {
-      ae.textContent = val;
-      ae.className = 'badge badge-timer' + (isOver ? ' over' : '');
-    }
+    if (ae) { ae.textContent = val; ae.className = 'badge badge-timer' + (isOver ? ' over' : ''); }
   }, 1000);
 }
 
@@ -1106,52 +1159,87 @@ function startAudTimer() {
 function render() {
   const cur   = AGENDA.find(a => a.id === currentId);
   const nxt   = getNext(currentId);
-  const parts = cur ? cur.title.split('\n') : [];
   const cdOn  = showCountdown && CONF_START.getTime() > Date.now();
 
-  document.getElementById('now-speaker').textContent = cur ? cur.speaker : '\u2014';
-  document.getElementById('now-title').textContent   = parts[0] || '';
-  document.getElementById('now-sub').textContent     = parts[1] || '';
-  document.getElementById('next-name').textContent   = nxt ? nxt.speaker : 'Program Concluded';
-  document.getElementById('next-title').textContent  = nxt ? (nxt.title.split('\n')[0] || '') : '';
+  document.getElementById('now-speaker').textContent = cur ? cur.speaker : '—';
+  document.getElementById('now-title').textContent   = cur ? (cur.title || '') : '';
+  document.getElementById('now-sub').textContent     = cur ? (cur.sup || '') : '';
+  document.getElementById('next-name').textContent   = nxt ? nxt.speaker : 'Programme Concluded';
+  document.getElementById('next-title').textContent  = nxt ? (nxt.title || '') : '';
 
+  // Section structure
   const SECS = [
-    { key: 'day1_pre',    label: 'Day 1 \u2014 Saturday, 13 June 2026' },
-    { key: 'day1_open',   label: 'Opening Ceremony' },
-    { key: 'day1_s1',     label: 'Session I \u2014 Surgical & Multisystemic Complications of Infection' },
-    { key: 'day1_break1', label: '' },
-    { key: 'day1_s2a',    label: 'Session IIA \u2014 Neuro-Infectious & Neuroinflammatory Diseases' },
-    { key: 'day1_lunch',  label: '' },
-    { key: 'day1_s2b',    label: 'Session IIB \u2014 Emerging Complications of Viral Infections' },
-    { key: 'day1_close',  label: '' },
-    { key: 'day2_ws',     label: 'Day 2 \u2014 Sunday, 14 June 2026' },
-    { key: 'day2_s3',     label: 'Session III \u2014 Infection, Inflammation & Autoimmunity in Reproductive, GI & Endocrine Disease' },
-    { key: 'day2_break',  label: '' },
-    { key: 'day2_s3b',    label: '' },
-    { key: 'day2_panel',  label: 'Keynote \u2014 Antibiotic Resistance and Stewardship Strategy' },
-    { key: 'day2_close',  label: '' },
+    { key: 'day1_pre',    dayHeader: 'Day 1',    dayDate: 'Saturday, 13 June 2026', label: '' },
+    { key: 'day1_open',   dayHeader: null,        label: 'Opening Ceremony', time: '10:00–10:45' },
+    { key: 'day1_s1',     dayHeader: null,        label: 'Session I — Surgical & Multisystemic Complications of Infection', time: '10:45–12:10', chairs: 'Chairs: Guram Beridze · Nana Megrelidze' },
+    { key: 'day1_break1', dayHeader: null,        label: '' },
+    { key: 'day1_s2a',    dayHeader: null,        label: 'Session IIA — Neuro-Infectious & Neuroinflammatory Diseases', time: '12:30–13:40', chairs: 'Chairs: Natalia Shergelashvili · Sanchit Dhanda' },
+    { key: 'day1_lunch',  dayHeader: null,        label: '' },
+    { key: 'day1_s2b',    dayHeader: null,        label: 'Session IIB — Emerging Complications of Viral Infections', time: '14:40–16:00', chairs: 'Chairs: Giorgi Riabinkin · Shrinika Satishkumar' },
+    { key: 'day1_close',  dayHeader: null,        label: '' },
+    { key: 'day2_ws',     dayHeader: 'Day 2',    dayDate: 'Sunday, 14 June 2026', label: 'Workshop', time: '10:00–10:30' },
+    { key: 'day2_s3',     dayHeader: null,        label: 'Session III — Infection, Inflammation & Autoimmunity in Reproductive, GI & Endocrine Disease', time: '10:30–12:00', chairs: 'Chairs: Elene Imnaishvili · Nino Tsivadze' },
+    { key: 'day2_break',  dayHeader: null,        label: '' },
+    { key: 'day2_s3b',    dayHeader: null,        label: '' },
+    { key: 'day2_panel',  dayHeader: null,        label: 'Keynote Address — Antibiotic Resistance and Stewardship Strategy', time: '12:00–12:40' },
+    { key: 'day2_close',  dayHeader: null,        label: 'Closing Ceremony', time: '12:40–13:00' },
   ];
 
   const frag = document.createDocumentFragment();
   SECS.forEach(sec => {
     const items = AGENDA.filter(a => a.session === sec.key);
     if (!items.length) return;
+
+    // Day header
+    if (sec.dayHeader) {
+      const dh = document.createElement('div');
+      dh.className = 'a-day-header';
+      dh.innerHTML = `<div class="a-day-label">${sec.dayHeader}</div><div class="a-day-date">${sec.dayDate}</div>`;
+      frag.appendChild(dh);
+    }
+
+    // Session label
     if (sec.label) {
       const hd = document.createElement('div');
-      hd.className = 'a-session-title'; hd.textContent = sec.label;
+      hd.className = 'a-session-title';
+      hd.textContent = sec.label;
       frag.appendChild(hd);
+      if (sec.chairs) {
+        const ch = document.createElement('div');
+        ch.className = 'a-session-chairs';
+        ch.textContent = sec.chairs;
+        frag.appendChild(ch);
+      }
     }
+
     items.forEach(item => {
       const isCur = item.id === currentId;
       const isNxt = nxt && item.id === nxt.id;
-      const p2    = item.title ? item.title.split('\n') : [];
       const row   = document.createElement('div');
       row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
-      const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time || ''; row.appendChild(timeEl);
-      const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
-      const info = document.createElement('div'); info.className = 'a-info';
-      const nameRow = document.createElement('div'); nameRow.className = 'a-name';
-      const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
+
+      const timeEl = document.createElement('div');
+      timeEl.className = 'a-time';
+      timeEl.textContent = item.showTime ? (item.time || '') : '';
+      if (!item.showTime) { timeEl.style.minWidth = '0'; timeEl.style.display = 'none'; }
+      row.appendChild(timeEl);
+
+      const divl = document.createElement('div');
+      divl.className = 'a-divl';
+      if (!item.showTime) divl.style.display = 'none';
+      row.appendChild(divl);
+
+      const info = document.createElement('div');
+      info.className = 'a-info';
+      if (!item.showTime) info.style.paddingLeft = '0';
+
+      // Speaker name row
+      const nameRow = document.createElement('div');
+      nameRow.className = 'a-name';
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = item.speaker;
+      nameRow.appendChild(nameSpan);
+
       if (isCur && !cdOn) {
         const bt = document.createElement('span');
         bt.className = 'badge badge-timer';
@@ -1160,16 +1248,50 @@ function render() {
         bt.textContent = '00:00';
         nameRow.appendChild(bt);
       }
-      if (isNxt && !cdOn) { const bn = document.createElement('span'); bn.className = 'a-badge-next'; bn.textContent = 'Up next'; nameRow.appendChild(bn); }
+      if (isNxt && !cdOn) {
+        const bn = document.createElement('span');
+        bn.className = 'a-badge-next';
+        bn.textContent = 'Up next';
+        nameRow.appendChild(bn);
+      }
       info.appendChild(nameRow);
-      if (p2[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.textContent = p2[0]; info.appendChild(s1); }
-      if (p2[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2[1]; info.appendChild(s2); }
-      row.appendChild(info); frag.appendChild(row);
+
+      // Presentation title (italic serif)
+      if (item.title) {
+        const titleEl = document.createElement('div');
+        titleEl.className = 'a-title';
+        titleEl.textContent = item.title;
+        info.appendChild(titleEl);
+      }
+
+      // Detail / extra (opening ceremony)
+      if (item.detail) {
+        item.detail.split('\n').forEach(line => {
+          const dl = document.createElement('div');
+          dl.className = 'a-sub';
+          dl.textContent = line;
+          info.appendChild(dl);
+        });
+      }
+
+      // Supervisor / institution
+      if (item.sup) {
+        item.sup.split('\n').forEach(line => {
+          const sl = document.createElement('div');
+          sl.className = 'a-sup-line';
+          sl.textContent = line;
+          info.appendChild(sl);
+        });
+      }
+
+      row.appendChild(info);
+      frag.appendChild(row);
     });
   });
 
   const list = document.getElementById('agenda-list');
-  list.innerHTML = ''; list.appendChild(frag);
+  list.innerHTML = '';
+  list.appendChild(frag);
   setTimeout(() => { const live = list.querySelector('.a-row.a-live'); if (live) live.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 200);
 }
 
@@ -1236,13 +1358,13 @@ function appendTyping() {
   const wrap = document.getElementById('chat-msgs');
   const d = document.createElement('div'); d.className = 'bubble org'; d.id = 'typing-indicator';
   const a = document.createElement('div'); a.className = 'bubble-author'; a.textContent = 'AI Assistant';
-  const dots = document.createElement('span'); dots.style.cssText = 'opacity:.5;letter-spacing:3px'; dots.textContent = '\u25cf\u25cf\u25cf';
+  const dots = document.createElement('span'); dots.style.cssText = 'opacity:.5;letter-spacing:3px'; dots.textContent = '···';
   d.appendChild(a); d.appendChild(dots); wrap.appendChild(d); wrap.scrollTop = wrap.scrollHeight;
 }
 function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
 
 // ════════════════════════════════════════════
-//  AI
+//  AI SYSTEM PROMPT
 // ════════════════════════════════════════════
 function buildSystemPrompt() {
   const cur = AGENDA.find(a => a.id === currentId);
@@ -1254,29 +1376,77 @@ function buildSystemPrompt() {
     const d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000);
     timeUntil = `${d} day(s), ${h} hour(s), and ${m} minute(s)`;
   }
-  return `You are the official AI Assistant for the XI International Conference "Infection at the Crossroads" at Margot Old Tbilisi. Help participants with agenda, organization, certificates, and any conference questions.
-
-Event name: "XI International Conference — Infection at the Crossroads" — June 13–14, 2026, Margot Old Tbilisi, Georgia.
+  return `You are the official AI Assistant for the XI International Conference "Infection at the Crossroads" at Margot Old Tbilisi, Georgia, 13–14 June 2026. Help participants with agenda, speakers, schedule, certificates, and any conference questions.
 
 CONFERENCE STATUS: ${beforeConf
     ? `NOT STARTED. Begins June 13, 2026 at 09:00 AM Tbilisi time. Time remaining: approximately ${timeUntil}.`
     : 'IN PROGRESS.'}
 
-${beforeConf
-    ? 'If asked who is speaking or who is next, explain the conference has not started yet and share the time remaining.'
-    : `Live data:\n- Current speaker: ${cur ? cur.speaker : '—'}\n- Current topic: ${cur ? (cur.title.split('\n')[0] || '') : '—'}\n- Next speaker: ${nxt ? nxt.speaker : 'Conference Concluded'}\n- Next topic: ${nxt ? (nxt.title.split('\n')[0] || '') : '—'}`}
+${beforeConf ? 'If asked who is speaking, explain the conference has not started yet.' : `Live data:\n- Current: ${cur ? cur.speaker : '—'} — ${cur ? (cur.title || '') : '—'}\n- Next: ${nxt ? nxt.speaker : 'Conference Concluded'} — ${nxt ? (nxt.title || '') : '—'}`}
 
-Key FAQ:
+FULL PROGRAMME SUMMARY:
+DAY 1 (Sat, 13 June):
+09:00–10:00 Registration
+10:00–10:45 Opening Ceremony — Nino Tabagari, MD, PhD (Dean, DTMU) · Mariam Chubinidze (SYSSA President) · Interest Group leads: Tekla Tsabadze (SIGA), Shreya Mane (GIGA), Ana Bechvaia (CIGA), Anna Kvernadze (IMIG), Kora Chakhava (SIGN)
+
+SESSION I — "Surgical & Multisystemic Complications of Infection" | Chairs: Guram Beridze, Nana Megrelidze
+- Ekaterine Tvildiani: Type II Necrotizing Fasciitis of Upper Extremity Following Firework Injury (Sup: Vakhtang Pirpilashvili, Germany)
+- Arnav Ambokar: Pyoderma Gangrenosum as Chronic Non-Healing Leg Ulcer with PRF Dressings (Sup: Dnyanesh Mhatre, India)
+- Parvin Mozafari: Bacteriophage Therapy for MDR Diabetic Foot Infections (Sup: Nino Lomidze)
+- Lakshya Pruthi, Mokshika Sharma: Rare Overlap of Dengue and Malaria with Leukemoid-Like Response (Sup: Lika Khelashvili)
+- Gisoo Farhani, Roshanak Jafarirouzbahani: Surgical Complications of Dengue Infection — Multisystemic Perspective (Sup: Irma Kibrotsashvili)
+- Saba Akhaladze, Anna Japaridze: Unusual Etiology for Overwhelming Post-Splenectomy Infection (Sup: Natia Utmelidze)
+- Nutsa Tsagareli, Vikrant Ghulaxe: Dobrava Hantavirus Infection with Multiorgan Involvement in Georgia (Sup: Teona Buachidze)
+
+12:10–12:30 Coffee Break
+
+SESSION IIA — "Neuro-Infectious & Neuroinflammatory Diseases" | Chairs: Natalia Shergelashvili, Sanchit Dhanda
+- Ana Bechvaia, Ketevan Tchitchinadze: Rare Case of Neurocysticercosis in Georgia (Sup: Eka Chkhartishvili)
+- Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili: Validation of Georgian-Translated Neuropsychological Instruments for Encephalopathy (Sup: Tamar Macharadze)
+- Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze: Inflammation and Infection in Development of Psychosis (Sup: Mariam Chelidze)
+- Tanishqa Hivre: Late-Onset Psychosis in 77-Year-Old Male with Neurosyphilis (Sup: Shama Shah)
+- Davit Abuladze: Anti-NMDA Receptor Encephalitis in Young Male (Sup: Teona Shatirishvili)
+- Sakshi Sharma, Yuvraj Pathria: Dual LGI1-CASPR2 Positive Autoimmune Limbic Encephalitis in 15-Year-Old Female (Sup: Tatia Aprasidze)
+- Barbare Lezhava, Mariam Khrustali: Rare Case of Lemierre's Syndrome in Pediatric Patient (Sup: Teona Shatirishvili)
+
+13:40–14:40 Lunch Break + Poster Presentations (Evaluators: Liza Goderdzishvili, Aleksandre Ramishvili)
+
+SESSION IIB — "Emerging Complications of Viral Infections" | Chairs: Giorgi Riabinkin, Shrinika Satishkumar
+- Anna Vashakidze, Mariam Baghuashvili: VZV Meningoencephalomyelitis in Systemic Sclerosis Patient (Sup: Lana Sukhitashvili)
+- Syeda Fatima Zehra, Sakshi Sharma: SVT as Uncommon Presentation of Dengue Myocarditis (Sup: Tamar Gaprindashvili)
+- Madiha Mirza: Measles and COVID-19 — Epidemiological Disruption and Neurological Sequelae (Sup: Venera Mchedlishvili)
+- Sai Sravya Sahini, Leticia El-Boutty: Elevated Cytokines in Acute COVID-19 and Persistent Immune Dysregulation (Sup: Ekaterine Cherkezishvili)
+- Faazil Mohmadrafi Mansuri et al.: Lipid Nanoparticle-Enhanced SARS-CoV-2 mRNA Vaccine Delivery (Sup: Giorgi Mgeladze)
+- Anna Kvernadze, Ana Abelova, Nia Lazishvili: Severe Maternal Complications of COVID-19 vs HELLP Syndrome (Sup: Gvantsa Kharaishvili)
+
+DAY 2 (Sun, 14 June):
+10:00–10:30 Workshop — "AI Literacy for Future Physicians" by Mariam Katcheishvili, MD, PhD(c) (DTMU). Requirements: laptop + sunglasses. 30 seats. Hands-on AI in medicine, no coding needed.
+
+SESSION III — "Infection, Inflammation & Autoimmunity in Reproductive, GI & Endocrine Disease" | Chairs: Elene Imnaishvili, Nino Tsivadze
+- Ganesh Narayanan, Rithika Neroth Tharian, Zarah Dauda: Placental Tropism in Gestational Psittacosis (Sup: Tamar Badurashvili)
+- Safa Mohammed Saleem, Syeda Fatima Zehra: Ovarian Tuberculosis Masquerading as Ovarian Malignancy (Sup: Tinatin Kutchukhidze)
+- Tuta Piyush: Intestinal Tuberculosis Mimicking Crohn's Disease (Sup: Nino Sordia)
+- Raja Basil Adeel: Daptomycin-Associated Eosinophilic Colitis (Sup: Giorgi Chilingarashvili, USA)
+- Keya Baliga, Rajvi Soni: Autoimmune Polyendocrine Syndrome Type 2 with Vitiligo in Young Woman (Sup: Nino Turashvili)
+
+11:00–11:30 Coffee Break
+
+12:00–12:40 Keynote — "Antibiotic Resistance and Stewardship Strategy"
+Tea Kakabadze, MD, PhD (DTMU) + Tengiz Tsertsvadze (Infectious Diseases, AIDS and Clinical Immunology Research Center)
+
+12:40–13:00 Closing Ceremony & Certificate Distribution
+
+KEY FAQ:
 - Registration: June 13, 09:00 AM sharp.
-- Certificates: emailed within 24h after QR check-out on day 2. Both QR check-in and check-out on both days are mandatory.
-- Coffee Break: 12:10–12:30 (Day 1), 11:00–11:30 (Day 2). Lunch: 13:40–14:40 (Day 1).
-- Sessions: Day 1 has 3 oral sessions (I, IIA, IIB) plus poster presentations during lunch. Day 2 has Session III plus a keynote on antibiotic resistance and the closing ceremony.
-- WiFi/room issues: direct to on-site organizing team.
-- Platform created by Giorgi Eliashvili.
+- Certificates: emailed within 24h after QR check-out on Day 2. Both QR check-in AND check-out on BOTH days are mandatory.
+- Coffee Breaks: 12:10–12:30 (Day 1), 11:00–11:30 (Day 2). Lunch: 13:40–14:40 (Day 1).
 - Working language: English.
-- Workshop: "AI Literacy in Medicine" by Mariam Katcheishvili, M.D., Ph.Dc., DTMU, Georgia. Requirements: laptop and sunglasses. 30 seats available. Day 2, 10:00–10:30.
+- Platform created by Giorgi Eliashvili.
+- WiFi/room issues: direct to on-site organising team.
+- Organiser: SYSSA — Students' and Young Scientists' Scientific Association, David Tvildiani Medical University.
+- Venue: Margot Old Tbilisi, Georgia.
 
-Rules: Reply directly, no filler phrases. No markdown bold or headers. Max 1–2 sentences. Max 1–2 emojis. CRITICAL: reply in the exact same language as the user — Georgian question = Georgian answer, English = English.`;
+Rules: Reply directly, no filler. No markdown bold or headers. Max 2 sentences. Max 1–2 emojis. CRITICAL: reply in the exact same language as the user — Georgian = Georgian, English = English, other = mirror that language.`;
 }
 
 async function getAIReply(userMessage) {
@@ -1313,7 +1483,6 @@ async function sendChat() {
   const wrap = document.getElementById('chat-msgs');
   const all  = wrap.querySelectorAll('.bubble');
   if (all.length > 10) for (let i = 0; i < all.length - 10; i++) all[i].remove();
-
   const msgData = { session_id: sessionId, sender: 'participant', text, reset_epoch: currentEpoch };
   if (participantEmail) msgData.participant_email = participantEmail;
   if (sb) sb.from('messages').insert(msgData).then(() => {}).catch(() => {});
@@ -1325,17 +1494,11 @@ async function sendChat() {
       }).catch(() => {});
     });
   }
-
   try {
     const { data: st } = await sb.from('live_state').select('ai_enabled').eq('id', 1).single();
     if (st && st.ai_enabled != null) { aiEnabled = Boolean(st.ai_enabled); updateAIIcon(); }
   } catch(e) {}
-
-  if (!aiEnabled) {
-    appendBubble('AI Assistant', 'The AI assistant is currently offline. Please ask an organizer on-site.', 'org');
-    inp.disabled = false; return;
-  }
-
+  if (!aiEnabled) { appendBubble('AI Assistant', 'The AI assistant is currently offline. Please ask an organizer on-site.', 'org'); inp.disabled = false; return; }
   appendTyping();
   try {
     const reply = await getAIReply(text);
@@ -1355,11 +1518,7 @@ async function sendChat() {
 function resetFeedbackForm() {
   const inner = document.getElementById('fb-inner');
   if (!inner) return;
-  inner.innerHTML =
-    '<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div>' +
-    '<div class="fb-info">Please share your honest feedback on any topic &mdash; the good, the bad, and everything in between!</div></div>' +
-    '<div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div>' +
-    '<div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>';
+  inner.innerHTML = '<div class="fb-body"><div class="fb-info-block"><div class="fb-info-label">Your Voice Matters</div><div class="fb-info">Please share your honest feedback on any topic — the good, the bad, and everything in between!</div></div><div class="fb-ta-wrap"><textarea class="fb-ta" id="fb-ta" placeholder="Write your thoughts..." maxlength="500"></textarea></div><div class="fb-submit-wrap"><button class="fb-submit" onclick="sendFeedback()">Send Feedback</button></div></div>';
 }
 
 async function sendFeedback() {
@@ -1368,7 +1527,7 @@ async function sendFeedback() {
   if (!text) return;
   const cur = AGENDA.find(a => a.id === currentId);
   try {
-    const fbData = { text, speaker: cur ? cur.speaker : '\u2014', session_id: sessionId, reset_epoch: currentEpoch };
+    const fbData = { text, speaker: cur ? cur.speaker : '—', session_id: sessionId, reset_epoch: currentEpoch };
     if (participantEmail) fbData.participant_email = participantEmail;
     await sb.from('feedback').insert(fbData);
   } catch(e) {}
@@ -1379,11 +1538,7 @@ async function sendFeedback() {
     sb.from('sessions').update(upd).eq('id', sessionId).then(() => {}).catch(() => {});
   }
   const inner = document.getElementById('fb-inner');
-  inner.innerHTML =
-    '<div style="padding:32px 16px;text-align:center;">' +
-    '<div style="font-size:22px;margin-bottom:10px;color:var(--navy)">&#10003;</div>' +
-    '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div>' +
-    '<div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
+  inner.innerHTML = '<div style="padding:32px 16px;text-align:center;"><div style="font-size:22px;margin-bottom:10px;color:var(--navy)">✓</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px">Thank you!</div><div style="font-size:11px;color:var(--text-soft);line-height:1.6">Your feedback has been received.</div></div>';
   setTimeout(resetFeedbackForm, 3000);
 }
 </script>
