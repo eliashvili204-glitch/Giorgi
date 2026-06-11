@@ -43,7 +43,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .live-dot{width:7px;height:7px;border-radius:50%;background:#16A34A;animation:pulse 2s infinite;flex-shrink:0;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
 .live-tag{font-size:9px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:.14em;}
-.now-speaker{font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;color:var(--text);line-height:1.3;margin-bottom:6px;}
+.now-speaker{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:var(--text);line-height:1.25;margin-bottom:6px;}
 .now-title{font-size:13px;color:var(--navy);line-height:1.5;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .now-sub{font-size:11px;color:var(--text-dim);margin-top:6px;line-height:1.5;font-style:italic;}
 .speaker-timer{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--bg2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);}
@@ -148,10 +148,10 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-session-title:first-child{border-top:none;padding-top:0;}
 .a-row{display:flex;gap:0;padding:10px 0;border-bottom:1px solid var(--border);}
 .a-row.a-live{background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 14px;margin:4px -14px;box-shadow:0 4px 12px rgba(22,163,74,0.08);}
-.a-time{min-width:64px;font-size:10px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.02em;}
+.a-time{min-width:76px;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.02em;}
 .a-divl{width:1px;background:var(--border);flex-shrink:0;margin:2px 0;}
 .a-info{flex:1;padding-left:14px;}
-.a-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;display:flex;align-items:flex-start;flex-wrap:wrap;gap:6px;}
+.a-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
 .a-row.a-live .a-name{color:#16A34A;}
 .a-sub{font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .a-sub-sup{font-size:10px;color:var(--text-faint);margin-top:2px;line-height:1.4;font-style:italic;}
@@ -423,111 +423,129 @@ const WORKSHOPS = {
 // ════════════════════════════════════════════
 const AGENDA = [
 
-  {id:1,  time:"09:00–10:00", speaker:"Registration", title:"", session:"day1_pre", isBreak:true},
-{id:2,  time:"10:00–10:45", speaker:"Opening Ceremony & Welcome Remarks",
+  // ── DAY 1 ────────────────────────────────────────────────────────────────
+
+  {id:1,  time:"09:00\u201310:00", speaker:"Registration", title:"", session:"day1_pre", isBreak:true},
+  {id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony & Welcome Remarks",
     title:"",
-    welcomeAddresses: [
-      "Nino Tabagari, MD, PhD — Dean, David Tvildiani Medical University",
-      "Mariam Chubinidze — President, Students' and Young Scientists' Scientific Association"
-    ],
-    interestGroups: [
-      "Tekla Tsabadze — Head of the Surgical Interest Group (SIGA)",
-      "Shreya Mane — Head of the Gynecology Interest Group (GIGA)",
-      "Ana Bechvaia — Organizing Committee Member, Cardiology Interest Group (CIGA)",
-      "Anna Kvernadze — Head of the Internal Medicine Interest Group (IMIG)",
-      "Kora Chakhava — Head of the Neurology Interest Group (SIGN)"
-    ],
+    welcomeAddresses: ["Nino Tabagari, MD, PhD \u2014 Dean, David Tvildiani Medical University", "Mariam Chubinidze \u2014 President, Students\u2019 and Young Scientists\u2019 Scientific Association"],
+    interestGroups: ["Tekla Tsabadze \u2014 SIGA", "Shreya Mane \u2014 GIGA", "Ana Bechvaia \u2014 CIGA", "Anna Kvernadze \u2014 IMIG", "Kora Chakhava \u2014 SIGN"],
     isOpening:true, session:"day1_open"},
-  
-  {id:3,  time:"10:45–12:10", speaker:"SESSION I — Surgical & Multisystemic Complications of Infection",
+
+  // Session I
+  {id:3,  time:"10:45\u201312:10", speaker:"SESSION I \u2014 Surgical & Multisystemic Complications of Infection",
    title:"Chairs: Guram Beridze | Nana Megrelidze", session:"day1_s1_hdr", isHeader:true},
+  {id:4,  time:"", speaker:"Ekaterine Tvildiani",
+   title:"Type II necrotizing fasciitis of the upper extremity following a firework injury\nDavid Tvildiani Medical University, Georgia\nSup: Vakhtang Pirpilashvili, MD, PhD \u2014 Municipal Hospital of Pirmasens, Germany",
+   session:"day1_s1"},
+  {id:5,  time:"", speaker:"Arnav Ambokar",
+   title:"Pyoderma gangrenosum as a chronic non-healing leg ulcer managed with multimodal therapy and Platelet-Rich Fibrin Dressings\nUniversity of Georgia, Georgia\nSup: Dnyanesh Mhatre, MD \u2014 Dr. Mhatre Skin and Laser Clinic, India",
+   session:"day1_s1"},
+  {id:6,  time:"", speaker:"Parvin Mozafari",
+   title:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections\nUniversity of Georgia, Georgia\nSup: Nino Lomidze, MD, PhD \u2014 University of Georgia, Georgia",
+   session:"day1_s1"},
+  {id:7,  time:"", speaker:"Lakshya Pruthi, Mokshika Sharma",
+   title:"Rare overlap of dengue and malaria complicated by a leukemoid-like response\nDavid Tvildiani Medical University, Georgia\nSup: Lika Khelashvili, MD \u2014 David Tvildiani Medical University, Georgia",
+   session:"day1_s1"},
+  {id:8,  time:"", speaker:"Gisoo Farhani, Roshanak Jafarirouzbahani",
+   title:"Surgical complications of dengue infection: a multisystemic perspective on Intraoperative and Postoperative Challenges Across Clinical Contexts\nUniversity of Georgia, Georgia | New Vision University, Georgia\nSup: Irma Kibrotsashvili, MD \u2014 University of Georgia, Georgia",
+   session:"day1_s1"},
+  {id:9,  time:"", speaker:"Saba Akhaladze, Anna Japaridze",
+   title:"An unusual etiology for overwhelming post-splenectomy infection\nDavid Tvildiani Medical University, Georgia\nSup: Natia Utmelidze, MD \u2014 Pineo Medical Ecosystem, Georgia",
+   session:"day1_s1"},
+  {id:10, time:"", speaker:"Nutsa Tsagareli, Vikrant Ghulaxe",
+   title:"Diagnostic challenges of Dobrava hantavirus infection with multiorgan involvement in Georgia\nTbilisi State Medical University, Georgia\nSup: Teona Buachidze, MD \u2014 Todua Clinic, Georgia",
+   session:"day1_s1"},
 
-{id:4,  time:"", speaker:"Type II necrotizing fasciitis of the upper extremity following a firework injury",
-   title:"Ekaterine Tvildiani, David Tvildiani Medical University, Georgia\nSup: Vakhtang Pirpilashvili, MD, PhD — Municipal Hospital of Pirmasens, Germany",
-   session:"day1_s1"},
-  {id:5,  time:"", speaker:"Pyoderma gangrenosum as a chronic non-healing leg ulcer managed with multimodal therapy and Platelet-Rich Fibrin Dressings",
-   title:"Arnav Ambokar, University of Georgia, Georgia\nSup: Dnyanesh Mhatre, MD — Dr. Mhatre Skin and Laser Clinic, India",
-   session:"day1_s1"},
-  {id:6,  time:"", speaker:"Bacteriophage Therapy for Multidrug-Resistant Diabetic Foot Infections",
-   title:"Parvin Mozafari, BS Biology, University of Georgia, Georgia\nSup: Nino Lomidze, MD, PhD — University of Georgia, Georgia",
-   session:"day1_s1"},
-  {id:7,  time:"", speaker:"Rare overlap of dengue and malaria complicated by a leukemoid-like response",
-   title:"Lakshya Pruthi, Mokshika Sharma, David Tvildiani Medical University, Georgia\nSup: Lika Khelashvili, MD — David Tvildiani Medical University, Georgia",
-   session:"day1_s1"},
-  {id:8,  time:"", speaker:"Surgical complications of dengue infection: a multisystemic perspective on Intraoperative and Postoperative Challenges Across Clinical Contexts",
-   title:"Gisoo Farhani, University of Georgia, Georgia | Roshanak Jafarirouzbahani, New Vision University, Georgia\nSup: Irma Kibrotsashvili, MD — University of Georgia, Georgia",
-   session:"day1_s1"},
-  {id:9,  time:"", speaker:"An unusual etiology for overwhelming post-splenectomy infection",
-   title:"Saba Akhaladze, Anna Japaridze, David Tvildiani Medical University, Georgia\nSup: Natia Utmelidze, MD — Pineo Medical Ecosystem, Georgia",
-   session:"day1_s1"},
-  {id:10, time:"", speaker:"Diagnostic challenges of Dobrava hantavirus infection with multiorgan involvement in Georgia",
-   title:"Nutsa Tsagareli, Vikrant Ghulaxe, Tbilisi State Medical University, Georgia\nSup: Teona Buachidze, MD — Todua Clinic, Georgia",
-   session:"day1_s1"},
+  {id:11, time:"12:10\u201312:30", speaker:"Coffee Break", title:"", session:"day1_break1", isBreak:true},
 
-  {id:13, time:"", speaker:"Rare case of neurocysticercosis in Georgia",
-   title:"Ana Bechvaia, Ketevan Tchitchinadze, David Tvildiani Medical University, Georgia\nSup: Eka Chkhartishvili, MD, PhD — David Tvildiani Medical University, Georgia",
+  // Session IIA
+  {id:12, time:"12:30\u201313:40", speaker:"SESSION IIA \u2014 Neuro-Infectious & Neuroinflammatory Diseases",
+   title:"Chairs: Natalia Shergelashvili | Sanchit Dhanda", session:"day1_s2a_hdr", isHeader:true},
+  {id:13, time:"", speaker:"Ana Bechvaia, Ketevan Tchitchinadze",
+   title:"Rare case of neurocysticercosis in Georgia\nDavid Tvildiani Medical University, Georgia\nSup: Eka Chkhartishvili, MD, PhD \u2014 David Tvildiani Medical University, Georgia",
    session:"day1_s2a"},
-  {id:14, time:"", speaker:"Validation of Georgian-Translated Neuropsychological Instruments for the Assessment of Cognitive Dysfunction Relevant to Infectious Disease-Associated Encephalopathy",
-   title:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili, David Tvildiani Medical University, Georgia\nSup: Tamar Macharadze, MD, PhD — David Tvildiani Medical University, Georgia",
+  {id:14, time:"", speaker:"Lizi Odisharia, Nia Tavadze, Irakli Chutkerashvili",
+   title:"Validation of Georgian-Translated Neuropsychological Instruments for the Assessment of Cognitive Dysfunction Relevant to Infectious Disease-Associated Encephalopathy\nDavid Tvildiani Medical University, Georgia\nSup: Tamar Macharadze, MD, PhD \u2014 David Tvildiani Medical University, Georgia",
    session:"day1_s2a"},
-  {id:15, time:"", speaker:"Inflammation and infection in the development of psychosis and other psychiatric diseases",
-   title:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze, David Tvildiani Medical University, Georgia\nSup: Mariam Chelidze, MD — David Tvildiani Medical University, Todua Clinic, Georgia",
+  {id:15, time:"", speaker:"Lisa Osepashvili, Nino Beridze, Gvantsa Chkhikvadze",
+   title:"Inflammation and infection in the development of psychosis and other psychiatric diseases\nDavid Tvildiani Medical University, Georgia\nSup: Mariam Chelidze, MD \u2014 David Tvildiani Medical University, Todua Clinic, Georgia",
    session:"day1_s2a"},
-  {id:16, time:"", speaker:"Late-onset psychosis in a 77-year-old male with neurosyphilis",
-   title:"Tanishqa Hivre, David Tvildiani Medical University, Georgia\nSup: Shama Shah, MD — Bharatiya Vidya Bhavan's V.M. Public School, India",
+  {id:16, time:"", speaker:"Tanishqa Hivre",
+   title:"Late-onset psychosis in a 77-year-old male with neurosyphilis\nDavid Tvildiani Medical University, Georgia\nSup: Shama Shah, MD \u2014 Bharatiya Vidya Bhavan\u2019s V.M. Public School, India",
    session:"day1_s2a"},
-  {id:17, time:"", speaker:"Redefining the classic paradigm: Anti-NMDA receptor encephalitis in a young male",
-   title:"Davit Abuladze, David Tvildiani Medical University, Georgia\nSup: Teona Shatirishvili, MD, PhD — David Tvildiani Medical University, M. Iashvili Children's Hospital, Georgia",
+  {id:17, time:"", speaker:"Davit Abuladze",
+   title:"Redefining the classic paradigm: Anti-NMDA receptor encephalitis in a young male\nDavid Tvildiani Medical University, Georgia\nSup: Teona Shatirishvili, MD, PhD \u2014 David Tvildiani Medical University, M. Iashvili Children\u2019s Hospital, Georgia",
    session:"day1_s2a"},
-  {id:18, time:"", speaker:"Dual LGI1-CASPR2 positive autoimmune limbic encephalitis in a 15-year-old female",
-   title:"Sakshi Sharma, Yuvraj Pathria, David Tvildiani Medical University, Georgia\nSup: Tatia Aprasidze, MD, PhD — M. Iashvili Children's Hospital, Georgia",
+  {id:18, time:"", speaker:"Sakshi Sharma, Yuvraj Pathria",
+   title:"Dual LGI1-CASPR2 positive autoimmune limbic encephalitis in a 15-year-old female\nDavid Tvildiani Medical University, Georgia\nSup: Tatia Aprasidze, MD, PhD \u2014 M. Iashvili Children\u2019s Hospital, Georgia",
    session:"day1_s2a"},
-  {id:19, time:"", speaker:"A Rare Case of Lemierre's Syndrome in a Pediatric Patient: Diagnostic and Treatment Challenges",
-   title:"Barbare Lezhava, Mariam Khrustali, David Tvildiani Medical University, Georgia\nSup: Teona Shatirishvili, MD, PhD — David Tvildiani Medical University, M. Iashvili Children's Central Hospital, Georgia",
+  {id:19, time:"", speaker:"Barbare Lezhava, Mariam Khrustali",
+   title:"A Rare Case of Lemi\u00e8rre\u2019s Syndrome in a Pediatric Patient: Diagnostic and Treatment Challenges\nDavid Tvildiani Medical University, Georgia\nSup: Teona Shatirishvili, MD, PhD \u2014 David Tvildiani Medical University, M. Iashvili Children\u2019s Central Hospital, Georgia",
    session:"day1_s2a"},
 
-  {id:22, time:"", speaker:"Rare case of Varicella-Zoster Virus meningoencephalomyelitis in a patient with systemic sclerosis",
-   title:"Anna Vashakidze, Mariam Baghuashvili, David Tvildiani Medical School, Georgia\nSup: Lana Sukhitashvili, MD — Caucasus Medical Center, Georgia",
-   session:"day1_s2b"},
-  {id:23, time:"", speaker:"Supraventricular tachycardia as an uncommon presentation of dengue myocarditis",
-   title:"Syeda Fatima Zehra, Sakshi Sharma, David Tvildiani Medical University, Georgia\nSup: Tamar Gaprindashvili, MD, PhD(c) — David Tvildiani Medical University, Bokhua Memorial Cardiovascular Center, Georgia",
-   session:"day1_s2b"},
-  {id:24, time:"", speaker:"Measles and COVID-19: epidemiological disruption, immune dysregulation, and long-term neurological sequelae",
-   title:"Madiha Mirza, University of Georgia, Georgia\nSup: Venera Mchedlishvili, MD — University of Georgia, Georgia",
-   session:"day1_s2b"},
-  {id:25, time:"", speaker:"Elevated cytokine levels during acute COVID-19 and persistent immune dysregulation after recovery",
-   title:"Sai Sravya Sahini, Leticia El-Boutty, University of Georgia, Georgia\nSup: Ekaterine Cherkezishvili, MD — University of Georgia, Georgia",
-   session:"day1_s2b"},
-  {id:26, time:"", speaker:"Advances in lipid nanoparticle-enhanced SARS-CoV-2 mRNA vaccine delivery vs conventional approaches",
-   title:"Faazil Mohmadrafi Mansuri et al., DTMU, Georgia; Caucasus International University / INSPECT-LB, Lebanon; Georgian-American University, Georgia\nSup: Giorgi Mgeladze, MD — Georgian American University, Georgia",
-   session:"day1_s2b"},
-  {id:27, time:"", speaker:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome",
-   title:"Anna Kvernadze, Ana Abelova, Nia Lazishvili, David Tvildiani Medical University, Georgia\nSup: Gvantsa Kharaishvili, MD, PhD — David Tvildiani Medical University, Georgia | Palacky University Olomouc, Czech Republic",
-   session:"day1_s2b"},
+  {id:20, time:"13:40\u201314:40", speaker:"Lunch Break \u2014 Poster Presentations",
+   title:"Evaluators: Liza Goderdzishvili, MD, PhD(c) \u00b7 Aleksandre Ramishvili, MD, PhD(c)",
+   session:"day1_lunch", isBreak:true},
 
-  {id:31, time:"", speaker:"Placental tropism in gestational psittacosis: a new understanding of a deadly zoonotic disease",
-   title:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Tanko Keziah Dauda, David Tvildiani Medical University, Georgia\nSup: Tamar Badurashvili, MD — Hepa Clinic, Georgia",
+  // Session IIB
+  {id:21, time:"14:40\u201316:00", speaker:"SESSION IIB \u2014 Emerging Complications of Viral Infections",
+   title:"Chairs: Giorgi Riabinkin | Shrinika Satishkumar", session:"day1_s2b_hdr", isHeader:true},
+  {id:22, time:"", speaker:"Anna Vashakidze, Mariam Baghuashvili",
+   title:"Rare case of Varicella-Zoster Virus meningoencephalomyelitis in a patient with systemic sclerosis\nDavid Tvildiani Medical School, Georgia\nSup: Lana Sukhitashvili, MD \u2014 Caucasus Medical Center, Georgia",
+   session:"day1_s2b"},
+  {id:23, time:"", speaker:"Syeda Fatima Zehra, Sakshi Sharma",
+   title:"Supraventricular tachycardia as an uncommon presentation of dengue myocarditis\nDavid Tvildiani Medical University, Georgia\nSup: Tamar Gaprindashvili, MD, PhD(c) \u2014 David Tvildiani Medical University, Bokhua Memorial Cardiovascular Center, Georgia",
+   session:"day1_s2b"},
+  {id:24, time:"", speaker:"Madiha Mirza",
+   title:"Measles and COVID-19: epidemiological disruption, immune dysregulation, and long-term neurological sequelae\nUniversity of Georgia, Georgia\nSup: Venera Mchedlishvili, MD \u2014 University of Georgia, Georgia",
+   session:"day1_s2b"},
+  {id:25, time:"", speaker:"Sai Sravya Sahini, Leticia El-Boutty",
+   title:"Elevated cytokine levels during acute COVID-19 and persistent immune dysregulation after recovery\nUniversity of Georgia, Georgia\nSup: Ekaterine Cherkezishvili, MD \u2014 University of Georgia, Georgia",
+   session:"day1_s2b"},
+  {id:26, time:"", speaker:"Faazil Mohmadrafi Mansuri et al.",
+   title:"Advances in lipid nanoparticle-enhanced SARS-CoV-2 mRNA vaccine delivery vs conventional approaches\nDTMU, Georgia; Caucasus International University / INSPECT-LB, Lebanon; Georgian-American University, Georgia\nSup: Giorgi Mgeladze, MD \u2014 Georgian American University, Georgia",
+   session:"day1_s2b"},
+  {id:27, time:"", speaker:"Anna Kvernadze, Ana Abelova, Nia Lazishvili",
+   title:"Severe Maternal Complications of Infectious COVID-19: Distinguishing Viral Impact from HELLP Syndrome\nDavid Tvildiani Medical University, Georgia\nSup: Gvantsa Kharaishvili, MD, PhD \u2014 David Tvildiani Medical University, Georgia | Palacky University Olomouc, Czech Republic",
+   session:"day1_s2b"},
+  {id:28, time:"", speaker:"Panel Discussion (Q&A) \u2014 Closing Day 1", title:"", session:"day1_close"},
+
+  // ── DAY 2 ────────────────────────────────────────────────────────────────
+
+  {id:29, time:"10:00\u201310:30", speaker:"WORKSHOP \u2014 AI Literacy for Future Physicians",
+   title:"Mariam Katcheishvili, MD, PhD(c) \u2014 David Tvildiani Medical University, Georgia",
+   session:"day2_ws"},
+
+  // Session III
+  {id:30, time:"10:30\u201312:00", speaker:"SESSION III \u2014 Infection, Inflammation & Autoimmunity in Reproductive, Gastrointestinal, and Endocrine Disease",
+   title:"Chairs: Elene Imnaishvili | Nino Tsivadze", session:"day2_s3_hdr", isHeader:true},
+  {id:31, time:"", speaker:"Ganesh Narayanan, Rithika Neroth Tharian, Zarah Tanko Keziah Dauda",
+   title:"Placental tropism in gestational psittacosis: a new understanding of a deadly zoonotic disease\nDavid Tvildiani Medical University, Georgia\nSup: Tamar Badurashvili, MD \u2014 Hepa Clinic, Georgia",
    session:"day2_s3"},
-  {id:32, time:"", speaker:"Ovarian tuberculosis masquerading as ovarian malignancy",
-   title:"Safa Mohammed Saleem, Tbilisi State Medical University, Georgia | Syeda Fatima Zehra, David Tvildiani Medical University, Georgia\nSup: Tinatin Kutchukhidze, MD — New Vision University, Georgia",
+  {id:32, time:"", speaker:"Safa Mohammed Saleem, Syeda Fatima Zehra",
+   title:"Ovarian tuberculosis masquerading as ovarian malignancy\nTbilisi State Medical University, Georgia; David Tvildiani Medical University, Georgia\nSup: Tinatin Kutchukhidze, MD \u2014 New Vision University, Georgia",
    session:"day2_s3"},
-  {id:33, time:"", speaker:"Intestinal tuberculosis mimicking Crohn's disease: a diagnostic challenge at the crossroads of infection and inflammation",
-   title:"Tuta Piyush, David Tvildiani Medical University, Georgia\nSup: Nino Sordia, MD — David Tvildiani Medical University, Georgia",
+  {id:33, time:"", speaker:"Tuta Piyush",
+   title:"Intestinal tuberculosis mimicking Crohn\u2019s disease: a diagnostic challenge at the crossroads of infection and inflammation\nDavid Tvildiani Medical University, Georgia\nSup: Nino Sordia, MD \u2014 David Tvildiani Medical University, Georgia",
    session:"day2_s3"},
-  {id:35, time:"", speaker:"Daptomycin-associated eosinophilic colitis: a novel extrapulmonary manifestation",
-   title:"Raja Basil Adeel, The University of Georgia, Tbilisi, Georgia\nSup: Giorgi Chilingarashvili, MD, MSc — Nazareth Hospital, USA",
+
+  {id:34, time:"11:00\u201311:30", speaker:"Coffee Break", title:"", session:"day2_break", isBreak:true},
+
+  {id:35, time:"", speaker:"Raja Basil Adeel",
+   title:"Daptomycin-associated eosinophilic colitis: a novel extrapulmonary manifestation\nThe University of Georgia, Tbilisi, Georgia\nSup: Giorgi Chilingarashvili, MD, MSc \u2014 Nazareth Hospital, USA",
    session:"day2_s3b"},
-  {id:36, time:"", speaker:"Rare case of autoimmune polyendocrine syndrome type 2 with progressive endocrine dysfunction and Vitiligo in a young woman",
-   title:"Keya Baliga, Rajvi Soni, Georgian National University SEU, Georgia\nSup: Nino Turashvili, MD — Vakhtang Bochorishvili Medical Center, Georgia",
+  {id:36, time:"", speaker:"Keya Baliga, Rajvi Soni",
+   title:"Rare case of autoimmune polyendocrine syndrome type 2 with progressive endocrine dysfunction and Vitiligo in a young woman\nGeorgian National University SEU, Georgia\nSup: Nino Turashvili, MD \u2014 Vakhtang Bochorishvili Medical Center, Georgia",
    session:"day2_s3b"},
 
-  {id:37, time:"12:00–12:40", speaker:"Antibiotic Resistance and Stewardship Strategy",
-   title:"Tea Kakabadze, MD, PhD · Tengiz Tsertsvadze\nDavid Tvildiani Medical University, Georgia | Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",
+  {id:37, time:"12:00\u201312:40", speaker:"Tea Kakabadze, MD, PhD \u00b7 Tengiz Tsertsvadze",
+   title:"Antibiotic Resistance and Stewardship Strategy\nDavid Tvildiani Medical University, Georgia | Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",
    session:"day2_panel", isKeynote:true},
 
-  {id:38, time:"12:40–13:00", speaker:"Closing Ceremony", title:"Closing Ceremony & Certificate Distribution", session:"day2_close"},
+  {id:38, time:"12:40\u201313:00", speaker:"Closing Ceremony", title:"Closing Ceremony & Certificate Distribution", session:"day2_close"},
 ];
-  
+
 // ════════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════════
@@ -1230,7 +1248,7 @@ function render() {
       }
       if (item.isHeader) {
         row.className = 'a-row';
-        row.style.cssText = 'background:var(--navy-soft);border-radius:8px;padding:8px 12px;margin:6px 0 2px;border:1px solid var(--navy-border);';
+        row.style.cssText = 'background:var(--navy-soft);border-radius:8px;padding:10px 14px;margin:8px 0 2px;border:1px solid var(--navy-border);';
         const timeEl = document.createElement('div');
         timeEl.className = 'a-time';
         timeEl.textContent = item.time || '';
@@ -1239,7 +1257,7 @@ function render() {
         const info = document.createElement('div'); info.className = 'a-info';
         const nameRow = document.createElement('div');
         nameRow.className = 'a-name';
-        nameRow.style.cssText = 'font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em;line-height:1.4;';
+        nameRow.style.cssText = 'font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;';
         nameRow.textContent = item.speaker;
         info.appendChild(nameRow);
         if (p2[0]) {
