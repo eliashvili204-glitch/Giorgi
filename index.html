@@ -1185,10 +1185,13 @@ function render() {
         return;
       }
 
-      row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
-      const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time || ''; row.appendChild(timeEl);
-      const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
+row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
+      if (item.time) {
+        const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time; row.appendChild(timeEl);
+        const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
+      }
       const info = document.createElement('div'); info.className = 'a-info';
+      if (!item.time) info.style.paddingLeft = '0';
       const nameRow = document.createElement('div'); nameRow.className = 'a-name';
       const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
       if (isCur && !cdOn) {
