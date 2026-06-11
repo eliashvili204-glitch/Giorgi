@@ -426,7 +426,11 @@ const AGENDA = [
   // ── DAY 1 ────────────────────────────────────────────────────────────────
 
   {id:1,  time:"09:00\u201310:00", speaker:"Registration",                                                                     title:"",                                                                                                                                                                                                           session:"day1_pre",    isBreak:true},
-  {id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony & Welcome Remarks",                                               title:"Nino Tabagari, MD, PhD \u00b7 Mariam Chubinidze \u00b7 Interest Group Leads\nTekla Tsabadze (SIGA) \u00b7 Shreya Mane (GIGA) \u00b7 Ana Bechvaia (CIGA) \u00b7 Anna Kvernadze (IMIG) \u00b7 Kora Chakhava (SIGN)", session:"day1_open"},
+{id:2,  time:"10:00\u201310:45", speaker:"Opening Ceremony & Welcome Remarks",
+  title:"",
+  welcomeAddresses: ["Nino Tabagari, MD, PhD \u2014 Dean, David Tvildiani Medical University", "Mariam Chubinidze \u2014 President, Students\u2019 and Young Scientists\u2019 Scientific Association"],
+  interestGroups: ["Tekla Tsabadze \u2014 SIGA", "Shreya Mane \u2014 GIGA", "Ana Bechvaia \u2014 CIGA", "Anna Kvernadze \u2014 IMIG", "Kora Chakhava \u2014 SIGN"],
+  isOpening:true, session:"day1_open"},
 
   // Session I — Surgical & Multisystemic Complications of Infection
   {id:3,  time:"10:45\u201312:10", speaker:"SESSION I \u2014 Surgical & Multisystemic Complications of Infection",                        title:"Chairs: Guram Beridze | Nana Megrelidze",                                                                                                                                                         session:"day1_s1_hdr", isHeader:true},
@@ -1156,6 +1160,33 @@ function render() {
       const row   = document.createElement('div');
 
       // Session header rows get special styling
+      if (item.isOpening) {
+  row.className = 'a-row';
+  const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time; row.appendChild(timeEl);
+  const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
+  const info = document.createElement('div'); info.className = 'a-info';
+  const nameRow = document.createElement('div'); nameRow.className = 'a-name'; nameRow.textContent = item.speaker; info.appendChild(nameRow);
+  const waLabel = document.createElement('div');
+  waLabel.style.cssText = 'font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-top:8px;margin-bottom:3px;';
+  waLabel.textContent = 'Welcome Addresses';
+  info.appendChild(waLabel);
+  (item.welcomeAddresses||[]).forEach(name => {
+    const d = document.createElement('div'); d.className = 'a-sub'; d.style.fontStyle='normal'; d.textContent = name; info.appendChild(d);
+  });
+  const igLabel = document.createElement('div');
+  igLabel.style.cssText = 'font-size:9px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.1em;margin-top:8px;margin-bottom:3px;';
+  igLabel.textContent = 'Interest Group Leads';
+  info.appendChild(igLabel);
+  const igWrap = document.createElement('div'); igWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;';
+  (item.interestGroups||[]).forEach(g => {
+    const chip = document.createElement('span');
+    chip.style.cssText = 'font-size:10px;font-weight:600;color:var(--navy);background:var(--navy-soft);border:1px solid var(--navy-border);border-radius:20px;padding:2px 10px;white-space:nowrap;';
+    chip.textContent = g; igWrap.appendChild(chip);
+  });
+  info.appendChild(igWrap);
+  row.appendChild(info); frag.appendChild(row);
+  return;
+}
 if (item.isHeader) {
         row.className = 'a-row';
         row.style.cssText = 'background:var(--navy-soft);border-radius:8px;padding:10px 14px;margin:8px 0 2px;border:1px solid var(--navy-border);';
