@@ -789,8 +789,49 @@ function submitForm() {
 
   var reqId = ++currentRequestId;
 
-  // ══ Step 1: Supabase INSERT — session_id ჩართულია ══
-  var supabasePayload = {
+// ══ Step 1: email შემოწმება participants-ში ══
+  fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
+    headers: {
+      'apikey':        SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY
+    }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+
+    // ❌ email არ არის სიაში
+    if (!data || data.length === 0) {
+      isSubmitting = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('❌ Email not found. Please use your registered email.', 'error');
+      return;
+    }
+
+    // ✅ email მოიძებნა → INSERT attendance
+    var supabasePayload = {
+      email:      email,
+      day:        day,
+      action:     action,
+      lat:        userLat !== null ? String(userLat) : null,
+      lng:        userLng !== null ? String(userLng) : null,
+      loc_status: locStatus,
+      session_id: sessionId
+    };
+
+    return supabaseInsert(supabasePayload);
+  })
+  .then(function(r) {
+    if (!r) return;
+    handleResult('SUCCESS');
+  })
+  .catch(function() {
+    isSubmitting = false;
+    document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+    showMsg('❌ Connection failed. Please try again.', 'error');
+    document.getElementById('submit-btn').disabled = false;
+  });
+}
     email:      email,
     day:        day,
     action:     action,
