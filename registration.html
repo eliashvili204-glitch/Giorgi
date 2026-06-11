@@ -808,47 +808,18 @@ function submitForm() {
         console.warn('Supabase INSERT failed (' + r.status + ') — continuing with sheets-proxy');
       }
 
-      // ══ Step 2: sheets-proxy ══
-      callSheetsProxy(
-        lastPayload,
-        reqId,
-        function(result) {
-          if (reqId !== currentRequestId) return;
-          handleResult(result);
-        },
-        function() {
-          if (reqId !== currentRequestId) return;
-          isSubmitting = false;
-          document.getElementById('retry-info').style.display = 'none';
-          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-          showMsg('❌ Connection failed after ' + MAX_RETRIES + ' attempts. Please try again.', 'error');
-          setTimeout(function() {
-            document.getElementById('submit-btn').disabled = false;
-          }, 3000);
-        }
-      );
-    })
-    .catch(function() {
+// ══ Step 2: პირდაპირ success ══
       if (reqId !== currentRequestId) return;
-      console.warn('Supabase INSERT fetch error — continuing with sheets-proxy');
-      callSheetsProxy(
-        lastPayload,
-        reqId,
-        function(result) {
-          if (reqId !== currentRequestId) return;
-          handleResult(result);
-        },
-        function() {
-          if (reqId !== currentRequestId) return;
-          isSubmitting = false;
-          document.getElementById('retry-info').style.display = 'none';
-          document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-          showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
-          setTimeout(function() {
-            document.getElementById('submit-btn').disabled = false;
-          }, 3000);
-        }
-      );
+      handleResult('SUCCESS');
+    })
+   .catch(function() {
+      if (reqId !== currentRequestId) return;
+      isSubmitting = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+      setTimeout(function() {
+        document.getElementById('submit-btn').disabled = false;
+      }, 3000);
     });
 }
 
