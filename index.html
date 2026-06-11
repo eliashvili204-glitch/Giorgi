@@ -480,7 +480,7 @@ const AGENDA = [
   {id:35, time:"",                 speaker:"Raja Basil Adeel",                                                                 title:"Daptomycin-Associated Eosinophilic Colitis: A Novel Extrapulmonary Manifestation\nUniversity of Georgia \u00b7 Sup: Giorgi Chilingarashvili, MD, MSc \u2014 Nazareth Hospital, USA",                       session:"day2_s3b"},
   {id:36, time:"",                 speaker:"Keya Baliga, Rajvi Soni",                                                         title:"Rare Case of Autoimmune Polyendocrine Syndrome Type 2 with Progressive Endocrine Dysfunction and Vitiligo\nSEU Georgian National University \u00b7 Sup: Nino Turashvili, MD \u2014 Vakhtang Bochorishvili Medical Center", session:"day2_s3b"},
 
-  {id:37, time:"12:00\u201312:40", speaker:"KEYNOTE \u2014 Tea Kakabadze, MD, PhD & Tengiz Tsertsvadze",                      title:"Antibiotic Resistance and Stewardship Strategy\nDTMU / Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",                                                                           session:"day2_panel"},
+{id:37, time:"12:00\u201312:40", speaker:"Tea Kakabadze, MD, PhD \u00b7 Tengiz Tsertsvadze",                      title:"Antibiotic Resistance and Stewardship Strategy\nDTMU / Infectious Diseases, AIDS and Clinical Immunology Research Center, Georgia",                                                                                                                            session:"day2_panel", isKeynote:true},
 
   {id:38, time:"12:40\u201313:00", speaker:"Closing Ceremony",                                                                 title:"Closing Ceremony & Certificate Distribution",                                                                                                                                                                session:"day2_close"},
 ];
@@ -1159,7 +1159,7 @@ function render() {
       const row   = document.createElement('div');
 
       // Session header rows get special styling
-      if (item.isHeader) {
+if (item.isHeader) {
         row.className = 'a-row';
         row.style.cssText = 'background:var(--navy-soft);border-radius:8px;padding:10px 14px;margin:8px 0 2px;border:1px solid var(--navy-border);';
         const timeEl = document.createElement('div');
@@ -1185,6 +1185,26 @@ function render() {
         return;
       }
 
+      if (item.isKeynote) {
+        row.className = 'a-row';
+        row.style.cssText = 'background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border-radius:10px;padding:12px 14px;margin:8px 0 2px;border:1.5px solid var(--navy-border);';
+        const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.style.color = 'var(--navy)'; timeEl.textContent = item.time || ''; row.appendChild(timeEl);
+        const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
+        const info = document.createElement('div'); info.className = 'a-info';
+        const kLabel = document.createElement('div');
+        kLabel.style.cssText = 'font-size:8px;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.18em;margin-bottom:4px;';
+        kLabel.textContent = 'Keynote Address';
+        info.appendChild(kLabel);
+        const nameRow = document.createElement('div'); nameRow.className = 'a-name'; nameRow.style.color = 'var(--navy)';
+        const nameSpan = document.createElement('span'); nameSpan.textContent = item.speaker; nameRow.appendChild(nameSpan);
+        info.appendChild(nameRow);
+        const p2k = item.title ? item.title.split('\n') : [];
+        if (p2k[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.style.fontWeight = '600'; s1.textContent = p2k[0]; info.appendChild(s1); }
+        if (p2k[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2k[1]; info.appendChild(s2); }
+        row.appendChild(info); frag.appendChild(row);
+        return;
+      }
+      
 row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
       if (item.time) {
         const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time; row.appendChild(timeEl);
