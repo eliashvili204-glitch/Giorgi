@@ -419,8 +419,8 @@
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+var EDGE_FN_URL = 'https://wxhaukichoycniioakbo.supabase.co/functions/v1/register-attendance';
 var RATE_LIMIT_MS = 5 * 60 * 60 * 1000;
-var EMAIL_RL_MS   = 5 * 60 * 60 * 1000;
 var DEVICE_RL_KEY = 'xi_device_last_submit';
 var PAGE_LOAD_KEY = 'xi_page_loads';
 var MAX_RETRIES   = 3;
@@ -546,14 +546,6 @@ function startLocation() {
   hideBlock();
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
-
-  var devRem = getDeviceRateRemaining();
-  if (devRem > 0) {
-    startCountdown(devRem,
-      'This device has already submitted a registration. Please wait before trying again.',
-      'Device Limit Active'
-    );
-  }
 
   if (!navigator.geolocation) {
     showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
@@ -783,15 +775,6 @@ function submitForm() {
     return;
   }
 
-  var devRem = getDeviceRateRemaining();
-  if (devRem > 0) {
-    startCountdown(devRem,
-      'This device has already submitted a registration. Please wait before trying again.',
-      'Device Limit Active'
-    );
-    return;
-  }
-
   var email = document.getElementById('email-inp').value.trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showMsg('Please enter a valid email address.', 'error');
@@ -813,101 +796,62 @@ function submitForm() {
   isSubmitting = true;
   var requestId = ++currentRequestId;
 
-  // ── Step 1: participants შემოწმება ──
-  fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
+  fetch(EDGE_FN_URL, {
+    method: 'POST',
     headers: {
+      'Content-Type':  'application/json',
       'apikey':        SB_KEY,
       'Authorization': 'Bearer ' + SB_KEY
-    }
+    },
+    body: JSON.stringify({
+      email:      email,
+      day:        day,
+      action:     action,
+      lat:        userLat !== null ? userLat : null,
+      lng:        userLng !== null ? userLng : null,
+      loc_status: locStatus,
+      session_id: sessionId
+    })
   })
   .then(function(r) {
-    if (!r.ok) throw new Error('participants_check_' + r.status);
-    return r.json();
-  })
-  .then(function(data) {
     if (requestId !== currentRequestId) return Promise.reject('__stale__');
-
-    if (!data || data.length === 0) {
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      document.getElementById('submit-btn').disabled = false;
-      showMsg('❌ Email not found. Please use your registered email.', 'error');
-      return Promise.reject('__not_found__');
-    }
-
-    // ── Step 1.5: email rate limit check ──
-      var emailRlSince = new Date(Date.now() - EMAIL_RL_MS).toISOString();
-      return fetch(SB_URL + '/rest/v1/attendance' +
-        '?email=eq.' + encodeURIComponent(email) +
-        '&created_at=gte.' + emailRlSince +
-        '&select=created_at&limit=1&order=created_at.desc', {
-        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
-      });
-    })
-    .then(function(r) {
-      if (requestId !== currentRequestId) return Promise.reject('__stale__');
-      if (!r.ok) throw new Error('email_rl_check_' + r.status);
-      return r.json();
-    })
-    .then(function(rows) {
-      if (requestId !== currentRequestId) return Promise.reject('__stale__');
-      if (rows && rows.length > 0) {
-        var lastTime  = new Date(rows[0].created_at).getTime();
-        var remaining = EMAIL_RL_MS - (Date.now() - lastTime);
-        isSubmitting  = false;
-        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-        document.getElementById('submit-btn').disabled  = false;
-        startCountdown(remaining,
-          'This email was recently used for registration. Please wait before registering again.',
-          'Email Limit Active'
-        );
-        return Promise.reject('__email_limited__');
-      }
-
-    // ── Step 2: attendance INSERT ──
-    var payload = {
-      email:            email,
-      day:              day,
-      action:           action,
-      lat:              userLat !== null ? userLat : null,
-      lng:              userLng !== null ? userLng : null,
-      loc_status:       locStatus,
-      session_id:       sessionId,
-      synced_to_sheets: false
-    };
-
-    return fetch(SB_URL + '/rest/v1/attendance', {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'apikey':        SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Prefer':        'return=minimal'
-      },
-      body: JSON.stringify(payload)
+    return r.json().then(function(data) {
+      return { status: r.status, data: data };
     });
   })
-  .then(function(r) {
-    if (!r) return;
+  .then(function(res) {
     if (requestId !== currentRequestId) return;
+    isSubmitting = false;
+    document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+    document.getElementById('retry-info').style.display = 'none';
 
-    if (r.status === 201) {
-      handleResult('SUCCESS');
-    } else if (r.status === 409) {
-      handleResult('ALREADY_DONE');
-    } else {
-      return r.text().then(function(body) {
-        console.warn('Supabase INSERT error', r.status, body);
-        handleResult('ERROR:insert_' + r.status);
-      });
+    if (res.status === 429) {
+      var remMs   = res.data.remaining_ms || (5 * 60 * 60 * 1000);
+      var isEmail = res.data.error === 'EMAIL_RATE_LIMITED';
+      startCountdown(
+        remMs,
+        isEmail
+          ? 'This email was recently used for registration. Please wait before registering again.'
+          : 'This device was recently used for registration. Please wait before registering again.',
+        isEmail ? 'Email Limit Active' : 'Device Limit Active'
+      );
+      return;
     }
+
+    if (res.status === 200 && res.data.result === 'SUCCESS') {
+      showMsg('✅ Attendance recorded successfully!', 'success');
+      document.getElementById('submit-btn').disabled = true;
+      return;
+    }
+
+    showMsg('❌ Unexpected error. Please try again.', 'error');
+    document.getElementById('submit-btn').disabled = false;
   })
   .catch(function(err) {
-    if (err === '__not_found__' || err === '__stale__' || err === '__email_limited__') return;
+    if (err === '__stale__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
 
-    // retry logic
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Connection issue — retrying…';
@@ -918,8 +862,6 @@ function submitForm() {
       document.getElementById('submit-btn').disabled = false;
       showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
     }, RETRY_DELAY_MS);
-
-    console.error('submitForm error:', err);
   });
 }
 
