@@ -681,7 +681,7 @@ function switchTab(name) {
   });
 }
 
-function _set(id,val){ var e=document.getElementById(id); if(e) e.textContent=val; }
+function _set(id,val){ var e=document.getElementById(id); if(e) e.textContent=(val===undefined||val===null)?'—':val; }
 function _setProgress(bId,vId,val,total){
   var pct = total>0 ? Math.round(val/total*100) : 0;
   setTimeout(function(){ var e=document.getElementById(bId); if(e) e.style.width=pct+'%'; }, 350);
