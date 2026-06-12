@@ -1165,7 +1165,7 @@ function startAudTimer() {
 const isOver = hasTime && elapsed >= durationMins * 60;
 
     const el = document.getElementById('aud-timer');
-    if (el) { el.textContent = val; el.style.color = (hasTime && isOver) ? 'var(--warn)' : 'var(--navy)';
+    if (el) { el.textContent = val; el.style.color = (hasTime && isOver) ? 'var(--warn)' : 'var(--navy)'; }
 
     const ae = document.getElementById('aud-agenda-timer');
     if (ae) {
