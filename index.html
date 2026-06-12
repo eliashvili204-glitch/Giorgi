@@ -1227,7 +1227,7 @@ function render() {
       const row   = document.createElement('div');
 
       if (item.isOpening) {
-        row.className = 'a-row';
+        row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '');
         const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time; row.appendChild(timeEl);
         const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
         const info = document.createElement('div'); info.className = 'a-info';
@@ -1254,7 +1254,7 @@ function render() {
         return;
       }
       if (item.isHeader) {
-        row.className = 'a-row';
+        row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '');
         row.style.cssText = 'background:var(--navy-soft);border-radius:8px;padding:10px 14px;margin:8px 0 2px;border:1px solid var(--navy-border);';
         const timeEl = document.createElement('div');
         timeEl.className = 'a-time';
@@ -1280,7 +1280,7 @@ function render() {
       }
 
       if (item.isKeynote) {
-        row.className = 'a-row';
+        row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '');
         row.style.cssText = 'background:linear-gradient(135deg,var(--navy-soft) 0%,#dce8f5 100%);border-radius:10px;padding:12px 14px;margin:8px 0 2px;border:1.5px solid var(--navy-border);';
         const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.style.color = 'var(--navy)'; timeEl.textContent = item.time || ''; row.appendChild(timeEl);
         const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
