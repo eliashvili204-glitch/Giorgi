@@ -566,7 +566,7 @@ function onLocDenied() {
   var showContinue = count >= 3;
   var desc = showContinue
     ? 'Location access is blocked. If you cannot enable it, you may continue without location.'
-    : 'Location access is blocked. Follow the steps below to enable it, then reload the page. (' + count + '/3)';
+    : 'Location access is blocked. Follow the steps below to enable it, then reload the page.';
 
   showBlock(desc, showContinue);
 }
