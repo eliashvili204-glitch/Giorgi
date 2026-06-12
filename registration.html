@@ -825,6 +825,14 @@ function submitForm() {
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
     document.getElementById('retry-info').style.display = 'none';
 
+    // უკვე გაკეთებული ზუსტად ეს მოქმედება (email + day + action) — სამუდამოდ დაბლოკილი
+    if (res.status === 409 && res.data.error === 'ALREADY_DONE') {
+      showMsg('⚠️ You have already completed this action. It cannot be registered again.', 'info');
+      document.getElementById('submit-btn').disabled = true;
+      return;
+    }
+
+    // 5-საათიანი გლობალური ლიმიტი (email ან device) — ტაიმერი
     if (res.status === 429) {
       var remMs   = res.data.remaining_ms || (5 * 60 * 60 * 1000);
       var isEmail = res.data.error === 'EMAIL_RATE_LIMITED';
@@ -838,9 +846,18 @@ function submitForm() {
       return;
     }
 
+    // წარმატება — 5 საათი გასულია, ახალი მოქმედება ჩაიწერა
     if (res.status === 200 && res.data.result === 'SUCCESS') {
       showMsg('✅ Attendance recorded successfully!', 'success');
       document.getElementById('submit-btn').disabled = true;
+      setDeviceRateLimit();
+      setTimeout(function() {
+        startCountdown(
+          RATE_LIMIT_MS,
+          'Registration successful. This device cannot register again for 5 hours.',
+          'Device Limit Active'
+        );
+      }, 1500);
       return;
     }
 
