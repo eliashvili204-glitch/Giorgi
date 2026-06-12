@@ -772,29 +772,7 @@ function submitForm() {
   var requestId = ++currentRequestId;
 
   // ── Step 1: participants შემოწმება ──
-  fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
-    headers: {
-      'apikey':        SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY
-    }
-  })
-  .then(function(r) {
-    if (!r.ok) throw new Error('participants_check_' + r.status);
-    return r.json();
-  })
-  .then(function(data) {
-    if (requestId !== currentRequestId) return Promise.reject('__stale__');
-
-    if (!data || data.length === 0) {
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      document.getElementById('submit-btn').disabled = false;
-      showMsg('❌ Email not found. Please use your registered email.', 'error');
-      return Promise.reject('__not_found__');
-    }
-
-    // ── Step 2: attendance INSERT ──
-    var payload = {
+  var payload = {
       email:            email,
       day:              day,
       action:           action,
