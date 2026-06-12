@@ -250,18 +250,7 @@
   .mp-title { font-size: 10px; font-weight: 700; color: var(--warn); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
   .mp-body  { background: rgba(192,80,58,0.07); border-radius: 6px; padding: 10px 12px; font-size: 11px; color: #8B4035; line-height: 1.7; }
 
-  /* ── RATE LIMIT BOX ── */
-  #rateLimitBox {
-    display: none; margin-top: 16px; padding: 16px;
-    background: #FFF8F0; border: 1px solid #FBBF60;
-    border-radius: var(--radius);
-    animation: cardUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
-  }
-  .rl-title           { font-size: 10px; font-weight: 700; color: #92400E; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
-  .rl-reason          { font-size: 11px; color: #92400E; margin-bottom: 10px; line-height: 1.6; }
-  .rl-countdown       { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #92400E; letter-spacing: 0.04em; text-align: center; padding: 6px 0 2px; }
-  .rl-countdown-label { font-size: 9.5px; font-weight: 500; color: #B45309; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-top: 2px; }
-
+  
   .submit {
     width: 100%; padding: 13px; margin-top: 24px;
     background: var(--navy);
@@ -385,13 +374,6 @@
       </div>
     </div>
 
-    <div id="rateLimitBox">
-      <div class="rl-title"           id="rl-title">Registration Limit Reached</div>
-      <div class="rl-reason"          id="rl-reason"></div>
-      <div class="rl-countdown"       id="rl-countdown">00:00:00</div>
-      <div class="rl-countdown-label">remaining until next registration</div>
-    </div>
-
     <button class="submit" id="submit-btn" onclick="submitForm()" disabled>Confirm Attendance</button>
     <div id="retry-info" class="retry-badge" style="display:none;"></div>
     <div class="msg" id="msg"></div>
@@ -404,7 +386,6 @@
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-var RATE_LIMIT_MS = 5 * 60 * 60 * 1000; // 5 საათი
 var MAX_RETRIES   = 3;
 var RETRY_DELAY_MS = 2500;
 var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
@@ -417,32 +398,10 @@ var RADIUS_M = 300;
 // ══════════════════════════════════════════════════════════════
 //  SESSION ID
 // ══════════════════════════════════════════════════════════════
-var sessionId = null;
-try {
-  sessionId = localStorage.getItem('syssa_sid');
-  if (!sessionId) {
-    sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('syssa_sid', sessionId);
-  }
-} catch(e) {
-  sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
-}
-
+var sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
 // ══════════════════════════════════════════════════════════════
 //  PAGE-LOAD COUNTER  (3 refresh → "Continue anyway")
 // ══════════════════════════════════════════════════════════════
-var PAGE_LOAD_KEY = 'xi_page_loads';
-var pageLoads = 0;
-try {
-  pageLoads = parseInt(localStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
-  pageLoads++;
-  localStorage.setItem(PAGE_LOAD_KEY, pageLoads);
-} catch(e) {}
-
-function resetPageLoads() {
-  pageLoads = 0;
-  try { localStorage.removeItem(PAGE_LOAD_KEY); } catch(e) {}
-}
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
@@ -452,12 +411,9 @@ var userLat          = null;
 var userLng          = null;
 var isSubmitting     = false;
 var currentRequestId = 0;
-var countdownInterval = null;
 var geoAttempt       = 0;
+ var countdownInterval = null;
 
-// ══════════════════════════════════════════════════════════════
-//  COUNTDOWN
-// ══════════════════════════════════════════════════════════════
 function formatMs(ms) {
   if (ms <= 0) return '00:00:00';
   var s = Math.floor(ms / 1000);
@@ -467,37 +423,27 @@ function formatMs(ms) {
 }
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-function startCountdown(remainingMs, reason, title) {
+function showRateLimit(remainingMs) {
   if (countdownInterval) clearInterval(countdownInterval);
-  var box = document.getElementById('rateLimitBox');
-  box.style.display = 'block';
-  document.getElementById('rl-title').textContent  = title  || 'Registration Limit Reached';
-  document.getElementById('rl-reason').textContent = reason || '';
-  document.getElementById('submit-btn').disabled   = true;
+  document.getElementById('submit-btn').disabled = true;
   var deadline = Date.now() + remainingMs;
-  function tick() {
+  showMsg('⏳ ' + formatMs(remainingMs) + ' — უნდა დაელოდო ხელახლა რეგისტრაციამდე.', 'warning');
+  countdownInterval = setInterval(function() {
     var left = deadline - Date.now();
     if (left <= 0) {
       clearInterval(countdownInterval);
       countdownInterval = null;
-      document.getElementById('rl-countdown').textContent = '00:00:00';
-      box.style.display = 'none';
-      if (geoState === 'found' || geoState === 'offsite' || geoState === 'manual') {
-        document.getElementById('submit-btn').disabled = false;
-      }
-      showMsg('You can now register again.', 'info');
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('შეგიძლია ხელახლა დარეგისტრირდე.', 'info');
       return;
     }
-    document.getElementById('rl-countdown').textContent = formatMs(left);
-  }
-  tick();
-  countdownInterval = setInterval(tick, 1000);
+    showMsg('⏳ ' + formatMs(left) + ' — უნდა დაელოდო ხელახლა რეგისტრაციამდე.', 'warning');
+  }, 1000);
 }
 
-function hideRateLimitBox() {
-  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
-  document.getElementById('rateLimitBox').style.display = 'none';
-}
+// ══════════════════════════════════════════════════════════════
+//  COUNTDOWN
+// ══════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════
 //  SUPABASE — RATE LIMIT CHECK
@@ -570,7 +516,6 @@ function doGetPosition() {
 }
 
 function onGeoSuccess(pos) {
-  resetPageLoads();
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
   var acc  = Math.round(pos.coords.accuracy);
@@ -666,7 +611,7 @@ function showBlock(desc, showContinue) {
       ? '<b>Safari (Mac):</b> Safari menu → Settings for This Website → Location → Allow'
       : '<b>Chrome (Android):</b> Address bar → 🔒 → Permissions → Location → Allow<br><b>Chrome (Desktop):</b> Address bar → 🔒 → Location → Allow';
   document.getElementById('loc-continue-btn').style.display =
-    (showContinue && pageLoads >= 3) ? 'block' : 'none';
+    showContinue ? 'block' : 'none';
 }
 function hideBlock()       { document.getElementById('locationBlock').style.display = 'none'; }
 function showManualNotice(){ document.getElementById('manual-notice').style.display = 'block'; }
@@ -719,16 +664,7 @@ function handleResult(result) {
 
   if (entry) {
     showMsg(entry.text, entry.type);
-    if (entry.type === 'success') {
-      // წარმატებული submit — 5 საათი countdown
-      startCountdown(
-        RATE_LIMIT_MS,
-        'Registration successful. Please wait 5 hours before registering again.',
-        'Registration Limit Active'
-      );
-    } else {
-      document.getElementById('submit-btn').disabled = false;
-    }
+    document.getElementById('submit-btn').disabled = false;
   } else if (typeof result === 'string' && result.indexOf('ERROR:') === 0) {
     showMsg('❌ Server error: ' + result.replace('ERROR:', '').trim(), 'error');
     document.getElementById('submit-btn').disabled = false;
@@ -765,7 +701,6 @@ function submitForm() {
   document.getElementById('submit-btn').disabled  = true;
   document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Checking…';
   showMsg('Verifying registration limit…', 'info');
-  hideRateLimitBox();
   isSubmitting = true;
   var requestId = ++currentRequestId;
 
@@ -783,11 +718,7 @@ function submitForm() {
     if (data && data.limited) {
       isSubmitting = false;
       document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      startCountdown(
-        Math.round(data.remaining_ms),
-        'This email or device has already been registered. Please wait before trying again.',
-        'Registration Limit Active'
-      );
+      showRateLimit(Math.round(data.remaining_ms));
       return;
     }
 
