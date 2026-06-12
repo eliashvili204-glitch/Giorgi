@@ -520,6 +520,7 @@ function doGetPosition() {
 }
 
 function onGeoSuccess(pos) {
+  localStorage.removeItem('conf_denied_refresh_count');
   userLat = pos.coords.latitude;
   userLng = pos.coords.longitude;
   var acc  = Math.round(pos.coords.accuracy);
@@ -558,9 +559,17 @@ function onLocDenied() {
   setInputsEnabled(false);
   document.getElementById('submit-btn').disabled = true;
   setStatusDenied('Location access blocked');
-  showBlock('Location access is blocked. Follow the steps below to enable it, then reload the page.', true);
-}
 
+  var count = parseInt(localStorage.getItem('conf_denied_refresh_count') || '0', 10) + 1;
+  localStorage.setItem('conf_denied_refresh_count', count);
+
+  var showContinue = count >= 3;
+  var desc = showContinue
+    ? 'Location access is blocked. If you cannot enable it, you may continue without location.'
+    : 'Location access is blocked. Follow the steps below to enable it, then reload the page. (' + count + '/3)';
+
+  showBlock(desc, showContinue);
+}
 // ══════════════════════════════════════════════════════════════
 //  MANUAL OVERRIDE
 // ══════════════════════════════════════════════════════════════
