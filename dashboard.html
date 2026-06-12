@@ -401,10 +401,10 @@
   <!-- CERTIFICATES -->
   <div class="tab-panel" id="panel-certs">
     <div class="cert-stats">
-      <div class="cert-stat"><div class="cs-num cs-pending" id="cert-pending">—</div><div class="cs-lbl">Pending</div></div>
-      <div class="cert-stat"><div class="cs-num cs-processing" id="cert-processing">—</div><div class="cs-lbl">Processing</div></div>
-      <div class="cert-stat"><div class="cs-num cs-done" id="cert-done">—</div><div class="cs-lbl">Sent</div></div>
-      <div class="cert-stat"><div class="cs-num cs-failed" id="cert-failed">—</div><div class="cs-lbl">Failed</div></div>
+      <div class="cert-stat"><div class="cs-num cs-pending" id="cert-pending">—</div><div class="cs-lbl">Registered</div></div>
+      <div class="cert-stat"><div class="cs-num cs-processing" id="cert-processing">—</div><div class="cs-lbl">Seats Left</div></div>
+      <div class="cert-stat"><div class="cs-num cs-done" id="cert-done">—</div><div class="cs-lbl">Total Capacity</div></div>
+      <div class="cert-stat"><div class="cs-num cs-failed" id="cert-failed">—</div><div class="cs-lbl">Fill Rate</div></div>
     </div>
     <div class="table-panel">
       <div class="tbl-header">
@@ -461,7 +461,7 @@ function loadAll() {
     })
     .catch(function(err) { showError(err.message); check(); });
 
-  apiFetch("certs")
+  apiFetch("workshops")
     .then(function(rows) {
       certsData = rows || [];
       renderCertTable(certsData);
@@ -652,24 +652,20 @@ function renderCertTable(arr) {
       '<td class="td-name">'+_esc(r.name)+'</td>'+
       '<td class="td-email">'+_esc(r.email)+'</td>'+
       '<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.group)+'</td>'+
-      '<td><span class="pill '+cls+'">'+_esc(r.status)+'</span></td>'+
-      '<td style="font-size:11px;color:var(--red);max-width:180px;overflow:hidden;text-overflow:ellipsis">'+_esc(r.lastError)+'</td></tr>';
+      '<td style="font-size:11px;color:var(--text-mid)">'+_esc(r.workshop)+'</td>'+
+'<td style="font-size:11px;color:var(--text-soft)">'+_esc(r.registered_at)+'</td></tr>';
   }).join('');
 }
 
 function renderCertStats(arr) {
-  var p=0,pr=0,d=0,f=0;
-  arr.forEach(function(r){
-    var s = (r.status||'').toLowerCase();
-    if(s==='pending'||s==='retry') p++;
-    else if(s==='processing') pr++;
-    else if(s==='done') d++;
-    else if(s==='failed') f++;
-  });
-  _set('cert-pending',p); _set('cert-processing',pr);
-  _set('cert-done',d);    _set('cert-failed',f);
+  var total = arr.length;
+  var limit = 30;
+  var left  = Math.max(0, limit - total);
+  _set('cert-pending',    total);
+  _set('cert-processing', left);
+  _set('cert-done',       limit);
+  _set('cert-failed',     Math.round((total/limit)*100) + '%');
 }
-
 function filterCertTable(q) {
   q = q.toLowerCase().trim();
   renderCertTable(q ? certsData.filter(function(r){
