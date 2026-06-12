@@ -419,6 +419,8 @@
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
+var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
+var DEVICE_RL_KEY = 'xi_device_last_submit';
 var PAGE_LOAD_KEY = 'xi_page_loads';
 var MAX_RETRIES   = 3;
 var RETRY_DELAY_MS      = 2500;
@@ -473,6 +475,17 @@ var geoAttempt        = 0;
 // ══════════════════════════════════════════════════════════════
 //  DEVICE RATE LIMIT
 // ══════════════════════════════════════════════════════════════
+function getDeviceRateRemaining() {
+  try {
+    var last = localStorage.getItem(DEVICE_RL_KEY);
+    if (!last) return 0;
+    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
+    return rem > 0 ? rem : 0;
+  } catch(e) { return 0; }
+}
+function setDeviceRateLimit() {
+  try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
+}
 
 // ══════════════════════════════════════════════════════════════
 //  COUNTDOWN
@@ -533,6 +546,14 @@ function startLocation() {
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
 
+  var devRem = getDeviceRateRemaining();
+  if (devRem > 0) {
+    startCountdown(devRem,
+      'This device has already submitted a registration. Please wait before trying again.',
+      'Device Limit Active'
+    );
+  }
+
   if (!navigator.geolocation) {
     showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
     return;
@@ -582,7 +603,9 @@ function onGeoSuccess(pos) {
   }
 
   setInputsEnabled(true);
-  document.getElementById('submit-btn').disabled = false;
+  if (getDeviceRateRemaining() <= 0) {
+    document.getElementById('submit-btn').disabled = false;
+  }
 }
 
 function onGeoError(err) {
@@ -620,7 +643,9 @@ function activateManual() {
   document.getElementById('locStatus').className = 'manual';
 
   setInputsEnabled(true);
-  document.getElementById('submit-btn').disabled = false;
+  if (getDeviceRateRemaining() <= 0) {
+    document.getElementById('submit-btn').disabled = false;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -725,7 +750,14 @@ function handleResult(result) {
   if (entry) {
     showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      document.getElementById('submit-btn').disabled = true;
+      setDeviceRateLimit();
+      setTimeout(function() {
+        startCountdown(
+          RATE_LIMIT_MS,
+          'Registration successful. This device cannot register again for 7 hours.',
+          'Device Limit Active'
+        );
+      }, 1500);
     } else {
       document.getElementById('submit-btn').disabled = false;
     }
@@ -747,6 +779,15 @@ function submitForm() {
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
     showMsg('Please wait for location detection to complete.', 'error');
+    return;
+  }
+
+  var devRem = getDeviceRateRemaining();
+  if (devRem > 0) {
+    startCountdown(devRem,
+      'This device has already submitted a registration. Please wait before trying again.',
+      'Device Limit Active'
+    );
     return;
   }
 
@@ -805,36 +846,32 @@ function submitForm() {
       synced_to_sheets: false
     };
 
-    return fetch(SB_URL + '/functions/v1/register-attendance', {
-  method: 'POST',
-  headers: {
-    'Content-Type':  'application/json',
-    'apikey':        SB_KEY,
-    'Authorization': 'Bearer ' + SB_KEY
-  },
-  body: JSON.stringify(payload)
-});
+    return fetch(SB_URL + '/rest/v1/attendance', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
   })
   .then(function(r) {
-  if (!r) return;
-  if (requestId !== currentRequestId) return;
-  return r.json().then(function(data) {
-    if (data.result === 'SUCCESS') {
+    if (!r) return;
+    if (requestId !== currentRequestId) return;
+
+    if (r.status === 201) {
       handleResult('SUCCESS');
-    } else if (data.error === 'ALREADY_DONE') {
+    } else if (r.status === 409) {
       handleResult('ALREADY_DONE');
-    } else if (data.error === 'EMAIL_RATE_LIMITED' || data.error === 'SESSION_RATE_LIMITED') {
-      isSubmitting = false;
-      startCountdown(data.remaining_ms,
-        'Registration already submitted. Please wait before trying again.',
-        'Registration Limit Active'
-      );
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
     } else {
-      handleResult('ERROR:' + (data.error || 'unknown'));
+      return r.text().then(function(body) {
+        console.warn('Supabase INSERT error', r.status, body);
+        handleResult('ERROR:insert_' + r.status);
+      });
     }
-  });
-})
+  })
   .catch(function(err) {
     if (err === '__not_found__' || err === '__stale__') return;
     isSubmitting = false;
