@@ -213,6 +213,7 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
       <div class="ctrl-toggles">
         <button class="btn-sml btn-ai-toggle on" id="ai-toggle-btn" onclick="toggleAI()">🤖 AI: ON</button>
         <button class="btn-sml btn-countdown-toggle off" id="countdown-toggle-btn" onclick="toggleCountdown()">⏳ Countdown: OFF</button>
+        <button class="btn-sml btn-countdown-toggle off" id="closed-toggle-btn" onclick="toggleClosed()">🔒 Closed: OFF</button>
       </div>
 
       <!-- INBOX -->
@@ -313,6 +314,7 @@ let newMsgCount = 0;
 let activeTab = 'chat';
 let aiEnabled = true;
 let showCountdown = false;
+let showClosed = false;
 
 window.addEventListener('load', async () => {
   try {
@@ -359,6 +361,10 @@ function startApp() {
       if (payload.new.show_countdown !== undefined) {
         showCountdown = Boolean(payload.new.show_countdown);
         updateCountdownBtn();
+      }
+      if (payload.new.show_closed !== undefined) {
+        showClosed = Boolean(payload.new.show_closed);
+        updateClosedBtn();
       }
     })
     .subscribe(status => {
@@ -423,6 +429,7 @@ function startApp() {
   startTimer(false);
   loadAIState();
   loadCountdownState();
+  loadClosedState();
 }
 
 function updateNotifBadge() {
@@ -775,6 +782,28 @@ async function toggleCountdown() {
   } catch(e) { console.error('Countdown toggle failed:', e); }
 }
 
+  function updateClosedBtn() {
+  const btn = document.getElementById('closed-toggle-btn');
+  if (!btn) return;
+  btn.textContent = showClosed ? '🔒 Closed: ON' : '🔒 Closed: OFF';
+  btn.className = 'btn-sml btn-countdown-toggle ' + (showClosed ? 'on' : 'off');
+}
+
+async function toggleClosed() {
+  showClosed = !showClosed;
+  updateClosedBtn();
+  try {
+    const { error } = await sb.from('live_state').update({ show_closed: showClosed }).eq('id', 1);
+    if (error) await sb.from('live_state').upsert({ id: 1, show_closed: showClosed });
+  } catch(e) { console.error('Closed toggle failed:', e); }
+}
+
+async function loadClosedState() {
+  try {
+    const { data } = await sb.from('live_state').select('show_closed').eq('id', 1).single();
+    if (data && data.show_closed != null) { showClosed = Boolean(data.show_closed); updateClosedBtn(); }
+  } catch(e) {}
+}
 async function loadCountdownState() {
   try {
     const { data } = await sb.from('live_state').select('show_countdown').eq('id', 1).single();
