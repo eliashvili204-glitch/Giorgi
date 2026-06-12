@@ -773,56 +773,63 @@ function submitForm() {
 
   // ── Step 1: participants შემოწმება ──
   var payload = {
-    email:            email,
-    day:              day,
-    action:           action,
-    lat:              userLat !== null ? userLat : null,
-    lng:              userLng !== null ? userLng : null,
-    loc_status:       locStatus,
-    session_id:       sessionId,
-    synced_to_sheets: false
-  };
+      email:            email,
+      day:              day,
+      action:           action,
+      lat:              userLat !== null ? userLat : null,
+      lng:              userLng !== null ? userLng : null,
+      loc_status:       locStatus,
+      session_id:       sessionId,
+      synced_to_sheets: false
+    };
 
-  fetch(SB_URL + '/functions/v1/register-attendance', {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'apikey':        SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY
-    },
-    body: JSON.stringify(payload)
+    return fetch(SB_URL + '/functions/v1/register-attendance', {
+  method: 'POST',
+  headers: {
+    'Content-Type':  'application/json',
+    'apikey':        SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY
+  },
+  body: JSON.stringify(payload)
+});
   })
   .then(function(r) {
-    if (requestId !== currentRequestId) return;
-    return r.json().then(function(data) {
-      if (data.result === 'SUCCESS') {
-        handleResult('SUCCESS');
-      } else if (data.error === 'ALREADY_DONE') {
-        handleResult('ALREADY_DONE');
-      } else if (data.error === 'EMAIL_RATE_LIMITED' || data.error === 'SESSION_RATE_LIMITED') {
-        isSubmitting = false;
-        startCountdown(data.remaining_ms,
-          'Registration already submitted. Please wait before trying again.',
-          'Registration Limit Active'
-        );
-        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      } else {
-        handleResult('ERROR:' + (data.error || 'unknown'));
-      }
-    });
-  })
+  if (!r) return;
+  if (requestId !== currentRequestId) return;
+  return r.json().then(function(data) {
+    if (data.result === 'SUCCESS') {
+      handleResult('SUCCESS');
+    } else if (data.error === 'ALREADY_DONE') {
+      handleResult('ALREADY_DONE');
+    } else if (data.error === 'EMAIL_RATE_LIMITED' || data.error === 'SESSION_RATE_LIMITED') {
+      isSubmitting = false;
+      startCountdown(data.remaining_ms,
+        'Registration already submitted. Please wait before trying again.',
+        'Registration Limit Active'
+      );
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+    } else {
+      handleResult('ERROR:' + (data.error || 'unknown'));
+    }
+  });
+})
   .catch(function(err) {
+    if (err === '__not_found__' || err === '__stale__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+
+    // retry logic
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Connection issue — retrying…';
+
     setTimeout(function() {
       if (requestId !== currentRequestId) return;
       ri.style.display = 'none';
       document.getElementById('submit-btn').disabled = false;
       showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
     }, RETRY_DELAY_MS);
+
     console.error('submitForm error:', err);
   });
 }
