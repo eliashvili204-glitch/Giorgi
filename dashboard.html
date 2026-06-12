@@ -255,7 +255,7 @@
     <button class="nav-tab"        onclick="switchTab('speakers')"         id="tab-btn-speakers">Speakers <span class="tab-count" id="cnt-speakers">—</span></button>
     <button class="nav-tab"        onclick="switchTab('coauthors')"        id="tab-btn-coauthors">Co-Authors <span class="tab-count" id="cnt-coauthors">—</span></button>
     <button class="nav-tab"        onclick="switchTab('posters')"          id="tab-btn-posters">Posters <span class="tab-count" id="cnt-posters">—</span></button>
-    <button class="nav-tab"        onclick="switchTab('certs')"            id="tab-btn-certs">Certificates <span class="tab-count" id="cnt-certs">—</span></button>
+    <button class="nav-tab"        onclick="switchTab('certs')" id="tab-btn-certs">Workshops <span class="tab-count" id="cnt-certs">—</span></button>
   </div>
 </div>
 
@@ -334,7 +334,7 @@
     <div class="two-col" id="stats-attendees" style="margin-bottom:16px;"></div>
     <div class="table-panel">
       <div class="tbl-header">
-        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Attendees</span><span class="tbl-badge" id="badge-attendees">0</span></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Workshop Registrations</span><span class="tbl-badge" id="badge-attendees">0</span></div>
         <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('attendees',this.value)">
       </div>
       <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
@@ -411,7 +411,7 @@
         <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Certificate Queue</span><span class="tbl-badge" id="badge-certs">0</span></div>
         <input class="tbl-search" placeholder="Search name or email…" oninput="filterCertTable(this.value)">
       </div>
-      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Status</th><th>Last Error</th></tr></thead>
+      <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Workshop</th><th>Registered At</th></tr></thead>
       <tbody id="tbody-certs"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody></table></div>
     </div>
   </div>
