@@ -1294,7 +1294,8 @@ function render() {
         info.appendChild(nameRow);
         const p2k = item.title ? item.title.split('\n') : [];
         if (p2k[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.style.fontWeight = '600'; s1.textContent = p2k[0]; info.appendChild(s1); }
-        if (p2k[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2k[1]; info.appendChild(s2); }
+        if (p2k[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub'; s2.style.fontWeight = '600'; s2.textContent = p2k[1]; info.appendChild(s2); }
+if (p2k[2]) { const s3 = document.createElement('div'); s3.className = 'a-sub-sup'; s3.textContent = p2k[2]; info.appendChild(s3); }
         row.appendChild(info); frag.appendChild(row);
         return;
       }
