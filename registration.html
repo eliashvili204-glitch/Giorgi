@@ -771,33 +771,54 @@ function submitForm() {
   isSubmitting = true;
   var requestId = ++currentRequestId;
 
-  var payload = {
-    email:            email,
-    day:              day,
-    action:           action,
-    lat:              userLat !== null ? userLat : null,
-    lng:              userLng !== null ? userLng : null,
-    loc_status:       locStatus,
-    session_id:       sessionId,
-    synced_to_sheets: false
-  };
-
-  fetch(SB_URL + '/functions/v1/register-attendance', {
-    method: 'POST',
+  // ── Step 1: participants შემოწმება ──
+  fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
     headers: {
-      'Content-Type':  'application/json',
       'apikey':        SB_KEY,
       'Authorization': 'Bearer ' + SB_KEY
-    },
-    body: JSON.stringify(payload)
+    }
   })
   .then(function(r) {
-    if (!r) return;
-    if (requestId !== currentRequestId) return;
+    if (!r.ok) throw new Error('participants_check_' + r.status);
     return r.json();
   })
   .then(function(data) {
-    if (!data) return;
+    if (requestId !== currentRequestId) return Promise.reject('__stale__');
+
+    if (!data || data.length === 0) {
+      isSubmitting = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('❌ Email not found. Please use your registered email.', 'error');
+      return Promise.reject('__not_found__');
+    }
+
+    // ── Step 2: attendance INSERT ──
+    var payload = {
+      email:            email,
+      day:              day,
+      action:           action,
+      lat:              userLat !== null ? userLat : null,
+      lng:              userLng !== null ? userLng : null,
+      loc_status:       locStatus,
+      session_id:       sessionId,
+      synced_to_sheets: false
+    };
+
+    return fetch(SB_URL + '/functions/v1/register-attendance', {
+  method: 'POST',
+  headers: {
+    'Content-Type':  'application/json',
+    'apikey':        SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY
+  },
+  body: JSON.stringify(payload)
+});
+  })
+  .then(function(r) {
+  if (!r) return;
+  if (requestId !== currentRequestId) return;
+  return r.json().then(function(data) {
     if (data.result === 'SUCCESS') {
       handleResult('SUCCESS');
     } else if (data.error === 'ALREADY_DONE') {
@@ -812,11 +833,14 @@ function submitForm() {
     } else {
       handleResult('ERROR:' + (data.error || 'unknown'));
     }
-  })
+  });
+})
   .catch(function(err) {
+    if (err === '__not_found__' || err === '__stale__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
 
+    // retry logic
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Connection issue — retrying…';
@@ -831,6 +855,7 @@ function submitForm() {
     console.error('submitForm error:', err);
   });
 }
+
 // ══════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════
