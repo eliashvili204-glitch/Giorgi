@@ -149,7 +149,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
 .a-row{display:flex;gap:0;padding:10px 0;border-bottom:1px solid var(--border);}
 .a-row.a-live{background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px 14px;margin:4px -14px;box-shadow:0 4px 12px rgba(22,163,74,0.08);}
 .a-time{min-width:76px;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0;padding-top:2px;letter-spacing:.02em;}
-.a-divl{width:1px;background:var(--border);flex-shrink:0;margin:2px 0;}
+.a-divl{width:1px;background
+  :var(--border);flex-shrink:0;margin:2px 0;}
 .a-info{flex:1;padding-left:14px;}
 .a-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
 .a-row.a-live .a-name{color:#16A34A;}
@@ -1160,15 +1161,16 @@ function startAudTimer() {
     const durationMins = cur ? parseDurationMins(cur.time) : null;
     const elapsed = Math.floor((Date.now() - speakerStartedAt) / 1000);
     const val = String(Math.floor(elapsed / 60)).padStart(2, '0') + ':' + String(elapsed % 60).padStart(2, '0');
-    const isOver = durationMins !== null && elapsed >= durationMins * 60;
+    const hasTime = durationMins !== null;
+const isOver = hasTime && elapsed >= durationMins * 60;
 
     const el = document.getElementById('aud-timer');
-    if (el) { el.textContent = val; el.style.color = isOver ? 'var(--warn)' : 'var(--navy)'; }
+    if (el) { el.textContent = val; el.style.color = (hasTime && isOver) ? 'var(--warn)' : 'var(--navy)';
 
     const ae = document.getElementById('aud-agenda-timer');
     if (ae) {
       ae.textContent = val;
-      ae.className = 'badge badge-timer' + (isOver ? ' over' : '');
+      ae.className = 'badge badge-timer' + ((hasTime && isOver) ? ' over' : '');
     }
   }, 1000);
 }
@@ -1297,7 +1299,7 @@ function render() {
         return;
       }
 
-      row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '') + (item.isBreak ? ' a-break' : '');
+      row.className = 'a-row' + ((isCur && !cdOn) ? ' a-live' : '');
       if (item.time) {
         const timeEl = document.createElement('div'); timeEl.className = 'a-time'; timeEl.textContent = item.time; row.appendChild(timeEl);
         const divl = document.createElement('div'); divl.className = 'a-divl'; row.appendChild(divl);
