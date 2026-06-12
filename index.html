@@ -1037,7 +1037,7 @@ window.addEventListener('load', async () => {
     sb = supabase.createClient(SB_URL, SB_KEY);
     const { data, error } = await withTimeout(
       sb.from('live_state')
-        .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch')
+        .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,show_closed,current_epoch')
         .eq('id', 1).single(),
       8000
     );
@@ -1104,7 +1104,7 @@ function startApp() {
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'live_state' }, async p => {
       try {
         const { data: f } = await sb.from('live_state')
-          .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,current_epoch')
+          .select('current_id,speaker_started_at,ai_enabled,show_countdown,show_workshop,show_closed,current_epoch')
           .eq('id', 1).single();
         if (f) {
           currentId        = f.current_id;
