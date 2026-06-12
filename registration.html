@@ -771,32 +771,33 @@ function submitForm() {
   isSubmitting = true;
   var requestId = ++currentRequestId;
 
-  // ── Step 1: participants შემოწმება ──
   var payload = {
-      email:            email,
-      day:              day,
-      action:           action,
-      lat:              userLat !== null ? userLat : null,
-      lng:              userLng !== null ? userLng : null,
-      loc_status:       locStatus,
-      session_id:       sessionId,
-      synced_to_sheets: false
-    };
+    email:            email,
+    day:              day,
+    action:           action,
+    lat:              userLat !== null ? userLat : null,
+    lng:              userLng !== null ? userLng : null,
+    loc_status:       locStatus,
+    session_id:       sessionId,
+    synced_to_sheets: false
+  };
 
-    return fetch(SB_URL + '/functions/v1/register-attendance', {
-  method: 'POST',
-  headers: {
-    'Content-Type':  'application/json',
-    'apikey':        SB_KEY,
-    'Authorization': 'Bearer ' + SB_KEY
-  },
-  body: JSON.stringify(payload)
-});
+  fetch(SB_URL + '/functions/v1/register-attendance', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY
+    },
+    body: JSON.stringify(payload)
   })
   .then(function(r) {
-  if (!r) return;
-  if (requestId !== currentRequestId) return;
-  return r.json().then(function(data) {
+    if (!r) return;
+    if (requestId !== currentRequestId) return;
+    return r.json();
+  })
+  .then(function(data) {
+    if (!data) return;
     if (data.result === 'SUCCESS') {
       handleResult('SUCCESS');
     } else if (data.error === 'ALREADY_DONE') {
@@ -811,14 +812,11 @@ function submitForm() {
     } else {
       handleResult('ERROR:' + (data.error || 'unknown'));
     }
-  });
-})
+  })
   .catch(function(err) {
-    if (err === '__not_found__' || err === '__stale__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
 
-    // retry logic
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Connection issue — retrying…';
@@ -833,7 +831,6 @@ function submitForm() {
     console.error('submitForm error:', err);
   });
 }
-
 // ══════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════
