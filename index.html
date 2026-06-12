@@ -262,6 +262,14 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
     </div>
   </div>
 
+  <!-- CLOSED -->
+  <div id="closed-section" style="display:none;">
+    <div style="text-align:center;padding:60px 24px 40px;">
+      <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:14px;">See You Tomorrow</div>
+      <div style="font-size:13px;color:var(--text-dim);line-height:1.8;">Day 1 has concluded.<br>Conference resumes<br><strong>Sunday, June 14 at 10:00 AM.</strong></div>
+    </div>
+  </div>
+
   <!-- WORKSHOP -->
   <div id="workshop-section" class="workshop-wrap" style="display:none;">
     <div class="workshop-container">
@@ -560,7 +568,7 @@ let currentId = 4, speakerStartedAt = Date.now();
 let currentEpoch = 1;
 let audTimerInterval = null;
 let chatOpen = false, fbOpen = false, unread = 0;
-let aiEnabled = true, showCountdown = false, showWorkshop = false;
+let aiEnabled = true, showCountdown = false, showWorkshop = false, showClosed = false;
 let cdInterval = null;
 let pageEnterTime = Date.now();
 let heartbeatInterval = null;
@@ -628,12 +636,14 @@ function handleEpochChange(newEpoch) {
 // ════════════════════════════════════════════
 function applyTopSlot() {
   const cdActive = showCountdown && CONF_START.getTime() > Date.now();
-  const wsActive = showWorkshop && !cdActive;
+  const closedActive = showClosed && !cdActive;
+  const wsActive = showWorkshop && !cdActive && !closedActive;
 
   document.getElementById('countdown-section').style.display = cdActive ? 'block' : 'none';
+  document.getElementById('closed-section').style.display    = closedActive ? 'block' : 'none';
   document.getElementById('workshop-section').style.display  = wsActive ? 'block' : 'none';
-  document.getElementById('now-section').style.display  = cdActive ? 'none' : 'block';
-  document.getElementById('next-section').style.display = cdActive ? 'none' : 'block';
+  document.getElementById('now-section').style.display  = (cdActive || closedActive) ? 'none' : 'block';
+  document.getElementById('next-section').style.display = (cdActive || closedActive) ? 'none' : 'block';
 
   if (cdActive) {
     if (!cdInterval) { tickCountdown(); cdInterval = setInterval(tickCountdown, 1000); }
@@ -1049,6 +1059,7 @@ window.addEventListener('load', async () => {
     if (data.ai_enabled     != null) aiEnabled    = Boolean(data.ai_enabled);
     if (data.show_countdown != null) showCountdown = Boolean(data.show_countdown);
     if (data.show_workshop  != null) showWorkshop  = Boolean(data.show_workshop);
+    if (data.show_closed   != null) showClosed   = Boolean(data.show_closed);
 
     const storedEmail = localStorage.getItem('syssa_workshop_email');
     if (storedEmail) participantEmail = storedEmail;
@@ -1102,6 +1113,7 @@ function startApp() {
           if (f.ai_enabled     != null) { aiEnabled    = Boolean(f.ai_enabled); updateAIIcon(); }
           if (f.show_countdown != null) showCountdown = Boolean(f.show_countdown);
           if (f.show_workshop  != null) showWorkshop  = Boolean(f.show_workshop);
+          if (f.show_closed   != null) showClosed   = Boolean(f.show_closed);
           applyTopSlot();
         }
       } catch(e) { if (p.new && p.new.current_id) currentId = p.new.current_id; }
