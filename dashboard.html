@@ -334,7 +334,7 @@
     <div class="two-col" id="stats-attendees" style="margin-bottom:16px;"></div>
     <div class="table-panel">
       <div class="tbl-header">
-        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Workshop Registrations</span><span class="tbl-badge" id="badge-attendees">0</span></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Attendees</span><span class="tbl-badge" id="badge-attendees">0</span></div>
         <input class="tbl-search" placeholder="Search name or email…" oninput="filterGroupTable('attendees',this.value)">
       </div>
       <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>D1 In</th><th>D1 Out</th><th>D2 In</th><th>D2 Out</th></tr></thead>
@@ -408,7 +408,7 @@
     </div>
     <div class="table-panel">
       <div class="tbl-header">
-        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Certificate Queue</span><span class="tbl-badge" id="badge-certs">0</span></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="tbl-title">Workshop Registrations</span><span class="tbl-badge" id="badge-certs">0</span></div>
         <input class="tbl-search" placeholder="Search name or email…" oninput="filterCertTable(this.value)">
       </div>
       <div class="tbl-scroll"><table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Group</th><th>Workshop</th><th>Registered At</th></tr></thead>
@@ -660,11 +660,11 @@ function renderCertTable(arr) {
 function renderCertStats(arr) {
   var total = arr.length;
   var limit = 30;
-  var left  = Math.max(0, limit - total);
+  var left = isNaN(total) ? limit : Math.max(0, limit - total);
   _set('cert-pending',    total);
   _set('cert-processing', left);
   _set('cert-done',       limit);
-  _set('cert-failed',     Math.round((total/limit)*100) + '%');
+  _set('cert-failed', limit > 0 ? Math.round((total/limit)*100) + '%' : '0%');
 }
 function filterCertTable(q) {
   q = q.toLowerCase().trim();
