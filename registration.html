@@ -419,7 +419,8 @@
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
+var RATE_LIMIT_MS = 5 * 60 * 60 * 1000;
+var EMAIL_RL_MS   = 5 * 60 * 60 * 1000;
 var DEVICE_RL_KEY = 'xi_device_last_submit';
 var PAGE_LOAD_KEY = 'xi_page_loads';
 var MAX_RETRIES   = 3;
@@ -834,6 +835,35 @@ function submitForm() {
       return Promise.reject('__not_found__');
     }
 
+    // ── Step 1.5: email rate limit check ──
+      var emailRlSince = new Date(Date.now() - EMAIL_RL_MS).toISOString();
+      return fetch(SB_URL + '/rest/v1/attendance' +
+        '?email=eq.' + encodeURIComponent(email) +
+        '&created_at=gte.' + emailRlSince +
+        '&select=created_at&limit=1&order=created_at.desc', {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      });
+    })
+    .then(function(r) {
+      if (requestId !== currentRequestId) return Promise.reject('__stale__');
+      if (!r.ok) throw new Error('email_rl_check_' + r.status);
+      return r.json();
+    })
+    .then(function(rows) {
+      if (requestId !== currentRequestId) return Promise.reject('__stale__');
+      if (rows && rows.length > 0) {
+        var lastTime  = new Date(rows[0].created_at).getTime();
+        var remaining = EMAIL_RL_MS - (Date.now() - lastTime);
+        isSubmitting  = false;
+        document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+        document.getElementById('submit-btn').disabled  = false;
+        startCountdown(remaining,
+          'This email was recently used for registration. Please wait before registering again.',
+          'Email Limit Active'
+        );
+        return Promise.reject('__email_limited__');
+      }
+
     // ── Step 2: attendance INSERT ──
     var payload = {
       email:            email,
@@ -873,7 +903,7 @@ function submitForm() {
     }
   })
   .catch(function(err) {
-    if (err === '__not_found__' || err === '__stale__') return;
+    if (err === '__not_found__' || err === '__stale__' || err === '__email_limited__') return;
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
 
