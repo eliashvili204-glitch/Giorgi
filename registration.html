@@ -41,7 +41,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── CARD ── */
   .card {
     width: 100%;
     max-width: 420px;
@@ -71,7 +70,6 @@
     .submit      { padding: 15px !important; font-size: 13px !important; }
   }
 
-  /* ── HERO BANNER ── */
   .card-hero {
     position: relative;
     width: 100%;
@@ -82,7 +80,6 @@
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 
-  /* geometric accent lines */
   .card-hero::before {
     content: '';
     position: absolute;
@@ -97,7 +94,6 @@
       );
   }
 
-  /* gold rule */
   .card-hero::after {
     content: '';
     position: absolute;
@@ -135,7 +131,6 @@
     letter-spacing: 0.18em; text-transform: uppercase;
   }
 
-  /* ── BODY ── */
   .card-body { padding: 26px 28px 30px; }
 
   .card-header { margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
@@ -146,7 +141,6 @@
   }
   .card-desc   { font-size: 11.5px; color: var(--text-soft); line-height: 1.6; }
 
-  /* ── FIELDS ── */
   .field       { margin-bottom: 18px; }
   .field-label {
     font-size: 9.5px; font-weight: 700;
@@ -159,7 +153,6 @@
     background: var(--border);
   }
 
-  /* ── SEGMENT ── */
   .segment { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .seg-btn {
     padding: 10px 0;
@@ -187,7 +180,6 @@
 
   .sep { height: 1px; background: var(--border); margin: 2px 0 18px; }
 
-  /* ── INPUT ── */
   .input-wrap { position: relative; }
   .input-field {
     width: 100%; padding: 11px 13px;
@@ -208,7 +200,6 @@
   }
   .input-field:disabled { opacity: 0.45; cursor: not-allowed; background: var(--bg); }
 
-  /* ── LOCATION STATUS ── */
   #locStatus {
     margin-top: 10px;
     display: flex; align-items: center; gap: 7px;
@@ -226,7 +217,6 @@
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
   .loc-text { flex: 1; }
 
-  /* ── LOCATION BLOCK ── */
   #locationBlock {
     display: none;
     background: #FEF2F2; border: 1px solid #FCA5A5;
@@ -252,7 +242,6 @@
     border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
   }
 
-  /* manual panel */
   #manualPanel {
     display: none;
     background: #FFF8F6; border: 1px solid #EDD5CE;
@@ -273,7 +262,6 @@
   .rl-countdown       { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: #92400E; letter-spacing: 0.04em; text-align: center; padding: 6px 0 2px; }
   .rl-countdown-label { font-size: 9.5px; font-weight: 500; color: #B45309; letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-top: 2px; }
 
-  /* ── SUBMIT ── */
   .submit {
     width: 100%; padding: 13px; margin-top: 24px;
     background: var(--navy);
@@ -296,7 +284,6 @@
   .submit:active   { opacity: 0.76; transform: scale(0.985); }
   .submit:disabled { opacity: 0.38; cursor: not-allowed; transform: none; background: var(--text-mid); box-shadow: none; }
 
-  /* ── MESSAGES ── */
   .msg {
     margin-top: 14px; padding: 12px 14px;
     border-radius: var(--radius);
@@ -326,7 +313,6 @@
 <body>
 <div class="card">
 
-  <!-- HERO -->
   <div class="card-hero">
     <div class="hero-inner">
       <div class="hero-eyebrow">XI · International Conference</div>
@@ -336,7 +322,6 @@
     </div>
   </div>
 
-  <!-- BODY -->
   <div class="card-body">
     <div class="card-header">
       <div class="card-title">Register Attendance</div>
@@ -415,16 +400,13 @@
 
 <script>
 // ══════════════════════════════════════════════════════════════
-//  CONFIG  — Supabase (უცვლელი)
+//  CONFIG
 // ══════════════════════════════════════════════════════════════
 var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
 var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-var RATE_LIMIT_MS = 7 * 60 * 60 * 1000;
-var DEVICE_RL_KEY = 'xi_device_last_submit';
-var PAGE_LOAD_KEY = 'xi_page_loads';
+var RATE_LIMIT_MS = 5 * 60 * 60 * 1000; // 5 საათი
 var MAX_RETRIES   = 3;
-var RETRY_DELAY_MS      = 2500;
-var LOCK_RETRY_DELAY_MS = 3000;
+var RETRY_DELAY_MS = 2500;
 var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
 var IS_SAFARI     = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
@@ -449,6 +431,7 @@ try {
 // ══════════════════════════════════════════════════════════════
 //  PAGE-LOAD COUNTER  (3 refresh → "Continue anyway")
 // ══════════════════════════════════════════════════════════════
+var PAGE_LOAD_KEY = 'xi_page_loads';
 var pageLoads = 0;
 try {
   pageLoads = parseInt(localStorage.getItem(PAGE_LOAD_KEY) || '0', 10);
@@ -464,28 +447,13 @@ function resetPageLoads() {
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
-var geoState          = 'detecting';
-var userLat           = null;
-var userLng           = null;
-var isSubmitting      = false;
-var currentRequestId  = 0;
+var geoState         = 'detecting';
+var userLat          = null;
+var userLng          = null;
+var isSubmitting     = false;
+var currentRequestId = 0;
 var countdownInterval = null;
-var geoAttempt        = 0;
-
-// ══════════════════════════════════════════════════════════════
-//  DEVICE RATE LIMIT
-// ══════════════════════════════════════════════════════════════
-function getDeviceRateRemaining() {
-  try {
-    var last = localStorage.getItem(DEVICE_RL_KEY);
-    if (!last) return 0;
-    var rem = RATE_LIMIT_MS - (Date.now() - parseInt(last, 10));
-    return rem > 0 ? rem : 0;
-  } catch(e) { return 0; }
-}
-function setDeviceRateLimit() {
-  try { localStorage.setItem(DEVICE_RL_KEY, Date.now().toString()); } catch(e) {}
-}
+var geoAttempt       = 0;
 
 // ══════════════════════════════════════════════════════════════
 //  COUNTDOWN
@@ -532,6 +500,35 @@ function hideRateLimitBox() {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  SUPABASE — RATE LIMIT CHECK
+//  ეძახის check_attendance_limit(email, session_id) function-ს
+// ══════════════════════════════════════════════════════════════
+function checkRateLimit(email, onResult) {
+  fetch(SB_URL + '/rest/v1/rpc/check_attendance_limit', {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY
+    },
+    body: JSON.stringify({
+      p_email:      email,
+      p_session_id: sessionId
+    })
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('rpc_' + r.status);
+    return r.json();
+  })
+  .then(function(data) {
+    onResult(null, data);
+  })
+  .catch(function(err) {
+    onResult(err, null);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
 //  GEOLOCATION
 // ══════════════════════════════════════════════════════════════
 function startLocation() {
@@ -545,14 +542,6 @@ function startLocation() {
   hideBlock();
   document.getElementById('manualPanel').style.display = 'none';
   setStatusDetecting('Detecting location…');
-
-  var devRem = getDeviceRateRemaining();
-  if (devRem > 0) {
-    startCountdown(devRem,
-      'This device has already submitted a registration. Please wait before trying again.',
-      'Device Limit Active'
-    );
-  }
 
   if (!navigator.geolocation) {
     showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
@@ -603,9 +592,7 @@ function onGeoSuccess(pos) {
   }
 
   setInputsEnabled(true);
-  if (getDeviceRateRemaining() <= 0) {
-    document.getElementById('submit-btn').disabled = false;
-  }
+  document.getElementById('submit-btn').disabled = false;
 }
 
 function onGeoError(err) {
@@ -643,9 +630,7 @@ function activateManual() {
   document.getElementById('locStatus').className = 'manual';
 
   setInputsEnabled(true);
-  if (getDeviceRateRemaining() <= 0) {
-    document.getElementById('submit-btn').disabled = false;
-  }
+  document.getElementById('submit-btn').disabled = false;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -687,9 +672,6 @@ function hideBlock()       { document.getElementById('locationBlock').style.disp
 function showManualNotice(){ document.getElementById('manual-notice').style.display = 'block'; }
 function hideManualNotice(){ document.getElementById('manual-notice').style.display = 'none'; }
 
-// ══════════════════════════════════════════════════════════════
-//  INPUTS
-// ══════════════════════════════════════════════════════════════
 function setInputsEnabled(enabled) {
   document.getElementById('email-inp').disabled = !enabled;
   document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
@@ -722,18 +704,6 @@ function handleResult(result) {
   document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
   document.getElementById('retry-info').style.display = 'none';
 
-  // Server-side rate limit
-  if (typeof result === 'string' && result.indexOf('RATE_LIMITED:') === 0) {
-    var parts = result.split(':');
-    var remMs = parseInt(parts[1], 10);
-    isSubmitting = false;
-    startCountdown(remMs,
-      'This email has already been registered. Please wait before trying again.',
-      'Email Limit Active'
-    );
-    return;
-  }
-
   var RESULT_MAP = {
     'SUCCESS':            { text: '✅ Attendance recorded successfully!',                 type: 'success' },
     'SUCCESS_OFFSITE':    { text: '✅ Attendance recorded (off-site location noted).',    type: 'success' },
@@ -750,14 +720,12 @@ function handleResult(result) {
   if (entry) {
     showMsg(entry.text, entry.type);
     if (entry.type === 'success') {
-      setDeviceRateLimit();
-      setTimeout(function() {
-        startCountdown(
-          RATE_LIMIT_MS,
-          'Registration successful. This device cannot register again for 7 hours.',
-          'Device Limit Active'
-        );
-      }, 1500);
+      // წარმატებული submit — 5 საათი countdown
+      startCountdown(
+        RATE_LIMIT_MS,
+        'Registration successful. Please wait 5 hours before registering again.',
+        'Registration Limit Active'
+      );
     } else {
       document.getElementById('submit-btn').disabled = false;
     }
@@ -771,7 +739,7 @@ function handleResult(result) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  SUBMIT  — Supabase პირდაპირ (უცვლელი ლოგიკა)
+//  SUBMIT
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
   if (isSubmitting) return;
@@ -779,15 +747,6 @@ function submitForm() {
   var allowed = ['found', 'offsite', 'manual'];
   if (allowed.indexOf(geoState) === -1) {
     showMsg('Please wait for location detection to complete.', 'error');
-    return;
-  }
-
-  var devRem = getDeviceRateRemaining();
-  if (devRem > 0) {
-    startCountdown(devRem,
-      'This device has already submitted a registration. Please wait before trying again.',
-      'Device Limit Active'
-    );
     return;
   }
 
@@ -799,20 +758,54 @@ function submitForm() {
 
   var day    = document.querySelector('#seg-day .seg-btn.active').textContent.trim() === 'Day 1' ? 1 : 2;
   var action = document.querySelector('#seg-action .seg-btn.active').textContent.trim() === 'Check-in' ? 'in' : 'out';
-
   var locStatus = geoState === 'found'   ? 'onsite'
                 : geoState === 'offsite' ? 'offsite'
                 : 'LOCATION_FAILED';
 
   document.getElementById('submit-btn').disabled  = true;
-  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
-  document.getElementById('retry-info').style.display = 'none';
-  showMsg('Submitting attendance…', 'info');
+  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Checking…';
+  showMsg('Verifying registration limit…', 'info');
   hideRateLimitBox();
   isSubmitting = true;
   var requestId = ++currentRequestId;
 
-  // ── Step 1: participants შემოწმება ──
+  // ── Step 1: Supabase rate limit check ──
+  checkRateLimit(email, function(err, data) {
+    if (requestId !== currentRequestId) return;
+
+    if (err) {
+      // RPC შეცდომა — გავაგრძელოთ submit-ი (fail-open)
+      console.warn('Rate limit check failed, proceeding:', err);
+      doInsert(email, day, action, locStatus, requestId);
+      return;
+    }
+
+    if (data && data.limited) {
+      isSubmitting = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      startCountdown(
+        Math.round(data.remaining_ms),
+        'This email or device has already been registered. Please wait before trying again.',
+        'Registration Limit Active'
+      );
+      return;
+    }
+
+    // ლიმიტი არ არის — გაგრძელება
+    doInsert(email, day, action, locStatus, requestId);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INSERT
+// ══════════════════════════════════════════════════════════════
+function doInsert(email, day, action, locStatus, requestId) {
+  if (requestId !== currentRequestId) return;
+
+  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
+  showMsg('Submitting attendance…', 'info');
+
+  // ── Step 2: participants შემოწმება ──
   fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
     headers: {
       'apikey':        SB_KEY,
@@ -834,7 +827,7 @@ function submitForm() {
       return Promise.reject('__not_found__');
     }
 
-    // ── Step 2: attendance INSERT ──
+    // ── Step 3: attendance INSERT ──
     var payload = {
       email:            email,
       day:              day,
@@ -864,7 +857,11 @@ function submitForm() {
     if (r.status === 201) {
       handleResult('SUCCESS');
     } else if (r.status === 409) {
-      handleResult('ALREADY_DONE');
+      // unique constraint — ეს კომბინაცია უკვე არსებობს
+      isSubmitting = false;
+      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
+      document.getElementById('submit-btn').disabled = false;
+      showMsg('⚠️ This action (Day ' + day + ' / ' + (action === 'in' ? 'Check-in' : 'Check-out') + ') has already been recorded for this email.', 'info');
     } else {
       return r.text().then(function(body) {
         console.warn('Supabase INSERT error', r.status, body);
@@ -877,7 +874,6 @@ function submitForm() {
     isSubmitting = false;
     document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
 
-    // retry logic
     var ri = document.getElementById('retry-info');
     ri.style.display = 'block';
     ri.textContent   = 'Connection issue — retrying…';
@@ -889,7 +885,7 @@ function submitForm() {
       showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
     }, RETRY_DELAY_MS);
 
-    console.error('submitForm error:', err);
+    console.error('doInsert error:', err);
   });
 }
 
