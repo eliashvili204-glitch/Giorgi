@@ -398,7 +398,11 @@ var RADIUS_M = 300;
 // ══════════════════════════════════════════════════════════════
 //  SESSION ID
 // ══════════════════════════════════════════════════════════════
-var sessionId = 'p_' + Math.random().toString(36).substr(2, 9);
+var sessionId = localStorage.getItem('conf_device_id');
+if (!sessionId) {
+  sessionId = 'p_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+  localStorage.setItem('conf_device_id', sessionId);
+}
 // ══════════════════════════════════════════════════════════════
 //  PAGE-LOAD COUNTER  (3 refresh → "Continue anyway")
 // ══════════════════════════════════════════════════════════════
