@@ -1319,9 +1319,8 @@ if (p2k[2]) { const s3 = document.createElement('div'); s3.className = 'a-sub-su
       }
       if (isNxt && !cdOn) { const bn = document.createElement('span'); bn.className = 'a-badge-next'; bn.textContent = 'Up next'; nameRow.appendChild(bn); }
       info.appendChild(nameRow);
-      if (p2[0]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.textContent = p2[0]; info.appendChild(s1); }
-if (p2[1]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2[1]; info.appendChild(s2); }
-if (p2[2]) { const s3 = document.createElement('div'); s3.className = 'a-sub-sup'; s3.textContent = p2[2]; info.appendChild(s3); }
+      if (p2[0] || p2[1]) { const s1 = document.createElement('div'); s1.className = 'a-sub'; s1.textContent = [p2[0], p2[1]].filter(Boolean).join(', '); info.appendChild(s1); }
+if (p2[2]) { const s2 = document.createElement('div'); s2.className = 'a-sub-sup'; s2.textContent = p2[2]; info.appendChild(s2); }
       row.appendChild(info); frag.appendChild(row);
     });
   });
