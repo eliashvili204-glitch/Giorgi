@@ -427,17 +427,17 @@ function showRateLimit(remainingMs) {
   if (countdownInterval) clearInterval(countdownInterval);
   document.getElementById('submit-btn').disabled = true;
   var deadline = Date.now() + remainingMs;
-  showMsg('⏳ ' + formatMs(remainingMs) + ' — უნდა დაელოდო ხელახლა რეგისტრაციამდე.', 'warning');
+  showMsg('⏳ ' + formatMs(remainingMs) + ' — please wait before registering again.', 'warning');
   countdownInterval = setInterval(function() {
     var left = deadline - Date.now();
     if (left <= 0) {
       clearInterval(countdownInterval);
       countdownInterval = null;
       document.getElementById('submit-btn').disabled = false;
-      showMsg('შეგიძლია ხელახლა დარეგისტრირდე.', 'info');
+      showMsg('You may register again.', 'info');
       return;
     }
-    showMsg('⏳ ' + formatMs(left) + ' — უნდა დაელოდო ხელახლა რეგისტრაციამდე.', 'warning');
+    showMsg('⏳ ' + formatMs(left) + ' — please wait before registering again.', 'warning');
   }, 1000);
 }
 
