@@ -265,8 +265,8 @@ body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min
   <!-- CLOSED -->
   <div id="closed-section" style="display:none;">
     <div style="text-align:center;padding:60px 24px 40px;">
-      <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:14px;">See You Tomorrow</div>
-      <div style="font-size:13px;color:var(--text-dim);line-height:1.8;">Day 1 has concluded.<br>Conference resumes<br><strong>Sunday, June 14 at 10:00 AM.</strong></div>
+      <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:14px;">Thank You!</div>
+<div style="font-size:13px;color:var(--text-dim);line-height:1.8;">The conference has concluded.<br>Thank you for being part of<br><strong>"Infection at the Crossroads 2026."</strong></div>
     </div>
   </div>
 
@@ -1189,7 +1189,7 @@ function render() {
   const cur   = AGENDA.find(a => a.id === currentId);
   const nxt   = getNext(currentId);
   const parts = cur ? cur.title.split('\n') : [];
-  const cdOn  = showCountdown && CONF_START.getTime() > Date.now();
+  const cdOn  = (showCountdown && CONF_START.getTime() > Date.now()) || showClosed;
 
   document.getElementById('now-speaker').textContent = cur ? cur.speaker : '\u2014';
   document.getElementById('now-title').textContent   = parts[0] || '';
