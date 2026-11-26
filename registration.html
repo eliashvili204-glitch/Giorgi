@@ -2,380 +2,257 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>XI International Conference</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A. Nobel's Day 2026 — Attendance</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:           #F0F4F7;
-    --surface:      #FFFFFF;
-    --border:       #C8D8E4;
-    --border-focus: #1A365D;
-    --text:         #0A1B29;
-    --text-mid:     #33475B;
-    --text-soft:    #607386;
-    --navy:         #1A365D;
-    --navy-light:   #2A4A7F;
-    --navy-soft:    #E8EFF6;
-    --navy-border:  #94A9C2;
-    --selected-bg:  #1A365D;
-    --selected-text:#FFFFFF;
-    --warn:         #C0503A;
-    --success:      #16A34A;
-    --amber:        #92400E;
-    --amber-bg:     #FFFBEB;
-    --amber-border: #FDE68A;
-    --gold:         #C9A84C;
-    --radius:       10px;
+    --navy-deep:  #0E1F33;
+    --navy:       #1B2A4A;
+    --teal:       #17394D;
+    --blue:       #1B5E94;
+    --blue-light: #2E7BB5;
+    --gold:       #D9BF8C;
+    --gold-dark:  #B89A5E;
+    --bg:         #EAF0F6;
+    --surface:    #FFFFFF;
+    --border:     #C9D7E4;
+    --text:       #0E1F33;
+    --text-soft:  #5B6E82;
+    --success:    #15803D;
+    --warn:       #B42318;
+    --radius:     12px;
   }
 
   html, body {
+    min-height: 100%;
+    font-family: 'Montserrat', -apple-system, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--text);
+  }
+
+  body {
     min-height: 100vh;
-    background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'DM Sans', -apple-system, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    padding: 24px 14px;
+    background: linear-gradient(180deg, #3b4a5c 0%, #5b7893 45%, #1B5E94 100%);
+    background-attachment: fixed;
   }
 
   .card {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(26,54,93,0.10), 0 1px 4px rgba(0,0,0,0.04);
-    animation: cardUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    box-shadow: 0 20px 50px rgba(8, 20, 38, 0.35);
+    animation: cardUp .5s cubic-bezier(.16,1,.3,1) both;
   }
-
   @keyframes cardUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  @media (max-width: 460px) {
-    body { align-items: flex-start; background: var(--surface); }
-    .card {
-      max-width: 100%; border-radius: 0;
-      border-left: none; border-right: none; border-top: none;
-      box-shadow: none; min-height: 100vh;
-    }
-    .card-body   { padding: 24px 20px 36px !important; }
-    .seg-btn     { padding: 12px 0 !important; font-size: 13px !important; }
-    .input-field { font-size: 16px !important; padding: 12px !important; }
-    .submit      { padding: 15px !important; font-size: 13px !important; }
-  }
-
-  .card-hero {
+  /* ───── HERO ───── */
+  .hero {
     position: relative;
-    width: 100%;
-    height: 160px;
-    background: linear-gradient(150deg, #0D2240 0%, #1A365D 45%, #1E4080 100%);
-    display: flex; align-items: center; justify-content: center;
+    padding: 30px 26px 26px;
+    background: linear-gradient(165deg, var(--navy-deep) 0%, var(--teal) 55%, var(--blue) 120%);
+    color: #fff;
     overflow: hidden;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-
-  .card-hero::before {
-    content: '';
+  .hero::before {
+    content: 'SYSSA';
     position: absolute;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 28px,
-        rgba(255,255,255,0.018) 28px,
-        rgba(255,255,255,0.018) 29px
-      );
-  }
-
-  .card-hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, var(--gold) 35%, var(--gold) 65%, transparent 100%);
-    opacity: 0.6;
-  }
-
-  .hero-inner {
-    position: relative; z-index: 1;
-    text-align: center; padding: 0 24px;
-  }
-  .hero-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 9px; font-weight: 500;
-    letter-spacing: 0.28em; text-transform: uppercase;
-    color: var(--gold); opacity: 0.85;
-    margin-bottom: 10px;
-  }
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px; font-weight: 300;
-    color: #FFFFFF; letter-spacing: 0.05em;
-    line-height: 1.15; margin-bottom: 10px;
-  }
-  .hero-rule {
-    width: 32px; height: 1px;
-    background: rgba(201,168,76,0.5);
-    margin: 0 auto 9px;
-  }
-  .hero-sub {
-    font-size: 9px; font-weight: 500;
-    color: rgba(255,255,255,0.42);
-    letter-spacing: 0.18em; text-transform: uppercase;
-  }
-
-  .card-body { padding: 26px 28px 30px; }
-
-  .card-header { margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
-  .card-title  {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px; font-weight: 600;
-    color: var(--navy); margin-bottom: 4px; line-height: 1.2;
-  }
-  .card-desc   { font-size: 11.5px; color: var(--text-soft); line-height: 1.6; }
-
-  .field       { margin-bottom: 18px; }
-  .field-label {
-    font-size: 9.5px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--text-soft); margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .field-label::after {
-    content: ''; flex: 1; height: 1px;
-    background: var(--border);
-  }
-
-  .segment { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .seg-btn {
-    padding: 10px 0;
-    background: var(--navy-soft);
-    border: 1px solid var(--navy-border);
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    color: var(--text-mid); cursor: pointer;
-    letter-spacing: 0.01em;
-    transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
-  }
-  .seg-btn:hover:not(.active):not(:disabled) {
-    border-color: var(--border-focus);
-    color: var(--navy);
-    background: #d8e8f2;
-  }
-  .seg-btn.active {
-    background: var(--selected-bg);
-    border-color: var(--selected-bg);
-    color: var(--selected-text);
-    box-shadow: 0 2px 8px rgba(26,54,93,0.22);
-  }
-  .seg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .sep { height: 1px; background: var(--border); margin: 2px 0 18px; }
-
-  .input-wrap { position: relative; }
-  .input-field {
-    width: 100%; padding: 11px 13px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 400;
-    color: var(--text); outline: none;
-    letter-spacing: 0.01em;
-    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  }
-  .input-field::placeholder { color: var(--text-soft); }
-  .input-field:focus {
-    border-color: var(--border-focus);
-    background: var(--navy-soft);
-    box-shadow: 0 0 0 3px rgba(26,54,93,0.08);
-  }
-  .input-field:disabled { opacity: 0.45; cursor: not-allowed; background: var(--bg); }
-
-  #locStatus {
-    margin-top: 10px;
-    display: flex; align-items: center; gap: 7px;
-    font-size: 11px; font-weight: 400;
-    color: var(--text-soft); letter-spacing: 0.01em;
-    min-height: 20px;
-  }
-  #locStatus.found   { color: var(--success); }
-  #locStatus.offsite { color: #7A5A00; }
-  #locStatus.denied  { color: var(--warn); }
-  #locStatus.manual  { color: var(--amber); }
-
-  .loc-dot   { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-  .loc-pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--text-soft); flex-shrink: 0; animation: pulse 1.2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-  .loc-text { flex: 1; }
-
-  #locationBlock {
-    display: none;
-    background: #FEF2F2; border: 1px solid #FCA5A5;
-    border-radius: var(--radius); padding: 14px; margin-top: 10px;
-  }
-  .loc-block-title { font-size: 10px; font-weight: 700; color: var(--warn); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-  .loc-block-desc  { font-size: 11px; color: #8B4035; line-height: 1.65; margin-bottom: 10px; }
-  .loc-how         { background: rgba(192,80,58,0.07); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
-  .loc-how-title   { font-size: 9.5px; font-weight: 700; color: var(--warn); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 5px; }
-  .loc-how-body    { font-size: 11px; color: #8B4035; line-height: 1.9; }
-  .loc-continue-btn {
-    display: none; width: 100%; padding: 9px;
-    background: var(--navy); border: none; border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
-    color: #fff; cursor: pointer; letter-spacing: 0.04em;
-    transition: opacity 0.15s;
-  }
-  .loc-continue-btn:hover { opacity: 0.88; }
-
-  #manual-notice {
-    display: none; margin-top: 8px; padding: 9px 11px;
-    background: var(--amber-bg); border: 1px solid var(--amber-border);
-    border-radius: var(--radius); font-size: 11px; color: var(--amber); line-height: 1.6;
-  }
-
-  #manualPanel {
-    display: none;
-    background: #FFF8F6; border: 1px solid #EDD5CE;
-    border-radius: var(--radius); padding: 14px; margin-top: 10px;
-  }
-  .mp-title { font-size: 10px; font-weight: 700; color: var(--warn); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-  .mp-body  { background: rgba(192,80,58,0.07); border-radius: 6px; padding: 10px 12px; font-size: 11px; color: #8B4035; line-height: 1.7; }
-
-  
-  .submit {
-    width: 100%; padding: 13px; margin-top: 24px;
-    background: var(--navy);
-    border: none; border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 700; color: #fff;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
-    box-shadow: 0 4px 14px rgba(26,54,93,0.22);
-    position: relative; overflow: hidden;
-  }
-  .submit::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    right: -10px; top: -6px;
+    font-size: 92px; font-weight: 800;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.045);
     pointer-events: none;
   }
-  .submit:hover    { opacity: 0.88; box-shadow: 0 6px 18px rgba(26,54,93,0.28); }
-  .submit:active   { opacity: 0.76; transform: scale(0.985); }
-  .submit:disabled { opacity: 0.38; cursor: not-allowed; transform: none; background: var(--text-mid); box-shadow: none; }
-
-  .msg {
-    margin-top: 14px; padding: 12px 14px;
-    border-radius: var(--radius);
-    font-size: 12px; line-height: 1.6; font-weight: 500;
-    display: none;
-    animation: cardUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  .hero::after {
+    content: '';
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: .75;
   }
-  .msg.success { display: block; background: #F0FDF4; border: 1px solid #86EFAC; color: var(--success); }
-  .msg.error   { display: block; background: #FEF2F2; border: 1px solid #FCA5A5; color: var(--warn); }
-  .msg.info    { display: block; background: var(--navy-soft); border: 1px solid var(--navy-border); color: var(--navy); }
-  .msg.warning { display: block; background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+  .hero-top {
+    position: relative; z-index: 1;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .hero-event {
+    position: relative; z-index: 1;
+    font-size: 21px; font-weight: 800;
+    letter-spacing: -0.01em; line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    position: relative; z-index: 1;
+    font-size: 40px; font-weight: 800;
+    letter-spacing: -0.025em; line-height: 0.98;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-session {
+    position: relative; z-index: 1;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: rgba(255,255,255,.75);
+    margin-bottom: 0;
+  }
+
+  /* ───── BODY ───── */
+  .body { padding: 26px 26px 30px; }
+
+  .body-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+  .body-desc  { font-size: 12px; color: var(--text-soft); line-height: 1.6; margin-bottom: 22px; font-weight: 500; }
+
+  .label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .field { margin-bottom: 20px; }
+
+  .input {
+    width: 100%;
+    padding: 14px 15px;
+    background: #F5F8FB;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit; font-size: 15px; font-weight: 500;
+    color: var(--text); outline: none;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .input::placeholder { color: #8FA0B2; }
+  .input:focus {
+    border-color: var(--blue);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(27,94,148,.12);
+  }
+  .input:disabled { opacity: .6; cursor: not-allowed; }
+
+
+  .segment { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .seg-btn {
+    padding: 13px 0;
+    background: #EEF3F8;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    color: var(--navy); cursor: pointer;
+    transition: all .15s;
+  }
+  .seg-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(27,42,74,.28);
+  }
+  .seg-btn:disabled {
+    opacity: .4; cursor: not-allowed;
+    background: #E4EAF0; color: var(--text-soft); box-shadow: none;
+  }
+  .seg-btn.active:disabled { background: var(--navy); color: #fff; opacity: .45; }
+
+  .hint {
+    margin-top: 9px; min-height: 18px;
+    font-size: 11.5px; font-weight: 600; line-height: 1.5;
+    color: var(--text-soft);
+  }
+  .hint.ok   { color: var(--success); }
+  .hint.done { color: var(--blue); }
+
+  .submit {
+    width: 100%;
+    padding: 15px;
+    margin-top: 4px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    border: none;
+    border-radius: var(--radius);
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: #fff; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(27,94,148,.32);
+    transition: opacity .15s, transform .1s;
+  }
+  .submit:hover    { opacity: .92; }
+  .submit:active   { transform: scale(.985); }
+  .submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
   .spinner {
     display: inline-block; width: 13px; height: 13px;
-    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
-    border-radius: 50%; animation: spin 0.7s linear infinite;
-    vertical-align: middle; margin-right: 7px;
+    border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite;
+    vertical-align: -2px; margin-right: 8px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .retry-badge {
-    display: inline-block; font-size: 10px; font-weight: 600;
-    color: var(--text-soft); margin-top: 6px; letter-spacing: 0.04em;
+  .msg {
+    display: none;
+    margin-top: 16px; padding: 13px 15px;
+    border-radius: var(--radius);
+    font-size: 12.5px; line-height: 1.6; font-weight: 600;
+    animation: cardUp .3s cubic-bezier(.16,1,.3,1) both;
+  }
+  .msg.success { display: block; background: #F0FDF4; border: 1px solid #86EFAC; color: var(--success); }
+  .msg.error   { display: block; background: #FEF2F2; border: 1px solid #FCA5A5; color: var(--warn); }
+  .msg.info    { display: block; background: #EAF2FA; border: 1px solid #9FC1E0; color: var(--navy); }
+  .msg.warning { display: block; background: #FFF9EB; border: 1px solid #F0D99A; color: #8A5A00; }
+
+  @media (max-width: 480px) {
+    body { padding: 0; align-items: flex-start; background: var(--surface); }
+    .card { max-width: 100%; border-radius: 0; box-shadow: none; min-height: 100vh; }
+    .hero { padding: 28px 20px 24px; }
+    .hero-title { font-size: 36px; }
+    .body { padding: 24px 20px 36px; }
+    .input { font-size: 16px; }
   }
 </style>
 </head>
 <body>
 <div class="card">
 
-  <div class="card-hero">
-    <div class="hero-inner">
-      <div class="hero-eyebrow">XI · International Conference</div>
-      <div class="hero-title">Infection at the Crossroads</div>
-      <div class="hero-rule"></div>
-      <div class="hero-sub">Attendance Registration</div>
-    </div>
+  <div class="hero">
+    <div class="hero-top">SYSSA</div>
+    <div class="hero-event">A. Nobel’s Day 2026</div>
+    <div class="hero-title">Rare<br>Diseases</div>
+    <div class="hero-session">XV Scientific Session</div>
   </div>
 
-  <div class="card-body">
-    <div class="card-header">
-      <div class="card-title">Register Attendance</div>
-      <div class="card-desc">Select day and action, then enter your registered email.</div>
+  <div class="body">
+    <div class="body-title">Register Attendance</div>
+    <div class="body-desc">Enter the email you used to register. Please check in on arrival and check out at the end of the conference.</div>
+
+    <div class="field">
+      <div class="label">Email</div>
+      <input class="input" id="email-inp" type="email" inputmode="email"
+             placeholder="yourname@example.com" autocomplete="email"
+             autocapitalize="none" spellcheck="false">
+      <div class="hint" id="hint"></div>
     </div>
 
     <div class="field">
-      <div class="field-label">Day</div>
-      <div class="segment" id="seg-day">
-        <button class="seg-btn active" onclick="pick(this)">Day 1</button>
-        <button class="seg-btn"        onclick="pick(this)">Day 2</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <div class="field-label">Action</div>
+      <div class="label">Action</div>
       <div class="segment" id="seg-action">
-        <button class="seg-btn active" onclick="pick(this)">Check-in</button>
-        <button class="seg-btn"        onclick="pick(this)">Check-out</button>
+        <button type="button" class="seg-btn active" id="btn-in"  data-action="in">Check-in</button>
+        <button type="button" class="seg-btn"        id="btn-out" data-action="out" disabled>Check-out</button>
       </div>
     </div>
 
-    <div class="sep"></div>
-
-    <div class="field" style="margin-bottom:0">
-      <div class="field-label">Email</div>
-      <div class="input-wrap">
-        <input class="input-field" id="email-inp" type="email"
-               placeholder="yourname@example.com" autocomplete="email" disabled>
-      </div>
-
-      <div id="locStatus">
-        <div class="loc-pulse" id="loc-indicator"></div>
-        <div class="loc-text"  id="locText">Detecting location…</div>
-      </div>
-
-      <div id="manual-notice">
-        ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
-      </div>
-
-      <div id="locationBlock">
-        <div class="loc-block-title">Location Access Required</div>
-        <div class="loc-block-desc" id="loc-block-desc">
-          Location access is blocked. Follow the steps below to enable it, then reload the page.
-        </div>
-        <div class="loc-how">
-          <div class="loc-how-title">How to enable</div>
-          <div class="loc-how-body" id="loc-how-body"></div>
-        </div>
-        <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
-          Continue anyway
-        </button>
-      </div>
-
-      <div id="manualPanel">
-        <div class="mp-title">Submitting without location</div>
-        <div class="mp-body">
-          Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag.
-          An organiser may follow up to verify your presence.
-        </div>
-      </div>
-    </div>
-
-    <button class="submit" id="submit-btn" onclick="submitForm()" disabled>Confirm Attendance</button>
-    <div id="retry-info" class="retry-badge" style="display:none;"></div>
+    <button type="button" class="submit" id="submit-btn">Confirm Attendance</button>
     <div class="msg" id="msg"></div>
   </div>
 </div>
@@ -384,60 +261,211 @@
 // ══════════════════════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════════════════════
-var SB_URL        = 'https://wxhaukichoycniioakbo.supabase.co';
-var SB_KEY        = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
-var MAX_RETRIES   = 3;
-var RETRY_DELAY_MS = 2500;
-var IS_IOS        = /iP(hone|ad|od)/.test(navigator.userAgent);
-var IS_SAFARI     = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+var SB_URL = 'https://wxhaukichoycniioakbo.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4aGF1a2ljaG95Y25paW9ha2JvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NDkxMjMsImV4cCI6MjA5NTIyNTEyM30.TEnZNISEzaCpGsj7liO4v6ihXgvyL8PnWwkHIP525Kw';
 
-var CONF_LAT = 41.6893212;
-var CONF_LNG = 44.8192619;
-var RADIUS_M = 300;
+var EVENT_DAY       = 1;       // კონფერენცია ერთდღიანია
+var REQUEST_TIMEOUT = 15000;   // ms
+var LOOKUP_DELAY    = 500;     // ms (ელფოსტის აკრეფის შემდეგ)
 
 // ══════════════════════════════════════════════════════════════
 //  SESSION ID
 // ══════════════════════════════════════════════════════════════
-var sessionId = localStorage.getItem('conf_device_id');
+var sessionId = null;
+try { sessionId = localStorage.getItem('conf_device_id'); } catch (e) {}
 if (!sessionId) {
   sessionId = 'p_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-  localStorage.setItem('conf_device_id', sessionId);
+  try { localStorage.setItem('conf_device_id', sessionId); } catch (e) {}
 }
-// ══════════════════════════════════════════════════════════════
-//  PAGE-LOAD COUNTER  (3 refresh → "Continue anyway")
-// ══════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════
-//  STATE
+//  STATE + ELEMENTS
 // ══════════════════════════════════════════════════════════════
-var geoState         = 'detecting';
-var userLat          = null;
-var userLng          = null;
-var isSubmitting     = false;
-var currentRequestId = 0;
-var geoAttempt       = 0;
- var countdownInterval = null;
+var isSubmitting      = false;
+var rateLocked        = false;
+var bothDone          = false;
+var countdownInterval = null;
+var lookupTimer       = null;
+var lookupId          = 0;
+
+var elBtn    = document.getElementById('submit-btn');
+var elEmail  = document.getElementById('email-inp');
+var elMsg    = document.getElementById('msg');
+var elHint   = document.getElementById('hint');
+var btnIn    = document.getElementById('btn-in');
+var btnOut   = document.getElementById('btn-out');
+
+var BTN_LABEL = 'Confirm Attendance';
+var EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// ══════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
 function formatMs(ms) {
   if (ms <= 0) return '00:00:00';
   var s = Math.floor(ms / 1000);
-  var h = Math.floor(s / 3600);
-  var m = Math.floor((s % 3600) / 60);
-  return pad(h) + ':' + pad(m) + ':' + pad(s % 60);
+  return pad(Math.floor(s / 3600)) + ':' + pad(Math.floor((s % 3600) / 60)) + ':' + pad(s % 60);
 }
-function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
+function showMsg(text, type) { elMsg.textContent = text; elMsg.className = 'msg ' + type; }
+function hideMsg()           { elMsg.className = 'msg'; }
+
+function setHint(text, cls) { elHint.textContent = text || ''; elHint.className = 'hint' + (cls ? ' ' + cls : ''); }
+
+function updateSubmit() { elBtn.disabled = isSubmitting || rateLocked || bothDone; }
+
+function setBusy(label) {
+  isSubmitting = true;
+  updateSubmit();
+  elBtn.innerHTML = '<span class="spinner"></span>' + label;
+}
+function setIdle() {
+  isSubmitting = false;
+  elBtn.textContent = BTN_LABEL;
+  updateSubmit();
+}
+
+function currentAction() { return btnIn.classList.contains('active') ? 'in' : 'out'; }
+function actionLabel(a)  { return a === 'in' ? 'Check-in' : 'Check-out'; }
+
+function sbFetch(path, options) {
+  options = options || {};
+  var headers = options.headers || {};
+  headers['apikey'] = SB_KEY;
+  headers['Authorization'] = 'Bearer ' + SB_KEY;
+  options.headers = headers;
+
+  var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  var timer = null;
+  if (controller) {
+    options.signal = controller.signal;
+    timer = setTimeout(function () { controller.abort(); }, REQUEST_TIMEOUT);
+  }
+  return fetch(SB_URL + path, options).then(
+    function (r) { if (timer) clearTimeout(timer); return r; },
+    function (e) { if (timer) clearTimeout(timer); throw e; }
+  );
+}
+
+// ══════════════════════════════════════════════════════════════
+//  LOCAL MEMORY (სარეზერვო, თუ attendance-ის წაკითხვა დაბლოკილია)
+// ══════════════════════════════════════════════════════════════
+function memKey(email) { return 'conf_state_' + email; }
+function memGet(email) {
+  try { return JSON.parse(localStorage.getItem(memKey(email)) || '{}'); } catch (e) { return {}; }
+}
+function memSet(email, action) {
+  var m = memGet(email);
+  m[action] = true;
+  try { localStorage.setItem(memKey(email), JSON.stringify(m)); } catch (e) {}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  STATE LOOKUP: აქვს თუ არა ამ ელფოსტას check-in / check-out
+// ══════════════════════════════════════════════════════════════
+function getState(email) {
+  var mem = memGet(email);
+  return sbFetch('/rest/v1/attendance?email=eq.' + encodeURIComponent(email) +
+                 '&day=eq.' + EVENT_DAY + '&select=action', {
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function (r) { return r.ok ? r.json() : []; })
+  .catch(function () { return []; })
+  .then(function (recs) {
+    var st = { in: !!mem.in, out: !!mem.out };
+    (recs || []).forEach(function (x) {
+      if (x.action === 'in')  st.in  = true;
+      if (x.action === 'out') st.out = true;
+    });
+    if (st.out) st.in = true;
+    return st;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+//  UI STATE
+//  არაფერი ჩაწერილი → მხოლოდ Check-in
+//  check-in ჩაწერილი → მხოლოდ Check-out
+//  ორივე ჩაწერილი    → ორივე დაბლოკილი
+// ══════════════════════════════════════════════════════════════
+function selectAction(a) {
+  btnIn.classList.toggle('active',  a === 'in');
+  btnOut.classList.toggle('active', a === 'out');
+}
+
+function applyState(st) {
+  if (st.in && st.out) {
+    btnIn.disabled = true; btnOut.disabled = true;
+    selectAction('out');
+    bothDone = true;
+    setHint('✔ Check-in and check-out are both recorded. Thank you!', 'done');
+  } else if (st.in) {
+    btnIn.disabled = true; btnOut.disabled = false;
+    selectAction('out');
+    bothDone = false;
+    setHint('✔ Check-in recorded. Please return here to check out at the end of the conference.', 'ok');
+  } else {
+    btnIn.disabled = false; btnOut.disabled = true;
+    selectAction('in');
+    bothDone = false;
+    setHint('Check-in on arrival. Check-out at the end of the conference.', '');
+  }
+  updateSubmit();
+}
+
+function resetState() { applyState({ in: false, out: false }); }
+
+// ══════════════════════════════════════════════════════════════
+//  EMAIL INPUT → სტატუსის ავტომატური შემოწმება
+// ══════════════════════════════════════════════════════════════
+elEmail.addEventListener('input', function () {
+  clearTimeout(lookupTimer);
+  lookupId++;
+
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+  rateLocked = false;
+  hideMsg();
+  resetState();
+
+  var email = elEmail.value.trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) return;
+
+  var myId = lookupId;
+  lookupTimer = setTimeout(function () {
+    setHint('Checking status…', '');
+    getState(email).then(function (st) {
+      if (myId !== lookupId) return;
+      applyState(st);
+    });
+  }, LOOKUP_DELAY);
+});
+
+elEmail.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') submitForm();
+});
+
+// ══════════════════════════════════════════════════════════════
+//  RATE LIMIT UI
+// ══════════════════════════════════════════════════════════════
 function showRateLimit(remainingMs) {
   if (countdownInterval) clearInterval(countdownInterval);
-  document.getElementById('submit-btn').disabled = true;
+  isSubmitting = false;
+  rateLocked = true;
+  elBtn.textContent = BTN_LABEL;
+  updateSubmit();
+
   var deadline = Date.now() + remainingMs;
   showMsg('⏳ ' + formatMs(remainingMs) + ' — please wait before registering again.', 'warning');
-  countdownInterval = setInterval(function() {
+
+  countdownInterval = setInterval(function () {
     var left = deadline - Date.now();
     if (left <= 0) {
       clearInterval(countdownInterval);
       countdownInterval = null;
-      document.getElementById('submit-btn').disabled = false;
+      rateLocked = false;
+      updateSubmit();
       showMsg('You may register again.', 'info');
       return;
     }
@@ -446,397 +474,133 @@ function showRateLimit(remainingMs) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  COUNTDOWN
-// ══════════════════════════════════════════════════════════════
-
-// ══════════════════════════════════════════════════════════════
-//  SUPABASE — RATE LIMIT CHECK
-//  ეძახის check_attendance_limit(email, session_id) function-ს
-// ══════════════════════════════════════════════════════════════
-function checkRateLimit(email, onResult) {
-  fetch(SB_URL + '/rest/v1/rpc/check_attendance_limit', {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'apikey':        SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY
-    },
-    body: JSON.stringify({
-      p_email:      email,
-      p_session_id: sessionId
-    })
-  })
-  .then(function(r) {
-    if (!r.ok) throw new Error('rpc_' + r.status);
-    return r.json();
-  })
-  .then(function(data) {
-    onResult(null, data);
-  })
-  .catch(function(err) {
-    onResult(err, null);
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-//  GEOLOCATION
-// ══════════════════════════════════════════════════════════════
-function startLocation() {
-  geoState   = 'detecting';
-  geoAttempt = 0;
-  userLat    = null;
-  userLng    = null;
-  setInputsEnabled(false);
-  document.getElementById('submit-btn').disabled = true;
-  hideManualNotice();
-  hideBlock();
-  document.getElementById('manualPanel').style.display = 'none';
-  setStatusDetecting('Detecting location…');
-
-  if (!navigator.geolocation) {
-    showBlock('Your browser does not support location. Open in Safari (iPhone) or Chrome (Android).', false);
-    return;
-  }
-
-  if (navigator.permissions && !IS_IOS && !IS_SAFARI) {
-    navigator.permissions.query({ name: 'geolocation' })
-      .then(function(result) {
-        if (result.state === 'denied') { onLocDenied(); }
-        else { doGetPosition(); }
-      })
-      .catch(doGetPosition);
-  } else {
-    doGetPosition();
-  }
-}
-
-function doGetPosition() {
-  geoAttempt++;
-  var options = geoAttempt === 1
-    ? { enableHighAccuracy: true,  timeout: 15000, maximumAge: 0 }
-    : { enableHighAccuracy: false, timeout: 12000, maximumAge: 30000 };
-  if (geoAttempt === 2) setStatusDetecting('Retrying with network location…');
-  navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError, options);
-}
-
-function onGeoSuccess(pos) {
-  localStorage.removeItem('conf_denied_refresh_count');
-  userLat = pos.coords.latitude;
-  userLng = pos.coords.longitude;
-  var acc  = Math.round(pos.coords.accuracy);
-
-  var dLat  = (userLat - CONF_LAT) * 111000;
-  var dLng  = (userLng - CONF_LNG) * 111000 * Math.cos(CONF_LAT * Math.PI / 180);
-  var distM = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
-
-  hideBlock();
-  hideManualNotice();
-  document.getElementById('manualPanel').style.display = 'none';
-
-  if (distM <= RADIUS_M) {
-    geoState = 'found';
-    setStatusFound('Location verified ✔  ·  ±' + acc + ' m');
-  } else {
-    geoState = 'offsite';
-    setStatusOffsite('Off-site  ·  ' + distM.toLocaleString() + ' m from venue  ·  ±' + acc + ' m');
-  }
-
-  setInputsEnabled(true);
-  document.getElementById('submit-btn').disabled = false;
-}
-
-function onGeoError(err) {
-  if (err.code === 1) { onLocDenied(); return; }
-  if (geoAttempt < 2) {
-    setTimeout(doGetPosition, 800);
-    return;
-  }
-  showBlock('Location could not be determined. Check that Location Services are enabled, then reload the page.', true);
-}
-
-function onLocDenied() {
-  geoState = 'denied';
-  setInputsEnabled(false);
-  document.getElementById('submit-btn').disabled = true;
-  setStatusDenied('Location access blocked');
-
-  var count = parseInt(localStorage.getItem('conf_denied_refresh_count') || '0', 10) + 1;
-  localStorage.setItem('conf_denied_refresh_count', count);
-
-  var showContinue = count >= 3;
-  var desc = showContinue
-    ? 'Location access is blocked. If you cannot enable it, you may continue without location.'
-    : 'Location access is blocked. Follow the steps below to enable it, then reload the page.';
-
-  showBlock(desc, showContinue);
-}
-// ══════════════════════════════════════════════════════════════
-//  MANUAL OVERRIDE
-// ══════════════════════════════════════════════════════════════
-function activateManual() {
-  geoState = 'manual';
-  userLat  = null;
-  userLng  = null;
-  hideBlock();
-  showManualNotice();
-  document.getElementById('manualPanel').style.display = 'block';
-
-  var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-dot';
-  ind.style.cssText = 'background:#92400E;';
-  document.getElementById('locText').textContent = 'Continuing without location';
-  document.getElementById('locStatus').className = 'manual';
-
-  setInputsEnabled(true);
-  document.getElementById('submit-btn').disabled = false;
-}
-
-// ══════════════════════════════════════════════════════════════
-//  STATUS HELPERS
-// ══════════════════════════════════════════════════════════════
-function setStatusDetecting(text) {
-  var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-pulse';
-  ind.style.cssText = '';
-  document.getElementById('locText').textContent = text;
-  document.getElementById('locStatus').className = '';
-}
-function setStatusFound(text)   { _setDot('found',   text); }
-function setStatusOffsite(text) { _setDot('offsite', text); }
-function setStatusDenied(text)  { _setDot('denied',  text); }
-function _setDot(cls, text) {
-  var ind = document.getElementById('loc-indicator');
-  ind.className = 'loc-dot';
-  ind.style.cssText = '';
-  document.getElementById('locText').textContent = text;
-  document.getElementById('locStatus').className = cls;
-}
-
-// ══════════════════════════════════════════════════════════════
-//  BLOCK / NOTICE HELPERS
-// ══════════════════════════════════════════════════════════════
-function showBlock(desc, showContinue) {
-  document.getElementById('loc-block-desc').textContent = desc;
-  document.getElementById('locationBlock').style.display = 'block';
-  document.getElementById('loc-how-body').innerHTML = IS_IOS
-    ? '<b>iPhone (Safari):</b> Settings → Privacy → Location Services → Safari → While Using App'
-    : IS_SAFARI
-      ? '<b>Safari (Mac):</b> Safari menu → Settings for This Website → Location → Allow'
-      : '<b>Chrome (Android):</b> Address bar → 🔒 → Permissions → Location → Allow<br><b>Chrome (Desktop):</b> Address bar → 🔒 → Location → Allow';
-  document.getElementById('loc-continue-btn').style.display =
-    showContinue ? 'block' : 'none';
-}
-function hideBlock()       { document.getElementById('locationBlock').style.display = 'none'; }
-function showManualNotice(){ document.getElementById('manual-notice').style.display = 'block'; }
-function hideManualNotice(){ document.getElementById('manual-notice').style.display = 'none'; }
-
-function setInputsEnabled(enabled) {
-  document.getElementById('email-inp').disabled = !enabled;
-  document.querySelectorAll('.seg-btn').forEach(function(b) { b.disabled = !enabled; });
-}
-
-// ══════════════════════════════════════════════════════════════
-//  SEGMENT PICKER
-// ══════════════════════════════════════════════════════════════
-function pick(el) {
-  if (el.disabled) return;
-  el.closest('.segment').querySelectorAll('.seg-btn').forEach(function(b) {
-    b.classList.remove('active');
-  });
-  el.classList.add('active');
-}
-
-// ══════════════════════════════════════════════════════════════
-//  MSG
-// ══════════════════════════════════════════════════════════════
-function showMsg(text, type) {
-  var el = document.getElementById('msg');
-  el.textContent = text;
-  el.className   = 'msg ' + type;
-}
-
-// ══════════════════════════════════════════════════════════════
-//  RESULT HANDLER
-// ══════════════════════════════════════════════════════════════
-function handleResult(result) {
-  document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-  document.getElementById('retry-info').style.display = 'none';
-
-  var RESULT_MAP = {
-    'SUCCESS':            { text: '✅ Attendance recorded successfully!',                 type: 'success' },
-    'SUCCESS_OFFSITE':    { text: '✅ Attendance recorded (off-site location noted).',    type: 'success' },
-    'SUCCESS_LOC_FAILED': { text: '✅ Attendance recorded. Location flagged for review.', type: 'success' },
-    'ALREADY_DONE':       { text: '⚠️ Already recorded for this slot.',                  type: 'info'    },
-    'NO_CHECKIN':         { text: '⚠️ You must check in before checking out.',            type: 'info'    },
-    'NOT_FOUND':          { text: '❌ Email not found. Use your registered email.',        type: 'error'   },
-    'INVALID_EMAIL':      { text: '❌ Invalid email address.',                             type: 'error'   }
-  };
-
-  var entry = RESULT_MAP[result];
-  isSubmitting = false;
-
-  if (entry) {
-    showMsg(entry.text, entry.type);
-    document.getElementById('submit-btn').disabled = false;
-  } else if (typeof result === 'string' && result.indexOf('ERROR:') === 0) {
-    showMsg('❌ Server error: ' + result.replace('ERROR:', '').trim(), 'error');
-    document.getElementById('submit-btn').disabled = false;
-  } else {
-    showMsg('❌ Unexpected response. Please try again.', 'error');
-    document.getElementById('submit-btn').disabled = false;
-  }
-}
-
-// ══════════════════════════════════════════════════════════════
 //  SUBMIT
 // ══════════════════════════════════════════════════════════════
 function submitForm() {
-  if (isSubmitting) return;
+  if (isSubmitting || elBtn.disabled) return;
 
-  var allowed = ['found', 'offsite', 'manual'];
-  if (allowed.indexOf(geoState) === -1) {
-    showMsg('Please wait for location detection to complete.', 'error');
-    return;
-  }
-
-  var email = document.getElementById('email-inp').value.trim().toLowerCase();
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  var email = elEmail.value.trim().toLowerCase();
+  if (!email || !EMAIL_RE.test(email)) {
     showMsg('Please enter a valid email address.', 'error');
     return;
   }
 
-  var day    = document.querySelector('#seg-day .seg-btn.active').textContent.trim() === 'Day 1' ? 1 : 2;
-  var action = document.querySelector('#seg-action .seg-btn.active').textContent.trim() === 'Check-in' ? 'in' : 'out';
-  var locStatus = geoState === 'found'   ? 'onsite'
-                : geoState === 'offsite' ? 'offsite'
-                : 'LOCATION_FAILED';
+  var action = currentAction();
+  setBusy('Checking…');
+  showMsg('Verifying registration…', 'info');
 
-  document.getElementById('submit-btn').disabled  = true;
-  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Checking…';
-  showMsg('Verifying registration limit…', 'info');
-  isSubmitting = true;
-  var requestId = ++currentRequestId;
-
-  // ── Step 1: Supabase rate limit check ──
-  checkRateLimit(email, function(err, data) {
-    if (requestId !== currentRequestId) return;
-
-    if (err) {
-      // RPC შეცდომა — გავაგრძელოთ submit-ი (fail-open)
-      console.warn('Rate limit check failed, proceeding:', err);
-      doInsert(email, day, action, locStatus, requestId);
-      return;
-    }
-
-    if (data && data.limited) {
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      showRateLimit(Math.round(data.remaining_ms));
-      return;
-    }
-
-    // ლიმიტი არ არის — გაგრძელება
-    doInsert(email, day, action, locStatus, requestId);
-  });
-}
-
-// ══════════════════════════════════════════════════════════════
-//  INSERT
-// ══════════════════════════════════════════════════════════════
-function doInsert(email, day, action, locStatus, requestId) {
-  if (requestId !== currentRequestId) return;
-
-  document.getElementById('submit-btn').innerHTML = '<span class="spinner"></span>Processing…';
-  showMsg('Submitting attendance…', 'info');
-
-  // ── Step 2: participants შემოწმება ──
-  fetch(SB_URL + '/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
-    headers: {
-      'apikey':        SB_KEY,
-      'Authorization': 'Bearer ' + SB_KEY
-    }
+  // Step 1: rate limit (fail-open თუ RPC ვერ მუშაობს)
+  sbFetch('/rest/v1/rpc/check_attendance_limit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ p_email: email, p_session_id: sessionId })
   })
-  .then(function(r) {
-    if (!r.ok) throw new Error('participants_check_' + r.status);
+  .then(function (r) {
+    if (!r.ok) throw new Error('rpc_' + r.status);
     return r.json();
   })
-  .then(function(data) {
-    if (requestId !== currentRequestId) return Promise.reject('__stale__');
-
-    if (!data || data.length === 0) {
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      document.getElementById('submit-btn').disabled = false;
-      showMsg('❌ Email not found. Please use your registered email.', 'error');
-      return Promise.reject('__not_found__');
+  .then(function (data) {
+    if (data && data.limited) {
+      showRateLimit(Math.round(data.remaining_ms || 0));
+      return null;
     }
-
-    // ── Step 3: attendance INSERT ──
-    var payload = {
-      email:            email,
-      day:              day,
-      action:           action,
-      lat:              userLat !== null ? userLat : null,
-      lng:              userLng !== null ? userLng : null,
-      loc_status:       locStatus,
-      session_id:       sessionId,
-      synced_to_sheets: false
-    };
-
-    return fetch(SB_URL + '/rest/v1/attendance', {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'apikey':        SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Prefer':        'return=minimal'
-      },
-      body: JSON.stringify(payload)
-    });
+    return 'go';
+  }, function (err) {
+    console.warn('Rate limit check failed, proceeding:', err);
+    return 'go';
   })
-  .then(function(r) {
-    if (!r) return;
-    if (requestId !== currentRequestId) return;
-
-    if (r.status === 201) {
-      handleResult('SUCCESS');
-    } else if (r.status === 409) {
-      // unique constraint — ეს კომბინაცია უკვე არსებობს
-      isSubmitting = false;
-      document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-      document.getElementById('submit-btn').disabled = false;
-      showMsg('⚠️ This action (Day ' + day + ' / ' + (action === 'in' ? 'Check-in' : 'Check-out') + ') has already been recorded for this email.', 'info');
-    } else {
-      return r.text().then(function(body) {
-        console.warn('Supabase INSERT error', r.status, body);
-        handleResult('ERROR:insert_' + r.status);
-      });
-    }
-  })
-  .catch(function(err) {
-    if (err === '__not_found__' || err === '__stale__') return;
-    isSubmitting = false;
-    document.getElementById('submit-btn').innerHTML = 'Confirm Attendance';
-
-    var ri = document.getElementById('retry-info');
-    ri.style.display = 'block';
-    ri.textContent   = 'Connection issue — retrying…';
-
-    setTimeout(function() {
-      if (requestId !== currentRequestId) return;
-      ri.style.display = 'none';
-      document.getElementById('submit-btn').disabled = false;
-      showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
-    }, RETRY_DELAY_MS);
-
-    console.error('doInsert error:', err);
+  .then(function (go) {
+    if (go) doInsert(email, action);
   });
 }
 
 // ══════════════════════════════════════════════════════════════
-//  INIT
+//  PARTICIPANT CHECK + STATE CHECK + INSERT
 // ══════════════════════════════════════════════════════════════
-startLocation();
+function doInsert(email, action) {
+  setBusy('Processing…');
+  showMsg('Submitting attendance…', 'info');
+
+  sbFetch('/rest/v1/participants?email=eq.' + encodeURIComponent(email) + '&select=email', {
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function (r) {
+    if (!r.ok) throw new Error('participants_' + r.status);
+    return r.json();
+  })
+  .then(function (rows) {
+    if (!rows || rows.length === 0) {
+      setIdle();
+      showMsg('❌ Email not found. Please use your registered email.', 'error');
+      return null;
+    }
+
+    return getState(email).then(function (st) {
+      // წესები: ჯერ check-in, მხოლოდ შემდეგ check-out
+      if (st.in && st.out) {
+        setIdle(); applyState(st);
+        showMsg('⚠️ Your check-in and check-out are already recorded.', 'info');
+        return null;
+      }
+      if (action === 'out' && !st.in) {
+        setIdle(); applyState(st);
+        showMsg('⚠️ Please check in first. Check-out is done at the end of the conference.', 'info');
+        return null;
+      }
+      if (action === 'in' && st.in) {
+        setIdle(); applyState(st);
+        showMsg('⚠️ Your check-in is already recorded. Please check out at the end of the conference.', 'info');
+        return null;
+      }
+      return insertAttendance(email, action);
+    });
+  })
+  .catch(function (err) {
+    console.error('doInsert error:', err);
+    setIdle();
+    showMsg('❌ Connection failed. Please check your internet and try again.', 'error');
+  });
+}
+
+function insertAttendance(email, action) {
+  return sbFetch('/rest/v1/attendance', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      email:            email,
+      day:              EVENT_DAY,
+      action:           action,
+      session_id:       sessionId,
+      synced_to_sheets: false
+    })
+  }).then(function (res) {
+    if (res.status === 201 || res.status === 409) {
+      // 409 = უკვე არსებობს ეს ჩანაწერი; UI მაინც სწორ მდგომარეობაში გადადის
+      memSet(email, action);
+      setIdle();
+      applyState(action === 'in' ? { in: true, out: false } : { in: true, out: true });
+      if (res.status === 201) {
+        showMsg(action === 'in'
+          ? '✅ Check-in recorded successfully. Please check out at the end of the conference.'
+          : '✅ Check-out recorded successfully. Thank you for attending!', 'success');
+      } else {
+        showMsg('⚠️ ' + actionLabel(action) + ' was already recorded for this email.', 'info');
+      }
+    } else {
+      return res.text().then(function (body) {
+        console.warn('Insert error', res.status, body);
+        setIdle();
+        showMsg('❌ Server error (' + res.status + '). Please try again or contact the organisers.', 'error');
+      });
+    }
+  });
+}
+
+elBtn.addEventListener('click', submitForm);
+resetState();
 </script>
 </body>
 </html>
