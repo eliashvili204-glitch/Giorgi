@@ -307,23 +307,79 @@
       <div class="hero-eyebrow">XI · International Conference</div>
       <div class="hero-title">Infection at the Crossroads</div>
       <div class="hero-rule"></div>
-      <div class="hero-sub">June 13–14, 2026</div>
+      <div class="hero-sub">Attendance Registration</div>
     </div>
   </div>
 
-  <div class="card-body" style="text-align:center; padding: 48px 28px 52px;">
-  <div style="font-size:40px; margin-bottom:20px;">✓</div>
-  <div style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:var(--navy); margin-bottom:12px; line-height:1.2;">
-    Conference Concluded
-  </div>
-  <div style="width:32px; height:1px; background:rgba(201,168,76,0.5); margin:0 auto 16px;"></div>
-  <div style="font-size:12px; color:var(--text-soft); line-height:1.8;">
-    Attendance registration is now closed.<br>
-    Thank you for participating in<br>
-    <strong style="color:var(--navy);">"Infection at the Crossroads 2026."</strong>
+  <div class="card-body">
+    <div class="card-header">
+      <div class="card-title">Register Attendance</div>
+      <div class="card-desc">Select day and action, then enter your registered email.</div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Day</div>
+      <div class="segment" id="seg-day">
+        <button class="seg-btn active" onclick="pick(this)">Day 1</button>
+        <button class="seg-btn"        onclick="pick(this)">Day 2</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">Action</div>
+      <div class="segment" id="seg-action">
+        <button class="seg-btn active" onclick="pick(this)">Check-in</button>
+        <button class="seg-btn"        onclick="pick(this)">Check-out</button>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="field" style="margin-bottom:0">
+      <div class="field-label">Email</div>
+      <div class="input-wrap">
+        <input class="input-field" id="email-inp" type="email"
+               placeholder="yourname@example.com" autocomplete="email" disabled>
+      </div>
+
+      <div id="locStatus">
+        <div class="loc-pulse" id="loc-indicator"></div>
+        <div class="loc-text"  id="locText">Detecting location…</div>
+      </div>
+
+      <div id="manual-notice">
+        ⚠️ Location could not be detected. Your attendance will be marked <strong>LOCATION_FAILED</strong> in the system for manual review.
+      </div>
+
+      <div id="locationBlock">
+        <div class="loc-block-title">Location Access Required</div>
+        <div class="loc-block-desc" id="loc-block-desc">
+          Location access is blocked. Follow the steps below to enable it, then reload the page.
+        </div>
+        <div class="loc-how">
+          <div class="loc-how-title">How to enable</div>
+          <div class="loc-how-body" id="loc-how-body"></div>
+        </div>
+        <button class="loc-continue-btn" id="loc-continue-btn" onclick="activateManual()">
+          Continue anyway
+        </button>
+      </div>
+
+      <div id="manualPanel">
+        <div class="mp-title">Submitting without location</div>
+        <div class="mp-body">
+          Your attendance will be recorded with a <b>LOCATION_FAILED</b> flag.
+          An organiser may follow up to verify your presence.
+        </div>
+      </div>
+    </div>
+
+    <button class="submit" id="submit-btn" onclick="submitForm()" disabled>Confirm Attendance</button>
+    <div id="retry-info" class="retry-badge" style="display:none;"></div>
+    <div class="msg" id="msg"></div>
   </div>
 </div>
- 
+
 <script>
 // ══════════════════════════════════════════════════════════════
 //  CONFIG
